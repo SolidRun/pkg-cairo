@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/class/makefile.mk
+#include /usr/share/cdbs/1/rules/simple-patchsys.mk
+# --disable-xcb just to be sure. Otherwise Build-Depend etc. on libxcb1-dev
+#
+# --disable-glitz just to be sure. Otherwise Build-Depend etc. on libglitz1-dev
+# not yet in the archive but is packaged in
+#   http://cairographics.org/packages/debian/
+# If enabled, this depends on glitz >= 0.4.0
+DEB_CONFIGURE_USER_FLAGS=--disable-xcb --disable-glitz

@@ -1,0 +1,35 @@
+Source: libcairo
+Section: libs
+Priority: optional
+Maintainer: Dave Beckett <dajobe@debian.org>
+Build-Depends: debhelper (>= 4.1.0), cdbs, autotools-dev, pkg-config, libpixman1-dev (>= 0.1.4), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libx11-dev, libpng12-dev
+Standards-Version: 3.6.1
+
+Package: libcairo1-dev
+Provides: libcairo-dev
+Conflicts: libcairo-dev
+Replaces: libcairo0-dev
+Section: libdevel
+Architecture: any
+Depends: libcairo1 (= ${Source-Version}), libpixman1-dev (>= 0.1.4), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libpng12-dev
+Description: Multi-platform 2D graphics library
+ Development libraries, header files and documentation needed by
+ programs that want to compile with libcairo.
+
+Package: libcairo1
+Section: libs
+Architecture: any
+Replaces: libcairo0
+Depends: ${shlibs:Depends}
+Description: Multi-platform 2D graphics library
+ Provides anti-aliased vector-based rendering for X. Paths consist
+ of line segments and cubic splines and can be rendered at any width
+ with various join and cap styles. All colors may be specified with
+ optional translucence (opacity/alpha) and combined using the extended
+ Porter/Duff compositing algebra as found in the X Render Extension.
+ .
+ Cairo exports a stateful rendering API similar in spirit to the path
+ construction, text, and painting operators of PostScript, (with the
+ significant addition of translucence in the imaging model). When
+ complete, the API is intended to support the complete imaging model of
+ PDF 1.4.
