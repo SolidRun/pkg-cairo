@@ -1,0 +1,13 @@
+diff -urN d/cairo-0.5.0/configure.in cairo-0.5.0/configure.in
+--- d/cairo-0.5.0/configure.in	2005-05-18 01:38:23.000000000 +0000
++++ cairo-0.5.0/configure.in	2005-06-18 12:45:35.528315944 +0000
+@@ -24,6 +24,9 @@
+ VERSION_INFO="$LT_CURRENT:$LT_REVISION:$LT_AGE"
+ AC_SUBST(VERSION_INFO)
+ 
++LIBRARY_RELEASE="1debian$(echo $CAIRO_VERSION | awk -F. '{OFS="."; print $1, $2, $3}')"
++AC_SUBST(LIBRARY_RELEASE)
++
+ dnl ===========================================================================
+ 
+ AM_INIT_AUTOMAKE(cairo, $CAIRO_VERSION)

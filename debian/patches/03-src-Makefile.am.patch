@@ -1,0 +1,12 @@
+diff -urN d/cairo-0.5.0/src/Makefile.am cairo-0.5.0/src/Makefile.am
+--- d/cairo-0.5.0/src/Makefile.am	2005-05-17 16:01:09.000000000 +0000
++++ cairo-0.5.0/src/Makefile.am	2005-06-18 12:43:59.240953848 +0000
+@@ -121,7 +121,7 @@
+ 	$(libcairo_win32_sources)\
+ 	cairoint.h
+ 
+-libcairo_la_LDFLAGS = -version-info @VERSION_INFO@ -no-undefined
++libcairo_la_LDFLAGS = -release @LIBRARY_RELEASE@ -no-undefined
+ 
+ INCLUDES = -I$(srcdir) $(CAIRO_CFLAGS)
+ 
