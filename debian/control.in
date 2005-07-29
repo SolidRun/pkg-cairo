@@ -2,16 +2,16 @@ Source: libcairo
 Section: libs
 Priority: optional
 Maintainer: Dave Beckett <dajobe@debian.org>
-Build-Depends: debhelper (>= 4.1.0), cdbs, autotools-dev, pkg-config, libpixman1-dev (>= 0.1.4), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libx11-dev, libpng12-dev, libglitz1-dev (>= 0.4.0)
-Standards-Version: 3.6.1
+Build-Depends: debhelper (>= 4.1.0), cdbs, autotools-dev, pkg-config, libpixman1-dev (>= 0.1.5), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libx11-dev, libpng12-dev, libglitz1-dev (>= 0.4.3+cvs20050728)
+Standards-Version: 3.6.2
 
 Package: libcairo@UPVERSION@-dev
 Provides: libcairo-dev
-Conflicts: libcairo-dev, libcairo1-dev (<< 0.5.0)
+Conflicts: libcairo-dev, libcairo1-dev (<< 0.5.0), libcairo0.5.1-dev
 Suggests: libcairo@UPVERSION@-doc
 Section: libdevel
 Architecture: any
-Depends: libcairo@UPVERSION@ (= ${Source-Version}), libpixman1-dev (>= 0.1.4), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libpng12-dev, libglitz1-dev (>= 0.4.0)
+Depends: libcairo@UPVERSION@ (= ${Source-Version}), libpixman1-dev (>= 0.1.5), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libpng12-dev, libglitz1-dev (>= 0.4.3+cvs20050728)
 Description: Development files for the Cairo 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
@@ -23,7 +23,7 @@ Package: libcairo@UPVERSION@
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
-Replaces: libcairo1 (<< 0.5.0)
+Replaces: libcairo1 (<< 0.5.0), libcairo0.5.1
 Description: The Cairo 2D vector graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends. Paths consist
@@ -45,6 +45,7 @@ Package: libcairo@UPVERSION@-doc
 Section: libs
 Architecture: all
 Depends: lynx | www-browser
+Conflicts: libcairo0.5.1-doc
 Description: Documentation for the Cairo Multi-platform 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
