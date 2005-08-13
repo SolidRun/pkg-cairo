@@ -2,16 +2,17 @@ Source: libcairo
 Section: libs
 Priority: optional
 Maintainer: Dave Beckett <dajobe@debian.org>
-Build-Depends: debhelper (>= 4.1.0), cdbs, autotools-dev, pkg-config, libpixman1-dev (>= 0.1.5), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libx11-dev, libpng12-dev, libglitz1-dev (>= 0.4.3+cvs20050728)
+Build-Depends: debhelper (>= 4.1.0), cdbs, autotools-dev, pkg-config, libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libx11-dev, libpng12-dev, libglitz1-dev (>= 0.4.3+cvs20050728)
 Standards-Version: 3.6.2
 
-Package: libcairo0.6.0-dev
+Package: libcairo2-dev
 Provides: libcairo-dev
-Conflicts: libcairo-dev, libcairo1-dev (<< 0.5.0), libcairo0.5.1-dev
-Suggests: libcairo0.6.0-doc
+Conflicts: libcairo-dev, libcairo0.5.1-dev, libcairo0.6.0-dev, libcairo0.9.0-dev
+Replaces: libcairo0.5.1-dev, libcairo0.6.0-dev, libcairo0.9.0-dev
+Suggests: libcairo2-doc
 Section: libdevel
 Architecture: any
-Depends: libcairo0.6.0 (= ${Source-Version}), libpixman1-dev (>= 0.1.5), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libpng12-dev, libglitz1-dev (>= 0.4.3+cvs20050728)
+Depends: libcairo2 (= ${Source-Version}), libfontconfig1-dev, libfreetype6-dev (>=2.1.0), libxrender-dev (>=0.6.0), libpng12-dev, libglitz1-dev (>= 0.4.3+cvs20050728)
 Description: Development files for the Cairo 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
@@ -19,11 +20,12 @@ Description: Development files for the Cairo 2D graphics library
  This package contains the development libraries, header files needed by
  programs that want to compile with Cairo.
 
-Package: libcairo0.6.0
+Package: libcairo2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
-Replaces: libcairo1 (<< 0.5.0), libcairo0.5.1
+Provides: libcairo
+Replaces: libcairo0.5.1, libcairo0.6.0, libcairo0.9.0
 Description: The Cairo 2D vector graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends. Paths consist
@@ -41,15 +43,16 @@ Description: The Cairo 2D vector graphics library
  .
  This package contains the shared libraries.
 
-Package: libcairo0.6.0-doc
+Package: libcairo2-doc
 Section: libs
 Architecture: all
 Depends: lynx | www-browser
-Conflicts: libcairo0.5.1-doc
+Conflicts: libcairo0.5.1-doc, libcairo0.6.0-doc, libcairo0.9.0-doc
+Replaces: libcairo0.5.1-doc, libcairo0.6.0-doc, libcairo0.9.0-doc
 Description: Documentation for the Cairo Multi-platform 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
  .
  This package contains the HTML documentation for the Cairo library
- in /usr/share/doc/libcairo0.6.0-doc/ .
+ in /usr/share/doc/libcairo2-doc/ .
 
