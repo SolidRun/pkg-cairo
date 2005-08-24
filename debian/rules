@@ -4,10 +4,25 @@ include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/class/makefile.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
-# --disable-xcb just to be sure. Otherwise Build-Depend etc. on libxcb1-dev
+# Supported backends:
+#   (internal) Image
+#   xlib       Xlib
 #
-# --enable-glitz just to be sure
-DEB_CONFIGURE_USER_FLAGS=--disable-xcb --enable-glitz
+# Experimental and unsupported backends:
+#   glitz  OpenGL (glitz)
+#   pdf    PDF
+#   ps     PostScript
+#   xcb    XCB  (requires Build-Depend on at least libxcb1-dev)
+#
+# Other platform backends are auto disabled: quartz/OSX, win32/Win32
+#
+# Features:
+# --enable-png  PNG (default enabled)
+#
+DEB_CONFIGURE_USER_FLAGS= \
+--enable-xlib \
+--disable-glitz --disable-pdf --disable-ps --disable-xcb \
+--enable-png
 
 # make sure it depends on >=current-version
 DEB_DH_MAKESHLIBS_ARGS_ALL=-V
