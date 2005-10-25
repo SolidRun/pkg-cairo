@@ -1,3 +1,15 @@
+libcairo (1.0.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Removed patch 01-endianess-cairo-xlib-surface.patch previously taken
+    from upstream CVS.
+  * Removed patch 02-no-ft-glyphslot-embolden.patch to re-allow configure
+    to use FT_GlyphSlot_Embolden provided in freetype 2.1.10 which is now
+    in sid.
+  * Require freetype 2.1.10+
+
+ -- Dave Beckett <dajobe@debian.org>  Tue, 25 Oct 2005 18:45:57 +0100
+
 libcairo (1.0.0-3) unstable; urgency=low
 
   * Added patch 02-no-ft-glyphslot-embolden.patch to disable use of
