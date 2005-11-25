@@ -1,3 +1,17 @@
+libcairo (1.0.2-2) unstable; urgency=low
+
+  * Fix libcairo2-doc section to doc (Closes: #337515)
+  * Re-add patch 02-no-ft-glyphslot-embolden.patch to use only
+    freetype 2.1.7 symbols even though sid has freetype 2.1.10.
+    The latter has ABI changes beyond it's declared shlibs of 2.1.5
+    and is undergoing a large transition.
+    Require freetype 2.1.7+ again.  (Closes: #338817)
+  * Added patch 01-INT_pixman.patch from CVS to remove spurious INT_ items
+    that broke build with recent binutils (Closes: #340073)
+  * Require pkg-config >= 0.18 since cairo.pc uses Require.private:
+
+ -- Dave Beckett <dajobe@debian.org>  Fri, 25 Nov 2005 04:01:51 +0000
+
 libcairo (1.0.2-1) unstable; urgency=low
 
   * New upstream release
