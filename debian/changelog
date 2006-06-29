@@ -1,3 +1,52 @@
+libcairo (1.1.10-3) experimental; urgency=low
+
+  * First upload of 1.1.x series to debian experimental
+  * Remove patch 02-no-ft-glyphslot-embolden.patch (was for bug #325526)
+    and depend on a new enough libfreetype6 (2.1.10) which is already in
+    testing.
+  * Removed Build-Depend on libxml2 for creating SVG as that has been
+    rewritten.
+  * Added libcairo2 Conflicts and Replaces libcairo1 (Closes: #366755)
+
+ -- Dave Beckett <dajobe@debian.org>  Wed, 28 Jun 2006 19:04:10 -0700
+
+libcairo (1.1.10-2) experimental; urgency=low
+
+  * Add -Wl,-rpath,${libdir} to libcairo-directfb pkgconfig to make the
+    linker use the libcairo in the libdir
+  * Removed Provides: libcairo2 from libcairo-directfb2-udeb
+
+ -- Dave Beckett <dajobe@debian.org>  Sun, 25 Jun 2006 10:20:40 -0700
+
+libcairo (1.1.10-1) experimental; urgency=low
+
+  * New upstream release
+  * Renamed directfb packages to be libcairo-directfb2*
+  * Use dh_makeshlibs with --add-udeb to make udeb: lines appear in shlibs
+  * Depend on debhelper 5.0.22 to get a working dh_makeshlibs with --add-udeb
+
+ -- Dave Beckett <dajobe@debian.org>  Sat, 24 Jun 2006 10:03:02 -0700
+
+libcairo (1.1.8-1) experimental; urgency=low
+
+  * New upstream release
+  * Added libcairo2-directfb deb.
+
+ -- Dave Beckett <dajobe@debian.org>  Wed, 14 Jun 2006 11:47:00 -0700
+
+libcairo (1.1.6-1) experimental; urgency=low
+
+  * New upstream release
+  * Enable PNG, PDF and SVG backends (add Build-Depend: on libxml2)
+  * Added Cairo DirectFB udeb packages libcairo2-directfb-udeb and
+    libcairo2-directfb-dev (add Build-Depend: on libdirectfb-dev)
+  * libcairo2-dev and libcairo2-directfb-dev can both be installed together
+  * Stop using CDBS since it cannot handle the double configure and build 
+    setup.
+  * Use dpatch for patching and Build-Depend: on it.
+
+ -- Dave Beckett <dajobe@debian.org>  Mon, 12 Jun 2006 12:57:38 -0700
+
 libcairo (1.0.4-2) unstable; urgency=low
 
   * Rebuild against X11R7 to fix .la breakage xorg caused (Closes: #362237)
