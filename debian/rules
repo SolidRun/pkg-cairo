@@ -26,21 +26,21 @@ MAIN_CONFIGURE_FLAGS = \
 
 # udeb package flags
 #  directfb  DirectFB (requires Build-Depend on libdirectfb-0.9-24-dev )
-UDEB_CONFIGURE_FLAGS = \
+DIRECTFB_CONFIGURE_FLAGS = \
 --enable-directfb \
 --disable-xlib  --disable-pdf --disable-ps --disable-svg \
 --disable-glitz --disable-xcb \
 --enable-png \
 --program-suffix=-directfb
 
-UDEB_PREFIX=/usr/lib/libcairo-directfb
+DIRECTFB_PREFIX=/usr/lib/libcairo-directfb
 
 SRC_DIR=$(CURDIR)
 MAIN_BUILD_DIR=$(CURDIR)/debian/build-main
-UDEB_BUILD_DIR=$(CURDIR)/debian/build-directfb
+DIRECTFB_BUILD_DIR=$(CURDIR)/debian/build-directfb
 
 MAIN_DIST_DIR=$(CURDIR)/debian/dist-main
-UDEB_DIST_DIR=$(CURDIR)/debian/dist-directfb
+DIRECTFB_DIST_DIR=$(CURDIR)/debian/dist-directfb
 
 
 export DH_COMPAT=5
@@ -109,13 +109,13 @@ configure-main-stamp: configure-common-stamp
 configure-udeb: configure-core-stamp configure-udeb-stamp
 configure-udeb-stamp: configure-common-stamp
 	dh_testdir
-	mkdir -p $(UDEB_BUILD_DIR); \
-	cd $(UDEB_BUILD_DIR); \
+	mkdir -p $(DIRECTFB_BUILD_DIR); \
+	cd $(DIRECTFB_BUILD_DIR); \
 	$(SRC_DIR)/configure $(CONFFLAGS) \
-		--prefix=$(UDEB_PREFIX) \
+		--prefix=$(DIRECTFB_PREFIX) \
 		--mandir=$(share)/man \
 		--infodir=$(share)/info \
-		$(UDEB_CONFIGURE_FLAGS)
+		$(DIRECTFB_CONFIGURE_FLAGS)
 	touch $@
 
 
@@ -129,7 +129,7 @@ build-main-stamp: configure-main-stamp
 build-udeb: build-udeb-stamp
 build-udeb-stamp: configure-udeb-stamp
 	dh_testdir
-	cd $(UDEB_BUILD_DIR) && $(MAKE)
+	cd $(DIRECTFB_BUILD_DIR) && $(MAKE)
 	touch build-stamp
 
 clean: clean1 unpatch
@@ -138,7 +138,7 @@ clean1:
 	dh_testroot
 	rm -f *-stamp libtool
 	rm -rf debian/libcairo2 debian/libcairo2-dev debian/libcairo2-doc libcairo-directfb2-udeb debian/libcairo-directfb2-udeb-dev debian/libcairo-directfb2
-	rm -rf $(MAIN_BUILD_DIR) $(UDEB_BUILD_DIR) $(MAIN_DIST_DIR) $(UDEB_DIST_DIR)
+	rm -rf $(MAIN_BUILD_DIR) $(DIRECTFB_BUILD_DIR) $(MAIN_DIST_DIR) $(DIRECTFB_DIST_DIR)
 	rm -f debian/cairo-directfb.pc
 
 	-rm -f config.h config.cache config.status config.log
@@ -161,10 +161,10 @@ install: build
 
 	cd $(MAIN_BUILD_DIR) && $(MAKE) install DESTDIR=$(MAIN_DIST_DIR)
 
-	cd $(UDEB_BUILD_DIR) && $(MAKE) install DESTDIR=$(UDEB_DIST_DIR)
+	cd $(DIRECTFB_BUILD_DIR) && $(MAKE) install DESTDIR=$(DIRECTFB_DIST_DIR)
 
-	mkdir -p $(UDEB_DIST_DIR)/usr/lib/pkgconfig
-	sed -e 's/Name: cairo/Name: cairo-directfb/' -e 's/^\(Libs: .*\)$$/\1 -Wl,-rpath,$${libdir}/' $(UDEB_DIST_DIR)/$(UDEB_PREFIX)/lib/pkgconfig/cairo.pc > $(UDEB_DIST_DIR)/usr/lib/pkgconfig/cairo-directfb.pc
+	mkdir -p $(DIRECTFB_DIST_DIR)/usr/lib/pkgconfig
+	sed -e 's/Name: cairo/Name: cairo-directfb/' -e 's/^\(Libs: .*\)$$/\1 -Wl,-rpath,$${libdir}/' $(DIRECTFB_DIST_DIR)/$(DIRECTFB_PREFIX)/lib/pkgconfig/cairo.pc > $(DIRECTFB_DIST_DIR)/usr/lib/pkgconfig/cairo-directfb.pc
 
 
 # Build architecture-independent files here.
