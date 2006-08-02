@@ -73,13 +73,7 @@ share   := $(prefix)/share
 version := $(shell dpkg-parsechangelog | \
 		sed -ne 's/^Version: *\([0-9]\+:\)*//p')
 
-patch: patch-stamp
-patch-stamp:
-	dpatch apply-all && touch patch-stamp
-
-unpatch:
-	dpatch deapply-all
-	rm -rf patch-stamp debian/patched
+include /usr/share/dpatch/dpatch.make
 
 configure: configure-main
 
@@ -132,8 +126,7 @@ build-udeb-stamp: configure-udeb-stamp
 	cd $(DIRECTFB_BUILD_DIR) && $(MAKE)
 	touch build-stamp
 
-clean: clean1 unpatch
-clean1:
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	rm -f *-stamp libtool
