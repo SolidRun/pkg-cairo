@@ -1,3 +1,12 @@
+libcairo (1.2.0-5) unstable; urgency=medium
+
+  * Rebuild against directfb 0.9.25 which has changed library and udeb
+    package names from 0.9.24 that all earlier cairos were built against,
+    and which are now removed.  This should prevent Cairo from becoming
+    uninstallable due to this change.  Urgency medium due to this.
+
+ -- Dave Beckett <dajobe@debian.org>  Wed,  2 Aug 2006 22:04:17 -0700
+
 libcairo (1.2.0-4) unstable; urgency=medium
 
   * Added patch cairo-bug-7494.patch (Closes: #378005)
