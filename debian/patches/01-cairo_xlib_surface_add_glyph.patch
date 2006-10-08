@@ -1,0 +1,25 @@
+#!/bin/sh /usr/share/dpatch/dpatch-run
+## 01-cairo_xlib_surface_add_glyph.patch by Dave Beckett <dajobe@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix miscounting in loop in _cairo_xlib_surface_add_glyph()
+
+--- cairo-1.2.4.orig/src/cairo-xlib-surface.c	2006-08-18 07:20:16.000000000 -0700
++++ cairo-1.2.4/src/cairo-xlib-surface.c	2006-09-23 16:06:26.000000000 -0700
+@@ -2450,7 +2449,7 @@
+ 	    }
+ 	    n = new;
+ 	    d = data;
+-	    while ((c -= 4) >= 0)
++	    while (c >= 4)
+ 	    {
+ 		n[3] = d[0];
+ 		n[2] = d[1];
+@@ -2458,6 +2457,7 @@
+ 		n[0] = d[3];
+ 		d += 4;
+ 		n += 4;
++		c -= 4;
+ 	    }
+ 	    data = new;
+ 	}
