@@ -1,3 +1,13 @@
+libcairo (1.2.4-3.1) unstable; urgency=low
+
+  * NMU
+  * Upload with 01-cairo_xlib_surface_add_glyph.patch but without
+    the directfb changes from -2. The patch fixes the segfault caused
+    by a broken loop condition (c >= 0 works like, eh, always after
+    doing "unsigned int c"...). (Closes: #388116)
+
+ -- Marc 'HE' Brockschmidt <he@debian.org>  Sun, 15 Oct 2006 16:25:06 +0200
+
 libcairo (1.2.4-3) experimental; urgency=low
 
   * Added patch 01-cairo_xlib_surface_add_glyph.patch from upstream git
