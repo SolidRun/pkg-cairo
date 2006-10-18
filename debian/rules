@@ -28,7 +28,7 @@ MAIN_CONFIGURE_FLAGS = \
 #  directfb  DirectFB (requires Build-Depend on libdirectfb-0.9-24-dev )
 DIRECTFB_CONFIGURE_FLAGS = \
 --enable-directfb \
---disable-xlib  --disable-pdf --disable-ps --disable-svg \
+--disable-xlib  --enable-pdf --enable-ps --disable-svg \
 --disable-glitz --disable-xcb \
 --enable-png \
 --program-suffix=-directfb
@@ -88,7 +88,7 @@ configure-common-stamp: patch-stamp
 	touch $@
 
 # Calling GNU configure properly; advice from autotools-dev README.Debian
-configure-main: configure-core-stamp configure-main-stamp
+configure-main: configure-common-stamp configure-main-stamp
 configure-main-stamp: configure-common-stamp
 	dh_testdir
 	mkdir -p $(MAIN_BUILD_DIR); \
@@ -100,7 +100,7 @@ configure-main-stamp: configure-common-stamp
 		$(MAIN_CONFIGURE_FLAGS)
 	touch $@
 
-configure-udeb: configure-core-stamp configure-udeb-stamp
+configure-udeb: configure-common-stamp configure-udeb-stamp
 configure-udeb-stamp: configure-common-stamp
 	dh_testdir
 	mkdir -p $(DIRECTFB_BUILD_DIR); \
