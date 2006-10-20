@@ -1,3 +1,18 @@
+libcairo (1.2.4-4) unstable; urgency=medium
+
+  * Acknowledge NMU.
+  * Urgency medium since RC bugs are acknowledged.
+  * Patch 01-cairo_xlib_surface_add_glyph.patch added in
+    experimental confirmed fixes powerpc X byte copy crash
+    for bug #388116 which was closed by email after an NMU.
+  * Enable PDF and PS for the cairo+directfb build in unstable (Closes: #383297)
+  * Bump libcairo-directfb2's shlibs to >= 1.2.4-4 for the addition of
+    PDF and PS related symbols to the cairo+directfb lib. (Closes: #387289)
+  * Remove libcairo.la references to other .la files to aid future
+    removal of all .la files.
+
+ -- Dave Beckett <dajobe@debian.org>  Thu, 19 Oct 2006 22:41:56 -0700
+
 libcairo (1.2.4-3.2) experimental; urgency=low
 
   * NMU
@@ -17,7 +32,7 @@ libcairo (1.2.4-3.1) unstable; urgency=low
     by a broken loop condition (c >= 0 works like, eh, always after
     doing "unsigned int c"...). (Closes: #388116)
 
- -- Marc 'HE' Brockschmidt <he@debian.org>  Sun, 15 Oct 2006 16:25:06 +0200
+ -- Marc 'HE' Brockschmidt <he@debian.org>  Sun, 15 Oct 2006 16:25:06 +0200 
 
 libcairo (1.2.4-3) experimental; urgency=low
 

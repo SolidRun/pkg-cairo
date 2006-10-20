@@ -114,6 +114,7 @@ configure-udeb-stamp: configure-common-stamp
 
 
 build: build-main build-udeb
+
 build-main: build-main-stamp
 build-main-stamp: configure-main-stamp
 	dh_testdir
@@ -159,6 +160,8 @@ install: build
 	mkdir -p $(DIRECTFB_DIST_DIR)/usr/lib/pkgconfig
 	sed -e 's/Name: cairo/Name: cairo-directfb/' -e 's/^\(Libs: .*\)$$/\1 -Wl,-rpath,$${libdir}/' $(DIRECTFB_DIST_DIR)/$(DIRECTFB_PREFIX)/lib/pkgconfig/cairo.pc > $(DIRECTFB_DIST_DIR)/usr/lib/pkgconfig/cairo-directfb.pc
 
+	sed -i 's:/usr/lib/lib\([^ ]*\).la:-l\1:g' $(MAIN_DIST_DIR)/usr/lib/*.la
+	sed -i 's:/usr/lib/lib\([^ ]*\).la:-l\1:g' $(DIRECTFB_DIST_DIR)/usr/lib/libcairo-directfb/lib/*.la
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -178,7 +181,8 @@ binary-arch: build install
 	dh_strip
 	dh_compress
 	dh_fixperms
-	dh_makeshlibs -V --add-udeb 'libcairo-directfb2-udeb'
+	dh_makeshlibs -plibcairo2 -V --add-udeb 'libcairo-directfb2-udeb'
+	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>= 1.2.4-4)' --add-udeb 'libcairo-directfb2-udeb'
 	dh_installdeb
 	dh_shlibdeps
 	dh_perl
