@@ -1,8 +1,21 @@
+libcairo (1.4.8-1) unstable; urgency=low
+
+  * New upstream release
+    - fixes gnome bug http://bugzilla.gnome.org/show_bug.cgi?id=431990
+      that caused gnome-about to crash (Closes: #425058)
+  * Added patch 001-148-directfb.dpatch to make directfb build with 1.4.8
+  * Fix directfb udeb shlibs (Closes: #429672)
+    - remove udeb line from libcairo2 package shlibs
+    - libcairo-directfb2 package shlibs provide libcairo-directfb2(-udeb)
+  * Acknowledge NMU - thanks Don
+
+ -- Dave Beckett <dajobe@debian.org>  Thu, 21 Jun 2007 01:03:51 -0700
+
 libcairo (1.4.6-1.1) unstable; urgency=low
 
-  * NMU
-  * Apply patch from Adrian Johnson to fix segfault with PS_surface
-    (closes: #422388)
+   * NMU
+   * Apply patch from Adrian Johnson to fix segfault with PS_surface
+     (closes: #422388)
 
  -- Don Armstrong <don@debian.org>  Mon, 28 May 2007 11:11:45 -0700
 
