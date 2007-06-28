@@ -2,7 +2,7 @@
 
 # Configure for cairo packages
 
-# Supported backends (as of Cairo 1.1.10):
+# Supported backends (as of Cairo 1.4.10):
 #  (internal) Image
 #  xlib       Xlib
 #  pdf        PDF
@@ -183,7 +183,7 @@ binary-arch: build install
 	dh_installman
 	dh_installexamples
 	dh_link
-	dh_strip
+	dh_strip -a
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs -plibcairo2 -V 'libcairo2 (>=1.4.0)'
