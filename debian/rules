@@ -64,7 +64,7 @@ CONFFLAGS=
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	CONFFLAGS += $(DEB_HOST_GNU_TYPE)
 else
-	CONFFLAGS += --host $(DEB_BUILD_GNU_TYPE) --build $(DEB_HOST_GNU_TYPE)
+	CONFFLAGS += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
 endif
 
 package := tmp
@@ -183,7 +183,8 @@ binary-arch: build install
 	dh_installman
 	dh_installexamples
 	dh_link
-	dh_strip -a
+	dh_strip -a --dbg-package=libcairo2-dbg
+	rm -rf debian/libcairo2-dbg/usr/lib/debug/usr/lib/libcairo-directfb
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs -plibcairo2 -V 'libcairo2 (>=1.4.0)'

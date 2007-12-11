@@ -1,26 +1,39 @@
-libcairo (1.4.10-1.3) unstable; urgency=low
+cairo (1.4.12-1) unstable; urgency=low
 
-  * Non-maintainer upload.
-  * Under rare circumstances we may need to extract a surface that
-    represents a bitmap with width==0 and rows==0. Detect this case at the
-    start and simply return a zero-sized surface.
-    Applied upstream patch (Closes: #454768).
+  * New upstream release
+    - fixes SIG PIPE crash (Closes: #454768)
+  * Acknowledge NMU - Thanks Nico
+  * Correct source package name
+  * Added debug package libcairo2-dbg (Closes: #422597, #429335, #446637)
+  * debian/control:
+    - Standards version 3.7.3
+    - Add homepage
+    - Use ${binary:Version} to replace deprecated ${Source-Version} in Depends
+    - libcairo2-doc package is now in Section doc
+  * debian/rules: fix cross build support (Closes: #451596)
+  * debian/libcairo2-doc.doc-base: fix lintian warning
+    doc-base-file-separator-extra-whitespaces
+  * Evaluated ubuntu patches to 1.4.10 and applied none:
+    - 02-cairo-1.4.8-lcd-filter-2.dpatch - changes Cairo public API
+    - 90_from_git_fix_not_available_glyph_handling.dpatch - from upstream
+    - 90_from_git_fix_zero_sized_bitmap_handling.dpatch - from upstream
+    - 91_malloc-overflow-fixes.dpatch - from upstream
 
- -- Nico Golde <nion@debian.org>  Wed, 12 Dec 2007 01:41:30 +0100
+ -- Dave Beckett <dajobe@debian.org>  Tue, 11 Dec 2007 09:33:10 -0800
 
 libcairo (1.4.10-1.2) unstable; urgency=high
 
-  * Fix floating point regressions introduced by the previous NMU.
-    Do not blindly call malloc if the size is zero
-    (Closes: #454768,#454650,#454413).
+   * Fix floating point regressions introduced by the previous NMU.
+     Do not blindly call malloc if the size is zero
+     (Closes: #454768,#454650,#454413).
 
  -- Nico Golde <nion@debian.org>  Fri, 07 Dec 2007 20:33:11 +0100
 
 libcairo (1.4.10-1.1) unstable; urgency=high
 
-  * Non-maintainer upload by testing-security team.
-  * Fix multiple integer overflows leading to arbitrary code
-    execution (CVE-2007-5503; Closes: #453686).
+   * Non-maintainer upload by testing-security team.
+   * Fix multiple integer overflows leading to arbitrary code
+     execution (CVE-2007-5503; Closes: #453686).
 
  -- Nico Golde <nion@debian.org>  Mon, 03 Dec 2007 17:20:59 +0100
 

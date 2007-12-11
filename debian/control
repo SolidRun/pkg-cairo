@@ -1,9 +1,10 @@
-Source: libcairo
+Source: cairo
 Section: libs
 Priority: optional
 Maintainer: Dave Beckett <dajobe@debian.org>
 Build-Depends: debhelper (>= 5.0.22), autotools-dev, pkg-config (>= 0.19), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libxrender-dev (>=0.6.0), libx11-dev, libpng12-dev, libdirectfb-dev (>=0.9.25), libsm-dev, xutils-dev, libxt-dev, dpatch
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
+Homepage: http://cairographics.org/
 
 Package: libcairo2-dev
 Provides: libcairo-dev
@@ -12,7 +13,7 @@ Replaces: libcairo0.5.1-dev, libcairo0.6.0-dev, libcairo0.9.0-dev
 Suggests: libcairo2-doc
 Section: libdevel
 Architecture: any
-Depends: libcairo2 (= ${Source-Version}), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libxrender-dev (>=0.6.0), libpng12-dev, libsm-dev
+Depends: libcairo2 (= ${binary:Version}), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libxrender-dev (>=0.6.0), libpng12-dev, libsm-dev
 Description: Development files for the Cairo 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
@@ -44,8 +45,17 @@ Description: The Cairo 2D vector graphics library
  .
  This package contains the shared libraries.
 
+Package: libcairo2-dbg
+Section: libdevel
+Priority: extra
+Architecture: any
+Depends: libcairo2 (= ${binary:Version})
+Description: The Cairo 2D vector graphics library (debugging symbols)
+ Debugging symbols for the Cairo 2D vector graphics library. This is
+ needed to debug programs linked against libcairo2.
+
 Package: libcairo2-doc
-Section: libs
+Section: doc
 Architecture: all
 Depends: lynx | www-browser
 Conflicts: libcairo0.5.1-doc, libcairo0.6.0-doc, libcairo0.9.0-doc
@@ -88,7 +98,7 @@ Section: libdevel
 Architecture: any
 Conflicts: libcairo2-directfb-dev
 Replaces: libcairo2-directfb-dev
-Depends: libcairo-directfb2 (= ${Source-Version}), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libpng12-dev, libdirectfb-dev (>=0.9.25)
+Depends: libcairo-directfb2 (= ${binary:Version}), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libpng12-dev, libdirectfb-dev (>=0.9.25)
 Description: Development files for Cairo graphics library DirectFB build
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
