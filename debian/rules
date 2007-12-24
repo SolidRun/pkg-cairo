@@ -2,7 +2,7 @@
 
 # Configure for cairo packages
 
-# Supported backends (as of Cairo 1.4.10):
+# Supported backends (as of Cairo 1.5.4):
 #  (internal) Image
 #  xlib       Xlib
 #  pdf        PDF
@@ -187,8 +187,8 @@ binary-arch: build install
 	rm -rf debian/libcairo2-dbg/usr/lib/debug/usr/lib/libcairo-directfb
 	dh_compress
 	dh_fixperms
-	dh_makeshlibs -plibcairo2 -V 'libcairo2 (>=1.4.0)'
-	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>=1.4.0)' --add-udeb 'libcairo-directfb2-udeb'
+	dh_makeshlibs -plibcairo2 -V 'libcairo2 (>=1.5.0)'
+	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>=1.5.0)' --add-udeb 'libcairo-directfb2-udeb'
 	dh_installdeb
 	dh_shlibdeps
 	dh_perl
