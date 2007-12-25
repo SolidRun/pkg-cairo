@@ -1,0 +1,66 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## cairobug9846-git21ab44f11d3d20eead5d988c7a6cf48eebff08c7.dpatch by Dave Beckett <dajobe@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Ignore FT_Load_Glyph errors other than out-of-memory Same for FT_Render_Glyph
+## DP: Cairo bug 9846
+
+From: Behdad Esfahbod <behdad@behdad.org>
+Date: Wed, 12 Sep 2007 21:45:11 +0000 (-0400)
+Subject: [cairo-ft-font] Ignore FT_Load_Glyph errors other than out-of-memory
+X-Git-Tag: 1.5.2
+X-Git-Url: http://gitweb.freedesktop.org/?p=cairo;a=commitdiff;h=79d975f84bcc32e91db517d71a7312e2e1d653d4
+
+[cairo-ft-font] Ignore FT_Load_Glyph errors other than out-of-memory
+Same for FT_Render_Glyph.
+
+When the user asks us to render a glyph that is not available in the font,
+it's mostly an unavoidable kind of error for them, as in, they can't
+avoid such a call.  So it's not nice to put cairo_t in an error state and
+refuse any further drawying.
+
+Many PDF files are created using buggy software and cause such glpyh-not-found
+errors for CID 0 for example.
+
+Eventually we should propagate these kind of errors up and return it from
+the function call causing it, but that needs API change to add return value
+to all text functions, so for now we just ignore these errors.
+---
+
+--- a/src/cairo-ft-font.c
++++ b/src/cairo-ft-font.c
+@@ -1092,7 +1092,9 @@ _render_glyph_bitmap (FT_Face		      fac
+      * we avoid the FT_LOAD_NO_RECURSE flag.
+      */
+     error = FT_Render_Glyph (glyphslot, FT_RENDER_MODE_NORMAL);
+-    if (error) {
++    /* XXX ignoring all other errors for now.  They are not fatal, typically
++     * just a glyph-not-found. */
++    if (error == FT_Err_Out_Of_Memory) {
+ 	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+ 	return CAIRO_STATUS_NO_MEMORY;
+     }
+@@ -1887,8 +1889,9 @@ _cairo_ft_scaled_glyph_init (void			*abs
+     error = FT_Load_Glyph (scaled_font->unscaled->face,
+ 			   _cairo_scaled_glyph_index(scaled_glyph),
+ 			   load_flags);
+-
+-    if (error) {
++    /* XXX ignoring all other errors for now.  They are not fatal, typically
++     * just a glyph-not-found. */
++    if (error == FT_Err_Out_Of_Memory) {
+ 	status = CAIRO_STATUS_NO_MEMORY;
+ 	goto FAIL;
+     }
+@@ -2038,8 +2041,9 @@ _cairo_ft_scaled_glyph_init (void			*abs
+ 	    error = FT_Load_Glyph (face,
+ 				   _cairo_scaled_glyph_index(scaled_glyph),
+ 				   load_flags | FT_LOAD_NO_BITMAP);
+-
+-	    if (error) {
++	    /* XXX ignoring all other errors for now.  They are not fatal, typically
++	     * just a glyph-not-found. */
++	    if (error == FT_Err_Out_Of_Memory) {
+ 		_cairo_ft_unscaled_font_unlock_face (unscaled);
+ 		_cairo_error (CAIRO_STATUS_NO_MEMORY);
+ 		return CAIRO_STATUS_NO_MEMORY;

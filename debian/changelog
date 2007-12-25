@@ -1,3 +1,27 @@
+cairo (1.4.12-2) unstable; urgency=low
+
+  * Apply fixes from upstream to fix PDF issues using
+    upstream cairo bug 8399 via dependent upstream bugs
+    - cairo bug 12284 (Early detection of a zero sized bitmap)
+      git commit d62f8861689d8b9a9a837043fb78813f0407abd4
+    - cairo bug 9846 (Ignore FT_Load_Glyph errors other than out-of-memory
+      Same for FT_Render_Glyph)
+      git commit 21ab44f11d3d20eead5d988c7a6cf48eebff08c7
+    (Closes: #428466, #435913, #439542, #440811, #442481)
+  * Apply fix from upstream
+    "PS: Ensure that xyshow operator has a pair of offsets for each glyph"
+    git commit 5e8f60531a09f357db38c4b646b1bbd29b97a891 (Closes: #453718)
+
+ -- Dave Beckett <dajobe@debian.org>  Tue, 25 Dec 2007 11:32:10 -0800
+
+cairo (1.5.4-1) experimental; urgency=low
+
+  * Cairo snapshot packaging (Closes: #452736)
+    - NOTE: This is the *unstable* Cairo API and may change at any time before
+      the next stable release which will be called something like 1.6.0
+
+ -- Dave Beckett <dajobe@debian.org>  Mon, 24 Dec 2007 15:08:42 -0800
+
 cairo (1.4.12-1) unstable; urgency=low
 
   * New upstream release

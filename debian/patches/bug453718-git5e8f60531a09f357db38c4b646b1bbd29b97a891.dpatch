@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## bug453718-git5e8f60531a09f357db38c4b646b1bbd29b97a891.dpatch by Dave Beckett <dajobe@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: PS: Ensure that xyshow operator has a pair of offsets for each glyph
+## DP: Cairo git 5e8f60531a09f357db38c4b646b1bbd29b97a891
+
+--- cairo-1.4.12/src/cairo-ps-surface.c.orig	2007-12-16 12:03:43.000000000 -0800
++++ cairo-1.4.12/src/cairo-ps-surface.c	2007-12-16 12:03:57.000000000 -0800
+@@ -2298,7 +2298,7 @@
+             } else {
+                 for (j = i; j < last+1; j++) {
+                     if (j == num_glyphs_unsigned - 1)
+-                        _cairo_output_stream_printf (word_wrap, "0 ");
++                        _cairo_output_stream_printf (word_wrap, "0 0 ");
+                     else
+                         _cairo_output_stream_printf (word_wrap,
+                                                      "%f %f ",
