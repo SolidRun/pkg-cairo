@@ -187,8 +187,8 @@ binary-arch: build install
 	rm -rf debian/libcairo2-dbg/usr/lib/debug/usr/lib/libcairo-directfb
 	dh_compress
 	dh_fixperms
-	dh_makeshlibs -plibcairo2 -V 'libcairo2 (>=1.5.0)'
-	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>=1.5.0)' --add-udeb 'libcairo-directfb2-udeb'
+	dh_makeshlibs -plibcairo2 -V 'libcairo2 (>= 1.6.0)'
+	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>= 1.6.0)' --add-udeb 'libcairo-directfb2-udeb' -- -edebian/libcairo-directfb2/usr/lib/libcairo-directfb/lib/libcairo.so.2.*
 	dh_installdeb
 	dh_shlibdeps
 	dh_perl

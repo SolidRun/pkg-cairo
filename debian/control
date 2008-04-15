@@ -2,7 +2,8 @@ Source: cairo
 Section: libs
 Priority: optional
 Maintainer: Dave Beckett <dajobe@debian.org>
-Build-Depends: debhelper (>= 5.0.22), autotools-dev, pkg-config (>= 0.19), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libxrender-dev (>=0.6.0), libx11-dev, libpng12-dev, libdirectfb-dev (>=0.9.25), libsm-dev, xutils-dev, libxt-dev, dpatch, libpixman-1-dev (>=0.9.4)
+Uploaders: Sebastian Dröge <slomo@debian.org>
+Build-Depends: debhelper (>= 5.0.22), dpkg-dev (>= 1.14.13), autotools-dev, pkg-config (>= 0.19), libfontconfig1-dev, libfreetype6-dev (>= 2.1.10), libxrender-dev (>= 0.6.0), libx11-dev, libpng12-dev, libdirectfb-dev (>= 0.9.25), libsm-dev, xutils-dev, libxt-dev, dpatch, libpixman-1-dev (>= 0.10.0)
 Standards-Version: 3.7.3
 Homepage: http://cairographics.org/
 
@@ -13,7 +14,7 @@ Replaces: libcairo0.5.1-dev, libcairo0.6.0-dev, libcairo0.9.0-dev
 Suggests: libcairo2-doc
 Section: libdevel
 Architecture: any
-Depends: libcairo2 (= ${binary:Version}), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libxrender-dev (>=0.6.0), libpng12-dev, libsm-dev, libpixman-1-dev (>= 0.9.6)
+Depends: libcairo2 (= ${binary:Version}), libfontconfig1-dev, libfreetype6-dev (>= 2.1.10), libxrender-dev (>= 0.6.0), libpng12-dev, libsm-dev, libpixman-1-dev (>= 0.10.0)
 Description: Development files for the Cairo 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
@@ -77,7 +78,7 @@ Description: The Cairo 2D vector graphics library DirectFB build
  vector-based rendering for multiple target backends.
  .
  This is version of cairo with only the DirectFB backend, intended
- primarily for use in the graphical debian installer.
+ primarily for use in the graphical Debian installer.
 
 Package: libcairo-directfb2
 Section: libs
@@ -98,12 +99,12 @@ Section: libdevel
 Architecture: any
 Conflicts: libcairo2-directfb-dev
 Replaces: libcairo2-directfb-dev
-Depends: libcairo-directfb2 (= ${binary:Version}), libfontconfig1-dev, libfreetype6-dev (>=2.1.10), libpng12-dev, libdirectfb-dev (>=0.9.25), libpixman-1-dev (>=0.9.6)
+Depends: libcairo-directfb2 (= ${binary:Version}), libfontconfig1-dev, libfreetype6-dev (>= 2.1.10), libpng12-dev, libdirectfb-dev (>= 0.9.25), libpixman-1-dev (>= 0.10.0)
 Description: Development files for Cairo graphics library DirectFB build
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
  .
  This package contains the development libraries, header files needed by
  programs that want to compile with Cairo compiled only against the
- DirectFB backend. Intended primarly for use in the graphical debian
+ DirectFB backend. Intended primarly for use in the graphical Debian
  installer, other builds should be against libcairo2-dev

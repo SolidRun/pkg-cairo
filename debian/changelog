@@ -1,3 +1,25 @@
+cairo (1.6.4-1) unstable; urgency=low
+
+  * New upstream release:
+    + Works on remote Sun displays by adding support for
+      8 bit pseudocolors (Closes: #348109).
+    + Adds support for 32 bit visuals (Closes: #421266).
+    + Adds support for 655 xlib format (Closes: #413690).
+    + Fixes error when creating pdf charts (Closes: #474136).
+    + Fixes assertions in cairo_destroy (Closes: #423951).
+    + Fixes display errors with iceweasel 3.0 (Closes: #474395).
+    + debian/control:
+      - Update build dependencies and dependencies.
+      - Add myself as co-maintainer.
+      - Fix spelling error.
+    + debian/rules:
+      - Update shlibs to >= 1.6.0 because of API additions.
+    + debian/libcairo2.symbols,
+      debian/libcairo-directfb2.symbols:
+      - Add symbol files for the libraries.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 15 Apr 2008 20:07:29 +0200
+
 cairo (1.5.8-1) experimental; urgency=low
 
   * New upstream release
