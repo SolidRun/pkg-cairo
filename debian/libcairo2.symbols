@@ -17,7 +17,7 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_destroy@Base 1.2.4
  cairo_device_to_user@Base 1.2.4
  cairo_device_to_user_distance@Base 1.2.4
- cairo_directfb_surface_create@Base 1.6.4-6.1~
+ cairo_directfb_surface_create@Base 1.8.2-2~
  cairo_fill@Base 1.2.4
  cairo_fill_extents@Base 1.2.4
  cairo_fill_preserve@Base 1.2.4
@@ -71,7 +71,9 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_get_target@Base 1.2.4
  cairo_get_tolerance@Base 1.2.4
  cairo_get_user_data@Base 1.4.10
+ cairo_glyph_allocate@Base 1.7.2
  cairo_glyph_extents@Base 1.2.4
+ cairo_glyph_free@Base 1.7.2
  cairo_glyph_path@Base 1.2.4
  cairo_has_current_point@Base 1.6.0
  cairo_identity_matrix@Base 1.2.4
@@ -171,6 +173,7 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_scaled_font_get_font_matrix@Base 1.2.4
  cairo_scaled_font_get_font_options@Base 1.2.4
  cairo_scaled_font_get_reference_count@Base 1.4.10
+ cairo_scaled_font_get_scale_matrix@Base 1.7.2
  cairo_scaled_font_get_type@Base 1.2.4
  cairo_scaled_font_get_user_data@Base 1.4.10
  cairo_scaled_font_glyph_extents@Base 1.2.4
@@ -178,6 +181,7 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_scaled_font_set_user_data@Base 1.4.10
  cairo_scaled_font_status@Base 1.2.4
  cairo_scaled_font_text_extents@Base 1.2.4
+ cairo_scaled_font_text_to_glyphs@Base 1.7.2
  cairo_select_font_face@Base 1.2.4
  cairo_set_antialias@Base 1.2.4
  cairo_set_dash@Base 1.2.4
@@ -202,6 +206,7 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_show_glyphs@Base 1.2.4
  cairo_show_page@Base 1.2.4
  cairo_show_text@Base 1.2.4
+ cairo_show_text_glyphs@Base 1.7.2
  cairo_status@Base 1.2.4
  cairo_status_to_string@Base 1.2.4
  cairo_stroke@Base 1.2.4
@@ -214,10 +219,12 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_surface_flush@Base 1.2.4
  cairo_surface_get_content@Base 1.2.4
  cairo_surface_get_device_offset@Base 1.2.4
+ cairo_surface_get_fallback_resolution@Base 1.7.2
  cairo_surface_get_font_options@Base 1.2.4
  cairo_surface_get_reference_count@Base 1.4.10
  cairo_surface_get_type@Base 1.2.4
  cairo_surface_get_user_data@Base 1.2.4
+ cairo_surface_has_show_text_glyphs@Base 1.8.0
  cairo_surface_mark_dirty@Base 1.2.4
  cairo_surface_mark_dirty_rectangle@Base 1.2.4
  cairo_surface_reference@Base 1.2.4
@@ -233,10 +240,25 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_svg_surface_create_for_stream@Base 1.2.4
  cairo_svg_surface_restrict_to_version@Base 1.2.4
  cairo_svg_version_to_string@Base 1.2.4
+ cairo_text_cluster_allocate@Base 1.7.2
+ cairo_text_cluster_free@Base 1.7.2
  cairo_text_extents@Base 1.2.4
  cairo_text_path@Base 1.2.4
+ cairo_toy_font_face_create@Base 1.7.2
+ cairo_toy_font_face_get_family@Base 1.7.2
+ cairo_toy_font_face_get_slant@Base 1.7.2
+ cairo_toy_font_face_get_weight@Base 1.7.2
  cairo_transform@Base 1.2.4
  cairo_translate@Base 1.2.4
+ cairo_user_font_face_create@Base 1.7.2
+ cairo_user_font_face_get_init_func@Base 1.7.2
+ cairo_user_font_face_get_render_glyph_func@Base 1.7.2
+ cairo_user_font_face_get_text_to_glyphs_func@Base 1.7.2
+ cairo_user_font_face_get_unicode_to_glyph_func@Base 1.7.2
+ cairo_user_font_face_set_init_func@Base 1.7.2
+ cairo_user_font_face_set_render_glyph_func@Base 1.7.2
+ cairo_user_font_face_set_text_to_glyphs_func@Base 1.7.2
+ cairo_user_font_face_set_unicode_to_glyph_func@Base 1.7.2
  cairo_user_to_device@Base 1.2.4
  cairo_user_to_device_distance@Base 1.2.4
  cairo_version@Base 1.2.4
