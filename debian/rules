@@ -21,7 +21,7 @@
 #
 MAIN_CONFIGURE_FLAGS = \
 --enable-xlib --enable-pdf --enable-ps --enable-svg \
---disable-glitz --disable-xcb --disable-directfb \
+--disable-glitz --enable-xcb --enable-directfb \
 --enable-png
 
 # udeb package flags
@@ -32,8 +32,6 @@ DIRECTFB_CONFIGURE_FLAGS = \
 --disable-glitz --disable-xcb \
 --enable-png \
 --program-suffix=-directfb
-
-DIRECTFB_PREFIX=/usr/lib/libcairo-directfb
 
 SRC_DIR=$(CURDIR)
 MAIN_BUILD_DIR=$(CURDIR)/debian/build-main
@@ -111,7 +109,7 @@ configure-udeb-stamp: configure-common-stamp
 	$(SRC_DIR)/configure \
 		CFLAGS="$(CFLAGS_UDEB)" \
 		$(CONFFLAGS) \
-		--prefix=$(DIRECTFB_PREFIX) \
+		--prefix=$(prefix) \
 		--mandir=$(share)/man \
 		--infodir=$(share)/info \
 		$(DIRECTFB_CONFIGURE_FLAGS)
@@ -124,13 +122,13 @@ build-main: build-main-stamp
 build-main-stamp: configure-main-stamp
 	dh_testdir
 	cd $(MAIN_BUILD_DIR) && $(MAKE)
-	touch build-stamp
+	touch $@
 
 build-udeb: build-udeb-stamp
 build-udeb-stamp: configure-udeb-stamp
 	dh_testdir
 	cd $(DIRECTFB_BUILD_DIR) && $(MAKE)
-	touch build-stamp
+	touch $@
 
 clean: unpatch
 	dh_testdir
@@ -138,7 +136,6 @@ clean: unpatch
 	rm -f *-stamp libtool
 	rm -rf debian/libcairo2 debian/libcairo2-dev debian/libcairo2-doc libcairo-directfb2-udeb debian/libcairo-directfb2-udeb-dev debian/libcairo-directfb2
 	rm -rf $(MAIN_BUILD_DIR) $(DIRECTFB_BUILD_DIR) $(MAIN_DIST_DIR) $(DIRECTFB_DIST_DIR)
-	rm -f debian/cairo-directfb.pc
 
 	-rm -f config.h config.cache config.status config.log
 
@@ -162,41 +159,46 @@ install: build
 
 	cd $(DIRECTFB_BUILD_DIR) && $(MAKE) install DESTDIR=$(DIRECTFB_DIST_DIR)
 
-	mkdir -p $(DIRECTFB_DIST_DIR)/usr/lib/pkgconfig
-	sed -e 's/Name: cairo/Name: cairo-directfb/' -e 's/^\(Libs: .*\)$$/\1 -Wl,-rpath,$${libdir}/' $(DIRECTFB_DIST_DIR)/$(DIRECTFB_PREFIX)/lib/pkgconfig/cairo.pc > $(DIRECTFB_DIST_DIR)/usr/lib/pkgconfig/cairo-directfb.pc
-
-	sed -i 's:/usr/lib/lib\([^ ]*\).la:-l\1:g' $(MAIN_DIST_DIR)/usr/lib/*.la
-	sed -i 's:/usr/lib/lib\([^ ]*\).la:-l\1:g' $(DIRECTFB_DIST_DIR)/usr/lib/libcairo-directfb/lib/*.la
+	sed -i "/dependency_libs/ s/'.*'/''/" $(MAIN_DIST_DIR)/usr/lib/*.la
 
 # Build architecture-independent files here.
 binary-indep: build install
-# We have nothing to do by default.
+	dh_testdir
+	dh_testroot
+	dh_install -i
+	dh_installchangelogs -i ChangeLog
+	dh_installdocs -i -A NEWS README AUTHORS
+	dh_link -i
+	dh_compress -i
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
 
 # Build architecture-dependent files here.
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-
-	dh_install
-	dh_installdocs -A README NEWS AUTHORS
-	dh_installchangelogs ChangeLog
-	dh_installman
-	dh_installexamples
-	dh_link
-	dh_strip -a --dbg-package=libcairo2-dbg
-	rm -rf debian/libcairo2-dbg/usr/lib/debug/usr/lib/libcairo-directfb
-	dh_compress
-	dh_fixperms
-	dh_makeshlibs -plibcairo2 -V 'libcairo2 (>= 1.6.0)'
-	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>= 1.6.0)' --add-udeb 'libcairo-directfb2-udeb' -- -edebian/libcairo-directfb2/usr/lib/libcairo-directfb/lib/libcairo.so.2.*
-	dh_installdeb
-	dh_shlibdeps
-	dh_perl
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+	dh_install -s
+	dh_installdocs -s -A README NEWS AUTHORS
+	dh_installchangelogs -s ChangeLog
+	dh_installman -s
+	dh_installexamples -s
+	dh_link -s
+	dh_strip -s --dbg-package=libcairo2-dbg -Nlibcairo-directfb2-udeb
+	dh_strip -plibcairo-directfb2-udeb
+	dh_compress -s
+	dh_fixperms -s
+	dh_makeshlibs -plibcairo2 --add-udeb=libcairo-directfb2-udeb -V 'libcairo2 (>= 1.6.4-6.1)' -- -c4
+	dh_installdeb -s
+	dh_shlibdeps -s
+	dh_perl -s
+	dh_gencontrol -s
+	dh_md5sums -s
+	dh_builddeb -s
 
 binary: binary-indep binary-arch
 
 .PHONY: build clean binary-indep binary-arch binary install configure \
-	patch unpatch clean1
+	patch unpatch clean

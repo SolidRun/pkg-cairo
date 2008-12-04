@@ -1,0 +1,15 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+
+@DPATCH@
+
+--- cairo/src/cairo-mutex.c.old	2008-05-28 11:07:52.000000000 +0200
++++ cairo/src/cairo-mutex.c	2008-05-28 11:08:06.000000000 +0200
+@@ -33,7 +33,7 @@
+ 
+ #include "cairoint.h"
+ 
+-#define CAIRO_MUTEX_DECLARE(mutex) cairo_mutex_t mutex = CAIRO_MUTEX_NIL_INITIALIZER
++#define CAIRO_MUTEX_DECLARE(mutex) cairo_private cairo_mutex_t mutex = CAIRO_MUTEX_NIL_INITIALIZER
+ #include "cairo-mutex-list-private.h"
+ #undef   CAIRO_MUTEX_DECLARE
+ 

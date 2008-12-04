@@ -1,3 +1,84 @@
+cairo (1.6.4-7) unstable; urgency=low
+
+  * ACK NMU, thanks Joss.
+  * debian/patches/03_buggy-repeat.dpatch:
+    + Patch from the Mozilla team to work around a bug in
+      some buggy X video drivers that cause incorrect image
+      rendering (Closes: #495620 and many duplicates).
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 04 Dec 2008 18:20:31 +0100
+
+cairo (1.6.4-6.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Remove the rpath stuff in /usr/lib/libcairo-directdb and only keep 
+    it around for compatibility. Closes: #499662.
+    + Remove the rpath hack in the .pc file.
+    + Make the libcairo-directfb2{,dev} packages dummy, only keeping 
+      symbolic links from the former locations.
+    + libcairo-directfb2-dev.postinst: do the symbolic link dance upon 
+      upgrade.
+    + Update package descriptions accordingly.
+    + libcairo2.symbols: add cairo_directfb_surface_create.
+    + libcairo2-dev conflicts with libcairo-directfb2-dev
+      (<< 1.6.4-6.1).
+  * rules: completely cleanup the .la files from their dependency libs.
+    Closes: #491292.
+  * Add ~ to symbol versions to make backports possible.
+  * Fix doc-base section.
+  * Standards version is 3.8.0.
+
+ -- Josselin Mouette <joss@debian.org>  Mon, 13 Oct 2008 11:00:24 +0200
+
+cairo (1.6.4-6) unstable; urgency=low
+
+  * debian/control:
+    + Let libcairo2-dev depend on libxcb-render-util0-dev (Closes: #486006).
+
+ -- Sebastian Dröge <slomo@debian.org>  Fri, 13 Jun 2008 11:55:50 +0200
+
+cairo (1.6.4-5) unstable; urgency=low
+
+  * debian/rules,
+    debian/control,
+    debian/libcairo2.symbols:
+    + Enable XCB backend now that XCB is in unstable (Closes: #474353).
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 10 Jun 2008 07:46:49 +0200
+
+cairo (1.6.4-4) unstable; urgency=low
+
+  * debian/rules:
+    + Make sure that the debug package contains debug symbols for the
+      libcairo2 package and not for the directfb one (Closes: #484603).
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 05 Jun 2008 12:35:35 +0200
+
+cairo (1.6.4-3) unstable; urgency=low
+
+  * debian/patches/02_no-private-symbol-export.dpatch,
+    debian/libcairo2.symbols,
+    debian/libcairo-directfb2.symbols,
+    debian/rules:
+    + Don't export private symbols and pass -c4 to
+      dh_makeshlibs (Closes: #481260).
+  * debian/control:
+    + Fix documentation path in the package description (Closes: #464116).
+  * debian/rules:
+    + Only build the arch-indep packages when build-indep is
+      invoked (Closes: #476499).
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 28 May 2008 11:19:21 +0200
+
+cairo (1.6.4-2) unstable; urgency=low
+
+  * debian/patches/01_directfb-no-accel.dpatch:
+    + Disable rendering acceleration for the DirectFB backend as it
+      causes broken screen repainting with the Debian installer 
+      and other GTK/DirectFB applications (Closes: #477331).
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 13 May 2008 10:34:26 +0200
+
 cairo (1.6.4-1) unstable; urgency=low
 
   * New upstream release:

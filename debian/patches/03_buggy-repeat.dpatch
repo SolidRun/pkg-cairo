@@ -1,0 +1,16 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+
+@DPATCH@
+
+--- cairo/src/cairo-xlib-display.c.old	2008-12-04 18:22:42.000000000 +0100
++++ cairo/src/cairo-xlib-display.c	2008-12-04 18:23:27.000000000 +0100
+@@ -314,6 +314,9 @@
+ 	    display->buggy_repeat = TRUE;
+     }
+ 
++    /* XXX workaround; see https://bugzilla.mozilla.org/show_bug.cgi?id=413583 */
++    display->buggy_repeat = TRUE; 
++
+     display->next = _cairo_xlib_display_list;
+     _cairo_xlib_display_list = display;
+ 
