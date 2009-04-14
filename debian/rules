@@ -112,15 +112,13 @@ configure-stamp-udeb: configure-common-stamp
 	touch $@
 
 
-build: build-main build-udeb
+build: build-stamp-main build-stamp-udeb
 
-build-main: build-stamp-main
 build-stamp-main: configure-stamp-main
 	dh_testdir
 	cd $(main_BUILD_DIR) && $(MAKE)
 	touch $@
 
-build-udeb: build-stamp-udeb
 build-stamp-udeb: configure-stamp-udeb
 	dh_testdir
 	cd $(udeb_BUILD_DIR) && $(MAKE)
