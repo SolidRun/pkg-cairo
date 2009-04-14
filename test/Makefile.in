@@ -13,8 +13,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
-
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -41,15 +39,18 @@ host_triplet = @host@
 # Then we have a collection of tests that are only run if certain
 # features are compiled into cairo
 @HAVE_PTHREAD_TRUE@am__append_1 = pthread-show-text
-@CAIRO_HAS_FT_FONT_TRUE@am__append_2 = ft-font-create-for-ft-face \
-@CAIRO_HAS_FT_FONT_TRUE@	ft-text-vertical-layout
+@CAIRO_HAS_FT_FONT_TRUE@am__append_2 = bitmap-font \
+@CAIRO_HAS_FT_FONT_TRUE@	ft-font-create-for-ft-face \
+@CAIRO_HAS_FT_FONT_TRUE@	ft-text-vertical-layout \
+@CAIRO_HAS_FT_FONT_TRUE@	ft-text-antialias-none
 @CAIRO_HAS_SVG_SURFACE_TRUE@am__append_3 = svg-surface svg-clip
 @CAIRO_HAS_PDF_SURFACE_TRUE@am__append_4 = pdf-features
 @CAIRO_HAS_PS_SURFACE_TRUE@am__append_5 = ps-features
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__append_6 = xlib-surface
 @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@am__append_7 = multi-page
 @CAIRO_HAS_PDF_SURFACE_TRUE@@CAIRO_HAS_PS_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_8 = fallback-resolution
-check_PROGRAMS = $(am__EXEEXT_9)
+check_PROGRAMS = $(am__EXEEXT_9) imagediff$(EXEEXT) \
+	png-flatten$(EXEEXT) $(am__EXEEXT_10) $(am__EXEEXT_11)
 @CAIRO_HAS_BEOS_SURFACE_TRUE@am__append_9 = cairo-test-beos.cpp cairo-test-beos.h
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__append_10 = cairo-test-directfb.c cairo-test-directfb.h
 @CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE@am__append_11 = $(GLITZ_AGL_LIBS)
@@ -57,8 +58,6 @@ check_PROGRAMS = $(am__EXEEXT_9)
 @CAIRO_CAN_TEST_GLITZ_GLX_SURFACE_TRUE@am__append_13 = $(GLITZ_GLX_LIBS)
 @CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE@am__append_14 = $(GLITZ_WGL_LIBS)
 @HAVE_PTHREAD_TRUE@am__append_15 = -lpthread
-noinst_PROGRAMS = imagediff$(EXEEXT) png-flatten$(EXEEXT) \
-	$(am__EXEEXT_10) $(am__EXEEXT_11)
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__append_16 = pdf2png
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__append_17 = svg2png
 subdir = test
@@ -71,7 +70,6 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(noinst_LTLIBRARIES)
 libcairotest_la_LIBADD =
 am__libcairotest_la_SOURCES_DIST = buffer-diff.c buffer-diff.h \
 	cairo-test.c cairo-test.h read-png.c read-png.h write-png.c \
@@ -84,9 +82,10 @@ am_libcairotest_la_OBJECTS = buffer-diff.lo cairo-test.lo read-png.lo \
 	write-png.lo xmalloc.lo $(am__objects_1) $(am__objects_2)
 libcairotest_la_OBJECTS = $(am_libcairotest_la_OBJECTS)
 @HAVE_PTHREAD_TRUE@am__EXEEXT_1 = pthread-show-text$(EXEEXT)
-@CAIRO_HAS_FT_FONT_TRUE@am__EXEEXT_2 =  \
+@CAIRO_HAS_FT_FONT_TRUE@am__EXEEXT_2 = bitmap-font$(EXEEXT) \
 @CAIRO_HAS_FT_FONT_TRUE@	ft-font-create-for-ft-face$(EXEEXT) \
-@CAIRO_HAS_FT_FONT_TRUE@	ft-text-vertical-layout$(EXEEXT)
+@CAIRO_HAS_FT_FONT_TRUE@	ft-text-vertical-layout$(EXEEXT) \
+@CAIRO_HAS_FT_FONT_TRUE@	ft-text-antialias-none$(EXEEXT)
 @CAIRO_HAS_SVG_SURFACE_TRUE@am__EXEEXT_3 = svg-surface$(EXEEXT) \
 @CAIRO_HAS_SVG_SURFACE_TRUE@	svg-clip$(EXEEXT)
 @CAIRO_HAS_PDF_SURFACE_TRUE@am__EXEEXT_4 = pdf-features$(EXEEXT)
@@ -106,14 +105,15 @@ am__EXEEXT_9 = a8-mask$(EXEEXT) caps-joins$(EXEEXT) \
 	create-for-stream$(EXEEXT) create-from-png$(EXEEXT) \
 	create-from-png-stream$(EXEEXT) dash-caps-joins$(EXEEXT) \
 	dash-scale$(EXEEXT) dash-offset-negative$(EXEEXT) \
-	dash-zero-length$(EXEEXT) device-offset$(EXEEXT) \
+	dash-zero-length$(EXEEXT) degenerate-path$(EXEEXT) \
+	device-offset$(EXEEXT) device-offset-positive$(EXEEXT) \
 	extend-reflect$(EXEEXT) fill-and-stroke$(EXEEXT) \
 	fill-and-stroke-alpha$(EXEEXT) \
 	fill-and-stroke-alpha-add$(EXEEXT) fill-rule$(EXEEXT) \
 	filter-nearest-offset$(EXEEXT) font-face-get-type$(EXEEXT) \
-	get-and-set$(EXEEXT) get-group-target$(EXEEXT) \
-	gradient-alpha$(EXEEXT) leaky-dash$(EXEEXT) \
-	leaky-polygon$(EXEEXT) line-width$(EXEEXT) \
+	glyph-cache-pressure$(EXEEXT) get-and-set$(EXEEXT) \
+	get-group-target$(EXEEXT) gradient-alpha$(EXEEXT) \
+	leaky-dash$(EXEEXT) leaky-polygon$(EXEEXT) line-width$(EXEEXT) \
 	line-width-scale$(EXEEXT) linear-gradient$(EXEEXT) \
 	mask$(EXEEXT) mask-ctm$(EXEEXT) mask-surface-ctm$(EXEEXT) \
 	move-to-show-surface$(EXEEXT) new-sub-path$(EXEEXT) \
@@ -139,7 +139,6 @@ am__EXEEXT_9 = a8-mask$(EXEEXT) caps-joins$(EXEEXT) \
 	$(am__EXEEXT_6) $(am__EXEEXT_7) $(am__EXEEXT_8)
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__EXEEXT_10 = pdf2png$(EXEEXT)
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__EXEEXT_11 = svg2png$(EXEEXT)
-PROGRAMS = $(noinst_PROGRAMS)
 a8_mask_SOURCES = a8-mask.c
 a8_mask_OBJECTS = a8-mask.$(OBJEXT)
 a8_mask_LDADD = $(LDADD)
@@ -156,6 +155,13 @@ a8_mask_DEPENDENCIES = libcairotest.la $(top_builddir)/src/libcairo.la \
 	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1)
+bitmap_font_SOURCES = bitmap-font.c
+bitmap_font_OBJECTS = bitmap-font.$(OBJEXT)
+bitmap_font_LDADD = $(LDADD)
+bitmap_font_DEPENDENCIES = libcairotest.la \
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
 caps_joins_SOURCES = caps-joins.c
 caps_joins_OBJECTS = caps-joins.$(OBJEXT)
 caps_joins_LDADD = $(LDADD)
@@ -297,10 +303,24 @@ dash_zero_length_DEPENDENCIES = libcairotest.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
+degenerate_path_SOURCES = degenerate-path.c
+degenerate_path_OBJECTS = degenerate-path.$(OBJEXT)
+degenerate_path_LDADD = $(LDADD)
+degenerate_path_DEPENDENCIES = libcairotest.la \
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
 device_offset_SOURCES = device-offset.c
 device_offset_OBJECTS = device-offset.$(OBJEXT)
 device_offset_LDADD = $(LDADD)
 device_offset_DEPENDENCIES = libcairotest.la \
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
+device_offset_positive_SOURCES = device-offset-positive.c
+device_offset_positive_OBJECTS = device-offset-positive.$(OBJEXT)
+device_offset_positive_LDADD = $(LDADD)
+device_offset_positive_DEPENDENCIES = libcairotest.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
@@ -369,6 +389,13 @@ ft_font_create_for_ft_face_DEPENDENCIES = libcairotest.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
+ft_text_antialias_none_SOURCES = ft-text-antialias-none.c
+ft_text_antialias_none_OBJECTS = ft-text-antialias-none.$(OBJEXT)
+ft_text_antialias_none_LDADD = $(LDADD)
+ft_text_antialias_none_DEPENDENCIES = libcairotest.la \
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
 ft_text_vertical_layout_SOURCES = ft-text-vertical-layout.c
 ft_text_vertical_layout_OBJECTS = ft-text-vertical-layout.$(OBJEXT)
 ft_text_vertical_layout_LDADD = $(LDADD)
@@ -387,6 +414,13 @@ get_group_target_SOURCES = get-group-target.c
 get_group_target_OBJECTS = get-group-target.$(OBJEXT)
 get_group_target_LDADD = $(LDADD)
 get_group_target_DEPENDENCIES = libcairotest.la \
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
+glyph_cache_pressure_SOURCES = glyph-cache-pressure.c
+glyph_cache_pressure_OBJECTS = glyph-cache-pressure.$(OBJEXT)
+glyph_cache_pressure_LDADD = $(LDADD)
+glyph_cache_pressure_DEPENDENCIES = libcairotest.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
@@ -816,8 +850,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libcairotest_la_SOURCES) a8-mask.c caps-joins.c \
-	caps-joins-alpha.c caps-sub-paths.c clip-all.c \
+SOURCES = $(libcairotest_la_SOURCES) a8-mask.c bitmap-font.c \
+	caps-joins.c caps-joins-alpha.c caps-sub-paths.c clip-all.c \
 	clip-fill-rule.c clip-fill-rule-pixel-aligned.c clip-nesting.c \
 	clip-operator.c clip-twice.c \
 	composite-integer-translate-over.c \
@@ -825,12 +859,13 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c caps-joins.c \
 	composite-integer-translate-source.c create-for-stream.c \
 	create-from-png.c create-from-png-stream.c dash-caps-joins.c \
 	dash-offset-negative.c dash-scale.c dash-zero-length.c \
-	device-offset.c extend-reflect.c fallback-resolution.c \
-	fill-and-stroke.c fill-and-stroke-alpha.c \
-	fill-and-stroke-alpha-add.c fill-rule.c \
-	filter-nearest-offset.c font-face-get-type.c \
-	ft-font-create-for-ft-face.c ft-text-vertical-layout.c \
-	get-and-set.c get-group-target.c gradient-alpha.c imagediff.c \
+	degenerate-path.c device-offset.c device-offset-positive.c \
+	extend-reflect.c fallback-resolution.c fill-and-stroke.c \
+	fill-and-stroke-alpha.c fill-and-stroke-alpha-add.c \
+	fill-rule.c filter-nearest-offset.c font-face-get-type.c \
+	ft-font-create-for-ft-face.c ft-text-antialias-none.c \
+	ft-text-vertical-layout.c get-and-set.c get-group-target.c \
+	glyph-cache-pressure.c gradient-alpha.c imagediff.c \
 	leaky-dash.c leaky-polygon.c line-width.c line-width-scale.c \
 	linear-gradient.c mask.c mask-ctm.c mask-surface-ctm.c \
 	move-to-show-surface.c multi-page.c new-sub-path.c \
@@ -850,20 +885,21 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c caps-joins.c \
 	trap-clip.c unantialiased-shapes.c unbounded-operator.c \
 	user-data.c xlib-surface.c zero-alpha.c
 DIST_SOURCES = $(am__libcairotest_la_SOURCES_DIST) a8-mask.c \
-	caps-joins.c caps-joins-alpha.c caps-sub-paths.c clip-all.c \
-	clip-fill-rule.c clip-fill-rule-pixel-aligned.c clip-nesting.c \
-	clip-operator.c clip-twice.c \
+	bitmap-font.c caps-joins.c caps-joins-alpha.c caps-sub-paths.c \
+	clip-all.c clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
+	clip-nesting.c clip-operator.c clip-twice.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c \
 	composite-integer-translate-source.c create-for-stream.c \
 	create-from-png.c create-from-png-stream.c dash-caps-joins.c \
 	dash-offset-negative.c dash-scale.c dash-zero-length.c \
-	device-offset.c extend-reflect.c fallback-resolution.c \
-	fill-and-stroke.c fill-and-stroke-alpha.c \
-	fill-and-stroke-alpha-add.c fill-rule.c \
-	filter-nearest-offset.c font-face-get-type.c \
-	ft-font-create-for-ft-face.c ft-text-vertical-layout.c \
-	get-and-set.c get-group-target.c gradient-alpha.c imagediff.c \
+	degenerate-path.c device-offset.c device-offset-positive.c \
+	extend-reflect.c fallback-resolution.c fill-and-stroke.c \
+	fill-and-stroke-alpha.c fill-and-stroke-alpha-add.c \
+	fill-rule.c filter-nearest-offset.c font-face-get-type.c \
+	ft-font-create-for-ft-face.c ft-text-antialias-none.c \
+	ft-text-vertical-layout.c get-and-set.c get-group-target.c \
+	glyph-cache-pressure.c gradient-alpha.c imagediff.c \
 	leaky-dash.c leaky-polygon.c line-width.c line-width-scale.c \
 	linear-gradient.c mask.c mask-ctm.c mask-surface-ctm.c \
 	move-to-show-surface.c multi-page.c new-sub-path.c \
@@ -890,12 +926,10 @@ AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
 AR = @AR@
-ATSUI_FONT_FEATURE = @ATSUI_FONT_FEATURE@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BEOS_SURFACE_FEATURE = @BEOS_SURFACE_FEATURE@
 CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_FALSE@
 CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE = @CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE@
 CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_FALSE@
@@ -941,11 +975,13 @@ CAIRO_HAS_XCB_SURFACE_FALSE = @CAIRO_HAS_XCB_SURFACE_FALSE@
 CAIRO_HAS_XCB_SURFACE_TRUE = @CAIRO_HAS_XCB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
+CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE@
+CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@
 CAIRO_LIBS = @CAIRO_LIBS@
+CAIRO_REQUIRES = @CAIRO_REQUIRES@
 CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
 CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
 CAIRO_VERSION_MINOR = @CAIRO_VERSION_MINOR@
-CAIRO_VERSION_OTHER = @CAIRO_VERSION_OTHER@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -958,9 +994,6 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
-DIRECTFB_LIBS = @DIRECTFB_LIBS@
-DIRECTFB_SURFACE_FEATURE = @DIRECTFB_SURFACE_FEATURE@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -978,18 +1011,12 @@ FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FREETYPE_CONFIG_CFLAGS = @FREETYPE_CONFIG_CFLAGS@
 FREETYPE_CONFIG_LIBS = @FREETYPE_CONFIG_LIBS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
-FREETYPE_REQUIRES = @FREETYPE_REQUIRES@
-FT_FONT_FEATURE = @FT_FONT_FEATURE@
 GLITZ_AGL_CFLAGS = @GLITZ_AGL_CFLAGS@
 GLITZ_AGL_LIBS = @GLITZ_AGL_LIBS@
-GLITZ_CFLAGS = @GLITZ_CFLAGS@
 GLITZ_EGL_CFLAGS = @GLITZ_EGL_CFLAGS@
 GLITZ_EGL_LIBS = @GLITZ_EGL_LIBS@
 GLITZ_GLX_CFLAGS = @GLITZ_GLX_CFLAGS@
 GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
-GLITZ_LIBS = @GLITZ_LIBS@
-GLITZ_REQUIRES = @GLITZ_REQUIRES@
-GLITZ_SURFACE_FEATURE = @GLITZ_SURFACE_FEATURE@
 GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
 GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
@@ -1025,38 +1052,19 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PDF_LIBS = @PDF_LIBS@
-PDF_SURFACE_FEATURE = @PDF_SURFACE_FEATURE@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
-PNG_CFLAGS = @PNG_CFLAGS@
-PNG_FUNCTIONS_FEATURE = @PNG_FUNCTIONS_FEATURE@
-PNG_LIBS = @PNG_LIBS@
-PNG_REQUIRES = @PNG_REQUIRES@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
-PS_LIBS = @PS_LIBS@
-PS_SURFACE_FEATURE = @PS_SURFACE_FEATURE@
-QUARTZ_SURFACE_FEATURE = @QUARTZ_SURFACE_FEATURE@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-SVG_SURFACE_FEATURE = @SVG_SURFACE_FEATURE@
 USE_MMX_FALSE = @USE_MMX_FALSE@
 USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 WARN_CFLAGS = @WARN_CFLAGS@
-WIN32_FONT_FEATURE = @WIN32_FONT_FEATURE@
-WIN32_SURFACE_FEATURE = @WIN32_SURFACE_FEATURE@
-XCB_CFLAGS = @XCB_CFLAGS@
-XCB_LIBS = @XCB_LIBS@
-XCB_SURFACE_FEATURE = @XCB_SURFACE_FEATURE@
-XLIB_SURFACE_FEATURE = @XLIB_SURFACE_FEATURE@
-XRENDER_CFLAGS = @XRENDER_CFLAGS@
-XRENDER_LIBS = @XRENDER_LIBS@
-XRENDER_REQUIRES = @XRENDER_REQUIRES@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -1084,7 +1092,11 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+directfb_CFLAGS = @directfb_CFLAGS@
+directfb_LIBS = @directfb_LIBS@
 exec_prefix = @exec_prefix@
+glitz_CFLAGS = @glitz_CFLAGS@
+glitz_LIBS = @glitz_LIBS@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -1099,12 +1111,18 @@ localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+png_CFLAGS = @png_CFLAGS@
+png_LIBS = @png_LIBS@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+xcb_CFLAGS = @xcb_CFLAGS@
+xcb_LIBS = @xcb_LIBS@
+xlib_xrender_CFLAGS = @xlib_xrender_CFLAGS@
+xlib_xrender_LIBS = @xlib_xrender_LIBS@
 
 # Here are all the tests that are run unconditionally
 TESTS = a8-mask caps-joins caps-joins-alpha caps-sub-paths clip-all \
@@ -1113,15 +1131,16 @@ TESTS = a8-mask caps-joins caps-joins-alpha caps-sub-paths clip-all \
 	composite-integer-translate-over \
 	composite-integer-translate-over-repeat create-for-stream \
 	create-from-png create-from-png-stream dash-caps-joins \
-	dash-scale dash-offset-negative dash-zero-length device-offset \
+	dash-scale dash-offset-negative dash-zero-length \
+	degenerate-path device-offset device-offset-positive \
 	extend-reflect fill-and-stroke fill-and-stroke-alpha \
 	fill-and-stroke-alpha-add fill-rule filter-nearest-offset \
-	font-face-get-type get-and-set get-group-target gradient-alpha \
-	leaky-dash leaky-polygon line-width line-width-scale \
-	linear-gradient mask mask-ctm mask-surface-ctm \
-	move-to-show-surface new-sub-path nil-surface operator-clear \
-	operator-source paint paint-source-alpha paint-with-alpha \
-	path-data pattern-get-type pixman-rotate \
+	font-face-get-type glyph-cache-pressure get-and-set \
+	get-group-target gradient-alpha leaky-dash leaky-polygon \
+	line-width line-width-scale linear-gradient mask mask-ctm \
+	mask-surface-ctm move-to-show-surface new-sub-path nil-surface \
+	operator-clear operator-source paint paint-source-alpha \
+	paint-with-alpha path-data pattern-get-type pixman-rotate \
 	rectangle-rounding-error scale-source-surface-paint \
 	select-font-face select-font-no-show-text self-copy \
 	self-intersecting set-source show-text-current-point \
@@ -1155,11 +1174,16 @@ TESTS = a8-mask caps-joins caps-joins-alpha caps-sub-paths clip-all \
 # I really don't like having to repeat this list. Anyone know a good
 # way to avoid it? Can I use a wildcard here?
 EXTRA_DIST = \
+6x13.pcf						\
 make-html.pl						\
 a8-mask-ref.png						\
+bitmap-font-ref.png					\
+bitmap-font-rgb24-ref.png				\
 caps-joins-ref.png					\
-caps-joins-alpha-ref.png				\
 caps-joins-ps-argb32-ref.png				\
+caps-joins-alpha-ref.png				\
+caps-joins-alpha-svg-argb32-ref.png			\
+caps-joins-alpha-svg-rgb24-ref.png			\
 caps-sub-paths-ref.png					\
 caps-sub-paths-ps-argb32-ref.png			\
 clip-all-ref.png					\
@@ -1177,6 +1201,9 @@ clip-twice-ref.png					\
 clip-twice-rgb24-ref.png				\
 clip-twice-ps-argb32-ref.png				\
 composite-integer-translate-over-ref.png		\
+composite-integer-translate-over-pdf-argb32-ref.png	\
+composite-integer-translate-over-svg-argb32-ref.png	\
+composite-integer-translate-over-svg-rgb24-ref.png	\
 composite-integer-translate-over-repeat-ref.png		\
 composite-integer-translate-source-ref.png		\
 create-from-png-ref.png					\
@@ -1184,38 +1211,70 @@ create-from-png-stream-ref.png				\
 dash-caps-joins-ref.png					\
 dash-caps-joins-ps-argb32-ref.png			\
 dash-scale-ref.png					\
+dash-scale-ps-argb32-ref.png				\
 dash-offset-negative-ref.png				\
 dash-offset-negative-ps-argb32-ref.png			\
 dash-zero-length-ref.png				\
 dash-zero-length-rgb24-ref.png				\
 dash-zero-length-ps-argb32-ref.png			\
+degenerate-path-ref.png					\
+degenerate-path-rgb24-ref.png				\
+degenerate-path-ps-argb32-ref.png			\
 device-offset-ref.png					\
+device-offset-rgb24-ref.png				\
+device-offset-positive-ref.png				\
+device-offset-positive-rgb24-ref.png			\
 fill-and-stroke-ref.png					\
 fill-and-stroke-rgb24-ref.png				\
 fill-and-stroke-ps-argb32-ref.png			\
 fill-and-stroke-alpha-ref.png				\
+fill-and-stroke-alpha-svg-argb32-ref.png		\
+fill-and-stroke-alpha-svg-rgb24-ref.png			\
 fill-and-stroke-alpha-add-ref.png			\
 fill-rule-ref.png					\
 fill-rule-rgb24-ref.png					\
 fill-rule-ps-argb32-ref.png				\
 filter-nearest-offset-ref.png				\
+ft-text-antialias-none-ref.png				\
+ft-text-antialias-none-ps-argb32-ref.png		\
+ft-text-vertical-layout-ref.png				\
+ft-text-vertical-layout-pdf-argb32-ref.png		\
+ft-text-vertical-layout-ps-argb32-ref.png		\
+ft-text-vertical-layout-svg-argb32-ref.png		\
+ft-text-vertical-layout-svg-rgb24-ref.png		\
 get-group-target-ref.png				\
+glyph-cache-pressure-ref.png				\
+glyph-cache-pressure-pdf-argb32-ref.png			\
+glyph-cache-pressure-ps-argb32-ref.png			\
+glyph-cache-pressure-svg-argb32-ref.png			\
+glyph-cache-pressure-svg-rgb24-ref.png			\
 gradient-alpha-ref.png					\
 gradient-alpha-rgb24-ref.png				\
 leaky-dash-ref.png					\
 leaky-polygon-ref.png					\
 leaky-polygon-ps-argb32-ref.png				\
 linear-gradient-ref.png					\
+linear-gradient-svg-argb32-ref.png			\
+linear-gradient-svg-rgb24-ref.png			\
 line-width-ref.png					\
 line-width-ps-argb32-ref.png				\
 line-width-scale-ref.png				\
 line-width-scale-ps-argb32-ref.png			\
-mask-ctm-ref.png					\
-mask-ctm-rgb24-ref.png					\
 mask-ref.png						\
 mask-rgb24-ref.png					\
+mask-beos_bitmap-argb32-ref.png				\
+mask-beos_bitmap-rgb24-ref.png				\
+mask-beos-rgb24-ref.png					\
+mask-svg-argb32-ref.png					\
+mask-svg-rgb24-ref.png					\
+mask-ctm-ref.png					\
+mask-ctm-rgb24-ref.png					\
+mask-ctm-svg-argb32-ref.png				\
+mask-ctm-svg-rgb24-ref.png				\
 mask-surface-ctm-ref.png				\
 mask-surface-ctm-rgb24-ref.png				\
+mask-surface-ctm-svg-argb32-ref.png			\
+mask-surface-ctm-svg-rgb24-ref.png			\
 move-to-show-surface-ref.png				\
 new-sub-path-ref.png					\
 new-sub-path-rgb24-ref.png				\
@@ -1228,12 +1287,22 @@ operator-source-ref.png					\
 operator-source-rgb24-ref.png				\
 paint-ref.png						\
 paint-source-alpha-ref.png				\
+paint-source-alpha-pdf-argb32-ref.png			\
+paint-source-alpha-svg-argb32-ref.png			\
+paint-source-alpha-svg-rgb24-ref.png			\
 paint-with-alpha-ref.png				\
+paint-with-alpha-svg-argb32-ref.png			\
+paint-with-alpha-svg-rgb24-ref.png			\
 path-data-ref.png					\
 path-data-ps-argb32-ref.png				\
 pixman-rotate-ref.png					\
 pixman-rotate-rgb24-ref.png				\
+pixman-rotate-svg-argb32-ref.png			\
+pixman-rotate-svg-rgb24-ref.png				\
 push-group-ref.png					\
+push-group-rgb24-ref.png				\
+push-group-svg-argb32-ref.png				\
+push-group-svg-rgb24-ref.png				\
 rectangle-rounding-error-ref.png			\
 rectangle-rounding-error-ps-argb32-ref.png		\
 rel-path-ref.png					\
@@ -1242,16 +1311,28 @@ romedalen.png						\
 scale-source-surface-paint-ref.png			\
 scale-source-surface-paint-rgb24-ref.png		\
 scale-source-surface-paint-pdf-argb32-ref.png		\
+scale-source-surface-paint-svg-argb32-ref.png		\
+scale-source-surface-paint-svg-rgb24-ref.png		\
 select-font-face-ref.png				\
+select-font-face-pdf-argb32-ref.png			\
+select-font-face-ps-argb32-ref.png			\
+select-font-face-svg-argb32-ref.png			\
+select-font-face-svg-rgb24-ref.png			\
 self-copy-ref.png					\
 self-intersecting-ref.png				\
 self-intersecting-rgb24-ref.png				\
 set-source-ref.png					\
 set-source-rgb24-ref.png				\
+set-source-beos_bitmap-rgb24-ref.png			\
+set-source-beos-rgb24-ref.png				\
+set-source-svg-argb32-ref.png				\
+set-source-svg-rgb24-ref.png				\
 show-glyphs-many-ref.png				\
 show-text-current-point-ref.png				\
 show-text-current-point-pdf-argb32-ref.png		\
 show-text-current-point-ps-argb32-ref.png		\
+show-text-current-point-svg-argb32-ref.png		\
+show-text-current-point-svg-rgb24-ref.png		\
 source-clip-ref.png					\
 source-surface-scale-paint-ref.png			\
 source-surface-scale-paint-rgb24-ref.png		\
@@ -1259,14 +1340,24 @@ surface-pattern-ref.png					\
 text-antialias-gray-ref.png				\
 text-antialias-gray-pdf-argb32-ref.png			\
 text-antialias-gray-ps-argb32-ref.png			\
+text-antialias-gray-svg-argb32-ref.png			\
+text-antialias-gray-svg-rgb24-ref.png			\
 text-antialias-none-ref.png				\
 text-antialias-none-pdf-argb32-ref.png			\
 text-antialias-none-ps-argb32-ref.png			\
+text-antialias-none-svg-argb32-ref.png			\
+text-antialias-none-svg-rgb24-ref.png			\
 text-antialias-subpixel-ref.png				\
 text-antialias-subpixel-pdf-argb32-ref.png		\
 text-antialias-subpixel-ps-argb32-ref.png		\
+text-antialias-subpixel-svg-argb32-ref.png		\
+text-antialias-subpixel-svg-rgb24-ref.png		\
 text-pattern-ref.png					\
 text-pattern-rgb24-ref.png				\
+text-pattern-pdf-argb32-ref.png				\
+text-pattern-ps-argb32-ref.png				\
+text-pattern-svg-argb32-ref.png				\
+text-pattern-svg-rgb24-ref.png				\
 text-rotate-ref.png					\
 text-rotate-rgb24-ref.png				\
 transforms-ref.png					\
@@ -1274,8 +1365,14 @@ transforms-ps-argb32-ref.png				\
 translate-show-surface-ref.png				\
 trap-clip-ref.png					\
 trap-clip-rgb24-ref.png					\
+trap-clip-beos_bitmap-rgb24-ref.png			\
+trap-clip-beos-rgb24-ref.png				\
+trap-clip-svg-argb32-ref.png				\
+trap-clip-svg-rgb24-ref.png				\
 unantialiased-shapes-ref.png				\
 unantialiased-shapes-ps-argb32-ref.png			\
+unantialiased-shapes-svg-argb32-ref.png			\
+unantialiased-shapes-svg-rgb24-ref.png			\
 unbounded-operator-ref.png				\
 unbounded-operator-rgb24-ref.png			\
 zero-alpha-ref.png
@@ -1298,6 +1395,7 @@ XFAIL_TESTS = \
 a8-mask				\
 extend-reflect			\
 filter-nearest-offset		\
+leaky-dash			\
 pixman-rotate			\
 self-intersecting		\
 text-rotate
@@ -1315,7 +1413,7 @@ INCLUDES = \
 	-I$(top_srcdir)/src			\
 	$(CAIRO_CFLAGS)
 
-noinst_LTLIBRARIES = libcairotest.la
+check_LTLIBRARIES = libcairotest.la
 libcairotest_la_SOURCES = buffer-diff.c buffer-diff.h cairo-test.c \
 	cairo-test.h read-png.c read-png.h write-png.c write-png.h \
 	xmalloc.c xmalloc.h $(am__append_9) $(am__append_10)
@@ -1330,6 +1428,7 @@ LDADD = libcairotest.la $(top_builddir)/src/libcairo.la \
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@svg2png_LDADD = $(LIBRSVG_LIBS)
 CLEANFILES = \
 	*.ps					\
+	*.pdf					\
 	*.svg					\
 	*-out.png				\
 	*-diff.png				\
@@ -1339,7 +1438,8 @@ CLEANFILES = \
 	pdf-features.pdf			\
 	ps-features.ps				\
 	svg-surface.svg				\
-	svg-clip.svg
+	svg-clip.svg				\
+	index.html
 
 all: all-am
 
@@ -1375,9 +1475,9 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
+clean-checkLTLIBRARIES:
+	-test -z "$(check_LTLIBRARIES)" || rm -f $(check_LTLIBRARIES)
+	@list='$(check_LTLIBRARIES)'; for p in $$list; do \
 	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
 	  test "$$dir" != "$$p" || dir=.; \
 	  echo "rm -f \"$${dir}/so_locations\""; \
@@ -1392,16 +1492,12 @@ clean-checkPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
-	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	  echo " rm -f $$p $$f"; \
-	  rm -f $$p $$f ; \
-	done
 a8-mask$(EXEEXT): $(a8_mask_OBJECTS) $(a8_mask_DEPENDENCIES) 
 	@rm -f a8-mask$(EXEEXT)
 	$(LINK) $(a8_mask_LDFLAGS) $(a8_mask_OBJECTS) $(a8_mask_LDADD) $(LIBS)
+bitmap-font$(EXEEXT): $(bitmap_font_OBJECTS) $(bitmap_font_DEPENDENCIES) 
+	@rm -f bitmap-font$(EXEEXT)
+	$(LINK) $(bitmap_font_LDFLAGS) $(bitmap_font_OBJECTS) $(bitmap_font_LDADD) $(LIBS)
 caps-joins$(EXEEXT): $(caps_joins_OBJECTS) $(caps_joins_DEPENDENCIES) 
 	@rm -f caps-joins$(EXEEXT)
 	$(LINK) $(caps_joins_LDFLAGS) $(caps_joins_OBJECTS) $(caps_joins_LDADD) $(LIBS)
@@ -1459,9 +1555,15 @@ dash-scale$(EXEEXT): $(dash_scale_OBJECTS) $(dash_scale_DEPENDENCIES)
 dash-zero-length$(EXEEXT): $(dash_zero_length_OBJECTS) $(dash_zero_length_DEPENDENCIES) 
 	@rm -f dash-zero-length$(EXEEXT)
 	$(LINK) $(dash_zero_length_LDFLAGS) $(dash_zero_length_OBJECTS) $(dash_zero_length_LDADD) $(LIBS)
+degenerate-path$(EXEEXT): $(degenerate_path_OBJECTS) $(degenerate_path_DEPENDENCIES) 
+	@rm -f degenerate-path$(EXEEXT)
+	$(LINK) $(degenerate_path_LDFLAGS) $(degenerate_path_OBJECTS) $(degenerate_path_LDADD) $(LIBS)
 device-offset$(EXEEXT): $(device_offset_OBJECTS) $(device_offset_DEPENDENCIES) 
 	@rm -f device-offset$(EXEEXT)
 	$(LINK) $(device_offset_LDFLAGS) $(device_offset_OBJECTS) $(device_offset_LDADD) $(LIBS)
+device-offset-positive$(EXEEXT): $(device_offset_positive_OBJECTS) $(device_offset_positive_DEPENDENCIES) 
+	@rm -f device-offset-positive$(EXEEXT)
+	$(LINK) $(device_offset_positive_LDFLAGS) $(device_offset_positive_OBJECTS) $(device_offset_positive_LDADD) $(LIBS)
 extend-reflect$(EXEEXT): $(extend_reflect_OBJECTS) $(extend_reflect_DEPENDENCIES) 
 	@rm -f extend-reflect$(EXEEXT)
 	$(LINK) $(extend_reflect_LDFLAGS) $(extend_reflect_OBJECTS) $(extend_reflect_LDADD) $(LIBS)
@@ -1489,6 +1591,9 @@ font-face-get-type$(EXEEXT): $(font_face_get_type_OBJECTS) $(font_face_get_type_
 ft-font-create-for-ft-face$(EXEEXT): $(ft_font_create_for_ft_face_OBJECTS) $(ft_font_create_for_ft_face_DEPENDENCIES) 
 	@rm -f ft-font-create-for-ft-face$(EXEEXT)
 	$(LINK) $(ft_font_create_for_ft_face_LDFLAGS) $(ft_font_create_for_ft_face_OBJECTS) $(ft_font_create_for_ft_face_LDADD) $(LIBS)
+ft-text-antialias-none$(EXEEXT): $(ft_text_antialias_none_OBJECTS) $(ft_text_antialias_none_DEPENDENCIES) 
+	@rm -f ft-text-antialias-none$(EXEEXT)
+	$(LINK) $(ft_text_antialias_none_LDFLAGS) $(ft_text_antialias_none_OBJECTS) $(ft_text_antialias_none_LDADD) $(LIBS)
 ft-text-vertical-layout$(EXEEXT): $(ft_text_vertical_layout_OBJECTS) $(ft_text_vertical_layout_DEPENDENCIES) 
 	@rm -f ft-text-vertical-layout$(EXEEXT)
 	$(LINK) $(ft_text_vertical_layout_LDFLAGS) $(ft_text_vertical_layout_OBJECTS) $(ft_text_vertical_layout_LDADD) $(LIBS)
@@ -1498,6 +1603,9 @@ get-and-set$(EXEEXT): $(get_and_set_OBJECTS) $(get_and_set_DEPENDENCIES)
 get-group-target$(EXEEXT): $(get_group_target_OBJECTS) $(get_group_target_DEPENDENCIES) 
 	@rm -f get-group-target$(EXEEXT)
 	$(LINK) $(get_group_target_LDFLAGS) $(get_group_target_OBJECTS) $(get_group_target_LDADD) $(LIBS)
+glyph-cache-pressure$(EXEEXT): $(glyph_cache_pressure_OBJECTS) $(glyph_cache_pressure_DEPENDENCIES) 
+	@rm -f glyph-cache-pressure$(EXEEXT)
+	$(LINK) $(glyph_cache_pressure_LDFLAGS) $(glyph_cache_pressure_OBJECTS) $(glyph_cache_pressure_LDADD) $(LIBS)
 gradient-alpha$(EXEEXT): $(gradient_alpha_OBJECTS) $(gradient_alpha_DEPENDENCIES) 
 	@rm -f gradient-alpha$(EXEEXT)
 	$(LINK) $(gradient_alpha_LDFLAGS) $(gradient_alpha_OBJECTS) $(gradient_alpha_LDADD) $(LIBS)
@@ -1680,6 +1788,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a8-mask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitmap-font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/buffer-diff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-test-directfb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-test.Plo@am__quote@
@@ -1702,6 +1811,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dash-offset-negative.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dash-scale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dash-zero-length.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/degenerate-path.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/device-offset-positive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/device-offset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extend-reflect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fallback-resolution.Po@am__quote@
@@ -1712,9 +1823,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filter-nearest-offset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/font-face-get-type.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ft-font-create-for-ft-face.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ft-text-antialias-none.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ft-text-vertical-layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get-and-set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get-group-target.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glyph-cache-pressure.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gradient-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imagediff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/leaky-dash.Po@am__quote@
@@ -2014,10 +2127,10 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) $(check_LTLIBRARIES) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
+all-am: Makefile
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -2046,8 +2159,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
-	clean-noinstLTLIBRARIES clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-checkLTLIBRARIES clean-checkPROGRAMS clean-generic \
+	clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -2094,17 +2207,16 @@ ps-am:
 uninstall-am: uninstall-info-am
 
 .PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
-	clean-checkPROGRAMS clean-generic clean-libtool \
-	clean-noinstLTLIBRARIES clean-noinstPROGRAMS ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-info-am
+	clean-checkLTLIBRARIES clean-checkPROGRAMS clean-generic \
+	clean-libtool ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-exec install-exec-am \
+	install-info install-info-am install-man install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-info-am
 
 
 check-valgrind:

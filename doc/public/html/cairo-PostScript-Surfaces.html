@@ -47,7 +47,23 @@
 
 
 
-#define     <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-set-dpi">cairo_ps_surface_set_dpi</a>
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-create">cairo_ps_surface_create</a>    (const char *filename,
+                                             double width_in_points,
+                                             double height_in_points);
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-create-for-stream">cairo_ps_surface_create_for_stream</a>
+                                            (<a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+                                             void *closure,
+                                             double width_in_points,
+                                             double height_in_points);
+void        <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-set-size">cairo_ps_surface_set_size</a>       (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             double width_in_points,
+                                             double height_in_points);
+void        <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-begin-setup">cairo_ps_surface_dsc_begin_setup</a>
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+void        <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-begin-page-setup">cairo_ps_surface_dsc_begin_page_setup</a>
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+void        <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a>    (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             const char *comment);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -59,12 +75,61 @@
 <div class="refsect1" lang="en">
 <a name="details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2567655"></a><h3>
-<a name="cairo-ps-surface-set-dpi"></a>cairo_ps_surface_set_dpi</h3>
-<a class="indexterm" name="id2536236"></a><pre class="programlisting">#define cairo_ps_surface_set_dpi	cairo_ps_surface_set_dpi_REPLACED_BY_cairo_surface_set_fallback_resolution
-</pre>
-<p>
-
+<a name="id2584935"></a><h3>
+<a name="cairo-ps-surface-create"></a>cairo_ps_surface_create ()</h3>
+<a class="indexterm" name="id2584949"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_ps_surface_create    (const char *filename,
+                                             double width_in_points,
+                                             double height_in_points);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2584990"></a><h3>
+<a name="cairo-ps-surface-create-for-stream"></a>cairo_ps_surface_create_for_stream ()</h3>
+<a class="indexterm" name="id2585004"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_ps_surface_create_for_stream
+                                            (<a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+                                             void *closure,
+                                             double width_in_points,
+                                             double height_in_points);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2585054"></a><h3>
+<a name="cairo-ps-surface-set-size"></a>cairo_ps_surface_set_size ()</h3>
+<a class="indexterm" name="id2585068"></a><pre class="programlisting">void        cairo_ps_surface_set_size       (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             double width_in_points,
+                                             double height_in_points);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2543631"></a><h3>
+<a name="cairo-ps-surface-dsc-begin-setup"></a>cairo_ps_surface_dsc_begin_setup ()</h3>
+<a class="indexterm" name="id2543645"></a><pre class="programlisting">void        cairo_ps_surface_dsc_begin_setup
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2543675"></a><h3>
+<a name="cairo-ps-surface-dsc-begin-page-setup"></a>cairo_ps_surface_dsc_begin_page_setup ()</h3>
+<a class="indexterm" name="id2543688"></a><pre class="programlisting">void        cairo_ps_surface_dsc_begin_page_setup
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2543718"></a><h3>
+<a name="cairo-ps-surface-dsc-comment"></a>cairo_ps_surface_dsc_comment ()</h3>
+<a class="indexterm" name="id2543731"></a><pre class="programlisting">void        cairo_ps_surface_dsc_comment    (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             const char *comment);</pre>
+<p>Since  1.2
 </p>
 </div>
 </div>

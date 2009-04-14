@@ -124,8 +124,13 @@ do_test (Display        *dpy,
 					 DefaultVisual (dpy, screen),
 					 SIZE, SIZE);
 
-    if (set_size)
+    if (set_size) {
 	cairo_xlib_surface_set_size (surface, SIZE, SIZE);
+
+	if (cairo_xlib_surface_get_width (surface) != SIZE ||
+	    cairo_xlib_surface_get_height (surface) != SIZE)
+	    return 0;
+    }
 
     draw_pattern (surface);
 
@@ -255,7 +260,7 @@ main (void)
 			      1, use_pixmap, set_size, offscreen))
 		    result = 1;
 
-    cairo_xlib_test_disable_render ();
+    _cairo_xlib_test_disable_render ();
 
     for (set_size = 0; set_size <= 1; set_size++)
 	for (use_pixmap = 0; use_pixmap <= 1; use_pixmap++)

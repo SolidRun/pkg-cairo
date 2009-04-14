@@ -24,6 +24,8 @@
 
 
 enum        <link linkend="cairo-status-t">cairo_status_t</link>;
+const <link linkend="char">char</link>* <link linkend="cairo-status-to-string">cairo_status_to_string</link>          (<link linkend="cairo-status-t">cairo_status_t</link> status);
+<link linkend="void">void</link>        <link linkend="cairo-debug-reset-static-data">cairo_debug_reset_static_data</link>   (void);
 </synopsis>
 </refsynopsisdiv>
 
@@ -180,10 +182,18 @@ the context and can be retrieved with <link linkend="cairo-status"><function>cai
 </varlistentry>
 <varlistentry>
 <term><anchor id="CAIRO-STATUS-INVALID-DSC-COMMENT:CAPS" role="constant"/><literal>CAIRO_STATUS_INVALID_DSC_COMMENT</literal></term>
-<listitem><simpara> invalid value for a DSC comment
+<listitem><simpara> invalid value for a DSC comment (Since 1.2)
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-status-to-string" role="function"/>cairo_status_to_string ()</title>
+<indexterm><primary>cairo_status_to_string</primary></indexterm><programlisting>const <link linkend="char">char</link>* cairo_status_to_string          (<link linkend="cairo-status-t">cairo_status_t</link> status);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-debug-reset-static-data" role="function"/>cairo_debug_reset_static_data ()</title>
+<indexterm><primary>cairo_debug_reset_static_data</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_debug_reset_static_data   (void);</programlisting>
+</refsect2>
 
 </refsect1>
 

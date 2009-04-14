@@ -206,6 +206,18 @@ typedef cairo_fixed_16_16_t cairo_fixed_t;
 #define CAIRO_ALPHA_IS_OPAQUE(alpha) ((alpha) >= ((double)0xff00 / (double)0xffff))
 #define CAIRO_ALPHA_IS_ZERO(alpha) ((alpha) <= 0.0)
 
+/* Reverse the bits in a byte with 7 operations (no 64-bit):
+ * Devised by Sean Anderson, July 13, 2001.
+ * Source: http://graphics.stanford.edu/~seander/bithacks.html#ReverseByteWith32Bits
+ */
+#define CAIRO_BITSWAP8(c) ((((c) * 0x0802LU & 0x22110LU) | ((c) * 0x8020LU & 0x88440LU)) * 0x10101LU >> 16)
+
+#ifdef WORDS_BIGENDIAN
+#define CAIRO_BITSWAP8_IF_LITTLE_ENDIAN(c) (c)
+#else
+#define CAIRO_BITSWAP8_IF_LITTLE_ENDIAN(c) CAIRO_BITSWAP8(c)
+#endif
+
 #include "cairo-hash-private.h"
 #include "cairo-cache-private.h"
 
@@ -856,6 +868,7 @@ struct _cairo_surface {
     cairo_user_data_array_t user_data;
 
     cairo_matrix_t device_transform;
+    cairo_matrix_t device_transform_inverse;
 
     double x_fallback_resolution;
     double y_fallback_resolution;
@@ -1367,6 +1380,12 @@ _cairo_color_get_rgba_premultiplied (cairo_color_t *color,
 /* cairo-font.c */
 
 cairo_private void
+_cairo_scaled_font_freeze_cache (cairo_scaled_font_t *scaled_font);
+
+cairo_private void
+_cairo_scaled_font_thaw_cache (cairo_scaled_font_t *scaled_font);
+
+cairo_private void
 _cairo_scaled_font_set_error (cairo_scaled_font_t *scaled_font,
 			      cairo_status_t status);
 
@@ -1403,6 +1422,10 @@ _cairo_font_options_init_copy (cairo_font_options_t		*options,
 /* cairo_hull.c */
 cairo_private cairo_status_t
 _cairo_hull_compute (cairo_pen_vertex_t *vertices, int *num_vertices);
+
+/* cairo-lzw.c */
+cairo_private unsigned char *
+_cairo_lzw_compress (unsigned char *data, unsigned long *size_in_out);
 
 /* cairo_operator.c */
 cairo_private cairo_bool_t

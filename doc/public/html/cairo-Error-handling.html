@@ -48,6 +48,8 @@
 
 
 enum        <a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a>;
+const char* <a href="cairo-Error-handling.html#cairo-status-to-string">cairo_status_to_string</a>          (<a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> status);
+void        <a href="cairo-Error-handling.html#cairo-debug-reset-static-data">cairo_debug_reset_static_data</a>   (void);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -59,9 +61,9 @@ enum        <a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a
 <div class="refsect1" lang="en">
 <a name="details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2535189"></a><h3>
+<a name="id2586964"></a><h3>
 <a name="cairo-status-t"></a>enum cairo_status_t</h3>
-<a class="indexterm" name="id2535048"></a><pre class="programlisting">typedef enum _cairo_status {
+<a class="indexterm" name="id2586976"></a><pre class="programlisting">typedef enum _cairo_status {
     CAIRO_STATUS_SUCCESS = 0,
     CAIRO_STATUS_NO_MEMORY,
     CAIRO_STATUS_INVALID_RESTORE,
@@ -89,7 +91,7 @@ enum        <a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a
 <a href="cairo-Error-handling.html#cairo-status-t"><span class="type">cairo_status_t</span></a> is used to indicate errors that can occur when
 using Cairo. In some cases it is returned directly by functions.
 but when using <a href="cairo-cairo-t.html#cairo-t"><span class="type">cairo_t</span></a>, the last error, if any, is stored in
-the context and can be retrieved with <code class="function">cairo_status()</code>.</p>
+the context and can be retrieved with <a href="cairo-cairo-t.html#cairo-status"><code class="function">cairo_status()</code></a>.</p>
 <p>
 
 </p>
@@ -219,11 +221,23 @@ the context and can be retrieved with <code class="function">cairo_status()</cod
 <tr>
 <td>
 <span class="term"><a name="CAIRO-STATUS-INVALID-DSC-COMMENT:CAPS"></a><code class="literal">CAIRO_STATUS_INVALID_DSC_COMMENT</code></span></td>
-<td> invalid value for a DSC comment
+<td> invalid value for a DSC comment (Since 1.2)
 </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2590655"></a><h3>
+<a name="cairo-status-to-string"></a>cairo_status_to_string ()</h3>
+<a class="indexterm" name="id2590666"></a><pre class="programlisting">const char* cairo_status_to_string          (<a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> status);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2588346"></a><h3>
+<a name="cairo-debug-reset-static-data"></a>cairo_debug_reset_static_data ()</h3>
+<a class="indexterm" name="id2588360"></a><pre class="programlisting">void        cairo_debug_reset_static_data   (void);</pre>
 </div>
 </div>
 </div>

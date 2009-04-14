@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="Surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-cairo-surface-t.html" title="cairo_surface_t">
-<link rel="next" href="cairo-Glitz-Surfaces.html" title="Glitz Surfaces">
+<link rel="next" href="cairo-PDF-Surfaces.html" title="PDF Surfaces">
 <meta name="generator" content="GTK-Doc V1.6 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="pt01.html" title="Part&#160;I.&#160;Tutorial">
@@ -26,7 +26,7 @@
 <td><a accesskey="u" href="Surfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
-<td><a accesskey="n" href="cairo-Glitz-Surfaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="cairo-PDF-Surfaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts"><nobr><a href="#top_of_page" class="shortcut">Top</a>
                   &#160;|&#160;
@@ -48,6 +48,21 @@
 
 
 enum        <a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a>;
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-Image-Surfaces.html#cairo-image-surface-create">cairo_image_surface_create</a> (<a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
+                                             int width,
+                                             int height);
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-Image-Surfaces.html#cairo-image-surface-create-for-data">cairo_image_surface_create_for_data</a>
+                                            (unsigned char *data,
+                                             <a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
+                                             int width,
+                                             int height,
+                                             int stride);
+unsigned char* <a href="cairo-Image-Surfaces.html#cairo-image-surface-get-data">cairo_image_surface_get_data</a> (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+<a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> <a href="cairo-Image-Surfaces.html#cairo-image-surface-get-format">cairo_image_surface_get_format</a>
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+int         <a href="cairo-Image-Surfaces.html#cairo-image-surface-get-width">cairo_image_surface_get_width</a>   (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+int         <a href="cairo-Image-Surfaces.html#cairo-image-surface-get-height">cairo_image_surface_get_height</a>  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+int         <a href="cairo-Image-Surfaces.html#cairo-image-surface-get-stride">cairo_image_surface_get_stride</a>  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -61,9 +76,9 @@ enum        <a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a
 <div class="refsect1" lang="en">
 <a name="details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2530937"></a><h3>
+<a name="id2570315"></a><h3>
 <a name="cairo-format-t"></a>enum cairo_format_t</h3>
-<a class="indexterm" name="id2530948"></a><pre class="programlisting">typedef enum _cairo_format {
+<a class="indexterm" name="id2570327"></a><pre class="programlisting">typedef enum _cairo_format {
     CAIRO_FORMAT_ARGB32,
     CAIRO_FORMAT_RGB24,
     CAIRO_FORMAT_A8,
@@ -121,11 +136,67 @@ image data.</p>
 <span class="term"><a name="CAIRO-FORMAT-RGB16-565:CAPS"></a><code class="literal">CAIRO_FORMAT_RGB16_565</code></span></td>
 <td> each pixel is a 16-bit quantity,
   with red in the upper 5 bits, then green in the next 6,
-  then blue in the lowest 5 bits.
+  then blue in the lowest 5 bits. (Since 1.2)
 </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2583709"></a><h3>
+<a name="cairo-image-surface-create"></a>cairo_image_surface_create ()</h3>
+<a class="indexterm" name="id2583720"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create (<a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
+                                             int width,
+                                             int height);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2583759"></a><h3>
+<a name="cairo-image-surface-create-for-data"></a>cairo_image_surface_create_for_data ()</h3>
+<a class="indexterm" name="id2583772"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create_for_data
+                                            (unsigned char *data,
+                                             <a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
+                                             int width,
+                                             int height,
+                                             int stride);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2583825"></a><h3>
+<a name="cairo-image-surface-get-data"></a>cairo_image_surface_get_data ()</h3>
+<a class="indexterm" name="id2583840"></a><pre class="programlisting">unsigned char* cairo_image_surface_get_data (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2583871"></a><h3>
+<a name="cairo-image-surface-get-format"></a>cairo_image_surface_get_format ()</h3>
+<a class="indexterm" name="id2583886"></a><pre class="programlisting"><a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> cairo_image_surface_get_format
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2570721"></a><h3>
+<a name="cairo-image-surface-get-width"></a>cairo_image_surface_get_width ()</h3>
+<a class="indexterm" name="id2570734"></a><pre class="programlisting">int         cairo_image_surface_get_width   (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2570759"></a><h3>
+<a name="cairo-image-surface-get-height"></a>cairo_image_surface_get_height ()</h3>
+<a class="indexterm" name="id2570772"></a><pre class="programlisting">int         cairo_image_surface_get_height  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2570796"></a><h3>
+<a name="cairo-image-surface-get-stride"></a>cairo_image_surface_get_stride ()</h3>
+<a class="indexterm" name="id2570812"></a><pre class="programlisting">int         cairo_image_surface_get_stride  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<p>Since  1.2
+</p>
 </div>
 </div>
 </div>

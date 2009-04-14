@@ -1,6 +1,6 @@
 /* cairo - a vector graphics library with display and print output
  *
- * Copyright © 2003 University of Southern California
+ * Copyright © 2006 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it either under the terms of the GNU Lesser General Public
@@ -34,53 +34,16 @@
  *	Carl D. Worth <cworth@cworth.org>
  */
 
-#ifndef CAIRO_FEATURES_H
-#define CAIRO_FEATURES_H
+#ifndef CAIRO_SCALED_FONT_TEST_H
+#define CAIRO_SCALED_FONT_TEST_H
 
-#ifdef  __cplusplus
-# define CAIRO_BEGIN_DECLS  extern "C" {
-# define CAIRO_END_DECLS    }
-#else
-# define CAIRO_BEGIN_DECLS
-# define CAIRO_END_DECLS
-#endif
+#include <cairo.h>
 
-#ifndef cairo_public
-# define cairo_public
-#endif
+CAIRO_BEGIN_DECLS
 
-#define CAIRO_VERSION_MAJOR @CAIRO_VERSION_MAJOR@
-#define CAIRO_VERSION_MINOR @CAIRO_VERSION_MINOR@
-#define CAIRO_VERSION_MICRO @CAIRO_VERSION_MICRO@
+cairo_public void
+_cairo_scaled_font_test_set_max_glyphs_cached_per_font (int max);
 
-#define CAIRO_VERSION_STRING "@CAIRO_VERSION_MAJOR@.@CAIRO_VERSION_MINOR@.@CAIRO_VERSION_MICRO@"
+CAIRO_END_DECLS
 
-@PS_SURFACE_FEATURE@
-
-@PDF_SURFACE_FEATURE@
-
-@SVG_SURFACE_FEATURE@
-
-@XLIB_SURFACE_FEATURE@
-
-@QUARTZ_SURFACE_FEATURE@
-
-@XCB_SURFACE_FEATURE@
-
-@WIN32_SURFACE_FEATURE@
-
-@BEOS_SURFACE_FEATURE@
-
-@GLITZ_SURFACE_FEATURE@
-
-@DIRECTFB_SURFACE_FEATURE@
-
-@FT_FONT_FEATURE@
-
-@WIN32_FONT_FEATURE@
-
-@ATSUI_FONT_FEATURE@
-
-@PNG_FUNCTIONS_FEATURE@
-
-#endif
+#endif /* CAIRO_SCALED_FONT_TEST_H */

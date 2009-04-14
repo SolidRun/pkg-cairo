@@ -23,6 +23,17 @@
 
 
 
+<link linkend="cairo-font-face-t">cairo_font_face_t</link>* <link linkend="cairo-win32-font-face-create-for-logfontw">cairo_win32_font_face_create_for_logfontw</link>
+                                            (<link linkend="LOGFONTW:CAPS">LOGFONTW</link> *logfont);
+<link linkend="cairo-font-face-t">cairo_font_face_t</link>* <link linkend="cairo-win32-font-face-create-for-hfont">cairo_win32_font_face_create_for_hfont</link>
+                                            (<link linkend="HFONT:CAPS">HFONT</link> font);
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-win32-scaled-font-select-font">cairo_win32_scaled_font_select_font</link>
+                                            (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font,
+                                             <link linkend="HDC:CAPS">HDC</link> hdc);
+<link linkend="void">void</link>        <link linkend="cairo-win32-scaled-font-done-font">cairo_win32_scaled_font_done_font</link>
+                                            (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);
+<link linkend="double">double</link>      <link linkend="cairo-win32-scaled-font-get-metrics-factor">cairo_win32_scaled_font_get_metrics_factor</link>
+                                            (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);
 </synopsis>
 </refsynopsisdiv>
 
@@ -43,6 +54,32 @@
 
 <refsect1 id="details">
 <title id="details.title">Details</title>
+<refsect2>
+<title><anchor id="cairo-win32-font-face-create-for-logfontw" role="function"/>cairo_win32_font_face_create_for_logfontw ()</title>
+<indexterm><primary>cairo_win32_font_face_create_for_logfontw</primary></indexterm><programlisting><link linkend="cairo-font-face-t">cairo_font_face_t</link>* cairo_win32_font_face_create_for_logfontw
+                                            (<link linkend="LOGFONTW:CAPS">LOGFONTW</link> *logfont);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-win32-font-face-create-for-hfont" role="function"/>cairo_win32_font_face_create_for_hfont ()</title>
+<indexterm><primary>cairo_win32_font_face_create_for_hfont</primary></indexterm><programlisting><link linkend="cairo-font-face-t">cairo_font_face_t</link>* cairo_win32_font_face_create_for_hfont
+                                            (<link linkend="HFONT:CAPS">HFONT</link> font);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-win32-scaled-font-select-font" role="function"/>cairo_win32_scaled_font_select_font ()</title>
+<indexterm><primary>cairo_win32_scaled_font_select_font</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_win32_scaled_font_select_font
+                                            (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font,
+                                             <link linkend="HDC:CAPS">HDC</link> hdc);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-win32-scaled-font-done-font" role="function"/>cairo_win32_scaled_font_done_font ()</title>
+<indexterm><primary>cairo_win32_scaled_font_done_font</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_win32_scaled_font_done_font
+                                            (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-win32-scaled-font-get-metrics-factor" role="function"/>cairo_win32_scaled_font_get_metrics_factor ()</title>
+<indexterm><primary>cairo_win32_scaled_font_get_metrics_factor</primary></indexterm><programlisting><link linkend="double">double</link>      cairo_win32_scaled_font_get_metrics_factor
+                                            (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);</programlisting>
+</refsect2>
 
 </refsect1>
 

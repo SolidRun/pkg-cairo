@@ -305,13 +305,13 @@ _cairo_pdf_surface_create_for_stream_internal (cairo_output_stream_t	*output,
 
 /**
  * cairo_pdf_surface_create_for_stream:
- * @write: a #cairo_write_func_t to accept the output data
- * @closure: the closure argument for @write
+ * @write_func: a #cairo_write_func_t to accept the output data
+ * @closure: the closure argument for @write_func
  * @width_in_points: width of the surface, in points (1 point == 1/72.0 inch)
  * @height_in_points: height of the surface, in points (1 point == 1/72.0 inch)
  *
  * Creates a PDF surface of the specified size in points to be written
- * incrementally to the stream represented by @write and @closure.
+ * incrementally to the stream represented by @write_func and @closure.
  *
  * Return value: a pointer to the newly created surface. The caller
  * owns the surface and should call cairo_surface_destroy when done
@@ -320,9 +320,11 @@ _cairo_pdf_surface_create_for_stream_internal (cairo_output_stream_t	*output,
  * This function always returns a valid pointer, but it will return a
  * pointer to a "nil" surface if an error such as out of memory
  * occurs. You can use cairo_surface_status() to check for this.
+ *
+ * Since: 1.2
  */
 cairo_surface_t *
-cairo_pdf_surface_create_for_stream (cairo_write_func_t		 write,
+cairo_pdf_surface_create_for_stream (cairo_write_func_t		 write_func,
 				     void			*closure,
 				     double			 width_in_points,
 				     double			 height_in_points)
@@ -330,7 +332,7 @@ cairo_pdf_surface_create_for_stream (cairo_write_func_t		 write,
     cairo_status_t status;
     cairo_output_stream_t *output;
 
-    output = _cairo_output_stream_create (write, NULL, closure);
+    output = _cairo_output_stream_create (write_func, NULL, closure);
     status = _cairo_output_stream_get_status (output);
     if (status) {
 	_cairo_error (status);
@@ -358,6 +360,8 @@ cairo_pdf_surface_create_for_stream (cairo_write_func_t		 write,
  * This function always returns a valid pointer, but it will return a
  * pointer to a "nil" surface if an error such as out of memory
  * occurs. You can use cairo_surface_status() to check for this.
+ *
+ * Since: 1.2
  **/
 cairo_surface_t *
 cairo_pdf_surface_create (const char		*filename,
@@ -422,6 +426,8 @@ _extract_pdf_surface (cairo_surface_t		 *surface,
  * this is to call this function immediately after creating the
  * surface or immediately after completing a page with either
  * cairo_show_page() or cairo_copy_page().
+ *
+ * Since: 1.2
  **/
 void
 cairo_pdf_surface_set_size (cairo_surface_t	*surface,
@@ -1792,13 +1798,14 @@ _cairo_pdf_surface_emit_truetype_font_subset (cairo_pdf_surface_t		*surface,
 }
 
 static cairo_int_status_t
-_cairo_pdf_surface_emit_outline_glyph_data (cairo_pdf_surface_t	*surface,
-					    cairo_scaled_font_t	*scaled_font,
-					    unsigned long	 glyph_index)
+_cairo_pdf_surface_emit_outline_glyph (cairo_pdf_surface_t	*surface,
+				       cairo_scaled_font_t	*scaled_font,
+				       unsigned long		 glyph_index,
+				       cairo_pdf_resource_t	*glyph_ret)
 {
     cairo_scaled_glyph_t *scaled_glyph;
     pdf_path_info_t info;
-    cairo_status_t status;
+    cairo_status_t status = CAIRO_STATUS_SUCCESS;
 
     status = _cairo_scaled_glyph_lookup (scaled_font,
 					 glyph_index,
@@ -1807,6 +1814,8 @@ _cairo_pdf_surface_emit_outline_glyph_data (cairo_pdf_surface_t	*surface,
 					 &scaled_glyph);
     if (status)
 	return status;
+
+    *glyph_ret = _cairo_pdf_surface_open_stream (surface, NULL);
 
     _cairo_output_stream_printf (surface->output,
 				 "0 0 %f %f %f %f d1\r\n",
@@ -1829,16 +1838,22 @@ _cairo_pdf_surface_emit_outline_glyph_data (cairo_pdf_surface_t	*surface,
     _cairo_output_stream_printf (surface->output,
 				 " f");
 
+    _cairo_pdf_surface_close_stream (surface);
+
     return CAIRO_STATUS_SUCCESS;
 }
 
 static cairo_int_status_t
-_cairo_pdf_surface_emit_bitmap_glyph_data (cairo_pdf_surface_t	*surface,
-					   cairo_scaled_font_t	*scaled_font,
-					   unsigned long	 glyph_index)
+_cairo_pdf_surface_emit_bitmap_glyph (cairo_pdf_surface_t	*surface,
+				      cairo_scaled_font_t	*scaled_font,
+				      unsigned long		 glyph_index,
+				      cairo_pdf_resource_t	*glyph_ret)
 {
     cairo_scaled_glyph_t *scaled_glyph;
     cairo_status_t status;
+    cairo_image_surface_t *image;
+    unsigned char *row, *byte;
+    int rows, cols, bytes_per_row;
 
     status = _cairo_scaled_glyph_lookup (scaled_font,
 					 glyph_index,
@@ -1848,6 +1863,11 @@ _cairo_pdf_surface_emit_bitmap_glyph_data (cairo_pdf_surface_t	*surface,
     if (status)
 	return status;
 
+    image = scaled_glyph->surface;
+    assert (image->format == CAIRO_FORMAT_A1);
+
+    *glyph_ret = _cairo_pdf_surface_open_stream (surface, NULL);
+
     _cairo_output_stream_printf (surface->output,
 				 "0 0 %f %f %f %f d1\r\n",
 				 _cairo_fixed_to_double (scaled_glyph->bbox.p1.x),
@@ -1855,13 +1875,36 @@ _cairo_pdf_surface_emit_bitmap_glyph_data (cairo_pdf_surface_t	*surface,
 				 _cairo_fixed_to_double (scaled_glyph->bbox.p2.x),
 				 - _cairo_fixed_to_double (scaled_glyph->bbox.p1.y));
 
-    /* XXX: Should be painting the surface from scaled_glyph here, not just a filled rectangle. */
     _cairo_output_stream_printf (surface->output,
-				 "%f %f %f %f re f\r\n",
-				 _cairo_fixed_to_double (scaled_glyph->bbox.p1.x),
-				 - _cairo_fixed_to_double (scaled_glyph->bbox.p2.y),
+				 "%f 0.0 0.0 %f %f %f cm\r\n",
 				 _cairo_fixed_to_double (scaled_glyph->bbox.p2.x) - _cairo_fixed_to_double (scaled_glyph->bbox.p1.x),
-				 _cairo_fixed_to_double (scaled_glyph->bbox.p1.y) - _cairo_fixed_to_double (scaled_glyph->bbox.p2.y));
+				 _cairo_fixed_to_double (scaled_glyph->bbox.p1.y) - _cairo_fixed_to_double (scaled_glyph->bbox.p2.y),
+				 _cairo_fixed_to_double (scaled_glyph->bbox.p1.x),
+				 _cairo_fixed_to_double (scaled_glyph->bbox.p2.y));
+
+    _cairo_output_stream_printf (surface->output,
+				 "BI\r\n"
+				 "/IM true\r\n"
+				 "/W %d\r\n"
+				 "/H %d\r\n"
+				 "/BPC 1\r\n"
+				 "/D [1 0]\r\n",
+				 image->width,
+				 image->height);
+
+    _cairo_output_stream_printf (surface->output,
+				 "ID ");
+    bytes_per_row = (image->width + 7) / 8;
+    for (row = image->data, rows = image->height; rows; row += image->stride, rows--) {
+	for (byte = row, cols = (image->width + 7) / 8; cols; byte++, cols--) {
+	    unsigned char output_byte = CAIRO_BITSWAP8_IF_LITTLE_ENDIAN (*byte);
+	    _cairo_output_stream_write (surface->output, &output_byte, 1);
+	}
+    }
+    _cairo_output_stream_printf (surface->output,
+				 "\r\nEI\r\n");
+
+    _cairo_pdf_surface_close_stream (surface);
 
     return CAIRO_STATUS_SUCCESS;
 }
@@ -1874,17 +1917,15 @@ _cairo_pdf_surface_emit_glyph (cairo_pdf_surface_t	*surface,
 {
     cairo_status_t status;
 
-    *glyph_ret = _cairo_pdf_surface_open_stream (surface, NULL);
-
-    status = _cairo_pdf_surface_emit_outline_glyph_data (surface,
-							 scaled_font,
-							 glyph_index);
+    status = _cairo_pdf_surface_emit_outline_glyph (surface,
+						    scaled_font,
+						    glyph_index,
+						    glyph_ret);
     if (status == CAIRO_INT_STATUS_UNSUPPORTED)
-	status = _cairo_pdf_surface_emit_bitmap_glyph_data (surface,
-							    scaled_font,
-							    glyph_index);
-
-    _cairo_pdf_surface_close_stream (surface);
+	status = _cairo_pdf_surface_emit_bitmap_glyph (surface,
+						       scaled_font,
+						       glyph_index,
+						       glyph_ret);
 
     if (status)
 	_cairo_surface_set_error (&surface->base, status);
@@ -2266,7 +2307,7 @@ _pattern_supported (cairo_pattern_t *pattern)
 static cairo_bool_t cairo_pdf_force_fallbacks = FALSE;
 
 /**
- * cairo_pdf_test_force_fallbacks
+ * _cairo_pdf_test_force_fallbacks
  *
  * Force the PDF surface backend to use image fallbacks for every
  * operation.
@@ -2278,7 +2319,7 @@ static cairo_bool_t cairo_pdf_force_fallbacks = FALSE;
  * </note>
  **/
 void
-cairo_pdf_test_force_fallbacks (void)
+_cairo_pdf_test_force_fallbacks (void)
 {
     cairo_pdf_force_fallbacks = TRUE;
 }
@@ -2440,14 +2481,8 @@ _cairo_pdf_surface_stroke (void			*abstract_surface,
     pdf_path_info_t info;
     cairo_status_t status;
 
-    if (surface->paginated_mode == CAIRO_PAGINATED_MODE_ANALYZE) {
-	/* XXX: Does PDF provide a way we can preserve this hint? For now,
-	 * this will trigger a fallback. */
-	if (antialias == CAIRO_ANTIALIAS_NONE)
-	    return CAIRO_INT_STATUS_UNSUPPORTED;
-
+    if (surface->paginated_mode == CAIRO_PAGINATED_MODE_ANALYZE)
 	return _analyze_operation (surface, op, source);
-    }
 
     assert (_operation_supported (surface, op, source));
 
@@ -2495,14 +2530,8 @@ _cairo_pdf_surface_fill (void			*abstract_surface,
     cairo_status_t status;
     pdf_path_info_t info;
 
-    if (surface->paginated_mode == CAIRO_PAGINATED_MODE_ANALYZE) {
-	/* XXX: Does PDF provide a way we can preserve this hint? For now,
-	 * this will trigger a fallback. */
-	if (antialias == CAIRO_ANTIALIAS_NONE)
-	    return CAIRO_INT_STATUS_UNSUPPORTED;
-
+    if (surface->paginated_mode == CAIRO_PAGINATED_MODE_ANALYZE)
 	return _analyze_operation (surface, op, source);
-    }
 
     assert (_operation_supported (surface, op, source));
 
@@ -2537,14 +2566,6 @@ _cairo_pdf_surface_fill (void			*abstract_surface,
 				 pdf_operator);
 
     return status;
-}
-
-static char
-hex_digit (int i)
-{
-    i &= 0xf;
-    if (i < 10) return '0' + i;
-    return 'a' + (i - 10);
 }
 
 static cairo_int_status_t
@@ -2588,15 +2609,14 @@ _cairo_pdf_surface_show_glyphs (void			*abstract_surface,
 	}
 
 	_cairo_output_stream_printf (surface->output,
-				     "%f %f %f %f %f %f Tm <%c%c> Tj\r\n",
+				     "%f %f %f %f %f %f Tm <%02x> Tj\r\n",
 				     scaled_font->scale.xx,
 				     scaled_font->scale.yx,
 				     -scaled_font->scale.xy,
 				     -scaled_font->scale.yy,
 				     glyphs[i].x,
 				     glyphs[i].y,
-				     hex_digit (subset_glyph_index >> 4),
-				     hex_digit (subset_glyph_index));
+				     subset_glyph_index);
     }
 
     _cairo_output_stream_printf (surface->output,

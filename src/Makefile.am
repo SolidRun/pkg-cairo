@@ -45,6 +45,11 @@ libcairo_xlib_sources = cairo-xlib-surface.c cairo-xlib-screen.c cairo-xlib-priv
 backend_pkgconfigs += cairo-xlib.pc
 endif
 
+if CAIRO_HAS_XLIB_XRENDER_SURFACE
+libcairo_xlib_xrender_headers = cairo-xlib-xrender.h
+backend_pkgconfigs += cairo-xlib-xrender.pc
+endif
+
 if CAIRO_HAS_QUARTZ_SURFACE
 libcairo_quartz_headers = cairo-quartz.h
 libcairo_quartz_sources = cairo-quartz-surface.c cairo-quartz-private.h
@@ -130,6 +135,8 @@ endif
 FONTCONFIG_LIBS=@FONTCONFIG_LIBS@
 XRENDER_LIBS=@XRENDER_LIBS@
 
+BUILT_SOURCES = cairo-features.h
+
 cairoincludedir = $(includedir)/cairo
 cairoinclude_HEADERS =			\
 	cairo.h				\
@@ -145,6 +152,7 @@ cairoinclude_HEADERS =			\
 	$(libcairo_beos_headers)	\
 	$(libcairo_xcb_headers)		\
 	$(libcairo_xlib_headers)	\
+	$(libcairo_xlib_xrender_headers)	\
 	$(libcairo_directfb_headers)
 
 lib_LTLIBRARIES = libcairo.la
@@ -187,6 +195,7 @@ libcairo_la_SOURCES =				\
 	cairo-rectangle.c			\
 	cairo-region.c				\
 	cairo-scaled-font.c			\
+	cairo-scaled-font-test.h		\
 	cairo-slope.c				\
 	cairo-spline.c				\
 	cairo-stroke-style.c			\
@@ -234,7 +243,14 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = cairo.pc $(backend_pkgconfigs)
 DISTCLEANFILES = $(backend_pkgconfigs)
 EXTRA_DIST = cairo-backend.pc.in
+$(backend_pkgconfigs): $(top_srcdir)/configure
+	$(top_builddir)/config.status --recheck
 
+$(top_builddir)/config.h: $(top_srcdir)/config.h.in
+	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) config.h
+
+cairo-features.h:
+	cd $(top_builddir) && ./config.status src/cairo-features.h
 
 cairo.def: $(cairo_win32_api_headers)
 	(echo EXPORTS; \
@@ -257,4 +273,4 @@ install-data-local:
 	  false ;									\
         fi
 
-CLEANFILES = cairo.def
+CLEANFILES = cairo.def cairo-features.h

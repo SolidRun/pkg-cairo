@@ -30,6 +30,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <ctype.h>
+#include <setjmp.h>
+#include <signal.h>
 #include <assert.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -67,6 +70,12 @@ typedef enum cairo_internal_surface_type {
 #define access _access
 #define F_OK 0
 #endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef TRUE
+#define TRUE !FALSE
+#endif
 
 static void
 xunlink (const char *pathname);
@@ -88,6 +97,12 @@ static const char *fail_face = "", *normal_face = "";
  * general-purpose library, and it keeps the tests cleaner to avoid a
  * context object there, (though not a whole lot). */
 FILE *cairo_test_log_file = NULL;
+char *srcdir;
+
+/* Used to catch crashes in a test, such that we report it as such and
+ * continue testing, although one crasher may already have corrupted memory in
+ * an nonrecoverable fashion. */
+jmp_buf jmpbuf;
 
 void
 cairo_test_init (const char *test_name)
@@ -1010,7 +1025,7 @@ create_xcb_surface (cairo_test_t	 *test,
     render_format = _format_from_cairo (c, format);
     if (render_format.id.xid == 0)
 	return NULL;
-    surface = cairo_xcb_surface_create_with_xrender_format (c, xtc->drawable,
+    surface = cairo_xcb_surface_create_with_xrender_format (c, xtc->drawable, root,
 							    &render_format,
 							    width, height);
 
@@ -1213,6 +1228,8 @@ static void
 cleanup_ps (void *closure)
 {
     ps_target_closure_t *ptc = closure;
+    if (ptc->target)
+	cairo_surface_destroy (ptc->target);
     free (ptc->filename);
     free (ptc);
 }
@@ -1220,6 +1237,15 @@ cleanup_ps (void *closure)
 
 #if CAIRO_HAS_PDF_SURFACE && CAIRO_CAN_TEST_PDF_SURFACE
 #include "cairo-pdf.h"
+
+static const char *pdf_ignored_tests[] = {
+    /* We can't match the results of tests that depend on
+     * CAIRO_ANTIALIAS_NONE, (nor do we care). */
+    "ft-text-antialias-none",
+    "rectangle-rounding-error",
+    "unantialiased-shapes",
+    NULL
+};
 
 cairo_user_data_key_t pdf_closure_key;
 
@@ -1240,8 +1266,13 @@ create_pdf_surface (cairo_test_t	 *test,
     int height = test->height;
     pdf_target_closure_t *ptc;
     cairo_surface_t *surface;
+    int i;
 
-    /* Sanitizie back to a real cairo_content_t value. */
+    for (i = 0; pdf_ignored_tests[i] != NULL; i++)
+	if (strcmp (test->name, pdf_ignored_tests[i]) == 0)
+	    return NULL;
+
+    /* Sanitize back to a real cairo_content_t value. */
     if (content == CAIRO_TEST_CONTENT_COLOR_ALPHA_FLATTENED)
 	content = CAIRO_CONTENT_COLOR_ALPHA;
 
@@ -1316,6 +1347,8 @@ static void
 cleanup_pdf (void *closure)
 {
     pdf_target_closure_t *ptc = closure;
+    if (ptc->target)
+	cairo_surface_destroy (ptc->target);
     free (ptc->filename);
     free (ptc);
 }
@@ -1327,6 +1360,7 @@ cleanup_pdf (void *closure)
 static const char *svg_ignored_tests[] = {
     /* rectangle-rounding-error uses CAIRO_ANTIALIAS_NONE,
      * which is not supported */
+    "ft-text-antialias-none",
     "rectangle-rounding-error",
     NULL
 };
@@ -1426,6 +1460,8 @@ static void
 cleanup_svg (void *closure)
 {
     svg_target_closure_t *ptc = closure;
+    if (ptc->target)
+	cairo_surface_destroy (ptc->target);
     free (ptc->filename);
     free (ptc);
 }
@@ -1441,21 +1477,12 @@ cairo_test_for_target (cairo_test_t *test,
     cairo_surface_t *surface;
     cairo_t *cr;
     char *png_name, *ref_name, *diff_name, *offset_str;
-    char *srcdir;
     char *format;
     cairo_test_status_t ret;
     cairo_content_t expected_content;
 
     /* Get the strings ready that we'll need. */
-    srcdir = getenv ("srcdir");
-    if (!srcdir)
-	srcdir = ".";
     format = _cairo_test_content_name (target->content);
-
-    if (dev_offset)
-	xasprintf (&offset_str, "-%d", dev_offset);
-    else
-	offset_str = strdup("");
 
     if (dev_offset)
 	xasprintf (&offset_str, "-%d", dev_offset);
@@ -1596,12 +1623,19 @@ UNWIND_STRINGS:
     return ret;
 }
 
+static void
+segfault_handler (int signal)
+{
+    longjmp (jmpbuf, signal);
+}
+
 static cairo_test_status_t
 cairo_test_expecting (cairo_test_t *test, cairo_test_draw_function_t draw,
 		      cairo_test_status_t expectation)
 {
-    int i, j, num_targets;
+    volatile int i, j, num_targets;
     const char *tname;
+    sighandler_t old_segfault_handler;
     cairo_test_status_t status, ret;
     cairo_test_target_t **targets_to_test;
     cairo_test_target_t targets[] =
@@ -1734,21 +1768,46 @@ cairo_test_expecting (cairo_test_t *test, cairo_test_draw_function_t draw,
 #endif
 	};
 
+#ifdef HAVE_UNISTD_H
+    if (isatty (1)) {
+	fail_face = "\033[41m\033[37m\033[1m";
+	normal_face = "\033[m";
+    }
+#endif
+
+    srcdir = getenv ("srcdir");
+    if (!srcdir)
+	srcdir = ".";
+
     if ((tname = getenv ("CAIRO_TEST_TARGET")) != NULL) {
 	const char *tname = getenv ("CAIRO_TEST_TARGET");
 	num_targets = 0;
 	targets_to_test = NULL;
-	/* realloc isn't exactly the best thing here, but meh. */
-	for (i = 0; i < sizeof(targets)/sizeof(targets[0]); i++) {
-	    if (strcmp (targets[i].name, tname) == 0) {
-		targets_to_test = realloc (targets_to_test, sizeof(cairo_test_target_t *) * (num_targets+1));
-		targets_to_test[num_targets++] = &targets[i];
-	    }
-	}
 
-	if (num_targets == 0) {
-	    fprintf (stderr, "CAIRO_TEST_TARGET '%s' not found in targets list!\n", tname);
-	    exit(-1);
+	while (*tname) {
+	    int found = 0;
+	    const char *end = strpbrk (tname, " \t;:,");
+	    if (!end)
+	        end = tname + strlen (tname);
+
+	    for (i = 0; i < sizeof(targets)/sizeof(targets[0]); i++) {
+		if (strncmp (targets[i].name, tname, end - tname) == 0 &&
+		    !isalnum (targets[i].name[end - tname])) {
+		    /* realloc isn't exactly the best thing here, but meh. */
+		    targets_to_test = realloc (targets_to_test, sizeof(cairo_test_target_t *) * (num_targets+1));
+		    targets_to_test[num_targets++] = &targets[i];
+		    found = 1;
+		}
+	    }
+
+	    if (!found) {
+		fprintf (stderr, "CAIRO_TEST_TARGET '%s' not found in targets list!\n", tname);
+		exit(-1);
+	    }
+
+	    if (*end)
+	      end++;
+	    tname = end;
 	}
     } else {
 	num_targets = sizeof(targets)/sizeof(targets[0]);
@@ -1763,7 +1822,7 @@ cairo_test_expecting (cairo_test_t *test, cairo_test_draw_function_t draw,
      * iff. there is at least one tested backend and that all tested
      * backends return SUCCESS. In other words:
      *
-     *	if      any backend FAILURE
+     *	if      any backend not SUCCESS
      *		-> FAILURE
      *	else if all backends UNTESTED
      *		-> FAILURE
@@ -1781,7 +1840,13 @@ cairo_test_expecting (cairo_test_t *test, cairo_test_draw_function_t draw,
 		    _cairo_test_content_name (target->content),
 		    dev_offset);
 
-	    status = cairo_test_for_target (test, draw, target, dev_offset);
+	    /* Set up a checkpoint to get back to in case of segfaults. */
+	    old_segfault_handler = signal (SIGSEGV, (sighandler_t) segfault_handler);
+	    if (0 == setjmp (jmpbuf))
+		status = cairo_test_for_target (test, draw, target, dev_offset);
+	    else
+	        status = CAIRO_TEST_CRASHED;
+	    signal (SIGSEGV, (sighandler_t) old_segfault_handler);
 
 	    cairo_test_log ("TEST: %s TARGET: %s FORMAT: %s OFFSET: %d RESULT: ",
 			    test->name, target->name,
@@ -1798,6 +1863,11 @@ cairo_test_expecting (cairo_test_t *test, cairo_test_draw_function_t draw,
 	    case CAIRO_TEST_UNTESTED:
 		printf ("UNTESTED\n");
 		cairo_test_log ("UNTESTED\n");
+		break;
+	    case CAIRO_TEST_CRASHED:
+		printf ("%s!!!CRASHED!!!%s\n", fail_face, normal_face);
+		cairo_test_log ("CRASHED\n");
+		ret = CAIRO_TEST_FAILURE;
 		break;
 	    default:
 	    case CAIRO_TEST_FAILURE:
@@ -1839,12 +1909,6 @@ cairo_test_expect_failure (cairo_test_t		      *test,
 cairo_test_status_t
 cairo_test (cairo_test_t *test, cairo_test_draw_function_t draw)
 {
-#ifdef HAVE_UNISTD_H
-    if (isatty (1)) {
-	fail_face = "\033[41m\033[37m\033[1m";
-	normal_face = "\033[m";
-    }
-#endif
     printf ("\n");
     return cairo_test_expecting (test, draw, CAIRO_TEST_SUCCESS);
 }
