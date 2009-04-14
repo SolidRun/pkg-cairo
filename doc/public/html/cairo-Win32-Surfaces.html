@@ -30,16 +30,16 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-SVG-Surfaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2585351" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2600400" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id2662353" class="shortcut">Description</a></nobr></td></tr>
+                  <a href="#id2648057" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-Win32-Surfaces"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id2585351"></a><span class="refentrytitle">Win32 Surfaces</span>
+<a name="id2600400"></a><span class="refentrytitle">Win32 Surfaces</span>
 </h2>
 <p>Win32 Surfaces &#8212; Microsoft Windows surface support</p>
 </td>
@@ -64,17 +64,17 @@ HDC                 <a class="link" href="cairo-Win32-Surfaces.html#cairo-win32-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2662353"></a><h2>Description</h2>
+<a name="id2648057"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2662369"></a><h2>Details</h2>
+<a name="id2648073"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2662379"></a><h3>
+<a name="id2648084"></a><h3>
 <a name="cairo-win32-surface-create"></a>cairo_win32_surface_create ()</h3>
-<a class="indexterm" name="id2662391"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_create          (HDC hdc);</pre>
+<a class="indexterm" name="id2648095"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_create          (HDC hdc);</pre>
 <p>
 Creates a cairo surface that targets the given DC.  The DC will be
 queried for its initial clip extents, and this will be used as the
@@ -102,9 +102,9 @@ be set appropriately.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2662454"></a><h3>
+<a name="id2655172"></a><h3>
 <a name="cairo-win32-surface-create-with-dib"></a>cairo_win32_surface_create_with_dib ()</h3>
-<a class="indexterm" name="id2662468"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_create_with_dib (<a class="link" href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
+<a class="indexterm" name="id2655185"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_create_with_dib (<a class="link" href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
                                                          int width,
                                                          int height);</pre>
 <p>
@@ -145,9 +145,9 @@ bitmap will be uninitialized.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2660371"></a><h3>
+<a name="id2655296"></a><h3>
 <a name="cairo-win32-surface-create-with-ddb"></a>cairo_win32_surface_create_with_ddb ()</h3>
-<a class="indexterm" name="id2660385"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_create_with_ddb (HDC hdc,
+<a class="indexterm" name="id2655309"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_create_with_ddb (HDC hdc,
                                                          <a class="link" href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
                                                          int width,
                                                          int height);</pre>
@@ -194,9 +194,9 @@ bitmap will be uninitialized.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2660517"></a><h3>
+<a name="id2655442"></a><h3>
 <a name="cairo-win32-surface-get-dc"></a>cairo_win32_surface_get_dc ()</h3>
-<a class="indexterm" name="id2660531"></a><pre class="programlisting">HDC                 cairo_win32_surface_get_dc          (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<a class="indexterm" name="id2655456"></a><pre class="programlisting">HDC                 cairo_win32_surface_get_dc          (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
 <p>
 Returns the HDC associated with this surface, or NULL if none.
 Also returns NULL if the surface is not a win32 surface.</p>
@@ -224,9 +224,9 @@ Also returns NULL if the surface is not a win32 surface.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2660608"></a><h3>
+<a name="id2655533"></a><h3>
 <a name="cairo-win32-surface-get-image"></a>cairo_win32_surface_get_image ()</h3>
-<a class="indexterm" name="id2660623"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_get_image       (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<a class="indexterm" name="id2655548"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_win32_surface_get_image       (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
 <p>
 Returns a <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> image surface that refers to the same bits
 as the DIB of the Win32 surface.  If the passed-in win32 surface
@@ -256,9 +256,9 @@ or NULL if the win32 surface is not a DIB.
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2660717"></a><div class="refsect2" lang="en"><a name="id2660718"></a></div>
+<a name="id2655643"></a><div class="refsect2" lang="en"><a name="id2655644"></a></div>
 <hr>
-<div class="refsect2" lang="en"><a name="id2660720"></a></div>
+<div class="refsect2" lang="en"><a name="id2655646"></a></div>
 </div>
 </div>
 </body>
