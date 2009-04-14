@@ -37,6 +37,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @USE_MMX_TRUE@am__append_1 = libpixman-mmx.la
+@USE_MMX_TRUE@am__append_2 = libpixman-mmx.la
 subdir = pixman/src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -48,16 +49,25 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libpixman_mmx_la_LIBADD =
+am__DEPENDENCIES_1 =
+@USE_MMX_TRUE@libpixman_mmx_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libpixman_mmx_la_SOURCES_DIST = fbmmx.c fbmmx.h
 @USE_MMX_TRUE@am_libpixman_mmx_la_OBJECTS = libpixman_mmx_la-fbmmx.lo
 libpixman_mmx_la_OBJECTS = $(am_libpixman_mmx_la_OBJECTS)
 @USE_MMX_TRUE@am_libpixman_mmx_la_rpath =
-@USE_MMX_TRUE@libpixman_la_DEPENDENCIES = libpixman-mmx.la
-am_libpixman_la_OBJECTS = pixregion.lo fbpict.lo icblt.lo icbltone.lo \
-	iccolor.lo icformat.lo icimage.lo icpixels.lo icrect.lo \
-	icstipple.lo ictrap.lo ictransform.lo ictri.lo icutil.lo \
-	fbedge.lo fbtrap.lo fbcompose.lo renderedge.lo
+@USE_MMX_TRUE@am__DEPENDENCIES_2 = libpixman-mmx.la
+libpixman_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2)
+am_libpixman_la_OBJECTS = libpixman_la-pixregion.lo \
+	libpixman_la-fbpict.lo libpixman_la-icblt.lo \
+	libpixman_la-icbltone.lo libpixman_la-iccolor.lo \
+	libpixman_la-icformat.lo libpixman_la-icimage.lo \
+	libpixman_la-icpixels.lo libpixman_la-icrect.lo \
+	libpixman_la-icstipple.lo libpixman_la-ictrap.lo \
+	libpixman_la-ictransform.lo libpixman_la-ictri.lo \
+	libpixman_la-icutil.lo libpixman_la-fbedge.lo \
+	libpixman_la-fbtrap.lo libpixman_la-fbcompose.lo \
+	libpixman_la-renderedge.lo
 libpixman_la_OBJECTS = $(am_libpixman_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -134,6 +144,7 @@ CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@
+CAIRO_LDADD = @CAIRO_LDADD@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
@@ -165,6 +176,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
@@ -200,7 +212,6 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
-MMX_CFLAGS = @MMX_CFLAGS@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
 OS_WIN32_TRUE = @OS_WIN32_TRUE@
@@ -211,6 +222,8 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
+PIXMAN_LDADD = @PIXMAN_LDADD@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
@@ -218,12 +231,13 @@ POPPLER_LIBS = @POPPLER_LIBS@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_MMX_FALSE = @USE_MMX_FALSE@
 USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
-WARN_CFLAGS = @WARN_CFLAGS@
+XARGS = @XARGS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -320,13 +334,16 @@ libpixman_la_SOURCES = \
 	renderedge.c \
 	renderedge.h
 
+libpixman_la_CFLAGS = $(PIXMAN_CFLAGS)
+libpixman_la_LIBADD = $(PIXMAN_LDADD) $(am__append_2)
 @USE_MMX_TRUE@libpixman_mmx_la_SOURCES = \
 @USE_MMX_TRUE@	fbmmx.c		\
 @USE_MMX_TRUE@	fbmmx.h
 
-@USE_MMX_TRUE@libpixman_mmx_la_CFLAGS = @MMX_CFLAGS@ $(WARN_CFLAGS)
-@USE_MMX_TRUE@libpixman_la_LIBADD = libpixman-mmx.la
-INCLUDES = -I$(top_srcdir) -I$(srcdir) @WARN_CFLAGS@
+@USE_MMX_TRUE@libpixman_mmx_la_CFLAGS = $(PIXMAN_CFLAGS)
+@USE_MMX_TRUE@libpixman_mmx_la_LIBADD = $(PIXMAN_LDADD)
+TESTS = check-config.sh
+EXTRA_DIST = $(TESTS)
 all: all-am
 
 .SUFFIXES:
@@ -380,25 +397,25 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbcompose.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbedge.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbpict.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbtrap.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icblt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icbltone.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iccolor.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icformat.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icimage.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icpixels.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icrect.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icstipple.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ictransform.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ictrap.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ictri.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icutil.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-fbcompose.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-fbedge.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-fbpict.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-fbtrap.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icblt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icbltone.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-iccolor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icformat.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icimage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icpixels.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icrect.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icstipple.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-ictransform.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-ictrap.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-ictri.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-icutil.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-pixregion.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_la-renderedge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_mmx_la-fbmmx.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pixregion.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/renderedge.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -427,6 +444,132 @@ libpixman_mmx_la-fbmmx.lo: fbmmx.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fbmmx.c' object='libpixman_mmx_la-fbmmx.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_mmx_la_CFLAGS) $(CFLAGS) -c -o libpixman_mmx_la-fbmmx.lo `test -f 'fbmmx.c' || echo '$(srcdir)/'`fbmmx.c
+
+libpixman_la-pixregion.lo: pixregion.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-pixregion.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-pixregion.Tpo" -c -o libpixman_la-pixregion.lo `test -f 'pixregion.c' || echo '$(srcdir)/'`pixregion.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-pixregion.Tpo" "$(DEPDIR)/libpixman_la-pixregion.Plo"; else rm -f "$(DEPDIR)/libpixman_la-pixregion.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pixregion.c' object='libpixman_la-pixregion.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-pixregion.lo `test -f 'pixregion.c' || echo '$(srcdir)/'`pixregion.c
+
+libpixman_la-fbpict.lo: fbpict.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-fbpict.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-fbpict.Tpo" -c -o libpixman_la-fbpict.lo `test -f 'fbpict.c' || echo '$(srcdir)/'`fbpict.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-fbpict.Tpo" "$(DEPDIR)/libpixman_la-fbpict.Plo"; else rm -f "$(DEPDIR)/libpixman_la-fbpict.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fbpict.c' object='libpixman_la-fbpict.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-fbpict.lo `test -f 'fbpict.c' || echo '$(srcdir)/'`fbpict.c
+
+libpixman_la-icblt.lo: icblt.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icblt.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icblt.Tpo" -c -o libpixman_la-icblt.lo `test -f 'icblt.c' || echo '$(srcdir)/'`icblt.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icblt.Tpo" "$(DEPDIR)/libpixman_la-icblt.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icblt.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icblt.c' object='libpixman_la-icblt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icblt.lo `test -f 'icblt.c' || echo '$(srcdir)/'`icblt.c
+
+libpixman_la-icbltone.lo: icbltone.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icbltone.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icbltone.Tpo" -c -o libpixman_la-icbltone.lo `test -f 'icbltone.c' || echo '$(srcdir)/'`icbltone.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icbltone.Tpo" "$(DEPDIR)/libpixman_la-icbltone.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icbltone.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icbltone.c' object='libpixman_la-icbltone.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icbltone.lo `test -f 'icbltone.c' || echo '$(srcdir)/'`icbltone.c
+
+libpixman_la-iccolor.lo: iccolor.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-iccolor.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-iccolor.Tpo" -c -o libpixman_la-iccolor.lo `test -f 'iccolor.c' || echo '$(srcdir)/'`iccolor.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-iccolor.Tpo" "$(DEPDIR)/libpixman_la-iccolor.Plo"; else rm -f "$(DEPDIR)/libpixman_la-iccolor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iccolor.c' object='libpixman_la-iccolor.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-iccolor.lo `test -f 'iccolor.c' || echo '$(srcdir)/'`iccolor.c
+
+libpixman_la-icformat.lo: icformat.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icformat.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icformat.Tpo" -c -o libpixman_la-icformat.lo `test -f 'icformat.c' || echo '$(srcdir)/'`icformat.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icformat.Tpo" "$(DEPDIR)/libpixman_la-icformat.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icformat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icformat.c' object='libpixman_la-icformat.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icformat.lo `test -f 'icformat.c' || echo '$(srcdir)/'`icformat.c
+
+libpixman_la-icimage.lo: icimage.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icimage.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icimage.Tpo" -c -o libpixman_la-icimage.lo `test -f 'icimage.c' || echo '$(srcdir)/'`icimage.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icimage.Tpo" "$(DEPDIR)/libpixman_la-icimage.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icimage.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icimage.c' object='libpixman_la-icimage.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icimage.lo `test -f 'icimage.c' || echo '$(srcdir)/'`icimage.c
+
+libpixman_la-icpixels.lo: icpixels.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icpixels.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icpixels.Tpo" -c -o libpixman_la-icpixels.lo `test -f 'icpixels.c' || echo '$(srcdir)/'`icpixels.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icpixels.Tpo" "$(DEPDIR)/libpixman_la-icpixels.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icpixels.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icpixels.c' object='libpixman_la-icpixels.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icpixels.lo `test -f 'icpixels.c' || echo '$(srcdir)/'`icpixels.c
+
+libpixman_la-icrect.lo: icrect.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icrect.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icrect.Tpo" -c -o libpixman_la-icrect.lo `test -f 'icrect.c' || echo '$(srcdir)/'`icrect.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icrect.Tpo" "$(DEPDIR)/libpixman_la-icrect.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icrect.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icrect.c' object='libpixman_la-icrect.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icrect.lo `test -f 'icrect.c' || echo '$(srcdir)/'`icrect.c
+
+libpixman_la-icstipple.lo: icstipple.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icstipple.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icstipple.Tpo" -c -o libpixman_la-icstipple.lo `test -f 'icstipple.c' || echo '$(srcdir)/'`icstipple.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icstipple.Tpo" "$(DEPDIR)/libpixman_la-icstipple.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icstipple.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icstipple.c' object='libpixman_la-icstipple.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icstipple.lo `test -f 'icstipple.c' || echo '$(srcdir)/'`icstipple.c
+
+libpixman_la-ictrap.lo: ictrap.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-ictrap.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-ictrap.Tpo" -c -o libpixman_la-ictrap.lo `test -f 'ictrap.c' || echo '$(srcdir)/'`ictrap.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-ictrap.Tpo" "$(DEPDIR)/libpixman_la-ictrap.Plo"; else rm -f "$(DEPDIR)/libpixman_la-ictrap.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ictrap.c' object='libpixman_la-ictrap.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-ictrap.lo `test -f 'ictrap.c' || echo '$(srcdir)/'`ictrap.c
+
+libpixman_la-ictransform.lo: ictransform.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-ictransform.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-ictransform.Tpo" -c -o libpixman_la-ictransform.lo `test -f 'ictransform.c' || echo '$(srcdir)/'`ictransform.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-ictransform.Tpo" "$(DEPDIR)/libpixman_la-ictransform.Plo"; else rm -f "$(DEPDIR)/libpixman_la-ictransform.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ictransform.c' object='libpixman_la-ictransform.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-ictransform.lo `test -f 'ictransform.c' || echo '$(srcdir)/'`ictransform.c
+
+libpixman_la-ictri.lo: ictri.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-ictri.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-ictri.Tpo" -c -o libpixman_la-ictri.lo `test -f 'ictri.c' || echo '$(srcdir)/'`ictri.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-ictri.Tpo" "$(DEPDIR)/libpixman_la-ictri.Plo"; else rm -f "$(DEPDIR)/libpixman_la-ictri.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ictri.c' object='libpixman_la-ictri.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-ictri.lo `test -f 'ictri.c' || echo '$(srcdir)/'`ictri.c
+
+libpixman_la-icutil.lo: icutil.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-icutil.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-icutil.Tpo" -c -o libpixman_la-icutil.lo `test -f 'icutil.c' || echo '$(srcdir)/'`icutil.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-icutil.Tpo" "$(DEPDIR)/libpixman_la-icutil.Plo"; else rm -f "$(DEPDIR)/libpixman_la-icutil.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='icutil.c' object='libpixman_la-icutil.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-icutil.lo `test -f 'icutil.c' || echo '$(srcdir)/'`icutil.c
+
+libpixman_la-fbedge.lo: fbedge.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-fbedge.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-fbedge.Tpo" -c -o libpixman_la-fbedge.lo `test -f 'fbedge.c' || echo '$(srcdir)/'`fbedge.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-fbedge.Tpo" "$(DEPDIR)/libpixman_la-fbedge.Plo"; else rm -f "$(DEPDIR)/libpixman_la-fbedge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fbedge.c' object='libpixman_la-fbedge.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-fbedge.lo `test -f 'fbedge.c' || echo '$(srcdir)/'`fbedge.c
+
+libpixman_la-fbtrap.lo: fbtrap.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-fbtrap.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-fbtrap.Tpo" -c -o libpixman_la-fbtrap.lo `test -f 'fbtrap.c' || echo '$(srcdir)/'`fbtrap.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-fbtrap.Tpo" "$(DEPDIR)/libpixman_la-fbtrap.Plo"; else rm -f "$(DEPDIR)/libpixman_la-fbtrap.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fbtrap.c' object='libpixman_la-fbtrap.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-fbtrap.lo `test -f 'fbtrap.c' || echo '$(srcdir)/'`fbtrap.c
+
+libpixman_la-fbcompose.lo: fbcompose.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-fbcompose.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-fbcompose.Tpo" -c -o libpixman_la-fbcompose.lo `test -f 'fbcompose.c' || echo '$(srcdir)/'`fbcompose.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-fbcompose.Tpo" "$(DEPDIR)/libpixman_la-fbcompose.Plo"; else rm -f "$(DEPDIR)/libpixman_la-fbcompose.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fbcompose.c' object='libpixman_la-fbcompose.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-fbcompose.lo `test -f 'fbcompose.c' || echo '$(srcdir)/'`fbcompose.c
+
+libpixman_la-renderedge.lo: renderedge.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -MT libpixman_la-renderedge.lo -MD -MP -MF "$(DEPDIR)/libpixman_la-renderedge.Tpo" -c -o libpixman_la-renderedge.lo `test -f 'renderedge.c' || echo '$(srcdir)/'`renderedge.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_la-renderedge.Tpo" "$(DEPDIR)/libpixman_la-renderedge.Plo"; else rm -f "$(DEPDIR)/libpixman_la-renderedge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='renderedge.c' object='libpixman_la-renderedge.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_la_CFLAGS) $(CFLAGS) -c -o libpixman_la-renderedge.lo `test -f 'renderedge.c' || echo '$(srcdir)/'`renderedge.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -486,6 +629,79 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
+check-TESTS: $(TESTS)
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
+	srcdir=$(srcdir); export srcdir; \
+	list='$(TESTS)'; \
+	if test -n "$$list"; then \
+	  for tst in $$list; do \
+	    if test -f ./$$tst; then dir=./; \
+	    elif test -f $$tst; then dir=; \
+	    else dir="$(srcdir)/"; fi; \
+	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xpass=`expr $$xpass + 1`; \
+		failed=`expr $$failed + 1`; \
+		echo "XPASS: $$tst"; \
+	      ;; \
+	      *) \
+		echo "PASS: $$tst"; \
+	      ;; \
+	      esac; \
+	    elif test $$? -ne 77; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xfail=`expr $$xfail + 1`; \
+		echo "XFAIL: $$tst"; \
+	      ;; \
+	      *) \
+		failed=`expr $$failed + 1`; \
+		echo "FAIL: $$tst"; \
+	      ;; \
+	      esac; \
+	    else \
+	      skip=`expr $$skip + 1`; \
+	      echo "SKIP: $$tst"; \
+	    fi; \
+	  done; \
+	  if test "$$failed" -eq 0; then \
+	    if test "$$xfail" -eq 0; then \
+	      banner="All $$all tests passed"; \
+	    else \
+	      banner="All $$all tests behaved as expected ($$xfail expected failures)"; \
+	    fi; \
+	  else \
+	    if test "$$xpass" -eq 0; then \
+	      banner="$$failed of $$all tests failed"; \
+	    else \
+	      banner="$$failed of $$all tests did not behave as expected ($$xpass unexpected passes)"; \
+	    fi; \
+	  fi; \
+	  dashes="$$banner"; \
+	  skipped=""; \
+	  if test "$$skip" -ne 0; then \
+	    skipped="($$skip tests were not run)"; \
+	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$skipped"; \
+	  fi; \
+	  report=""; \
+	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
+	    report="Please report to $(PACKAGE_BUGREPORT)"; \
+	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$report"; \
+	  fi; \
+	  dashes=`echo "$$dashes" | sed s/./=/g`; \
+	  echo "$$dashes"; \
+	  echo "$$banner"; \
+	  test -z "$$skipped" || echo "$$skipped"; \
+	  test -z "$$report" || echo "$$report"; \
+	  echo "$$dashes"; \
+	  test "$$failed" -eq 0; \
+	else :; fi
+
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
@@ -514,6 +730,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
 all-am: Makefile $(LTLIBRARIES)
 installdirs:
@@ -592,17 +809,17 @@ ps-am:
 
 uninstall-am: uninstall-info-am
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLTLIBRARIES ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-info-am
+.PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
+	clean-generic clean-libtool clean-noinstLTLIBRARIES ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -139,6 +139,7 @@ CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@
+CAIRO_LDADD = @CAIRO_LDADD@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
@@ -170,6 +171,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
@@ -205,7 +207,6 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
-MMX_CFLAGS = @MMX_CFLAGS@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
 OS_WIN32_TRUE = @OS_WIN32_TRUE@
@@ -216,6 +217,8 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
+PIXMAN_LDADD = @PIXMAN_LDADD@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
@@ -223,12 +226,13 @@ POPPLER_LIBS = @POPPLER_LIBS@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_MMX_FALSE = @USE_MMX_FALSE@
 USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
-WARN_CFLAGS = @WARN_CFLAGS@
+XARGS = @XARGS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -297,12 +301,17 @@ xlib_xrender_LIBS = @xlib_xrender_LIBS@
 DIST_SUBDIRS = pixman src boilerplate test perf doc
 SUBDIRS = pixman src doc $(am__append_1)
 EXTRA_DIST = \
+	AUTHORS \
+	BIBLIOGRAPHY \
 	BUGS \
 	CODING_STYLE \
 	COPYING \
 	COPYING-LGPL-2.1 \
 	COPYING-MPL-1.1 \
+	INSTALL \
+	NEWS \
 	PORTING_GUIDE \
+	README \
 	RELEASING \
 	ROADMAP \
 	TODO
@@ -809,6 +818,17 @@ check-valgrind: all
 	cd test && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
 perf: all
 	cd perf && $(MAKE) $(AM_MAKEFLAGS) perf
+lcov: check
+	$(LTP) --directory $(top_builddir) --capture --output-file cairo-lcov.info --test-name CAIRO_TEST --no-checksum
+	LANG=C $(LTP_GENHTML) --prefix $(top_builddir) --output-directory cairo-test-lcov --title "Cairo Test Code Coverage" --show-details cairo-test-lcov.info
+lcov-perf: perf
+	$(LTP) --directory $(top_builddir) --capture --output-file cairo-perf-lcov.info --test-name CAIRO_PERF --no-checksum
+	LANG=C $(LTP_GENHTML) --prefix $(top_builddir) --output-directory cairo-perf-lcov --title "Cairo Perf Code Coverage" --show-details cairo-perf-lcov.info
+lcov-clean:
+	$(LTP) --directory $(top_builddir) --reset
+	$(RM) -rf \
+	    cairo-test-lcov.info cairo-test-lcov \
+	    cairo-perf-lcov.info cairo-perf-lcov
 
 changelogs:
 	@$(MAKE) $(AM_MAKEFLAGS) $(CHANGELOGS)
@@ -979,7 +999,7 @@ doc-publish: doc
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
 	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && rm -f manual && ln -s $(MANUAL_DATED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
 
-.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish
+.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish lcov lcov-perf lcov-clean
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

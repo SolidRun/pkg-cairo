@@ -35,12 +35,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@CAIRO_HAS_BEOS_SURFACE_TRUE@am__append_1 = cairo-test-beos.cpp cairo-test-beos.h
-@CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__append_2 = cairo-test-directfb.c cairo-test-directfb.h
-@CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE@am__append_3 = $(GLITZ_AGL_LIBS)
-@CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_TRUE@am__append_4 = $(GLITZ_EGL_LIBS)
-@CAIRO_CAN_TEST_GLITZ_GLX_SURFACE_TRUE@am__append_5 = $(GLITZ_GLX_LIBS)
-@CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE@am__append_6 = $(GLITZ_WGL_LIBS)
+@CAIRO_HAS_QUARTZ_SURFACE_TRUE@am__append_1 =  \
+@CAIRO_HAS_QUARTZ_SURFACE_TRUE@	cairo-quartz-boilerplate.c \
+@CAIRO_HAS_QUARTZ_SURFACE_TRUE@	cairo-quartz-boilerplate-private.h
+@CAIRO_HAS_BEOS_SURFACE_TRUE@am__append_2 = cairo-test-beos.cpp cairo-test-beos.h
+@CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__append_3 = cairo-test-directfb.c cairo-test-directfb.h
+@CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE@am__append_4 = $(GLITZ_AGL_LIBS)
+@CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_TRUE@am__append_5 = $(GLITZ_EGL_LIBS)
+@CAIRO_CAN_TEST_GLITZ_GLX_SURFACE_TRUE@am__append_6 = $(GLITZ_GLX_LIBS)
+@CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE@am__append_7 = $(GLITZ_WGL_LIBS)
 subdir = boilerplate
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -61,16 +64,21 @@ am__DEPENDENCIES_1 =
 @CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE@am__DEPENDENCIES_5 =  \
 @CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE@	$(am__DEPENDENCIES_1)
 libcairoboilerplate_la_DEPENDENCIES = $(top_builddir)/src/libcairo.la \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_5)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5)
 am__libcairoboilerplate_la_SOURCES_DIST = cairo-boilerplate.c \
-	cairo-boilerplate.h xmalloc.c xmalloc.h cairo-test-beos.cpp \
-	cairo-test-beos.h cairo-test-directfb.c cairo-test-directfb.h
-@CAIRO_HAS_BEOS_SURFACE_TRUE@am__objects_1 = libcairoboilerplate_la-cairo-test-beos.lo
-@CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__objects_2 =  \
+	cairo-boilerplate.h xmalloc.c xmalloc.h \
+	cairo-quartz-boilerplate.c cairo-quartz-boilerplate-private.h \
+	cairo-test-beos.cpp cairo-test-beos.h cairo-test-directfb.c \
+	cairo-test-directfb.h
+@CAIRO_HAS_QUARTZ_SURFACE_TRUE@am__objects_1 =  \
+@CAIRO_HAS_QUARTZ_SURFACE_TRUE@	cairo-quartz-boilerplate.lo
+@CAIRO_HAS_BEOS_SURFACE_TRUE@am__objects_2 = libcairoboilerplate_la-cairo-test-beos.lo
+@CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__objects_3 =  \
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@	cairo-test-directfb.lo
 am_libcairoboilerplate_la_OBJECTS = cairo-boilerplate.lo xmalloc.lo \
-	$(am__objects_1) $(am__objects_2)
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 libcairoboilerplate_la_OBJECTS = $(am_libcairoboilerplate_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -154,6 +162,7 @@ CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@
+CAIRO_LDADD = @CAIRO_LDADD@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
@@ -185,6 +194,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
@@ -220,7 +230,6 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
-MMX_CFLAGS = @MMX_CFLAGS@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
 OS_WIN32_TRUE = @OS_WIN32_TRUE@
@@ -231,6 +240,8 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
+PIXMAN_LDADD = @PIXMAN_LDADD@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
@@ -238,12 +249,13 @@ POPPLER_LIBS = @POPPLER_LIBS@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_MMX_FALSE = @USE_MMX_FALSE@
 USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
-WARN_CFLAGS = @WARN_CFLAGS@
+XARGS = @XARGS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -312,10 +324,10 @@ xlib_xrender_LIBS = @xlib_xrender_LIBS@
 EXTRA_LTLIBRARIES = libcairoboilerplate.la
 libcairoboilerplate_la_SOURCES = cairo-boilerplate.c \
 	cairo-boilerplate.h xmalloc.c xmalloc.h $(am__append_1) \
-	$(am__append_2)
+	$(am__append_2) $(am__append_3)
 libcairoboilerplate_la_LIBADD = $(top_builddir)/src/libcairo.la \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6)
+	$(CAIRO_LDADD) $(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7)
 # BeOS system headers trigger this warning
 @CAIRO_HAS_BEOS_SURFACE_TRUE@libcairoboilerplate_la_CXXFLAGS = -Wno-multichar
 
@@ -377,6 +389,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-quartz-boilerplate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-test-directfb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcairoboilerplate_la-cairo-test-beos.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmalloc.Plo@am__quote@
