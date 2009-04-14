@@ -20,18 +20,24 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _ICINT_H_
-#define _ICINT_H_
+#ifndef _PIXMANINT_H_
+#define _PIXMANINT_H_
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
 
-#include "pixman.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#undef inline
+#define inline __inline
+#endif
+
+#include "pixman.h"
 
 #undef MIN
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
@@ -1067,4 +1073,4 @@ typedef	xFixed_16_16	xFixed;
 		       (*((a)+2) = (CARD8) ((v) >> 16))))
 #endif
 
-#endif /* _ICINT_H_ */
+#endif /* _PIXMANINT_H_ */

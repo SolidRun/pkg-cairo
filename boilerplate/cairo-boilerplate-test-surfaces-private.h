@@ -1,6 +1,6 @@
 /* -*- Mode: c; c-basic-offset: 4; indent-tabs-mode: t; tab-width: 8; -*- */
 /*
- * Copyright © 2004,2007 Red Hat, Inc.
+ * Copyright © 2004,2006 Red Hat, Inc.
  *
  * Permission to use, copy, modify, distribute, and sell this software
  * and its documentation for any purpose is hereby granted without
@@ -24,18 +24,40 @@
  * Author: Carl D. Worth <cworth@cworth.org>
  */
 
-#ifndef _CAIRO_QUARTZ_BOILERPLATE_PRIVATE_H_
-#define _CAIRO_QUARTZ_BOILERPLATE_PRIVATE_H_
+#ifndef _CAIRO_BOILERPLATE_TEST_SURFACES_PRIVATE_H_
+#define _CAIRO_BOILERPLATE_TEST_SURFACES_PRIVATE_H_
 
 cairo_surface_t *
-_cairo_quartz_boilerplate_create_surface (const char		*name,
-					  cairo_content_t	 content,
-					  int			 width,
-					  int			 height,
-					  cairo_boilerplate_mode_t  mode,
-					  void			**closure);
+_cairo_boilerplate_test_fallback_create_surface (const char			 *name,
+						 cairo_content_t		  content,
+						 int				  width,
+						 int				  height,
+						 cairo_boilerplate_mode_t	  mode,
+						 void				**closure);
+
+
+cairo_surface_t *
+_cairo_boilerplate_test_meta_create_surface (const char			 *name,
+					     cairo_content_t		  content,
+					     int			  width,
+					     int			  height,
+					     cairo_boilerplate_mode_t	  mode,
+					     void			**closure);
+
+
+cairo_surface_t *
+_cairo_boilerplate_test_paginated_create_surface (const char			 *name,
+						  cairo_content_t		  content,
+						  int				  width,
+						  int				  height,
+						  cairo_boilerplate_mode_t	  mode,
+						  void				**closure);
+
+cairo_status_t
+_cairo_boilerplate_test_paginated_surface_write_to_png (cairo_surface_t	*surface,
+						        const char	*filename);
 
 void
-_cairo_quartz_boilerplate_cleanup (void *closure);
+_cairo_boilerplate_test_paginated_cleanup (void *closure);
 
 #endif

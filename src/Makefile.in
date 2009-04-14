@@ -85,30 +85,33 @@ am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
 	cairo-arc.c cairo-arc-private.h cairo-array.c \
 	cairo-base85-stream.c cairo-bentley-ottmann.c cairo-cache.c \
 	cairo-cache-private.h cairo-clip.c cairo-clip-private.h \
-	cairo-color.c cairo-debug.c cairo-fixed.c cairo-font.c \
+	cairo-color.c cairo-debug.c cairo-fixed.c cairo-font-face.c \
 	cairo-font-options.c cairo-freelist.c cairo-freelist-private.h \
 	cairo-gstate.c cairo-gstate-private.h cairo-hash.c \
 	cairo-hash-private.h cairo-hull.c cairo-image-surface.c \
 	cairo-lzw.c cairo-matrix.c cairo-mutex.c \
 	cairo-mutex-list-private.h cairo-mutex-private.h \
-	cairo-operator.c cairo-path.c cairo-path-private.h \
-	cairo-path-bounds.c cairo-path-fill.c cairo-path-fixed.c \
-	cairo-path-fixed-private.h cairo-path-stroke.c cairo-pen.c \
-	cairo-polygon.c cairo-rectangle.c cairo-region.c \
-	cairo-scaled-font.c cairo-scaled-font-test.h cairo-skiplist.c \
+	cairo-mutex-type-private.h cairo-operator.c cairo-path.c \
+	cairo-path-private.h cairo-path-bounds.c cairo-path-fill.c \
+	cairo-path-fixed.c cairo-path-fixed-private.h \
+	cairo-path-stroke.c cairo-pen.c cairo-polygon.c \
+	cairo-rectangle.c cairo-region.c cairo-scaled-font.c \
+	cairo-scaled-font-private.h cairo-skiplist.c \
 	cairo-skiplist-private.h cairo-slope.c cairo-spline.c \
 	cairo-stroke-style.c cairo-surface.c cairo-surface-fallback.c \
-	cairo-surface-fallback-private.h cairo-traps.c cairo-pattern.c \
+	cairo-surface-fallback-private.h cairo-surface-private.h \
+	cairo-traps.c cairo-types-private.h cairo-pattern.c \
 	cairo-unicode.c cairo-output-stream.c \
 	cairo-output-stream-private.h cairo-wideint.c \
 	cairo-wideint-private.h cairo-meta-surface.c \
-	cairo-meta-surface-private.h cairo-paginated-surface.c \
-	cairo-paginated-surface-private.h cairo-analysis-surface.c \
-	cairo-analysis-surface-private.h cairo-atsui-font.c \
-	cairo-ft-font.c cairo-ft-private.h cairo-ps-surface.c \
-	cairo-ps-test.h cairo-pdf-surface.c cairo-deflate-stream.c \
-	cairo-pdf-test.h cairo-png.c cairo-svg-surface.c \
-	cairo-svg-test.h test-fallback-surface.c \
+	cairo-meta-surface-private.h cairo-paginated-private.h \
+	cairo-paginated-surface.c cairo-paginated-surface-private.h \
+	cairo-analysis-surface.c cairo-analysis-surface-private.h \
+	cairo-atsui-font.c cairo-ft-font.c cairo-ft-private.h \
+	cairo-ps-surface.c cairo-ps-surface-private.h \
+	cairo-pdf-surface.c cairo-pdf-surface-private.h \
+	cairo-deflate-stream.c cairo-png.c cairo-svg-surface.c \
+	cairo-svg-surface-private.h test-fallback-surface.c \
 	test-fallback-surface.h test-meta-surface.c \
 	test-meta-surface.h test-paginated-surface.c \
 	test-paginated-surface.h cairo-cff-subset.c \
@@ -116,12 +119,13 @@ am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
 	cairo-type1-private.h cairo-truetype-subset-private.h \
 	cairo-scaled-font-subsets.c \
 	cairo-scaled-font-subsets-private.h cairo-type1-subset.c \
-	cairo-xlib-surface.c cairo-xlib-screen.c cairo-xlib-private.h \
-	cairo-xlib-test.h cairo-xcb-surface.c cairo-quartz-surface.c \
-	cairo-quartz-private.h cairo-glitz-surface.c \
-	cairo-glitz-private.h cairo-win32-surface.c \
-	cairo-win32-private.h cairo-win32-font.c cairo-os2-surface.c \
-	cairo-os2-private.h cairo-directfb-surface.c cairoint.h
+	cairo-xlib-surface.c cairo-xlib-surface-private.h \
+	cairo-xlib-screen.c cairo-xlib-private.h cairo-xcb-surface.c \
+	cairo-quartz-surface.c cairo-quartz-private.h \
+	cairo-glitz-surface.c cairo-glitz-private.h \
+	cairo-win32-surface.c cairo-win32-private.h cairo-win32-font.c \
+	cairo-os2-surface.c cairo-os2-private.h \
+	cairo-directfb-surface.c cairoint.h
 @CAIRO_HAS_ATSUI_FONT_TRUE@am__objects_1 = cairo-atsui-font.lo
 @CAIRO_HAS_FT_FONT_TRUE@am__objects_2 = cairo-ft-font.lo
 @CAIRO_HAS_PS_SURFACE_TRUE@am__objects_3 = cairo-ps-surface.lo
@@ -156,7 +160,7 @@ am__objects_19 = $(am__objects_18)
 am_libcairo_la_OBJECTS = cairo.lo cairo-arc.lo cairo-array.lo \
 	cairo-base85-stream.lo cairo-bentley-ottmann.lo cairo-cache.lo \
 	cairo-clip.lo cairo-color.lo cairo-debug.lo cairo-fixed.lo \
-	cairo-font.lo cairo-font-options.lo cairo-freelist.lo \
+	cairo-font-face.lo cairo-font-options.lo cairo-freelist.lo \
 	cairo-gstate.lo cairo-hash.lo cairo-hull.lo \
 	cairo-image-surface.lo cairo-lzw.lo cairo-matrix.lo \
 	cairo-mutex.lo cairo-operator.lo cairo-path.lo \
@@ -223,6 +227,7 @@ AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -298,6 +303,7 @@ DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLE_SOME_FLOATING_POINT_FALSE = @DISABLE_SOME_FLOATING_POINT_FALSE@
 DISABLE_SOME_FLOATING_POINT_TRUE = @DISABLE_SOME_FLOATING_POINT_TRUE@
+DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -349,6 +355,7 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
 OS_WIN32_TRUE = @OS_WIN32_TRUE@
@@ -450,21 +457,25 @@ backend_pkgconfigs = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_15) $(am__append_16) $(am__append_17) \
 	$(am__append_18) $(am__append_19)
 @CAIRO_HAS_PS_SURFACE_TRUE@libcairo_ps_headers = cairo-ps.h
-@CAIRO_HAS_PS_SURFACE_TRUE@libcairo_ps_sources = cairo-ps-surface.c cairo-ps-test.h
+@CAIRO_HAS_PS_SURFACE_TRUE@libcairo_ps_sources = cairo-ps-surface.c cairo-ps-surface-private.h
 @CAIRO_HAS_PDF_SURFACE_TRUE@libcairo_font_subset_sources = $(font_subset_sources)
 @CAIRO_HAS_PS_SURFACE_TRUE@libcairo_font_subset_sources = $(font_subset_sources)
 @CAIRO_HAS_SVG_SURFACE_TRUE@libcairo_font_subset_sources = $(font_subset_sources)
 @CAIRO_HAS_PDF_SURFACE_TRUE@libcairo_pdf_headers = cairo-pdf.h
-@CAIRO_HAS_PDF_SURFACE_TRUE@libcairo_pdf_sources = cairo-pdf-surface.c cairo-deflate-stream.c cairo-pdf-test.h
+@CAIRO_HAS_PDF_SURFACE_TRUE@libcairo_pdf_sources = cairo-pdf-surface.c cairo-pdf-surface-private.h \
+@CAIRO_HAS_PDF_SURFACE_TRUE@		       cairo-deflate-stream.c
+
 @CAIRO_HAS_PNG_FUNCTIONS_TRUE@libcairo_png_sources = cairo-png.c
 @CAIRO_HAS_SVG_SURFACE_TRUE@libcairo_svg_headers = cairo-svg.h
-@CAIRO_HAS_SVG_SURFACE_TRUE@libcairo_svg_sources = cairo-svg-surface.c cairo-svg-test.h
+@CAIRO_HAS_SVG_SURFACE_TRUE@libcairo_svg_sources = cairo-svg-surface.c cairo-svg-surface-private.h
 @CAIRO_HAS_TEST_SURFACES_TRUE@libcairo_test_sources = test-fallback-surface.c test-fallback-surface.h \
 @CAIRO_HAS_TEST_SURFACES_TRUE@			test-meta-surface.c test-meta-surface.h		\
 @CAIRO_HAS_TEST_SURFACES_TRUE@			test-paginated-surface.c test-paginated-surface.h
 
 @CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_headers = cairo-xlib.h cairo-xlib-xrender.h
-@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_sources = cairo-xlib-surface.c cairo-xlib-screen.c cairo-xlib-private.h cairo-xlib-test.h
+@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_sources = cairo-xlib-surface.c cairo-xlib-surface-private.h \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@			cairo-xlib-screen.c cairo-xlib-private.h
+
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@libcairo_xlib_xrender_headers = cairo-xlib-xrender.h
 @CAIRO_HAS_XCB_SURFACE_TRUE@libcairo_xcb_headers = cairo-xcb.h cairo-xcb-xrender.h
 @CAIRO_HAS_XCB_SURFACE_TRUE@libcairo_xcb_sources = cairo-xcb-surface.c
@@ -533,7 +544,7 @@ libcairo_la_SOURCES = \
 	cairo-color.c				\
 	cairo-debug.c				\
 	cairo-fixed.c				\
-	cairo-font.c				\
+	cairo-font-face.c			\
 	cairo-font-options.c			\
 	cairo-freelist.c			\
 	cairo-freelist-private.h		\
@@ -548,6 +559,7 @@ libcairo_la_SOURCES = \
 	cairo-mutex.c				\
 	cairo-mutex-list-private.h		\
 	cairo-mutex-private.h			\
+	cairo-mutex-type-private.h		\
 	cairo-operator.c			\
 	cairo-path.c				\
 	cairo-path-private.h			\
@@ -561,7 +573,7 @@ libcairo_la_SOURCES = \
 	cairo-rectangle.c			\
 	cairo-region.c				\
 	cairo-scaled-font.c			\
-	cairo-scaled-font-test.h		\
+	cairo-scaled-font-private.h		\
 	cairo-skiplist.c			\
 	cairo-skiplist-private.h		\
 	cairo-slope.c				\
@@ -570,7 +582,9 @@ libcairo_la_SOURCES = \
 	cairo-surface.c				\
 	cairo-surface-fallback.c		\
 	cairo-surface-fallback-private.h	\
+	cairo-surface-private.h			\
 	cairo-traps.c				\
+	cairo-types-private.h			\
 	cairo-pattern.c				\
 	cairo-unicode.c				\
 	cairo-output-stream.c			\
@@ -579,6 +593,7 @@ libcairo_la_SOURCES = \
 	cairo-wideint-private.h			\
 	cairo-meta-surface.c			\
 	cairo-meta-surface-private.h		\
+	cairo-paginated-private.h		\
 	cairo-paginated-surface.c		\
 	cairo-paginated-surface-private.h	\
 	cairo-analysis-surface.c		\
@@ -707,8 +722,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-deflate-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-directfb-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-fixed.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-font-face.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-font-options.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-freelist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-ft-font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-glitz-surface.Plo@am__quote@

@@ -9,12 +9,13 @@ make check
 
 */
 
+#include "cairo-boilerplate.h"
+#include "cairo-boilerplate-directfb-private.h"
+
+#include <cairo-directfb.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "cairo-boilerplate.h"
-#include <directfb.h>
-#include "cairo-directfb.h"
-#include "cairo-test-directfb.h"
 
 /* macro for a safe call to DirectFB functions */
 #define DFBCHECK(x...) \
@@ -59,10 +60,11 @@ static DFBInfo *init(void) {
 }
 
 static cairo_surface_t *
-create_directfb_window_surface (DFBInfo *info,
-		     cairo_content_t		  content,
-		     int			  width,
-		     int			  height) {
+_cairo_boilerplate_directfb_window_create_surface (DFBInfo		*info,
+						   cairo_content_t	 content,
+						   int			 width,
+						   int			 height)
+{
 	DFBWindowDescription desc;
 	int err;
 	desc.flags  = ( DWDESC_POSX | DWDESC_POSY |
@@ -87,10 +89,11 @@ create_directfb_window_surface (DFBInfo *info,
 }
 
 static cairo_surface_t *
-create_directfb_bitmap_surface (DFBInfo *info,
-		     cairo_content_t		  content,
-		     int			  width,
-		     int			  height) {
+_cairo_boilerplate_directfb_bitmap_create_surface (DFBInfo		*info,
+						   cairo_content_t	 content,
+						   int			 width,
+						   int			 height)
+{
 	int  err;
 	DFBSurfaceDescription  desc;
 
@@ -104,7 +107,7 @@ create_directfb_bitmap_surface (DFBInfo *info,
 }
 
 void
-cleanup_directfb (void* closure) {
+_cairo_boilerplate_directfb_cleanup (void* closure) {
 	DFBInfo *info = (DFBInfo *)closure;
 	if( info->surface )
 		info->surface->Release( info->surface );
@@ -117,16 +120,17 @@ cleanup_directfb (void* closure) {
 }
 
 cairo_surface_t *
-create_directfb_surface (const char			 *name,
-		     cairo_content_t		  content,
-		     int			  width,
-		     int			  height,
-		     cairo_boilerplate_mode_t	  mode,
-		     void			**closure) {
-    
+_cairo_boilerplate_directfb_create_surface (const char			 *name,
+					    cairo_content_t		  content,
+					    int				  width,
+					    int				  height,
+					    cairo_boilerplate_mode_t	  mode,
+					    void			**closure)
+{
+
     DFBInfo* info= init();
     *closure = info;
-    if( !info ) { 
+    if( !info ) {
 	    CAIRO_BOILERPLATE_LOG ("Failed to init directfb:\n");
         return NULL;
     }
@@ -137,7 +141,7 @@ create_directfb_surface (const char			 *name,
 	height = 1;
 
     if (mode == CAIRO_BOILERPLATE_MODE_TEST)
-	return create_directfb_bitmap_surface (info, content, width, height);
+	return _cairo_boilerplate_directfb_bitmap_create_surface (info, content, width, height);
     else /* mode == CAIRO_BOILERPLATE_MODE_PERF */
-	return create_directfb_window_surface (info, content, width, height);
+	return _cairo_boilerplate_directfb_window_create_surface (info, content, width, height);
 }
