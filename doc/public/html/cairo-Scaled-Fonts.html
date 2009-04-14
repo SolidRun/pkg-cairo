@@ -30,16 +30,16 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-Font-Options.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2606471" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2627031" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id2576912" class="shortcut">Description</a></nobr></td></tr>
+                  <a href="#id2648455" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-Scaled-Fonts"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id2606471"></a><span class="refentrytitle">Scaled Fonts</span>
+<a name="id2627031"></a><span class="refentrytitle">Scaled Fonts</span>
 </h2>
 <p>Scaled Fonts &#8212; Caching metrics for a particular font size</p>
 </td>
@@ -89,17 +89,17 @@ void*               <a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-f
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2576912"></a><h2>Description</h2>
+<a name="id2648455"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2576928"></a><h2>Details</h2>
+<a name="id2648470"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2576939"></a><h3>
+<a name="id2648481"></a><h3>
 <a name="cairo-scaled-font-t"></a>cairo_scaled_font_t</h3>
-<a class="indexterm" name="id2576951"></a><pre class="programlisting">typedef struct _cairo_scaled_font cairo_scaled_font_t;
+<a class="indexterm" name="id2648494"></a><pre class="programlisting">typedef struct _cairo_scaled_font cairo_scaled_font_t;
 </pre>
 <p>
 A <a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t"><span class="type">cairo_scaled_font_t</span></a> is a font scaled to a particular size and device
@@ -121,9 +121,9 @@ Memory management of <a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2577030"></a><h3>
+<a name="id2648572"></a><h3>
 <a name="cairo-scaled-font-create"></a>cairo_scaled_font_create ()</h3>
-<a class="indexterm" name="id2577041"></a><pre class="programlisting"><a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a>* cairo_scaled_font_create           (<a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a> *font_face,
+<a class="indexterm" name="id2648583"></a><pre class="programlisting"><a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a>* cairo_scaled_font_create           (<a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a> *font_face,
                                                          const <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *font_matrix,
                                                          const <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *ctm,
                                                          const <a class="link" href="cairo-Font-Options.html#cairo-font-options-t">cairo_font_options_t</a> *options);</pre>
@@ -174,9 +174,9 @@ be used.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2582071"></a><h3>
+<a name="id2594492"></a><h3>
 <a name="cairo-scaled-font-reference"></a>cairo_scaled_font_reference ()</h3>
-<a class="indexterm" name="id2582083"></a><pre class="programlisting"><a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a>* cairo_scaled_font_reference        (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
+<a class="indexterm" name="id2594504"></a><pre class="programlisting"><a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a>* cairo_scaled_font_reference        (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 Increases the reference count on <em class="parameter"><code>scaled_font</code></em> by one. This prevents
 <em class="parameter"><code>scaled_font</code></em> from being destroyed until a matching call to
@@ -207,9 +207,9 @@ this function does nothing)
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2582201"></a><h3>
+<a name="id2594622"></a><h3>
 <a name="cairo-scaled-font-destroy"></a>cairo_scaled_font_destroy ()</h3>
-<a class="indexterm" name="id2582213"></a><pre class="programlisting">void                cairo_scaled_font_destroy           (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
+<a class="indexterm" name="id2594633"></a><pre class="programlisting">void                cairo_scaled_font_destroy           (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 Decreases the reference count on <em class="parameter"><code>font</code></em> by one. If the result
 is zero, then <em class="parameter"><code>font</code></em> and all associated resources are freed.
@@ -228,9 +228,9 @@ See <a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-reference"><
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649663"></a><h3>
+<a name="id2649695"></a><h3>
 <a name="cairo-scaled-font-status"></a>cairo_scaled_font_status ()</h3>
-<a class="indexterm" name="id2649673"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_scaled_font_status            (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
+<a class="indexterm" name="id2649706"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_scaled_font_status            (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 Checks whether an error has previously occurred for this
 scaled_font.</p>
@@ -247,8 +247,12 @@ scaled_font.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></p></td>
-<td> <a class="link" href="cairo-Error-Handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or another error such as
-  <a class="link" href="cairo-Error-Handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>.
+<td> <a
+href="../cairo/cairo-Error-Handling.html#CAIRO-STATUS-SUCCESS:CAPS"
+><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or another error such as
+  <a
+href="../cairo/cairo-Error-Handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"
+><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>.
 </td>
 </tr>
 </tbody>
@@ -256,9 +260,9 @@ scaled_font.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649754"></a><h3>
+<a name="id2649786"></a><h3>
 <a name="cairo-font-extents-t"></a>cairo_font_extents_t</h3>
-<a class="indexterm" name="id2649765"></a><pre class="programlisting">typedef struct {
+<a class="indexterm" name="id2649797"></a><pre class="programlisting">typedef struct {
     double ascent;
     double descent;
     double height;
@@ -336,9 +340,9 @@ matrix), but otherwise will remain unchanged.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649973"></a><h3>
+<a name="id2650005"></a><h3>
 <a name="cairo-scaled-font-extents"></a>cairo_scaled_font_extents ()</h3>
-<a class="indexterm" name="id2649985"></a><pre class="programlisting">void                cairo_scaled_font_extents           (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2650017"></a><pre class="programlisting">void                cairo_scaled_font_extents           (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          <a class="link" href="cairo-Scaled-Fonts.html#cairo-font-extents-t">cairo_font_extents_t</a> *extents);</pre>
 <p>
 Gets the metrics for a <a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t"><span class="type">cairo_scaled_font_t</span></a>.</p>
@@ -363,9 +367,9 @@ Gets the metrics for a <a class="link" href="cairo-Scaled-Fonts.html#cairo-scale
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650056"></a><h3>
+<a name="id2650109"></a><h3>
 <a name="cairo-text-extents-t"></a>cairo_text_extents_t</h3>
-<a class="indexterm" name="id2650066"></a><pre class="programlisting">typedef struct {
+<a class="indexterm" name="id2650120"></a><pre class="programlisting">typedef struct {
     double x_bearing;
     double y_bearing;
     double width;
@@ -433,9 +437,9 @@ but otherwise will remain unchanged.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650229"></a><h3>
+<a name="id2650300"></a><h3>
 <a name="cairo-scaled-font-text-extents"></a>cairo_scaled_font_text_extents ()</h3>
-<a class="indexterm" name="id2650244"></a><pre class="programlisting">void                cairo_scaled_font_text_extents      (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2650316"></a><pre class="programlisting">void                cairo_scaled_font_text_extents      (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          const char *utf8,
                                                          <a class="link" href="cairo-Scaled-Fonts.html#cairo-text-extents-t">cairo_text_extents_t</a> *extents);</pre>
 <p>
@@ -482,9 +486,9 @@ affect the x_advance and y_advance values.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650385"></a><h3>
+<a name="id2650472"></a><h3>
 <a name="cairo-scaled-font-glyph-extents"></a>cairo_scaled_font_glyph_extents ()</h3>
-<a class="indexterm" name="id2650398"></a><pre class="programlisting">void                cairo_scaled_font_glyph_extents     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2650485"></a><pre class="programlisting">void                cairo_scaled_font_glyph_extents     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          const <a class="link" href="cairo-Text.html#cairo-glyph-t">cairo_glyph_t</a> *glyphs,
                                                          int num_glyphs,
                                                          <a class="link" href="cairo-Scaled-Fonts.html#cairo-text-extents-t">cairo_text_extents_t</a> *extents);</pre>
@@ -531,9 +535,9 @@ rectangle (extents.width and extents.height).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650554"></a><h3>
+<a name="id2650636"></a><h3>
 <a name="cairo-scaled-font-get-font-face"></a>cairo_scaled_font_get_font_face ()</h3>
-<a class="indexterm" name="id2650568"></a><pre class="programlisting"><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a>*  cairo_scaled_font_get_font_face     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
+<a class="indexterm" name="id2650651"></a><pre class="programlisting"><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a>*  cairo_scaled_font_get_font_face     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 Gets the font face that this scaled font was created for.</p>
 <p>
@@ -561,9 +565,9 @@ created.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650647"></a><h3>
+<a name="id2650730"></a><h3>
 <a name="cairo-scaled-font-get-font-options"></a>cairo_scaled_font_get_font_options ()</h3>
-<a class="indexterm" name="id2650662"></a><pre class="programlisting">void                cairo_scaled_font_get_font_options  (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2650745"></a><pre class="programlisting">void                cairo_scaled_font_get_font_options  (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          <a class="link" href="cairo-Font-Options.html#cairo-font-options-t">cairo_font_options_t</a> *options);</pre>
 <p>
 Stores the font options with which <em class="parameter"><code>scaled_font</code></em> was created into
@@ -591,9 +595,9 @@ Stores the font options with which <em class="parameter"><code>scaled_font</code
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650750"></a><h3>
+<a name="id2650832"></a><h3>
 <a name="cairo-scaled-font-get-font-matrix"></a>cairo_scaled_font_get_font_matrix ()</h3>
-<a class="indexterm" name="id2650765"></a><pre class="programlisting">void                cairo_scaled_font_get_font_matrix   (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2650848"></a><pre class="programlisting">void                cairo_scaled_font_get_font_matrix   (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *font_matrix);</pre>
 <p>
 Stores the font matrix with which <em class="parameter"><code>scaled_font</code></em> was created into
@@ -621,9 +625,9 @@ Stores the font matrix with which <em class="parameter"><code>scaled_font</code>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650852"></a><h3>
+<a name="id2650935"></a><h3>
 <a name="cairo-scaled-font-get-ctm"></a>cairo_scaled_font_get_ctm ()</h3>
-<a class="indexterm" name="id2650865"></a><pre class="programlisting">void                cairo_scaled_font_get_ctm           (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2650948"></a><pre class="programlisting">void                cairo_scaled_font_get_ctm           (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *ctm);</pre>
 <p>
 Stores the CTM with which <em class="parameter"><code>scaled_font</code></em> was created into <em class="parameter"><code>ctm</code></em>.</p>
@@ -650,9 +654,9 @@ Stores the CTM with which <em class="parameter"><code>scaled_font</code></em> wa
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650951"></a><h3>
+<a name="id2651034"></a><h3>
 <a name="cairo-scaled-font-get-type"></a>cairo_scaled_font_get_type ()</h3>
-<a class="indexterm" name="id2650964"></a><pre class="programlisting"><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-type-t">cairo_font_type_t</a>   cairo_scaled_font_get_type          (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
+<a class="indexterm" name="id2651047"></a><pre class="programlisting"><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-type-t">cairo_font_type_t</a>   cairo_scaled_font_get_type          (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 This function returns the type of the backend used to create
 a scaled font. See <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-type-t"><span class="type">cairo_font_type_t</span></a> for available types.</p>
@@ -680,9 +684,9 @@ a scaled font. See <a class="link" href="cairo-cairo-font-face-t.html#cairo-font
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2651043"></a><h3>
+<a name="id2651126"></a><h3>
 <a name="cairo-scaled-font-get-reference-count"></a>cairo_scaled_font_get_reference_count ()</h3>
-<a class="indexterm" name="id2651058"></a><pre class="programlisting">unsigned int        cairo_scaled_font_get_reference_count
+<a class="indexterm" name="id2651140"></a><pre class="programlisting">unsigned int        cairo_scaled_font_get_reference_count
                                                         (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 Returns the current reference count of <em class="parameter"><code>scaled_font</code></em>.</p>
@@ -711,9 +715,9 @@ object is a nil object, 0 will be returned.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2651140"></a><h3>
+<a name="id2651222"></a><h3>
 <a name="cairo-scaled-font-set-user-data"></a>cairo_scaled_font_set_user_data ()</h3>
-<a class="indexterm" name="id2651154"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_scaled_font_set_user_data     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2651236"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_scaled_font_set_user_data     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          const <a class="link" href="cairo-Types.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key,
                                                          void *user_data,
                                                          <a class="link" href="cairo-Types.html#cairo-destroy-func-t">cairo_destroy_func_t</a> destroy);</pre>
@@ -751,7 +755,11 @@ same key.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></p></td>
-<td> <a class="link" href="cairo-Error-Handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-Handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a> if a
+<td> <a
+href="../cairo/cairo-Error-Handling.html#CAIRO-STATUS-SUCCESS:CAPS"
+><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a
+href="../cairo/cairo-Error-Handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"
+><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a> if a
 slot could not be allocated for the user data.
 
 </td>
@@ -763,9 +771,9 @@ slot could not be allocated for the user data.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2651344"></a><h3>
+<a name="id2651427"></a><h3>
 <a name="cairo-scaled-font-get-user-data"></a>cairo_scaled_font_get_user_data ()</h3>
-<a class="indexterm" name="id2651359"></a><pre class="programlisting">void*               cairo_scaled_font_get_user_data     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
+<a class="indexterm" name="id2651441"></a><pre class="programlisting">void*               cairo_scaled_font_get_user_data     (<a class="link" href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font,
                                                          const <a class="link" href="cairo-Types.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key);</pre>
 <p>
 Return user data previously attached to <em class="parameter"><code>scaled_font</code></em> using the
@@ -801,9 +809,9 @@ attached to
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2651478"></a><div class="refsect2" lang="en"><a name="id2651479"></a></div>
+<a name="id2651560"></a><div class="refsect2" lang="en"><a name="id2651562"></a></div>
 <hr>
-<div class="refsect2" lang="en"><a name="id2651480"></a></div>
+<div class="refsect2" lang="en"><a name="id2651563"></a></div>
 </div>
 </div>
 </body>

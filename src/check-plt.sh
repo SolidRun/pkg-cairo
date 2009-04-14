@@ -2,10 +2,18 @@
 
 LANG=C
 
-status=0
-
 if ! which readelf 2>/dev/null >/dev/null; then
 	echo "'readelf' not found; skipping test"
+	exit 0
+fi
+
+test -z "$srcdir" && srcdir=.
+test -z "$MAKE" && MAKE=make
+status=0
+
+$MAKE check-has-hidden-symbols.i || exit 1
+if tail -1 check-has-hidden-symbols.i | grep CAIRO_HAS_HIDDEN_SYMBOLS >/dev/null; then
+	echo "Compiler doesn't support symbol visibility; skipping test"
 	exit 0
 fi
 

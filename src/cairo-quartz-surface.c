@@ -1,7 +1,7 @@
 /* -*- Mode: c; c-basic-offset: 4; indent-tabs-mode: t; tab-width: 8; -*- */
 /* cairo - a vector graphics library with display and print output
  *
- * Copyright © 2006, 2007 Mozilla Corporation
+ * Copyright ï¿½ 2006, 2007 Mozilla Corporation
  *
  * This library is free software; you can redistribute it and/or
  * modify it either under the terms of the GNU Lesser General Public
@@ -378,94 +378,6 @@ CreateGradientFunction (cairo_gradient_pattern_t *gpat)
 			     &callbacks);
 }
 
-static cairo_int_status_t
-_cairo_quartz_cairo_gradient_pattern_to_quartz (cairo_pattern_t *abspat,
-						CGShadingRef *shading)
-{
-    cairo_matrix_t mat;
-    double x0, y0;
-
-    if (abspat->type != CAIRO_PATTERN_TYPE_LINEAR &&
-	abspat->type != CAIRO_PATTERN_TYPE_RADIAL)
-	return CAIRO_INT_STATUS_UNSUPPORTED;
-
-    /* bandaid for mozilla bug 379321, also visible in the
-     * linear-gradient-reflect test.
-     */
-    if (abspat->extend == CAIRO_EXTEND_REFLECT ||
-	abspat->extend == CAIRO_EXTEND_REPEAT)
-	return CAIRO_INT_STATUS_UNSUPPORTED;
-
-    /* We can only do this if we have an identity pattern matrix;
-     * otherwise fall back through to the generic pattern case.
-     * XXXperf we could optimize this by creating a pattern with the shading;
-     * but we'd need to know the extents to do that.
-     * ... but we don't care; we can use the surface extents for it
-     * XXXtodo - implement gradients with non-identity pattern matrices
-     */
-    cairo_pattern_get_matrix (abspat, &mat);
-    if (mat.xx != 1.0 || mat.yy != 1.0 || mat.xy != 0.0 || mat.yx != 0.0)
-	return CAIRO_INT_STATUS_UNSUPPORTED;
-
-    x0 = mat.x0;
-    y0 = mat.y0;
-
-    if (abspat->type == CAIRO_PATTERN_TYPE_LINEAR) {
-	cairo_linear_pattern_t *lpat = (cairo_linear_pattern_t*) abspat;
-	CGPoint start, end;
-	CGFunctionRef gradFunc;
-	CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-	bool extend = abspat->extend == CAIRO_EXTEND_PAD;
-
-	start = CGPointMake (_cairo_fixed_to_double (lpat->p1.x) - x0,
-			     _cairo_fixed_to_double (lpat->p1.y) - y0);
-	end = CGPointMake (_cairo_fixed_to_double (lpat->p2.x) - x0,
-			   _cairo_fixed_to_double (lpat->p2.y) - y0);
-
-	cairo_pattern_reference (abspat);
-	gradFunc = CreateGradientFunction ((cairo_gradient_pattern_t*) lpat);
-	*shading = CGShadingCreateAxial (rgb,
-					start, end,
-					gradFunc,
-					extend, extend);
-	CGColorSpaceRelease(rgb);
-	CGFunctionRelease(gradFunc);
-
-	return CAIRO_STATUS_SUCCESS;
-    }
-
-    if (abspat->type == CAIRO_PATTERN_TYPE_RADIAL) {
-	cairo_radial_pattern_t *rpat = (cairo_radial_pattern_t*) abspat;
-	CGPoint start, end;
-	CGFunctionRef gradFunc;
-	CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-	bool extend = abspat->extend == CAIRO_EXTEND_PAD;
-
-	start = CGPointMake (_cairo_fixed_to_double (rpat->c1.x) - x0,
-			     _cairo_fixed_to_double (rpat->c1.y) - y0);
-	end = CGPointMake (_cairo_fixed_to_double (rpat->c2.x) - x0,
-			   _cairo_fixed_to_double (rpat->c2.y) - y0);
-
-	cairo_pattern_reference (abspat);
-	gradFunc = CreateGradientFunction ((cairo_gradient_pattern_t*) rpat);
-	*shading = CGShadingCreateRadial (rgb,
-					 start,
-					 _cairo_fixed_to_double (rpat->r1),
-					 end,
-					 _cairo_fixed_to_double (rpat->r2),
-					 gradFunc,
-					 extend, extend);
-	CGColorSpaceRelease(rgb);
-	CGFunctionRelease(gradFunc);
-
-	return CAIRO_STATUS_SUCCESS;
-    }
-
-    /* Shouldn't be reached */
-    ASSERT_NOT_REACHED;
-    return CAIRO_STATUS_SUCCESS;
-}
-
 /* generic cairo surface -> cairo_quartz_surface_t function */
 static cairo_int_status_t
 _cairo_quartz_surface_to_quartz (cairo_surface_t *target,
@@ -707,6 +619,118 @@ typedef enum {
 } cairo_quartz_action_t;
 
 static cairo_quartz_action_t
+_cairo_quartz_setup_linear_source (cairo_quartz_surface_t *surface,
+				   cairo_linear_pattern_t *lpat)
+{
+    cairo_pattern_t *abspat = (cairo_pattern_t *) lpat;
+    cairo_matrix_t mat;
+    double x0, y0;
+    CGPoint start, end;
+    CGFunctionRef gradFunc;
+    CGColorSpaceRef rgb;
+    bool extend = abspat->extend == CAIRO_EXTEND_PAD;
+
+    /* bandaid for mozilla bug 379321, also visible in the
+     * linear-gradient-reflect test.
+     */
+    if (abspat->extend == CAIRO_EXTEND_REFLECT ||
+	abspat->extend == CAIRO_EXTEND_REPEAT)
+	return DO_UNSUPPORTED;
+
+    /* We can only do this if we have an identity pattern matrix;
+     * otherwise fall back through to the generic pattern case.
+     * XXXperf we could optimize this by creating a pattern with the shading;
+     * but we'd need to know the extents to do that.
+     * ... but we don't care; we can use the surface extents for it
+     * XXXtodo - implement gradients with non-identity pattern matrices
+     */
+    cairo_pattern_get_matrix (abspat, &mat);
+    if (mat.xx != 1.0 || mat.yy != 1.0 || mat.xy != 0.0 || mat.yx != 0.0)
+	return DO_UNSUPPORTED;
+
+    if (!lpat->base.n_stops) {
+	CGContextSetRGBStrokeColor (surface->cgContext, 0., 0., 0., 0.);
+	CGContextSetRGBFillColor (surface->cgContext, 0., 0., 0., 0.);
+	return DO_SOLID;
+    }
+
+    x0 = mat.x0;
+    y0 = mat.y0;
+    rgb = CGColorSpaceCreateDeviceRGB();
+
+    start = CGPointMake (_cairo_fixed_to_double (lpat->p1.x) - x0,
+			 _cairo_fixed_to_double (lpat->p1.y) - y0);
+    end = CGPointMake (_cairo_fixed_to_double (lpat->p2.x) - x0,
+		       _cairo_fixed_to_double (lpat->p2.y) - y0);
+
+    cairo_pattern_reference (abspat);
+    gradFunc = CreateGradientFunction ((cairo_gradient_pattern_t*) lpat);
+    surface->sourceShading = CGShadingCreateAxial (rgb,
+						   start, end,
+						   gradFunc,
+						   extend, extend);
+    CGColorSpaceRelease(rgb);
+    CGFunctionRelease(gradFunc);
+
+    return DO_SHADING;
+}
+
+static cairo_quartz_action_t
+_cairo_quartz_setup_radial_source (cairo_quartz_surface_t *surface,
+				   cairo_radial_pattern_t *rpat)
+{
+    cairo_pattern_t *abspat = (cairo_pattern_t *)rpat;
+    cairo_matrix_t mat;
+    double x0, y0;
+    CGPoint start, end;
+    CGFunctionRef gradFunc;
+    CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+    bool extend = abspat->extend == CAIRO_EXTEND_PAD;
+
+    /* bandaid for mozilla bug 379321, also visible in the
+     * linear-gradient-reflect test.
+     */
+    if (abspat->extend == CAIRO_EXTEND_REFLECT ||
+	abspat->extend == CAIRO_EXTEND_REPEAT)
+	return DO_UNSUPPORTED;
+
+    /* XXXtodo - implement gradients with non-identity pattern matrices
+     */
+    cairo_pattern_get_matrix (abspat, &mat);
+    if (mat.xx != 1.0 || mat.yy != 1.0 || mat.xy != 0.0 || mat.yx != 0.0)
+	return DO_UNSUPPORTED;
+
+    if (!rpat->base.n_stops) {
+	CGContextSetRGBStrokeColor (surface->cgContext, 0., 0., 0., 0.);
+	CGContextSetRGBFillColor (surface->cgContext, 0., 0., 0., 0.);
+	return DO_SOLID;
+    }
+
+    x0 = mat.x0;
+    y0 = mat.y0;
+    rgb = CGColorSpaceCreateDeviceRGB();
+
+    start = CGPointMake (_cairo_fixed_to_double (rpat->c1.x) - x0,
+			 _cairo_fixed_to_double (rpat->c1.y) - y0);
+    end = CGPointMake (_cairo_fixed_to_double (rpat->c2.x) - x0,
+		       _cairo_fixed_to_double (rpat->c2.y) - y0);
+
+    cairo_pattern_reference (abspat);
+    gradFunc = CreateGradientFunction ((cairo_gradient_pattern_t*) rpat);
+    surface->sourceShading = CGShadingCreateRadial (rgb,
+						    start,
+						    _cairo_fixed_to_double (rpat->r1),
+						    end,
+						    _cairo_fixed_to_double (rpat->r2),
+						    gradFunc,
+						    extend, extend);
+    CGColorSpaceRelease(rgb);
+    CGFunctionRelease(gradFunc);
+
+    return DO_SHADING;
+}
+
+static cairo_quartz_action_t
 _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
 			    cairo_pattern_t *source)
 {
@@ -727,19 +751,15 @@ _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
 				  solid->color.alpha);
 
 	return DO_SOLID;
-    } else if (source->type == CAIRO_PATTERN_TYPE_LINEAR ||
-	       source->type == CAIRO_PATTERN_TYPE_RADIAL)
+    } else if (source->type == CAIRO_PATTERN_TYPE_LINEAR)
     {
-	CGShadingRef shading = NULL;
-	cairo_int_status_t status;
+	cairo_linear_pattern_t *lpat = (cairo_linear_pattern_t *)source;
+	return _cairo_quartz_setup_linear_source (surface, lpat);
 
-	status = _cairo_quartz_cairo_gradient_pattern_to_quartz (source, &shading);
-	if (status)
-	    return DO_UNSUPPORTED;
+    } else if (source->type == CAIRO_PATTERN_TYPE_RADIAL) {
+	cairo_radial_pattern_t *rpat = (cairo_radial_pattern_t *)source;
+	return _cairo_quartz_setup_radial_source (surface, rpat);
 
-	surface->sourceShading = shading;
-
-	return DO_SHADING;
     } else if (source->type == CAIRO_PATTERN_TYPE_SURFACE &&
 	       (source->extend == CAIRO_EXTEND_NONE || (CGContextDrawTiledImage && source->extend == CAIRO_EXTEND_REPEAT)))
     {
@@ -1504,9 +1524,6 @@ _cairo_quartz_surface_show_glyphs (void *abstract_surface,
 				    int num_glyphs,
 				    cairo_scaled_font_t *scaled_font)
 {
-    ATSUFontID fid;
-    ATSFontRef atsfref;
-    CGFontRef cgfref;
     CGAffineTransform cairoTextTransform, textTransform, ctm;
     // XXXtodo/perf: stack storage for glyphs/sizes
 #define STATIC_BUF_SIZE 64
@@ -1548,12 +1565,9 @@ _cairo_quartz_surface_show_glyphs (void *abstract_surface,
 
     CGContextSetCompositeOperation (surface->cgContext, _cairo_quartz_cairo_operator_to_quartz (op));
 
-    fid = _cairo_atsui_scaled_font_get_atsu_font_id (scaled_font);
-    atsfref = FMGetATSFontRefFromFont (fid);
-    cgfref = CGFontCreateWithPlatformFont (&atsfref);
-
+    /* this doesn't addref */
+    CGFontRef cgfref = _cairo_atsui_scaled_font_get_cg_font_ref (scaled_font);
     CGContextSetFont (surface->cgContext, cgfref);
-    CGFontRelease (cgfref);
 
     /* So this should include the size; I don't know if I need to extract the
      * size from this and call CGContextSetFontSize.. will I get crappy hinting
@@ -1851,10 +1865,8 @@ _cairo_quartz_surface_create_internal (CGContextRef cgContext,
 
     /* Init the base surface */
     surface = malloc(sizeof(cairo_quartz_surface_t));
-    if (surface == NULL) {
-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
-	return NULL;
-    }
+    if (surface == NULL)
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
     memset(surface, 0, sizeof(cairo_quartz_surface_t));
 
@@ -1900,7 +1912,7 @@ _cairo_quartz_surface_create_internal (CGContextRef cgContext,
  * this function is called:
  *
  * <informalexample><programlisting>
- * GContextTranslateCTM (cgContext, 0.0, height);
+ * CGContextTranslateCTM (cgContext, 0.0, height);
  * CGContextScaleCTM (cgContext, 1.0, -1.0);
  * </programlisting></informalexample>
  *
@@ -1926,10 +1938,10 @@ cairo_quartz_surface_create_for_cg_context (CGContextRef cgContext,
 
     surf = _cairo_quartz_surface_create_internal (cgContext, CAIRO_CONTENT_COLOR_ALPHA,
 						  width, height);
-    if (!surf) {
+    if (surf->base.status) {
 	CGContextRelease (cgContext);
 	// create_internal will have set an error
-	return (cairo_surface_t*) &_cairo_surface_nil;
+	return surf;
     }
 
     return (cairo_surface_t *) surf;
@@ -1964,10 +1976,8 @@ cairo_quartz_surface_create (cairo_format_t format,
     int bitsPerComponent;
 
     // verify width and height of surface
-    if (!verify_surface_size(width, height)) {
-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
-	return (cairo_surface_t*) &_cairo_surface_nil;
-    }
+    if (!verify_surface_size(width, height))
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
     if (width == 0 || height == 0) {
 	return (cairo_surface_t*) _cairo_quartz_surface_create_internal (NULL, _cairo_content_from_format (format),
@@ -1997,18 +2007,15 @@ cairo_quartz_surface_create (cairo_format_t format,
 	 * cairo_format_t -- these are 1-bit pixels stored in 32-bit
 	 * quantities.
 	 */
-	_cairo_error (CAIRO_STATUS_INVALID_FORMAT);
-	return (cairo_surface_t*) &_cairo_surface_nil;
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_INVALID_FORMAT));
     } else {
-	_cairo_error (CAIRO_STATUS_INVALID_FORMAT);
-	return (cairo_surface_t*) &_cairo_surface_nil;
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_INVALID_FORMAT));
     }
 
     imageData = _cairo_malloc_ab (height, stride);
     if (!imageData) {
 	CGColorSpaceRelease (cgColorspace);
-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
-	return (cairo_surface_t*) &_cairo_surface_nil;
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
     }
     /* zero the memory to match the image surface behaviour */
     memset (imageData, 0, height * stride);
@@ -2023,9 +2030,8 @@ cairo_quartz_surface_create (cairo_format_t format,
     CGColorSpaceRelease (cgColorspace);
 
     if (!cgc) {
-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
 	free (imageData);
-	return (cairo_surface_t*) &_cairo_surface_nil;
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
     }
 
     /* flip the Y axis */
@@ -2034,11 +2040,11 @@ cairo_quartz_surface_create (cairo_format_t format,
 
     surf = _cairo_quartz_surface_create_internal (cgc, _cairo_content_from_format (format),
 						  width, height);
-    if (!surf) {
+    if (surf->base.status) {
 	CGContextRelease (cgc);
 	free (imageData);
 	// create_internal will have set an error
-	return (cairo_surface_t*) &_cairo_surface_nil;
+	return surf;
     }
 
     surf->imageData = imageData;

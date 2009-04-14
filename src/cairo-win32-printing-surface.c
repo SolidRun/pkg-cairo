@@ -71,7 +71,6 @@
 #endif
 
 #define PELS_72DPI  ((LONG)(72. / 0.0254))
-#define NIL_SURFACE ((cairo_surface_t*)&_cairo_surface_nil)
 
 static const cairo_surface_backend_t cairo_win32_printing_surface_backend;
 static const cairo_paginated_surface_backend_t cairo_win32_surface_paginated_backend;
@@ -874,6 +873,7 @@ _cairo_win32_printing_surface_path_line_to (void *closure, cairo_point_t *point)
 {
     win32_path_info_t *path_info = closure;
 
+    path_info->surface->path_empty = FALSE;
     if (path_info->surface->has_ctm) {
 	double x, y;
 
@@ -899,6 +899,7 @@ _cairo_win32_printing_surface_path_curve_to (void          *closure,
     win32_path_info_t *path_info = closure;
     POINT points[3];
 
+    path_info->surface->path_empty = FALSE;
     if (path_info->surface->has_ctm) {
 	double x, y;
 
@@ -1244,6 +1245,7 @@ _cairo_win32_printing_surface_fill (void		        *abstract_surface,
 
     assert (_cairo_win32_printing_surface_operation_supported (surface, op, source));
 
+    surface->path_empty = TRUE;
     BeginPath (surface->dc);
     status = _cairo_win32_printing_surface_emit_path (surface, path);
     EndPath (surface->dc);
@@ -1266,7 +1268,7 @@ _cairo_win32_printing_surface_fill (void		        *abstract_surface,
 
 	FillPath (surface->dc);
 	_cairo_win32_printing_surface_done_solid_brush (surface);
-    } else {
+    } else if (surface->path_empty == FALSE) {
 	SaveDC (surface->dc);
 	SelectClipPath (surface->dc, RGN_AND);
 	status = _cairo_win32_printing_surface_paint_pattern (surface, source);
@@ -1358,6 +1360,7 @@ _cairo_win32_printing_surface_show_glyphs (void                 *abstract_surfac
     old_ctm = surface->ctm;
     old_has_ctm = surface->has_ctm;
     surface->has_ctm = TRUE;
+    surface->path_empty = TRUE;
     BeginPath (surface->dc);
     for (i = 0; i < num_glyphs; i++) {
 	status = _cairo_scaled_glyph_lookup (scaled_font,
@@ -1373,9 +1376,19 @@ _cairo_win32_printing_surface_show_glyphs (void                 *abstract_surfac
     EndPath (surface->dc);
     surface->ctm = old_ctm;
     surface->has_ctm = old_has_ctm;
-    if (status == CAIRO_STATUS_SUCCESS) {
-	SelectClipPath (surface->dc, RGN_AND);
-	status = _cairo_win32_printing_surface_paint_pattern (surface, source);
+    if (status == CAIRO_STATUS_SUCCESS && surface->path_empty == FALSE) {
+	if (source->type == CAIRO_PATTERN_TYPE_SOLID) {
+	    status = _cairo_win32_printing_surface_select_solid_brush (surface, source);
+	    if (status)
+		return status;
+
+	    SetPolyFillMode (surface->dc, WINDING);
+	    FillPath (surface->dc);
+	    _cairo_win32_printing_surface_done_solid_brush (surface);
+	} else {
+	    SelectClipPath (surface->dc, RGN_AND);
+	    status = _cairo_win32_printing_surface_paint_pattern (surface, source);
+	}
     }
     RestoreDC (surface->dc, -1);
 
@@ -1453,15 +1466,12 @@ cairo_win32_printing_surface_create (HDC hdc)
     if (GetClipBox (hdc, &rect) == ERROR) {
 	_cairo_win32_print_gdi_error ("cairo_win32_surface_create");
 	/* XXX: Can we make a more reasonable guess at the error cause here? */
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	return NIL_SURFACE;
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
     }
 
     surface = malloc (sizeof (cairo_win32_surface_t));
-    if (surface == NULL) {
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	return NIL_SURFACE;
-    }
+    if (surface == NULL)
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
     surface->image = NULL;
     surface->format = CAIRO_FORMAT_RGB24;
