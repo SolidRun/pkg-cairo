@@ -2,10 +2,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>cairo_matrix_t</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
-<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
+<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="pt02.html" title="Part&#160;II.&#160;Reference">
-<link rel="previous" href="cairo-cairo-pattern-t.html" title="cairo_pattern_t">
+<link rel="prev" href="cairo-cairo-pattern-t.html" title="cairo_pattern_t">
 <link rel="next" href="cairo-Fonts.html" title="Fonts">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -23,10 +23,7 @@
 <td><a accesskey="n" href="cairo-Fonts.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="refentry" lang="en">
-<a name="cairo-cairo-matrix-t"></a><div class="titlepage">
-<div></div>
-<div></div>
-</div>
+<a name="cairo-cairo-matrix-t"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle">cairo_matrix_t</span></h2>
@@ -79,39 +76,39 @@ void        <a href="cairo-cairo-matrix-t.html#cairo-matrix-transform-point">cai
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2938599"></a><h2>Description</h2>
-<p><a class="indexterm" name="id2938606"></a><a class="indexterm" name="id2938614"></a>
+<a name="id2614976"></a><h2>Description</h2>
+<p><a class="indexterm" name="id2614983"></a><a class="indexterm" name="id2614991"></a>
     <span class="structname">cairo_matrix_t</span> is used throughout
     Cairo to represents between different coordinates spaces.
     A <span class="structname">cairo_matrix</span> holds an affine
     transformation, such as a scale, rotation, or shear, or a
     combination of those. Mathematically, the effect of an affine
-    transformation on a point (<tt class="literal">x</tt>,<tt class="literal">y</tt>) is given by:
+    transformation on a point (<code class="literal">x</code>,<code class="literal">y</code>) is given by:
   </p>
 <pre class="programlisting">
     x_new = x * a + y * c + tx;
     y_new = x * b + y * d + ty;
   </pre>
 <p>
-    The parameters <tt class="literal">a</tt>, <tt class="literal">b</tt>,
-    <tt class="literal">c</tt>, <tt class="literal">d</tt>, <tt class="literal">tx</tt>,
-    <tt class="literal">ty</tt> can be retrieved with
-    <tt class="function">cairo_matrix_get_affine()</tt> and set with <tt class="function">cairo_matrix_get_affine()</tt>.
+    The parameters <code class="literal">a</code>, <code class="literal">b</code>,
+    <code class="literal">c</code>, <code class="literal">d</code>, <code class="literal">tx</code>,
+    <code class="literal">ty</code> can be retrieved with
+    <code class="function">cairo_matrix_get_affine()</code> and set with <code class="function">cairo_matrix_get_affine()</code>.
   </p>
 <p>
     The primary use of transformation matrices in Cairo is as the
     current transformation matrix in a <a href="cairo-cairo-t.html#cairo-t"><span class="type">cairo_t</span></a>. The current
     transformation matrix gives the transformation from user space
-    coordinates to device coordinates. See <a href="cairo-cairo-t.html#cairo-set-matrix"><tt class="function">cairo_set_matrix()</tt></a>,
-    <tt class="function">cairo_current_matrix()</tt>.
+    coordinates to device coordinates. See <a href="cairo-cairo-t.html#cairo-set-matrix"><code class="function">cairo_set_matrix()</code></a>,
+    <code class="function">cairo_current_matrix()</code>.
   </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2938742"></a><h2>Details</h2>
+<a name="id2615119"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2938749"></a><h3>
+<a name="id2615125"></a><h3>
 <a name="cairo-matrix-t"></a>cairo_matrix_t</h3>
-<a class="indexterm" name="id2938759"></a><pre class="programlisting">typedef struct {
+<a class="indexterm" name="id2615135"></a><pre class="programlisting">typedef struct {
     double xx; double yx;
     double xy; double yy;
     double x0; double y0;
@@ -119,25 +116,7 @@ void        <a href="cairo-cairo-matrix-t.html#cairo-matrix-transform-point">cai
 </pre>
 <p>
 A <a href="cairo-cairo-matrix-t.html#cairo-matrix-t"><span class="type">cairo_matrix_t</span></a> holds an affine transformation, such as a scale,
-rotation, or shear, or a combination of those.</p>
-<p>
-
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2971462"></a><h3>
-<a name="cairo-matrix-init"></a>cairo_matrix_init ()</h3>
-<a class="indexterm" name="id2971473"></a><pre class="programlisting">void        cairo_matrix_init               (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
-                                             double xx,
-                                             double yx,
-                                             double xy,
-                                             double yy,
-                                             double x0,
-                                             double y0);</pre>
-<p>
-Sets <i class="parameter"><tt>matrix</tt></i> to be the affine transformation given by
-<i class="parameter"><tt>xx</tt></i>, <i class="parameter"><tt>yx</tt></i>, <i class="parameter"><tt>xy</tt></i>, <i class="parameter"><tt>yy</tt></i>, <i class="parameter"><tt>x0</tt></i>, <i class="parameter"><tt>y0</tt></i>. The transformation is given
+rotation, or shear, or a combination of those. The transformation is given
 by:
 </p>
 <pre class="programlisting">
@@ -152,43 +131,37 @@ by:
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
-<td> a cairo_matrix_t
-</td>
-</tr>
-<tr>
-<td>
-<span class="term"><i class="parameter"><tt>xx</tt></i>&#160;:</span></td>
+<span class="term">double&#160;<em class="structfield"><code>xx</code></em>;</span></td>
 <td> xx component of the affine transformation
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>yx</tt></i>&#160;:</span></td>
+<span class="term">double&#160;<em class="structfield"><code>yx</code></em>;</span></td>
 <td> yx component of the affine transformation
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>xy</tt></i>&#160;:</span></td>
+<span class="term">double&#160;<em class="structfield"><code>xy</code></em>;</span></td>
 <td> xy component of the affine transformation
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>yy</tt></i>&#160;:</span></td>
+<span class="term">double&#160;<em class="structfield"><code>yy</code></em>;</span></td>
 <td> yy component of the affine transformation
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>x0</tt></i>&#160;:</span></td>
+<span class="term">double&#160;<em class="structfield"><code>x0</code></em>;</span></td>
 <td> X translation component of the affine transformation
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>y0</tt></i>&#160;:</span></td>
+<span class="term">double&#160;<em class="structfield"><code>y0</code></em>;</span></td>
 <td> Y translation component of the affine transformation
 </td>
 </tr>
@@ -197,34 +170,24 @@ by:
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2971695"></a><h3>
-<a name="cairo-matrix-init-identity"></a>cairo_matrix_init_identity ()</h3>
-<a class="indexterm" name="id2971704"></a><pre class="programlisting">void        cairo_matrix_init_identity      (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
+<a name="id2650593"></a><h3>
+<a name="cairo-matrix-init"></a>cairo_matrix_init ()</h3>
+<a class="indexterm" name="id2650604"></a><pre class="programlisting">void        cairo_matrix_init               (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+                                             double xx,
+                                             double yx,
+                                             double xy,
+                                             double yy,
+                                             double x0,
+                                             double y0);</pre>
 <p>
-Modifies <i class="parameter"><tt>matrix</tt></i> to be an identity transformation.</p>
-<p>
-
+Sets <em class="parameter"><code>matrix</code></em> to be the affine transformation given by
+<em class="parameter"><code>xx</code></em>, <em class="parameter"><code>yx</code></em>, <em class="parameter"><code>xy</code></em>, <em class="parameter"><code>yy</code></em>, <em class="parameter"><code>x0</code></em>, <em class="parameter"><code>y0</code></em>. The transformation is given
+by:
 </p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
-<td> a <a href="cairo-cairo-matrix-t.html#cairo-matrix-t"><span class="type">cairo_matrix_t</span></a>
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2931794"></a><h3>
-<a name="cairo-matrix-init-translate"></a>cairo_matrix_init_translate ()</h3>
-<a class="indexterm" name="id2931803"></a><pre class="programlisting">void        cairo_matrix_init_translate     (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
-                                             double tx,
-                                             double ty);</pre>
-<p>
-Initializes <i class="parameter"><tt>matrix</tt></i> to a transformation that translates by <i class="parameter"><tt>tx</tt></i> and
-<i class="parameter"><tt>ty</tt></i> in the X and Y dimensions, respectively.</p>
+<pre class="programlisting">
+ x_new = xx * x + xy * y + x0;
+ y_new = yx * x + yy * y + y0;
+</pre>
 <p>
 
 </p>
@@ -233,19 +196,100 @@ Initializes <i class="parameter"><tt>matrix</tt></i> to a transformation that tr
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
 <td> a cairo_matrix_t
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>tx</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>xx</code></em>&#160;:</span></td>
+<td> xx component of the affine transformation
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>yx</code></em>&#160;:</span></td>
+<td> yx component of the affine transformation
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>xy</code></em>&#160;:</span></td>
+<td> xy component of the affine transformation
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>yy</code></em>&#160;:</span></td>
+<td> yy component of the affine transformation
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>x0</code></em>&#160;:</span></td>
+<td> X translation component of the affine transformation
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>y0</code></em>&#160;:</span></td>
+<td> Y translation component of the affine transformation
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611854"></a><h3>
+<a name="cairo-matrix-init-identity"></a>cairo_matrix_init_identity ()</h3>
+<a class="indexterm" name="id2611862"></a><pre class="programlisting">void        cairo_matrix_init_identity      (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
+<p>
+Modifies <em class="parameter"><code>matrix</code></em> to be an identity transformation.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
+<td> a <a href="cairo-cairo-matrix-t.html#cairo-matrix-t"><span class="type">cairo_matrix_t</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611925"></a><h3>
+<a name="cairo-matrix-init-translate"></a>cairo_matrix_init_translate ()</h3>
+<a class="indexterm" name="id2611934"></a><pre class="programlisting">void        cairo_matrix_init_translate     (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+                                             double tx,
+                                             double ty);</pre>
+<p>
+Initializes <em class="parameter"><code>matrix</code></em> to a transformation that translates by <em class="parameter"><code>tx</code></em> and
+<em class="parameter"><code>ty</code></em> in the X and Y dimensions, respectively.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
+<td> a cairo_matrix_t
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>tx</code></em>&#160;:</span></td>
 <td> amount to translate in the X direction
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>ty</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>ty</code></em>&#160;:</span></td>
 <td> amount to translate in the Y direction
 </td>
 </tr>
@@ -254,13 +298,13 @@ Initializes <i class="parameter"><tt>matrix</tt></i> to a transformation that tr
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2931915"></a><h3>
+<a name="id2612045"></a><h3>
 <a name="cairo-matrix-init-scale"></a>cairo_matrix_init_scale ()</h3>
-<a class="indexterm" name="id2931924"></a><pre class="programlisting">void        cairo_matrix_init_scale         (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+<a class="indexterm" name="id2612054"></a><pre class="programlisting">void        cairo_matrix_init_scale         (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
                                              double sx,
                                              double sy);</pre>
 <p>
-Initializes <i class="parameter"><tt>matrix</tt></i> to a transformation that scales by <i class="parameter"><tt>sx</tt></i> and <i class="parameter"><tt>sy</tt></i>
+Initializes <em class="parameter"><code>matrix</code></em> to a transformation that scales by <em class="parameter"><code>sx</code></em> and <em class="parameter"><code>sy</code></em>
 in the X and Y dimensions, respectively.</p>
 <p>
 
@@ -270,19 +314,19 @@ in the X and Y dimensions, respectively.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
 <td> a cairo_matrix_t
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>sx</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>sx</code></em>&#160;:</span></td>
 <td> scale factor in the X direction
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>sy</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>sy</code></em>&#160;:</span></td>
 <td> scale factor in the Y direction
 </td>
 </tr>
@@ -291,12 +335,12 @@ in the X and Y dimensions, respectively.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2932034"></a><h3>
+<a name="id2612165"></a><h3>
 <a name="cairo-matrix-init-rotate"></a>cairo_matrix_init_rotate ()</h3>
-<a class="indexterm" name="id2932043"></a><pre class="programlisting">void        cairo_matrix_init_rotate        (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+<a class="indexterm" name="id2612174"></a><pre class="programlisting">void        cairo_matrix_init_rotate        (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
                                              double radians);</pre>
 <p>
-Initialized <i class="parameter"><tt>matrix</tt></i> to a transformation that rotates by <i class="parameter"><tt>radians</tt></i>.</p>
+Initialized <em class="parameter"><code>matrix</code></em> to a transformation that rotates by <em class="parameter"><code>radians</code></em>.</p>
 <p>
 
 </p>
@@ -305,13 +349,13 @@ Initialized <i class="parameter"><tt>matrix</tt></i> to a transformation that ro
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
 <td> a cairo_matrix_t
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>radians</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>radians</code></em>&#160;:</span></td>
 <td> angle of rotation, in radians. The direction of rotation
 is defined such that positive angles rotate in the direction from
 the positive X axis toward the positive Y axis. With the default
@@ -324,15 +368,15 @@ direction.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2932130"></a><h3>
+<a name="id2612262"></a><h3>
 <a name="cairo-matrix-translate"></a>cairo_matrix_translate ()</h3>
-<a class="indexterm" name="id2932139"></a><pre class="programlisting">void        cairo_matrix_translate          (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+<a class="indexterm" name="id2612271"></a><pre class="programlisting">void        cairo_matrix_translate          (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
                                              double tx,
                                              double ty);</pre>
 <p>
-Applies a translation by <i class="parameter"><tt>tx</tt></i>, <i class="parameter"><tt>ty</tt></i> to the transformation in
-<i class="parameter"><tt>matrix</tt></i>. The effect of the new transformation is to first translate
-the coordinates by <i class="parameter"><tt>tx</tt></i> and <i class="parameter"><tt>ty</tt></i>, then apply the original transformation
+Applies a translation by <em class="parameter"><code>tx</code></em>, <em class="parameter"><code>ty</code></em> to the transformation in
+<em class="parameter"><code>matrix</code></em>. The effect of the new transformation is to first translate
+the coordinates by <em class="parameter"><code>tx</code></em> and <em class="parameter"><code>ty</code></em>, then apply the original transformation
 to the coordinates.</p>
 <p>
 
@@ -342,19 +386,19 @@ to the coordinates.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
 <td> a cairo_matrix_t
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>tx</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>tx</code></em>&#160;:</span></td>
 <td> amount to translate in the X direction
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>ty</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>ty</code></em>&#160;:</span></td>
 <td> amount to translate in the Y direction
 </td>
 </tr>
@@ -363,15 +407,15 @@ to the coordinates.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2932264"></a><h3>
+<a name="id2612395"></a><h3>
 <a name="cairo-matrix-scale"></a>cairo_matrix_scale ()</h3>
-<a class="indexterm" name="id2932274"></a><pre class="programlisting">void        cairo_matrix_scale              (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+<a class="indexterm" name="id2612405"></a><pre class="programlisting">void        cairo_matrix_scale              (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
                                              double sx,
                                              double sy);</pre>
 <p>
-Applies scaling by <i class="parameter"><tt>tx</tt></i>, <i class="parameter"><tt>ty</tt></i> to the transformation in <i class="parameter"><tt>matrix</tt></i>. The
+Applies scaling by <em class="parameter"><code>tx</code></em>, <em class="parameter"><code>ty</code></em> to the transformation in <em class="parameter"><code>matrix</code></em>. The
 effect of the new transformation is to first scale the coordinates
-by <i class="parameter"><tt>sx</tt></i> and <i class="parameter"><tt>sy</tt></i>, then apply the original transformation to the coordinates.</p>
+by <em class="parameter"><code>sx</code></em> and <em class="parameter"><code>sy</code></em>, then apply the original transformation to the coordinates.</p>
 <p>
 
 </p>
@@ -380,19 +424,19 @@ by <i class="parameter"><tt>sx</tt></i> and <i class="parameter"><tt>sy</tt></i>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-matrix-t.html#cairo-matrix-t"><span class="type">cairo_matrix_t</span></a>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>sx</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>sx</code></em>&#160;:</span></td>
 <td> scale factor in the X direction
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>sy</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>sy</code></em>&#160;:</span></td>
 <td> scale factor in the Y direction
 </td>
 </tr>
@@ -401,14 +445,14 @@ by <i class="parameter"><tt>sx</tt></i> and <i class="parameter"><tt>sy</tt></i>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2932405"></a><h3>
+<a name="id2612536"></a><h3>
 <a name="cairo-matrix-rotate"></a>cairo_matrix_rotate ()</h3>
-<a class="indexterm" name="id2932415"></a><pre class="programlisting">void        cairo_matrix_rotate             (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+<a class="indexterm" name="id2612546"></a><pre class="programlisting">void        cairo_matrix_rotate             (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
                                              double radians);</pre>
 <p>
-Applies rotation by <i class="parameter"><tt>radians</tt></i> to the transformation in
-<i class="parameter"><tt>matrix</tt></i>. The effect of the new transformation is to first rotate the
-coordinates by <i class="parameter"><tt>radians</tt></i>, then apply the original transformation
+Applies rotation by <em class="parameter"><code>radians</code></em> to the transformation in
+<em class="parameter"><code>matrix</code></em>. The effect of the new transformation is to first rotate the
+coordinates by <em class="parameter"><code>radians</code></em>, then apply the original transformation
 to the coordinates.</p>
 <p>
 
@@ -418,13 +462,13 @@ to the coordinates.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
-<td> a <i class="parameter"><tt>cairo_matrix_t</tt></i>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
+<td> a <em class="parameter"><code>cairo_matrix_t</code></em>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>radians</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>radians</code></em>&#160;:</span></td>
 <td> angle of rotation, in radians. The direction of rotation
 is defined such that positive angles rotate in the direction from
 the positive X axis toward the positive Y axis. With the default
@@ -437,18 +481,18 @@ direction.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2932516"></a><h3>
+<a name="id2612647"></a><h3>
 <a name="cairo-matrix-invert"></a>cairo_matrix_invert ()</h3>
-<a class="indexterm" name="id2932526"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_matrix_invert          (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
+<a class="indexterm" name="id2612657"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_matrix_invert          (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
 <p>
-Changes <i class="parameter"><tt>matrix</tt></i> to be the inverse of it's original value. Not
+Changes <em class="parameter"><code>matrix</code></em> to be the inverse of it's original value. Not
 all transformation matrices have inverses; if the matrix
-collapses points together (it is <i class="firstterm">degenerate</i>),
+collapses points together (it is <em class="firstterm">degenerate</em>),
 then it has no inverse and this function will fail.
 </p>
 <p>
-Returns: If <i class="parameter"><tt>matrix</tt></i> has an inverse, modifies <i class="parameter"><tt>matrix</tt></i> to
- be the inverse matrix and returns <tt class="literal">CAIRO_STATUS_SUCCESS</tt>. Otherwise,</p>
+Returns: If <em class="parameter"><code>matrix</code></em> has an inverse, modifies <em class="parameter"><code>matrix</code></em> to
+ be the inverse matrix and returns <code class="literal">CAIRO_STATUS_SUCCESS</code>. Otherwise,</p>
 <p>
 
 </p>
@@ -457,15 +501,15 @@ Returns: If <i class="parameter"><tt>matrix</tt></i> has an inverse, modifies <i
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
-<td> a <i class="parameter"><tt>cairo_matrix_t</tt></i>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
+<td> a <em class="parameter"><code>cairo_matrix_t</code></em>
 </td>
 </tr>
 <tr>
 <td>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
 <td>
-<tt class="literal">CAIRO_STATUS_INVALID_MATRIX</tt>.
+<code class="literal">CAIRO_STATUS_INVALID_MATRIX</code>.
 </td>
 </tr>
 </tbody>
@@ -473,20 +517,20 @@ Returns: If <i class="parameter"><tt>matrix</tt></i> has an inverse, modifies <i
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2932631"></a><h3>
+<a name="id2612763"></a><h3>
 <a name="cairo-matrix-multiply"></a>cairo_matrix_multiply ()</h3>
-<a class="indexterm" name="id2932640"></a><pre class="programlisting">void        cairo_matrix_multiply           (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *result,
+<a class="indexterm" name="id2612772"></a><pre class="programlisting">void        cairo_matrix_multiply           (<a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *result,
                                              const <a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *a,
                                              const <a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *b);</pre>
 <p>
-Multiplies the affine transformations in <i class="parameter"><tt>a</tt></i> and <i class="parameter"><tt>b</tt></i> together
-and stores the result in <i class="parameter"><tt>result</tt></i>. The effect of the resulting
-transformation is to first apply the transformation in <i class="parameter"><tt>a</tt></i> to the
-coordinates and then apply the transformation in <i class="parameter"><tt>b</tt></i> to the
+Multiplies the affine transformations in <em class="parameter"><code>a</code></em> and <em class="parameter"><code>b</code></em> together
+and stores the result in <em class="parameter"><code>result</code></em>. The effect of the resulting
+transformation is to first apply the transformation in <em class="parameter"><code>a</code></em> to the
+coordinates and then apply the transformation in <em class="parameter"><code>b</code></em> to the
 coordinates.
 </p>
 <p>
-It is allowable for <i class="parameter"><tt>result</tt></i> to be identical to either <i class="parameter"><tt>a</tt></i> or <i class="parameter"><tt>b</tt></i>.</p>
+It is allowable for <em class="parameter"><code>result</code></em> to be identical to either <em class="parameter"><code>a</code></em> or <em class="parameter"><code>b</code></em>.</p>
 <p>
 
 </p>
@@ -495,20 +539,20 @@ It is allowable for <i class="parameter"><tt>result</tt></i> to be identical to 
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>result</tt></i>&#160;:</span></td>
-<td> a <i class="parameter"><tt>cairo_matrix_t</tt></i> in which to store the result
+<span class="term"><em class="parameter"><code>result</code></em>&#160;:</span></td>
+<td> a <em class="parameter"><code>cairo_matrix_t</code></em> in which to store the result
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>a</tt></i>&#160;:</span></td>
-<td> a <i class="parameter"><tt>cairo_matrix_t</tt></i>
+<span class="term"><em class="parameter"><code>a</code></em>&#160;:</span></td>
+<td> a <em class="parameter"><code>cairo_matrix_t</code></em>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>b</tt></i>&#160;:</span></td>
-<td> a <i class="parameter"><tt>cairo_matrix_t</tt></i>
+<span class="term"><em class="parameter"><code>b</code></em>&#160;:</span></td>
+<td> a <em class="parameter"><code>cairo_matrix_t</code></em>
 </td>
 </tr>
 </tbody>
@@ -516,14 +560,14 @@ It is allowable for <i class="parameter"><tt>result</tt></i> to be identical to 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2973056"></a><h3>
+<a name="id2612937"></a><h3>
 <a name="cairo-matrix-transform-distance"></a>cairo_matrix_transform_distance ()</h3>
-<a class="indexterm" name="id2973067"></a><pre class="programlisting">void        cairo_matrix_transform_distance (const <a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+<a class="indexterm" name="id2612948"></a><pre class="programlisting">void        cairo_matrix_transform_distance (const <a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
                                              double *dx,
                                              double *dy);</pre>
 <p>
-Transforms the distance vector (<i class="parameter"><tt>dx</tt></i>,<i class="parameter"><tt>dy</tt></i>) by <i class="parameter"><tt>matrix</tt></i>. This is
-similar to <tt class="function">cairo_matrix_transform()</tt> except that the translation
+Transforms the distance vector (<em class="parameter"><code>dx</code></em>,<em class="parameter"><code>dy</code></em>) by <em class="parameter"><code>matrix</code></em>. This is
+similar to <code class="function">cairo_matrix_transform()</code> except that the translation
 components of the transformation are ignored. The calculation of
 the returned vector is as follows:
 </p>
@@ -537,9 +581,9 @@ dy2 = dx1 * b + dy1 * d;
 </p>
 <p>
 Affine transformations are position invariant, so the same vector
-always transforms to the same vector. If (<i class="parameter"><tt>x1</tt></i>,<i class="parameter"><tt>y1</tt></i>) transforms
-to (<i class="parameter"><tt>x2</tt></i>,<i class="parameter"><tt>y2</tt></i>) then (<i class="parameter"><tt>x1</tt></i>+<i class="parameter"><tt>dx1</tt></i>,<i class="parameter"><tt>y1</tt></i>+<i class="parameter"><tt>dy1</tt></i>) will transform to
-(<i class="parameter"><tt>x1</tt></i>+<i class="parameter"><tt>dx2</tt></i>,<i class="parameter"><tt>y1</tt></i>+<i class="parameter"><tt>dy2</tt></i>) for all values of <i class="parameter"><tt>x1</tt></i> and <i class="parameter"><tt>x2</tt></i>.</p>
+always transforms to the same vector. If (<em class="parameter"><code>x1</code></em>,<em class="parameter"><code>y1</code></em>) transforms
+to (<em class="parameter"><code>x2</code></em>,<em class="parameter"><code>y2</code></em>) then (<em class="parameter"><code>x1</code></em>+<em class="parameter"><code>dx1</code></em>,<em class="parameter"><code>y1</code></em>+<em class="parameter"><code>dy1</code></em>) will transform to
+(<em class="parameter"><code>x1</code></em>+<em class="parameter"><code>dx2</code></em>,<em class="parameter"><code>y1</code></em>+<em class="parameter"><code>dy2</code></em>) for all values of <em class="parameter"><code>x1</code></em> and <em class="parameter"><code>x2</code></em>.</p>
 <p>
 
 </p>
@@ -548,19 +592,19 @@ to (<i class="parameter"><tt>x2</tt></i>,<i class="parameter"><tt>y2</tt></i>) t
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
-<td> a <i class="parameter"><tt>cairo_matrix_t</tt></i>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
+<td> a <em class="parameter"><code>cairo_matrix_t</code></em>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>dx</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>dx</code></em>&#160;:</span></td>
 <td> X component of a distance vector. An in/out parameter
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>dy</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>dy</code></em>&#160;:</span></td>
 <td> Y component of a distance vector. An in/out parameter
 </td>
 </tr>
@@ -569,13 +613,13 @@ to (<i class="parameter"><tt>x2</tt></i>,<i class="parameter"><tt>y2</tt></i>) t
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2973295"></a><h3>
+<a name="id2654347"></a><h3>
 <a name="cairo-matrix-transform-point"></a>cairo_matrix_transform_point ()</h3>
-<a class="indexterm" name="id2973306"></a><pre class="programlisting">void        cairo_matrix_transform_point    (const <a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
+<a class="indexterm" name="id2654358"></a><pre class="programlisting">void        cairo_matrix_transform_point    (const <a href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix,
                                              double *x,
                                              double *y);</pre>
 <p>
-Transforms the point (<i class="parameter"><tt>x</tt></i>, <i class="parameter"><tt>y</tt></i>) by <i class="parameter"><tt>matrix</tt></i>.</p>
+Transforms the point (<em class="parameter"><code>x</code></em>, <em class="parameter"><code>y</code></em>) by <em class="parameter"><code>matrix</code></em>.</p>
 <p>
 
 </p>
@@ -584,19 +628,19 @@ Transforms the point (<i class="parameter"><tt>x</tt></i>, <i class="parameter">
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>matrix</tt></i>&#160;:</span></td>
-<td> a <i class="parameter"><tt>cairo_matrix_t</tt></i>
+<span class="term"><em class="parameter"><code>matrix</code></em>&#160;:</span></td>
+<td> a <em class="parameter"><code>cairo_matrix_t</code></em>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>x</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
 <td> X position. An in/out parameter
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>y</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>y</code></em>&#160;:</span></td>
 <td> Y position. An in/out parameter
 </td>
 </tr>

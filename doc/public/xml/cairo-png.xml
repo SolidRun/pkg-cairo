@@ -63,8 +63,13 @@ given PNG file.</para>
 <listitem><simpara> name of PNG file to load 
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> initialized with the contents
-of the PNG file or <literal>NULL</literal> if the file is not a valid PNG file or
-memory could not be allocated for the operation.
+of the PNG file, or a "nil" surface if any error occurred. A nil
+surface can be checked for with cairo_surface_status(surface) which
+may return one of the following values: 
+
+CAIRO_STATUS_NO_MEMORY
+CAIRO_STATUS_FILE_NOT_FOUND
+CAIRO_STATUS_READ_ERROR
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

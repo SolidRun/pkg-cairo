@@ -24,7 +24,10 @@ typedef     <link linkend="cairo-t">cairo_t</link>;
 <link linkend="void">void</link>        <link linkend="cairo-destroy">cairo_destroy</link>                   (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="void">void</link>        <link linkend="cairo-save">cairo_save</link>                      (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="void">void</link>        <link linkend="cairo-restore">cairo_restore</link>                   (<link linkend="cairo-t">cairo_t</link> *cr);
+enum        <link linkend="cairo-content-t">cairo_content_t</link>;
+#define     <link linkend="CAIRO-CONTENT-VALID:CAPS">CAIRO_CONTENT_VALID</link>             (content)
 enum        <link linkend="cairo-format-t">cairo_format_t</link>;
+#define     <link linkend="CAIRO-FORMAT-VALID:CAPS">CAIRO_FORMAT_VALID</link>              (format)
 enum        <link linkend="cairo-operator-t">cairo_operator_t</link>;
 <link linkend="void">void</link>        <link linkend="cairo-set-operator">cairo_set_operator</link>              (<link linkend="cairo-t">cairo_t</link> *cr,
                                              <link linkend="cairo-operator-t">cairo_operator_t</link> op);
@@ -180,6 +183,10 @@ enum        <link linkend="cairo-font-weight-t">cairo_font_weight_t</link>;
                                              const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);
 <link linkend="void">void</link>        <link linkend="cairo-get-font-matrix">cairo_get_font_matrix</link>           (<link linkend="cairo-t">cairo_t</link> *cr,
                                              <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);
+<link linkend="void">void</link>        <link linkend="cairo-set-font-options">cairo_set_font_options</link>          (<link linkend="cairo-t">cairo_t</link> *cr,
+                                             const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);
+<link linkend="void">void</link>        <link linkend="cairo-get-font-options">cairo_get_font_options</link>          (<link linkend="cairo-t">cairo_t</link> *cr,
+                                             <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);
 <link linkend="void">void</link>        <link linkend="cairo-show-text">cairo_show_text</link>                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                              const <link linkend="char">char</link> *utf8);
 <link linkend="void">void</link>        <link linkend="cairo-show-glyphs">cairo_show_glyphs</link>               (<link linkend="cairo-t">cairo_t</link> *cr,
@@ -395,8 +402,56 @@ saved states.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="cairo-content-t"/>enum cairo_content_t</title>
+<indexterm><primary>cairo_content_t</primary></indexterm><programlisting>typedef enum _cairo_content {
+    CAIRO_CONTENT_COLOR		= 0x1000,
+    CAIRO_CONTENT_ALPHA		= 0x2000,
+    CAIRO_CONTENT_COLOR_ALPHA	= 0x3000
+} cairo_content_t;
+</programlisting>
+<para>
+<parameter>cairo_content_t</parameter> is used to describe the content that a surface will
+contain, whether color information, alpha information (translucence
+vs. opacity), or both.
+</para>
+<para>
+Note: The large values here are designed to keep cairo_content_t
+values distinct from cairo_format_t values so that the
+implementation can detect the error if users confuse the two types.</para>
+<para>
+
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>CAIRO_CONTENT_COLOR</literal></term>
+<listitem><simpara> The surface will hold color content only.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_CONTENT_ALPHA</literal></term>
+<listitem><simpara> The surface will hold alpha content only.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_CONTENT_COLOR_ALPHA</literal></term>
+<listitem><simpara> The surface will hold color and alpha content.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="CAIRO-CONTENT-VALID:CAPS"/>CAIRO_CONTENT_VALID()</title>
+<indexterm><primary>CAIRO_CONTENT_VALID</primary></indexterm><programlisting>#define     CAIRO_CONTENT_VALID(content)</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>content</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
 <title><anchor id="cairo-format-t"/>enum cairo_format_t</title>
-<indexterm><primary>cairo_format_t</primary></indexterm><programlisting>typedef enum cairo_format {
+<indexterm><primary>cairo_format_t</primary></indexterm><programlisting>typedef enum _cairo_format {
     CAIRO_FORMAT_ARGB32,
     CAIRO_FORMAT_RGB24,
     CAIRO_FORMAT_A8,
@@ -443,8 +498,20 @@ image data.</para>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="CAIRO-FORMAT-VALID:CAPS"/>CAIRO_FORMAT_VALID()</title>
+<indexterm><primary>CAIRO_FORMAT_VALID</primary></indexterm><programlisting>#define     CAIRO_FORMAT_VALID(format)</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>format</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
 <title><anchor id="cairo-operator-t"/>enum cairo_operator_t</title>
-<indexterm><primary>cairo_operator_t</primary></indexterm><programlisting>typedef enum cairo_operator {
+<indexterm><primary>cairo_operator_t</primary></indexterm><programlisting>typedef enum _cairo_operator {
     CAIRO_OPERATOR_CLEAR,
 
     CAIRO_OPERATOR_SOURCE,
@@ -587,21 +654,37 @@ subsequent drawing operations.
                                              <link linkend="double">double</link> x,
                                              <link linkend="double">double</link> y);</programlisting>
 <para>
+This is a convenience function for creating a pattern from <parameter>surface</parameter>
+and setting it as the source in <parameter>cr</parameter> with <link linkend="cairo-set-source"><function>cairo_set_source()</function></link>.
+</para>
+<para>
+The <parameter>x</parameter> and <parameter>y</parameter> parameters give the user-space coordinate at which
+the surface origin should appear. (The surface origin is its
+upper-left corner before any transformation has been applied.) The
+<parameter>x</parameter> and <parameter>y</parameter> patterns are negated and then set as translation values
+in the pattern matrix.
+</para>
+<para>
+Other than the initial translation pattern matrix, as described
+above, all other pattern attributes, (such as its extend mode), are
+set to the default values as in cairo_pattern_create_for_surface.
+The resulting pattern can be queried with <link linkend="cairo-get-source"><function>cairo_get_source()</function></link> so
+that these attributes can be modified if desired, (eg. to create a
+repeating pattern with <link linkend="cairo-pattern-set-extend"><function>cairo_pattern_set_extend()</function></link>).</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a surface to be used to set the source pattern
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> User-space X coordinate for surface origin
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
+<listitem><simpara> User-space Y coordinate for surface origin
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -628,7 +711,7 @@ is unlikely to improve appearance significantly.)</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-fill-rule-t"/>enum cairo_fill_rule_t</title>
-<indexterm><primary>cairo_fill_rule_t</primary></indexterm><programlisting>typedef enum cairo_fill_rule {
+<indexterm><primary>cairo_fill_rule_t</primary></indexterm><programlisting>typedef enum _cairo_fill_rule {
     CAIRO_FILL_RULE_WINDING,
     CAIRO_FILL_RULE_EVEN_ODD
 } cairo_fill_rule_t;
@@ -709,7 +792,7 @@ construction.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-line-cap-t"/>enum cairo_line_cap_t</title>
-<indexterm><primary>cairo_line_cap_t</primary></indexterm><programlisting>typedef enum cairo_line_cap {
+<indexterm><primary>cairo_line_cap_t</primary></indexterm><programlisting>typedef enum _cairo_line_cap {
     CAIRO_LINE_CAP_BUTT,
     CAIRO_LINE_CAP_ROUND,
     CAIRO_LINE_CAP_SQUARE
@@ -762,7 +845,7 @@ construction.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-line-join-t"/>enum cairo_line_join_t</title>
-<indexterm><primary>cairo_line_join_t</primary></indexterm><programlisting>typedef enum cairo_line_join {
+<indexterm><primary>cairo_line_join_t</primary></indexterm><programlisting>typedef enum _cairo_line_join {
     CAIRO_LINE_JOIN_MITER,
     CAIRO_LINE_JOIN_ROUND,
     CAIRO_LINE_JOIN_BEVEL
@@ -841,7 +924,7 @@ construction.</para>
                                              <link linkend="double">double</link> tx,
                                              <link linkend="double">double</link> ty);</programlisting>
 <para>
-Modifies the current transformation matrix (CTM) by tanslating the
+Modifies the current transformation matrix (CTM) by translating the
 user-space origin by (<parameter>tx</parameter>, <parameter>ty</parameter>). This offset is interpreted as a
 user-space coordinate according to the CTM in place before the new
 call to cairo_translate. In other words, the translation of the
@@ -1647,7 +1730,7 @@ the current clip region.
 <para>
 Calling <link linkend="cairo-clip"><function>cairo_clip()</function></link> can only make the clip region smaller, never
 larger. But the current clip is part of the graphics state, so a
-tempoarary restriction of the clip region can be achieved by
+temporary restriction of the clip region can be achieved by
 calling <link linkend="cairo-clip"><function>cairo_clip()</function></link> within a <link linkend="cairo-save"><function>cairo_save()</function></link>/<link linkend="cairo-restore"><function>cairo_restore()</function></link>
 pair. The only other means of increasing the size of the clip
 region is <link linkend="cairo-reset-clip"><function>cairo_reset_clip()</function></link>.</para>
@@ -1678,7 +1761,7 @@ the current clip region.
 <para>
 Calling <link linkend="cairo-clip"><function>cairo_clip()</function></link> can only make the clip region smaller, never
 larger. But the current clip is part of the graphics state, so a
-tempoarary restriction of the clip region can be achieved by
+temporary restriction of the clip region can be achieved by
 calling <link linkend="cairo-clip"><function>cairo_clip()</function></link> within a <link linkend="cairo-save"><function>cairo_save()</function></link>/<link linkend="cairo-restore"><function>cairo_restore()</function></link>
 pair. The only other means of increasing the size of the clip
 region is <link linkend="cairo-reset-clip"><function>cairo_reset_clip()</function></link>.</para>
@@ -1760,7 +1843,7 @@ with respect to the overall origin</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-font-slant-t"/>enum cairo_font_slant_t</title>
-<indexterm><primary>cairo_font_slant_t</primary></indexterm><programlisting>typedef enum cairo_font_slant {
+<indexterm><primary>cairo_font_slant_t</primary></indexterm><programlisting>typedef enum _cairo_font_slant {
   CAIRO_FONT_SLANT_NORMAL,
   CAIRO_FONT_SLANT_ITALIC,
   CAIRO_FONT_SLANT_OBLIQUE
@@ -1771,7 +1854,7 @@ with respect to the overall origin</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="cairo-font-weight-t"/>enum cairo_font_weight_t</title>
-<indexterm><primary>cairo_font_weight_t</primary></indexterm><programlisting>typedef enum cairo_font_weight {
+<indexterm><primary>cairo_font_weight_t</primary></indexterm><programlisting>typedef enum _cairo_font_weight {
   CAIRO_FONT_WEIGHT_NORMAL,
   CAIRO_FONT_WEIGHT_BOLD
 } cairo_font_weight_t;
@@ -1866,6 +1949,46 @@ Stores the current font matrix into <parameter>matrix</parameter>. See
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
 <listitem><simpara> return value for the matrix
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-set-font-options"/>cairo_set_font_options ()</title>
+<indexterm><primary>cairo_set_font_options</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_set_font_options          (<link linkend="cairo-t">cairo_t</link> *cr,
+                                             const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<para>
+Sets a set of custom font rendering options for the <link linkend="cairo-t"><type>cairo_t</type></link>.
+Rendering options are derived by merging these options with the
+options derived from underlying surface; if the value in <parameter>options</parameter>
+has a default value (like <literal>CAIRO_ANTIALIAS_DEFAULT</literal>), then the value
+from the surface is used.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>options</parameter>&nbsp;:</term>
+<listitem><simpara> font options to use
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-get-font-options"/>cairo_get_font_options ()</title>
+<indexterm><primary>cairo_get_font_options</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_get_font_options          (<link linkend="cairo-t">cairo_t</link> *cr,
+                                             <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<para>
+Retrieves font rendering options set via <link linkend="cairo-set-font-options"><type>cairo_set_font_options</type></link>.
+Note that the returned options do not include any options derived
+from the underlying surface; they are literally the options
+passed to <link linkend="cairo-set-font-options"><function>cairo_set_font_options()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>options</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link> object into which to store
+  the retrieved options. All existing values are overwritten
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -2237,9 +2360,13 @@ Gets the target surface for the cairo context as passed to
 <varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the target surface, (or NULL if <parameter>cr</parameter> is in an error
-state). This object is owned by cairo. To keep a reference to it,
-you must call <link linkend="cairo-surface-reference"><function>cairo_surface_reference()</function></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the target surface. This object is owned by cairo. To
+keep a reference to it, you must call <link linkend="cairo-surface-reference"><function>cairo_surface_reference()</function></link>.
+
+This function will always return a valid pointer, but the result
+can be a "nil" surface if <parameter>cr</parameter> is already in an error state,
+(ie. cairo_status(cr) != CAIRO_STATUS_SUCCESS). A nil surface is
+indicated by cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -2263,12 +2390,12 @@ This function will always return a valid pointer, but the result
 will have no data, (data==NULL and num_data==0), if either of the
 following conditions hold:
 
-1) If there is insufficient memory to copy the path. In this case
-   path->status will be set to CAIRO_STATUS_NO_MEMORY.
+1) If there is insufficient memory to copy the path.
 
-2) If <parameter>cr</parameter> is already in an error state. In this case path->status
-   will contain the same status that would be returned by
-   cairo_status(cr).
+2) If <parameter>cr</parameter> is already in an error state.
+
+In either case, path->status will be set to CAIRO_STATUS_NO_MEMORY,
+(regardless of what the error status in <parameter>cr</parameter> might have been).
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -2331,7 +2458,7 @@ CAIRO_STATUS_SUCCESS.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-path-data-type-t"/>enum cairo_path_data_type_t</title>
-<indexterm><primary>cairo_path_data_type_t</primary></indexterm><programlisting>typedef enum cairo_path_data_type {
+<indexterm><primary>cairo_path_data_type_t</primary></indexterm><programlisting>typedef enum _cairo_path_data_type {
     CAIRO_PATH_MOVE_TO,
     CAIRO_PATH_LINE_TO,
     CAIRO_PATH_CURVE_TO,
@@ -2366,7 +2493,23 @@ portions (MOVE_TO, LINE_TO, CURVE_TO, CLOSE_PATH), since the data
 includes both headers and coordinates for each portion.</para>
 <para>
 
-</para></refsect2>
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="cairo-status-t">cairo_status_t</link>&nbsp;<structfield>status</structfield>;</term>
+<listitem><simpara> the current error status
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="cairo-path-data-t">cairo_path_data_t</link>&nbsp;*<structfield>data</structfield>;</term>
+<listitem><simpara> the elements in the path
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="int">int</link>&nbsp;<structfield>num_data</structfield>;</term>
+<listitem><simpara> the number of elements in the data array
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-path-destroy"/>cairo_path_destroy ()</title>
 <indexterm><primary>cairo_path_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_path_destroy              (<link linkend="cairo-path-t">cairo_path_t</link> *path);</programlisting>
@@ -2390,14 +2533,14 @@ cairo_copy_path or cairo_copy_path_flat.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-status-t"/>enum cairo_status_t</title>
-<indexterm><primary>cairo_status_t</primary></indexterm><programlisting>typedef enum cairo_status {
+<indexterm><primary>cairo_status_t</primary></indexterm><programlisting>typedef enum _cairo_status {
     CAIRO_STATUS_SUCCESS = 0,
     CAIRO_STATUS_NO_MEMORY,
     CAIRO_STATUS_INVALID_RESTORE,
     CAIRO_STATUS_INVALID_POP_GROUP,
     CAIRO_STATUS_NO_CURRENT_POINT,
     CAIRO_STATUS_INVALID_MATRIX,
-    CAIRO_STATUS_NO_TARGET_SURFACE,
+    CAIRO_STATUS_INVALID_STATUS,
     CAIRO_STATUS_NULL_POINTER,
     CAIRO_STATUS_INVALID_STRING,
     CAIRO_STATUS_INVALID_PATH_DATA,
@@ -2405,7 +2548,11 @@ cairo_copy_path or cairo_copy_path_flat.
     CAIRO_STATUS_WRITE_ERROR,
     CAIRO_STATUS_SURFACE_FINISHED,
     CAIRO_STATUS_SURFACE_TYPE_MISMATCH,
-    CAIRO_STATUS_PATTERN_TYPE_MISMATCH
+    CAIRO_STATUS_PATTERN_TYPE_MISMATCH,
+    CAIRO_STATUS_INVALID_CONTENT,
+    CAIRO_STATUS_INVALID_FORMAT,
+    CAIRO_STATUS_INVALID_VISUAL,
+    CAIRO_STATUS_FILE_NOT_FOUND
 } cairo_status_t;
 </programlisting>
 <para>
@@ -2423,73 +2570,92 @@ the context and can be retrieved with <link linkend="cairo-status"><function>cai
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_NO_MEMORY</literal></term>
-<listitem><simpara> 
+<listitem><simpara> out of memory
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_INVALID_RESTORE</literal></term>
-<listitem><simpara>
+<listitem><simpara> cairo_restore without matching cairo_save
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_INVALID_POP_GROUP</literal></term>
-<listitem><simpara>
+<listitem><simpara> no saved group to pop
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_NO_CURRENT_POINT</literal></term>
-<listitem><simpara>
+<listitem><simpara> no current point defined
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_INVALID_MATRIX</literal></term>
-<listitem><simpara>
+<listitem><simpara> invalid matrix (not invertible)
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
-<term><literal>CAIRO_STATUS_NO_TARGET_SURFACE</literal></term>
-<listitem><simpara>
+<term><literal>CAIRO_STATUS_INVALID_STATUS</literal></term>
+<listitem><simpara> invalid value for an input cairo_status_t
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_NULL_POINTER</literal></term>
-<listitem><simpara>
+<listitem><simpara> NULL pointer
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_INVALID_STRING</literal></term>
-<listitem><simpara>
+<listitem><simpara> input string not valid UTF-8
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_INVALID_PATH_DATA</literal></term>
-<listitem><simpara>
+<listitem><simpara> input path data not valid
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_READ_ERROR</literal></term>
-<listitem><simpara>
+<listitem><simpara> error while reading from input stream
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_WRITE_ERROR</literal></term>
-<listitem><simpara>
+<listitem><simpara> error while writing to output stream
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_SURFACE_FINISHED</literal></term>
-<listitem><simpara>
+<listitem><simpara> target surface has been finished
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_SURFACE_TYPE_MISMATCH</literal></term>
-<listitem><simpara>
+<listitem><simpara> the surface type is not appropriate for the operation
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>CAIRO_STATUS_PATTERN_TYPE_MISMATCH</literal></term>
-<listitem><simpara>
-
+<listitem><simpara> the pattern type is not appropriate for the operation
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_STATUS_INVALID_CONTENT</literal></term>
+<listitem><simpara> invalid value for an input cairo_content_t
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_STATUS_INVALID_FORMAT</literal></term>
+<listitem><simpara> invalid value for an input cairo_format_t
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_STATUS_INVALID_VISUAL</literal></term>
+<listitem><simpara> invalid value for an input Visual*
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_STATUS_FILE_NOT_FOUND</literal></term>
+<listitem><simpara> file not found
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
@@ -2530,7 +2696,7 @@ the context and can be retrieved with <link linkend="cairo-status"><function>cai
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-filter-t"/>enum cairo_filter_t</title>
-<indexterm><primary>cairo_filter_t</primary></indexterm><programlisting>typedef enum {
+<indexterm><primary>cairo_filter_t</primary></indexterm><programlisting>typedef enum _cairo_filter {
     CAIRO_FILTER_FAST,
     CAIRO_FILTER_GOOD,
     CAIRO_FILTER_BEST,
@@ -2648,9 +2814,7 @@ element and should free any memory and resources allocated for it.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
+<listitem><simpara> The data element being destroyed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -2667,7 +2831,13 @@ address of a <link linkend="cairo-data-key-t"><type>cairo_data_key_t</type></lin
 would just use the address of a static <link linkend="cairo-data-key-t"><type>cairo_data_key_t</type></link> object.</para>
 <para>
 
-</para></refsect2>
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="int">int</link>&nbsp;<structfield>unused</structfield>;</term>
+<listitem><simpara> not used; ignore.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-read-func-t"/>cairo_read_func_t ()</title>
 <indexterm><primary>cairo_read_func_t</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> (*cairo_read_func_t)         (<link linkend="void">void</link> *closure,
@@ -2679,23 +2849,21 @@ backend needs to read data from an intput stream.  It is passed the
 closure which was specified by the user at the time the read
 function was registered, the buffer to read the data into and the
 length of the data in bytes.  The read function should return
-CAIRO_STATUS_SUCCESS if all the data was successfully written,
+CAIRO_STATUS_SUCCESS if all the data was successfully read,
 CAIRO_STATUS_READ_ERROR otherwise.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the input closure
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the buffer into which to read the data
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>length</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the amount of data to read
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the status code of the read operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -2715,17 +2883,15 @@ CAIRO_STATUS_WRITE_ERROR otherwise.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the output closure
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the buffer containing the data to write
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>length</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the amount of data to write
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the status code of the write operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

@@ -2,10 +2,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>cairo_surface_t</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
-<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
+<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="pt02.html" title="Part&#160;II.&#160;Reference">
-<link rel="previous" href="cairo-cairo-t.html" title="cairo_t">
+<link rel="prev" href="cairo-cairo-t.html" title="cairo_t">
 <link rel="next" href="cairo-cairo-pattern-t.html" title="cairo_pattern_t">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -23,10 +23,7 @@
 <td><a accesskey="n" href="cairo-cairo-pattern-t.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="refentry" lang="en">
-<a name="cairo-cairo-surface-t"></a><div class="titlepage">
-<div></div>
-<div></div>
-</div>
+<a name="cairo-cairo-surface-t"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle">cairo_surface_t</span></h2>
@@ -43,12 +40,14 @@
 typedef     <a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>;
 <a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-cairo-surface-t.html#cairo-surface-create-similar">cairo_surface_create_similar</a>
                                             (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *other,
-                                             <a href="cairo-cairo-t.html#cairo-format-t">cairo_format_t</a> format,
+                                             <a href="cairo-cairo-t.html#cairo-content-t">cairo_content_t</a> content,
                                              int width,
                                              int height);
 void        <a href="cairo-cairo-surface-t.html#cairo-surface-reference">cairo_surface_reference</a>         (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
 void        <a href="cairo-cairo-surface-t.html#cairo-surface-destroy">cairo_surface_destroy</a>           (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
-<a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> <a href="cairo-cairo-surface-t.html#cairo-surface-finish">cairo_surface_finish</a>         (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+void        <a href="cairo-cairo-surface-t.html#cairo-surface-finish">cairo_surface_finish</a>            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
+void        <a href="cairo-cairo-surface-t.html#cairo-surface-get-font-options">cairo_surface_get_font_options</a>  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             <a href="cairo-Fonts.html#cairo-font-options-t">cairo_font_options_t</a> *options);
 <a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> <a href="cairo-cairo-surface-t.html#cairo-surface-set-user-data">cairo_surface_set_user_data</a>  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              const <a href="cairo-cairo-t.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key,
                                              void *user_data,
@@ -61,41 +60,45 @@ void        <a href="cairo-cairo-surface-t.html#cairo-surface-set-device-offset"
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2933298"></a><h2>Description</h2>
+<a name="id2614291"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2933309"></a><h2>Details</h2>
+<a name="id2614302"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2933315"></a><h3>
+<a name="id2614308"></a><h3>
 <a name="cairo-surface-t"></a>cairo_surface_t</h3>
-<a class="indexterm" name="id2933325"></a><pre class="programlisting">typedef struct _cairo_surface cairo_surface_t;
+<a class="indexterm" name="id2614318"></a><pre class="programlisting">typedef struct _cairo_surface cairo_surface_t;
 </pre>
 <p>
 A <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> represents an image, either as the destination
 of a drawing operation or as source when drawing onto another
 surface. There are different subtypes of cairo_surface_t for
-different drawing backends; for example, <a href="cairo-cairo-t.html#cairo-image-surface-create"><tt class="function">cairo_image_surface_create()</tt></a>
+different drawing backends; for example, <a href="cairo-cairo-t.html#cairo-image-surface-create"><code class="function">cairo_image_surface_create()</code></a>
 creates a bitmap image in memory.
 </p>
 <p>
 Memory management of <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> is done with
-<a href="cairo-cairo-surface-t.html#cairo-surface-reference"><tt class="function">cairo_surface_reference()</tt></a> and <a href="cairo-cairo-surface-t.html#cairo-surface-destroy"><tt class="function">cairo_surface_destroy()</tt></a>.</p>
+<a href="cairo-cairo-surface-t.html#cairo-surface-reference"><code class="function">cairo_surface_reference()</code></a> and <a href="cairo-cairo-surface-t.html#cairo-surface-destroy"><code class="function">cairo_surface_destroy()</code></a>.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2933393"></a><h3>
+<a name="id2614386"></a><h3>
 <a name="cairo-surface-create-similar"></a>cairo_surface_create_similar ()</h3>
-<a class="indexterm" name="id2933402"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_surface_create_similar
+<a class="indexterm" name="id2614395"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_surface_create_similar
                                             (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *other,
-                                             <a href="cairo-cairo-t.html#cairo-format-t">cairo_format_t</a> format,
+                                             <a href="cairo-cairo-t.html#cairo-content-t">cairo_content_t</a> content,
                                              int width,
                                              int height);</pre>
+<p>
+Create a new surface that is as compatible as possible with an
+existing surface. The new surface will use the same backend as
+<em class="parameter"><code>other</code></em> unless that is not possible for some reason.</p>
 <p>
 
 </p>
@@ -104,34 +107,38 @@ Memory management of <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span 
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>other</tt></i>&#160;:</span></td>
-<td>
+<span class="term"><em class="parameter"><code>other</code></em>&#160;:</span></td>
+<td> an existing surface used to select the backend of the new surface
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>format</tt></i>&#160;:</span></td>
-<td>
+<span class="term"><em class="parameter"><code>content</code></em>&#160;:</span></td>
+<td> the content for the new surface
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>width</tt></i>&#160;:</span></td>
-<td>
+<span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td> width of the new surface, (in device-space units)
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>height</tt></i>&#160;:</span></td>
-<td>
+<span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td> height of the new surface (in device-space units)
 </td>
 </tr>
 <tr>
 <td>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td>
+<td> a pointer to the newly allocated surface. The caller
+owns the surface and should call cairo_surface_destroy when done
+with it.
 
-
+This function always returns a valid pointer, but it will return a
+pointer to a "nil" surface if <em class="parameter"><code>other</code></em> is already in an error state
+or any other error occurs.
 </td>
 </tr>
 </tbody>
@@ -139,9 +146,9 @@ Memory management of <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2969148"></a><h3>
+<a name="id2661524"></a><h3>
 <a name="cairo-surface-reference"></a>cairo_surface_reference ()</h3>
-<a class="indexterm" name="id2969157"></a><pre class="programlisting">void        cairo_surface_reference         (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<a class="indexterm" name="id2661533"></a><pre class="programlisting">void        cairo_surface_reference         (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
 <p>
 
 </p>
@@ -149,7 +156,7 @@ Memory management of <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span 
 <col align="left" valign="top">
 <tbody><tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td>
 
 
@@ -159,9 +166,9 @@ Memory management of <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2969202"></a><h3>
+<a name="id2661578"></a><h3>
 <a name="cairo-surface-destroy"></a>cairo_surface_destroy ()</h3>
-<a class="indexterm" name="id2969211"></a><pre class="programlisting">void        cairo_surface_destroy           (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<a class="indexterm" name="id2661587"></a><pre class="programlisting">void        cairo_surface_destroy           (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
 <p>
 
 </p>
@@ -169,7 +176,7 @@ Memory management of <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span 
 <col align="left" valign="top">
 <tbody><tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td>
 
 
@@ -179,22 +186,22 @@ Memory management of <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2968003"></a><h3>
+<a name="id2661632"></a><h3>
 <a name="cairo-surface-finish"></a>cairo_surface_finish ()</h3>
-<a class="indexterm" name="id2968012"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_surface_finish         (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<a class="indexterm" name="id2661641"></a><pre class="programlisting">void        cairo_surface_finish            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
 <p>
 This function finishes the surface and drops all references to
 external resources.  For example, for the Xlib backend it means
 that cairo will no longer access the drawable, which can be freed.
-After calling <a href="cairo-cairo-surface-t.html#cairo-surface-finish"><tt class="function">cairo_surface_finish()</tt></a> the only valid operations on a
+After calling <a href="cairo-cairo-surface-t.html#cairo-surface-finish"><code class="function">cairo_surface_finish()</code></a> the only valid operations on a
 surface are getting and setting user data and referencing and
-destroying it.  Further drawing the the surface will not affect the
-surface but set the surface status to
-CAIRO_STATUS_SURFACE_FINISHED.
+destroying it.  Further drawing to the surface will not affect the
+surface but will instead trigger a CAIRO_STATUS_SURFACE_FINISHED
+error.
 </p>
 <p>
-When the last call to <a href="cairo-cairo-surface-t.html#cairo-surface-destroy"><tt class="function">cairo_surface_destroy()</tt></a> decreases the
-reference count to zero, cairo will call <a href="cairo-cairo-surface-t.html#cairo-surface-finish"><tt class="function">cairo_surface_finish()</tt></a> if
+When the last call to <a href="cairo-cairo-surface-t.html#cairo-surface-destroy"><code class="function">cairo_surface_destroy()</code></a> decreases the
+reference count to zero, cairo will call <a href="cairo-cairo-surface-t.html#cairo-surface-finish"><code class="function">cairo_surface_finish()</code></a> if
 it hasn't been called already, before freeing the resources
 associated with the surface.</p>
 <p>
@@ -202,36 +209,26 @@ associated with the surface.</p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
-<tbody>
-<tr>
+<tbody><tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td> the <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> to finish
 </td>
-</tr>
-<tr>
-<td>
-<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> CAIRO_STATUS_SUCCESS if the surface was finished
-successfully, otherwise CAIRO_STATUS_NO_MEMORY or
-CAIRO_STATUS_WRITE_ERROR.
-</td>
-</tr>
-</tbody>
+</tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2968120"></a><h3>
-<a name="cairo-surface-set-user-data"></a>cairo_surface_set_user_data ()</h3>
-<a class="indexterm" name="id2968130"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_surface_set_user_data  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
-                                             const <a href="cairo-cairo-t.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key,
-                                             void *user_data,
-                                             <a href="cairo-cairo-t.html#cairo-destroy-func-t">cairo_destroy_func_t</a> destroy);</pre>
+<a name="id2616377"></a><h3>
+<a name="cairo-surface-get-font-options"></a>cairo_surface_get_font_options ()</h3>
+<a class="indexterm" name="id2616387"></a><pre class="programlisting">void        cairo_surface_get_font_options  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             <a href="cairo-Fonts.html#cairo-font-options-t">cairo_font_options_t</a> *options);</pre>
 <p>
-Attach user data to <i class="parameter"><tt>surface</tt></i>.  To remove user data from a surface,
-call this function with the key that was used to set it and <tt class="literal">NULL</tt>
-for <i class="parameter"><tt>data</tt></i>.</p>
+Retrieves the default font rendering options for the surface.
+This allows display surfaces to report the correct subpixel order
+for rendering on them, print surfaces to disable hinting of
+metrics and so forth. The result can then be used with
+<a href="cairo-Fonts.html#cairo-scaled-font-create"><code class="function">cairo_scaled_font_create()</code></a>.</p>
 <p>
 
 </p>
@@ -240,25 +237,59 @@ for <i class="parameter"><tt>data</tt></i>.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>key</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>options</code></em>&#160;:</span></td>
+<td> a <a href="cairo-Fonts.html#cairo-font-options-t"><span class="type">cairo_font_options_t</span></a> object into which to store
+  the retrieved options. All existing values are overwritten
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2616485"></a><h3>
+<a name="cairo-surface-set-user-data"></a>cairo_surface_set_user_data ()</h3>
+<a class="indexterm" name="id2616494"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_surface_set_user_data  (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             const <a href="cairo-cairo-t.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key,
+                                             void *user_data,
+                                             <a href="cairo-cairo-t.html#cairo-destroy-func-t">cairo_destroy_func_t</a> destroy);</pre>
+<p>
+Attach user data to <em class="parameter"><code>surface</code></em>.  To remove user data from a surface,
+call this function with the key that was used to set it and <code class="literal">NULL</code>
+for <em class="parameter"><code>data</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
+<td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
 <td> the address of a <a href="cairo-cairo-t.html#cairo-user-data-key-t"><span class="type">cairo_user_data_key_t</span></a> to attach the user data to
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>user_data</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
 <td> the user data to attach to the surface
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>destroy</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>destroy</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-t.html#cairo-destroy-func-t"><span class="type">cairo_destroy_func_t</span></a> which will be called when the
 surface is destroyed or when new user data is attached using the
 same key.
@@ -267,7 +298,7 @@ same key.
 <tr>
 <td>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <tt class="literal">CAIRO_STATUS_SUCCESS</tt> or <tt class="literal">CAIRO_STATUS_NO_MEMORY</tt> if a
+<td> <code class="literal">CAIRO_STATUS_SUCCESS</code> or <code class="literal">CAIRO_STATUS_NO_MEMORY</code> if a
 slot could not be allocated for the user data.
 </td>
 </tr>
@@ -276,14 +307,14 @@ slot could not be allocated for the user data.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2935377"></a><h3>
+<a name="id2660085"></a><h3>
 <a name="cairo-surface-get-user-data"></a>cairo_surface_get_user_data ()</h3>
-<a class="indexterm" name="id2935386"></a><pre class="programlisting">void*       cairo_surface_get_user_data     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2660095"></a><pre class="programlisting">void*       cairo_surface_get_user_data     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              const <a href="cairo-cairo-t.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key);</pre>
 <p>
-Return user data previously attached to <i class="parameter"><tt>surface</tt></i> using the specified
+Return user data previously attached to <em class="parameter"><code>surface</code></em> using the specified
 key.  If no user data has been attached with the given key this
-function returns <tt class="literal">NULL</tt>.</p>
+function returns <code class="literal">NULL</code>.</p>
 <p>
 
 </p>
@@ -292,13 +323,13 @@ function returns <tt class="literal">NULL</tt>.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>key</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
 <td> the address of the <a href="cairo-cairo-t.html#cairo-user-data-key-t"><span class="type">cairo_user_data_key_t</span></a> the user data was
 attached to
 </td>
@@ -306,7 +337,7 @@ attached to
 <tr>
 <td>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> the user data previously attached or <tt class="literal">NULL</tt>.
+<td> the user data previously attached or <code class="literal">NULL</code>.
 </td>
 </tr>
 </tbody>
@@ -314,20 +345,20 @@ attached to
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2935499"></a><h3>
+<a name="id2660208"></a><h3>
 <a name="cairo-surface-set-device-offset"></a>cairo_surface_set_device_offset ()</h3>
-<a class="indexterm" name="id2935510"></a><pre class="programlisting">void        cairo_surface_set_device_offset (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2660219"></a><pre class="programlisting">void        cairo_surface_set_device_offset (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              double x_offset,
                                              double y_offset);</pre>
 <p>
 Sets an offset that is added to the device coordinates determined
-by the CTM when drawing to <i class="parameter"><tt>surface</tt></i>. One use case for this function
+by the CTM when drawing to <em class="parameter"><code>surface</code></em>. One use case for this function
 is when we want to create a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> that redirects drawing
 for a portion of an onscreen surface to an offscreen surface in a
 way that is completely invisible to the user of the cairo
-API. Setting a transformation via <a href="cairo-cairo-t.html#cairo-translate"><tt class="function">cairo_translate()</tt></a> isn't
+API. Setting a transformation via <a href="cairo-cairo-t.html#cairo-translate"><code class="function">cairo_translate()</code></a> isn't
 sufficient to do this, since functions like
-<a href="cairo-cairo-t.html#cairo-device-to-user"><tt class="function">cairo_device_to_user()</tt></a> will expose the hidden offset.
+<a href="cairo-cairo-t.html#cairo-device-to-user"><code class="function">cairo_device_to_user()</code></a> will expose the hidden offset.
 </p>
 <p>
 Note that the offset only affects drawing to the surface, not using
@@ -340,19 +371,19 @@ the surface in a surface pattern.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>x_offset</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>x_offset</code></em>&#160;:</span></td>
 <td> the offset in the X direction, in device units
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>y_offset</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>y_offset</code></em>&#160;:</span></td>
 <td> the offset in the Y direction, in device units
 </td>
 </tr>

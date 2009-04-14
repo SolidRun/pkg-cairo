@@ -20,44 +20,52 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * Author: Carl Worth <cworth@cworth.org>
+ * Author: Carl D. Worth <cworth@cworth.org>
  */
 
 #include "cairo-test.h"
 
-#include <stdlib.h>
-
-#define WIDTH 2
-#define HEIGHT 2
+#define WIDTH  31
+#define HEIGHT 20
+#define TEXT_SIZE 12
 
 cairo_test_t test = {
-    "create-for-png",
-    "Tests the creation of an image surface from a PNG file",
+    "text-antialias-none",
+    "Tests text rendering with no antialiasing",
     WIDTH, HEIGHT
 };
 
 static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
-    char *srcdir = getenv ("srcdir");
-    char *filename;
-    cairo_surface_t *surface;
+    cairo_text_extents_t extents;
+    cairo_font_options_t *font_options;
+    static char black[] = "black", blue[] = "blue";
 
-    xasprintf (&filename, "%s/%s", srcdir ? srcdir : ".",
-	       "create-for-png-ref.png");
+    cairo_select_font_face (cr, "Bitstream Vera Sans",
+			    CAIRO_FONT_SLANT_NORMAL,
+			    CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size (cr, TEXT_SIZE);
 
-    surface = cairo_image_surface_create_from_png (filename);
-    free (filename);
+    font_options = cairo_font_options_create ();
 
-    if (surface == NULL) {
-	cairo_test_log ("Error: failed to open file %s\n", filename);
-	return CAIRO_TEST_FAILURE;
-    }
+    cairo_font_options_set_hint_style (font_options, CAIRO_HINT_STYLE_NONE);
+    cairo_font_options_set_hint_metrics (font_options, CAIRO_HINT_METRICS_OFF);
+    cairo_font_options_set_antialias (font_options, CAIRO_ANTIALIAS_NONE);
 
-    cairo_set_source_surface (cr, surface, 0, 0);
-    cairo_paint (cr);
+    cairo_set_font_options (cr, font_options);
+    cairo_font_options_destroy (font_options);
 
-    cairo_surface_destroy (surface);
+    cairo_set_source_rgb (cr, 0, 0, 0); /* black */
+    cairo_text_extents (cr, black, &extents);
+    cairo_move_to (cr, -extents.x_bearing, -extents.y_bearing);
+    cairo_show_text (cr, black);
+    cairo_translate (cr, 0, -extents.y_bearing + 1);
+
+    cairo_set_source_rgb (cr, 0, 0, 1); /* blue */
+    cairo_text_extents (cr, blue, &extents);
+    cairo_move_to (cr, -extents.x_bearing, -extents.y_bearing);
+    cairo_show_text (cr, blue);
 
     return CAIRO_TEST_SUCCESS;
 }

@@ -2,10 +2,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>XLib Backend</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
-<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
+<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="pt02.html" title="Part&#160;II.&#160;Reference">
-<link rel="previous" href="cairo-XCB-Backend.html" title="XCB Backend">
+<link rel="prev" href="cairo-XCB-Backend.html" title="XCB Backend">
 <link rel="next" href="ix01.html" title="Index">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -23,10 +23,7 @@
 <td><a accesskey="n" href="ix01.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="refentry" lang="en">
-<a name="cairo-XLib-Backend"></a><div class="titlepage">
-<div></div>
-<div></div>
-</div>
+<a name="cairo-XLib-Backend"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle">XLib Backend</span></h2>
@@ -48,6 +45,7 @@
 <a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-XLib-Backend.html#cairo-xlib-surface-create-for-bitmap">cairo_xlib_surface_create_for_bitmap</a>
                                             (Display *dpy,
                                              Pixmap bitmap,
+                                             Screen *screen,
                                              int width,
                                              int height);
 void        <a href="cairo-XLib-Backend.html#cairo-xlib-surface-set-size">cairo_xlib_surface_set_size</a>     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
@@ -56,17 +54,17 @@ void        <a href="cairo-XLib-Backend.html#cairo-xlib-surface-set-size">cairo_
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2979126"></a><h2>Description</h2>
+<a name="id2677769"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2979138"></a><h2>Details</h2>
+<a name="id2677780"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2979144"></a><h3>
+<a name="id2677786"></a><h3>
 <a name="cairo-xlib-surface-create"></a>cairo_xlib_surface_create ()</h3>
-<a class="indexterm" name="id2979153"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create  (Display *dpy,
+<a class="indexterm" name="id2656047"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create  (Display *dpy,
                                              Drawable drawable,
                                              Visual *visual,
                                              int width,
@@ -77,7 +75,7 @@ The way that colors are represented in the drawable is specified
 by the provided visual.
 </p>
 <p>
-NOTE: If <i class="parameter"><tt>drawable</tt></i> is a Window, then the function
+NOTE: If <em class="parameter"><code>drawable</code></em> is a Window, then the function
 cairo_xlib_surface_set_size must be called whenever the size of the
 window changes.</p>
 <p>
@@ -88,34 +86,34 @@ window changes.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>dpy</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>dpy</code></em>&#160;:</span></td>
 <td> an X Display
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>drawable</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>drawable</code></em>&#160;:</span></td>
 <td> an X Drawable, (a Pixmap or a Window)
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>visual</tt></i>&#160;:</span></td>
-<td> the visual to use for drawing to <i class="parameter"><tt>drawable</tt></i>. The depth
+<span class="term"><em class="parameter"><code>visual</code></em>&#160;:</span></td>
+<td> the visual to use for drawing to <em class="parameter"><code>drawable</code></em>. The depth
          of the visual must match the depth of the drawable.
          Currently, only TrueColor visuals are fully supported.
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>width</tt></i>&#160;:</span></td>
-<td> the current width of <i class="parameter"><tt>drawable</tt></i>.
+<span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td> the current width of <em class="parameter"><code>drawable</code></em>.
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>height</tt></i>&#160;:</span></td>
-<td> the current height of <i class="parameter"><tt>drawable</tt></i>.
+<span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td> the current height of <em class="parameter"><code>drawable</code></em>.
 </td>
 </tr>
 <tr>
@@ -129,11 +127,12 @@ window changes.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2927399"></a><h3>
+<a name="id2656290"></a><h3>
 <a name="cairo-xlib-surface-create-for-bitmap"></a>cairo_xlib_surface_create_for_bitmap ()</h3>
-<a class="indexterm" name="id2927409"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create_for_bitmap
+<a class="indexterm" name="id2656301"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create_for_bitmap
                                             (Display *dpy,
                                              Pixmap bitmap,
+                                             Screen *screen,
                                              int width,
                                              int height);</pre>
 <p>
@@ -147,26 +146,32 @@ This will be drawn to as a CAIRO_FORMAT_A1 object.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>dpy</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>dpy</code></em>&#160;:</span></td>
 <td> an X Display
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>bitmap</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>bitmap</code></em>&#160;:</span></td>
 <td> an X Drawable, (a depth-1 Pixmap)
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>width</tt></i>&#160;:</span></td>
-<td> the current width of <i class="parameter"><tt>bitmap</tt></i>.
+<span class="term"><em class="parameter"><code>screen</code></em>&#160;:</span></td>
+<td> the X Screen associated with <em class="parameter"><code>bitmap</code></em>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>height</tt></i>&#160;:</span></td>
-<td> the current height of <i class="parameter"><tt>bitmap</tt></i>.
+<span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td> the current width of <em class="parameter"><code>bitmap</code></em>.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td> the current height of <em class="parameter"><code>bitmap</code></em>.
 </td>
 </tr>
 <tr>
@@ -180,9 +185,9 @@ This will be drawn to as a CAIRO_FORMAT_A1 object.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2926098"></a><h3>
+<a name="id2678712"></a><h3>
 <a name="cairo-xlib-surface-set-size"></a>cairo_xlib_surface_set_size ()</h3>
-<a class="indexterm" name="id2926107"></a><pre class="programlisting">void        cairo_xlib_surface_set_size     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2678721"></a><pre class="programlisting">void        cairo_xlib_surface_set_size     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              int width,
                                              int height);</pre>
 <p>
@@ -204,19 +209,19 @@ this function on a surface created for a Pixmap.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> for the XLib backend
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>width</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
 <td> the new width of the surface
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>height</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
 <td> the new height of the surface
 </td>
 </tr>

@@ -45,7 +45,7 @@
 
 
 
-#define CAIRO_HAS_XCB_SURFACE 1
+
 
 
 
