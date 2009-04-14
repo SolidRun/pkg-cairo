@@ -42,7 +42,6 @@
 #include "cairo-svg.h"
 #include "cairo-svg-test.h"
 #include "cairo-path-fixed-private.h"
-#include "cairo-ft-private.h"
 #include "cairo-meta-surface-private.h"
 #include "cairo-paginated-surface-private.h"
 #include "cairo-scaled-font-subsets-private.h"
@@ -626,7 +625,7 @@ _cairo_svg_document_emit_font_subset (cairo_scaled_font_subset_t	*font_subset,
 				      void				*closure)
 {
     cairo_svg_document_t *document = closure;
-    int i;
+    unsigned int i;
 
     for (i = 0; i < font_subset->num_glyphs; i++) {
 	_cairo_svg_document_emit_glyph (document,
@@ -898,7 +897,7 @@ emit_meta_surface (cairo_svg_document_t *document,
     cairo_output_stream_t *contents;
     cairo_meta_surface_t *meta;
     cairo_meta_snapshot_t *snapshot;
-    int num_elements;
+    unsigned int num_elements;
     unsigned int i, id;
 
     num_elements = document->meta_snapshots.num_elements;
@@ -1100,7 +1099,7 @@ emit_pattern_stops (cairo_output_stream_t *output,
 		    double start_offset)
 {
     double offset;
-    int i;
+    unsigned int i;
 
     for (i = 0; i < pattern->n_stops; i++) {
 	offset = start_offset + (1 - start_offset ) *
@@ -1602,7 +1601,7 @@ _cairo_svg_surface_intersect_clip_path (void			*dst,
     cairo_svg_surface_t *surface = dst;
     cairo_svg_document_t *document = surface->document;
     cairo_status_t status;
-    int i;
+    unsigned int i;
 
     if (path == NULL) {
  	for (i = 0; i < surface->clip_level; i++)
@@ -1638,10 +1637,11 @@ static void
 _cairo_svg_surface_get_font_options (void                  *abstract_surface,
 				     cairo_font_options_t  *options)
 {
-  _cairo_font_options_init_default (options);
+    _cairo_font_options_init_default (options);
 
-  cairo_font_options_set_hint_style (options, CAIRO_HINT_STYLE_NONE);
-  cairo_font_options_set_hint_metrics (options, CAIRO_HINT_METRICS_OFF);
+    cairo_font_options_set_hint_style (options, CAIRO_HINT_STYLE_NONE);
+    cairo_font_options_set_hint_metrics (options, CAIRO_HINT_METRICS_OFF);
+    cairo_font_options_set_antialias (options, CAIRO_ANTIALIAS_GRAY);
 }
 
 static const cairo_surface_backend_t cairo_svg_surface_backend = {

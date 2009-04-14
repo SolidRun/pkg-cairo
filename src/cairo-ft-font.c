@@ -48,6 +48,7 @@
 #include FT_FREETYPE_H
 #include FT_OUTLINE_H
 #include FT_IMAGE_H
+#include FT_TRUETYPE_TABLES_H
 #if HAVE_FT_GLYPHSLOT_EMBOLDEN
 #include FT_SYNTHESIS_H
 #endif
@@ -978,6 +979,7 @@ _render_glyph_outline (FT_Face                    face,
 	    switch (font_options->subpixel_order) {
 	    case CAIRO_SUBPIXEL_ORDER_RGB:
 	    case CAIRO_SUBPIXEL_ORDER_BGR:
+	    case CAIRO_SUBPIXEL_ORDER_DEFAULT:
 	    default:
 		matrix.xx *= 3;
 		hmul = 3;
@@ -1231,6 +1233,8 @@ _get_pattern_ft_options (FcPattern *pattern)
 	antialias = FcTrue;
     
     if (antialias) {
+	cairo_subpixel_order_t subpixel_order;
+
 	if (!bitmap)
 	    ft_options.load_flags |= FT_LOAD_NO_BITMAP;
 	
@@ -1245,25 +1249,28 @@ _get_pattern_ft_options (FcPattern *pattern)
 
 	switch (rgba) {
 	case FC_RGBA_RGB:
-	    ft_options.base.subpixel_order = CAIRO_SUBPIXEL_ORDER_RGB;
+	    subpixel_order = CAIRO_SUBPIXEL_ORDER_RGB;
 	    break;
 	case FC_RGBA_BGR:
-	    ft_options.base.subpixel_order = CAIRO_SUBPIXEL_ORDER_BGR;
+	    subpixel_order = CAIRO_SUBPIXEL_ORDER_BGR;
 	    break;
 	case FC_RGBA_VRGB:
-	    ft_options.base.subpixel_order = CAIRO_SUBPIXEL_ORDER_VRGB;
+	    subpixel_order = CAIRO_SUBPIXEL_ORDER_VRGB;
 	    break;
 	case FC_RGBA_VBGR:
-	    ft_options.base.subpixel_order = CAIRO_SUBPIXEL_ORDER_VBGR;
+	    subpixel_order = CAIRO_SUBPIXEL_ORDER_VBGR;
 	    break;
 	case FC_RGBA_UNKNOWN:
 	case FC_RGBA_NONE:
 	default:
+	    subpixel_order = CAIRO_SUBPIXEL_ORDER_DEFAULT;
 	    break;
 	}
 
-	if (ft_options.base.subpixel_order != CAIRO_SUBPIXEL_ORDER_DEFAULT)
+	if (subpixel_order != CAIRO_SUBPIXEL_ORDER_DEFAULT) {
+	    ft_options.base.subpixel_order = subpixel_order;
 	    ft_options.base.antialias = CAIRO_ANTIALIAS_SUBPIXEL;
+	}
 
 #ifdef FC_HINT_STYLE    
 	if (FcPatternGetInteger (pattern, 
@@ -1990,6 +1997,33 @@ _cairo_ft_show_glyphs (void		       *abstract_font,
     return CAIRO_INT_STATUS_UNSUPPORTED;
 }
 
+static cairo_int_status_t
+_cairo_ft_load_truetype_table (void	       *abstract_font,
+                              unsigned long     tag,
+                              long              offset,
+                              unsigned char    *buffer,
+                              unsigned long    *length)
+{
+    cairo_ft_scaled_font_t *scaled_font = abstract_font;
+    cairo_ft_unscaled_font_t *unscaled = scaled_font->unscaled;
+    FT_Face face;
+    cairo_status_t status = CAIRO_INT_STATUS_UNSUPPORTED;
+
+    if (_cairo_ft_scaled_font_is_vertical (&scaled_font->base))
+        return CAIRO_INT_STATUS_UNSUPPORTED;
+
+    face = _cairo_ft_unscaled_font_lock_face (unscaled);
+    if (!face)
+	return CAIRO_STATUS_NO_MEMORY;
+
+    if (FT_IS_SFNT (face) &&
+	FT_Load_Sfnt_Table (face, tag, offset, buffer, length) == 0)
+        status = CAIRO_STATUS_SUCCESS;
+
+    _cairo_ft_unscaled_font_unlock_face (unscaled);
+    return status;
+}
+
 const cairo_scaled_font_backend_t cairo_ft_scaled_font_backend = {
     CAIRO_FONT_TYPE_FT,
     _cairo_ft_scaled_font_create_toy,
@@ -1998,6 +2032,7 @@ const cairo_scaled_font_backend_t cairo_ft_scaled_font_backend = {
     NULL,			/* text_to_glyphs */
     _cairo_ft_ucs4_to_index,
     _cairo_ft_show_glyphs,
+    _cairo_ft_load_truetype_table,
 };
 
 /* cairo_ft_font_face_t */
@@ -2157,6 +2192,10 @@ cairo_ft_font_options_substitute (const cairo_font_options_t *options,
 	if (FcPatternGet (pattern, FC_ANTIALIAS, 0, &v) == FcResultNoMatch)
 	{
 	    FcPatternAddBool (pattern, FC_ANTIALIAS, options->antialias != CAIRO_ANTIALIAS_NONE);
+	    if (options->antialias != CAIRO_ANTIALIAS_SUBPIXEL) {
+		FcPatternDel (pattern, FC_RGBA);
+		FcPatternAddInteger (pattern, FC_RGBA, FC_RGBA_NONE);
+	    }
 	}
     }
 
@@ -2204,6 +2243,9 @@ cairo_ft_font_options_substitute (const cairo_font_options_t *options,
 	    int hint_style;
 
 	    switch (options->hint_style) {
+	    case CAIRO_HINT_STYLE_NONE:
+		hint_style = FC_HINT_NONE;
+		break;
 	    case CAIRO_HINT_STYLE_SLIGHT:
 		hint_style = FC_HINT_SLIGHT;
 		break;
@@ -2211,6 +2253,7 @@ cairo_ft_font_options_substitute (const cairo_font_options_t *options,
 		hint_style = FC_HINT_MEDIUM;
 		break;
 	    case CAIRO_HINT_STYLE_FULL:
+	    case CAIRO_HINT_STYLE_DEFAULT:
 	    default:
 		hint_style = FC_HINT_FULL;
 		break;
