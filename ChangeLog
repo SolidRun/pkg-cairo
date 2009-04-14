@@ -1,6 +1,888 @@
+commit 61404bd5022b913f58ecda8dc9e8922b4fc6f80b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Jun 27 15:44:52 2006 +0200
+
+    Update version to 1.2.0 and add notes to NEWS file.
+
+    Also update libtool version information to 11:0:9.
+
+commit cea70741e851993fe181a76872fb97549d0769d5
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 03:24:21 2006 +0200
+
+    Add src/cairo-features.h and test/*.ps to CLEANFILES
+
+commit 55b5fedbc1df32e4dc9d1fccf40e12e14f7b6cd0
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 02:54:22 2006 +0200
+
+    Add many references images (and a font) missing from EXTRA_DIST
+
+commit 3d4a8fd741df328bd969454791163bc945d3ad8b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 02:53:26 2006 +0200
+
+    Don't remove INSTALL during maintainer-clean
+
+commit cfddf93afb692819548adb85c5b75f60be7e7349
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Jul 1 01:55:12 2006 +0200
+
+    Make CAIRO_EXTEND_REFLECT and CAIRO_EXTEND_PAD not crash on surface
+    patterns,
+
+    but return error.
+
+commit 01b1f3572c3c15a08dd6f32788106c0e42fd2436
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Jun 30 22:01:24 2006 +0200
+
+    Detect and report crashes in tests.
+
+commit 19c4700101bfce7d73a50017021b4ec198ddd783
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 01:05:30 2006 +0200
+
+    Even _more_ valgrind suppresions for Xrm (XrmGetFileDatabase this
+    time)
+
+commit 84b06eed4e53eb34b0ec378216fa246286998acd
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 00:47:59 2006 +0200
+
+    SVG: Fix leak in _cairo_svg_surface_mask
+
+commit 35ec5747ca5eb8a63ec334d61eb13357b4aa3802
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 00:38:06 2006 +0200
+
+    Add yet another XrmGetStringDatabase valgrind suppression.
+
+commit 80cb0d5ba1e3622b4b71639cf03e7dc277cbb457
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 00:37:44 2006 +0200
+
+    Fix some leaks in the test suite itself.
+
+commit 14e7883fae58e51c2deab5b97c9a405c5dbb3aeb
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Jul 1 00:00:43 2006 +0200
+
+    Fix a memory leak by removing accidentally duplicated code.
+
+commit 8919b6b3243db5db59a73f804854364a00a8586d
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 23:24:23 2006 +0200
+
+    Add valgrind suppressions for pthread initialization still
+    reachable/possibly lost memory
+
+commit 98cc1651cf19699a0c90e8e2e7f2c2da2ae83760
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 23:21:06 2006 +0200
+
+    Add valgrind suppressions for still-reachable memory from XGetDefault
+    and XrmGetStringDatabase
+
+commit f6b10a6aabb121e1a4ca092ca175aad39b3c828d
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 23:06:56 2006 +0200
+
+    Add another suppression due to mysterious occurences in libc
+
+commit c6c943f3cfefa535e6c2da6adcac15507a8f0952
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 23:00:39 2006 +0200
+
+    ps: Fix to not walk off the end of the data array.
+
+    This fixes a bug recently introduced with the special case for the
+    ~> sequence.
+
+commit 0853ccd05314d618afd0d640a33f0a744842a0d2
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 22:58:36 2006 +0200
+
+    Add new libz/libpng suppressions.
+
+    It would appear we have to keep updating these for new library
+    versions.
+
+commit ee75e1e6853ada5c4218788148e2f5a09669a2b3
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 17:07:42 2006 +0200
+
+    Add ps-specific reference image for test/degenerate-path
+
+commit e0db22c6bc40d4576d9c1131d3192f1df3b942ca
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 16:54:16 2006 +0200
+
+    ps: Fix degenerate-path test failure.
+
+    This is as simple as simply not emitting any degenerate sub-paths
+    when the cap
+    style is CAIRO_LINE_CAP_SQUARE or CAIRO_LINE_CAP_BUTT.
+
+commit 057c0abeea1ee80c7156be5a1c15594765d88fe0
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 30 16:07:11 2006 +0200
+
+    ps: Fix transformation of source surfaces.
+
+    This makes the following four tests pass, (which were previously
+    failing on the ps backend).
+
+	move-to-show-surface
+	scale-source-surface-paint
+	source-surface-scale-paint
+	translate-show-surface
+
+commit 54ce585817d78ffeeb0ba6b03b868e63b9552cb8
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 23:34:29 2006 +0200
+
+    Update PDF-specific reference image for scale-source-surface-paint
+
+commit a6fc321d1793e97e4601429a98c36bed9af365a0
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 23:28:48 2006 +0200
+
+    Add PDF-specific reference image for paint-source-alpha
+
+commit aaef92f8307fedd864fca66054b06c8bfe7ae40d
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 23:27:05 2006 +0200
+
+    Add PDF-specific reference image for composite-integer-translate-over
+
+commit 45ebf2d1f3c6cb4588c3bebf6acf1818eb723515
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 30 01:45:47 2006 +0200
+
+    Fix an oops.
+
+commit e5d18d7696eb9a48369b89517738dbaa101106d7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 30 01:44:55 2006 +0200
+
+    Use $no_x in configure.in.
+
+commit 6c3deb0be1b9d6db0104af02fb193849a8329133
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 30 01:33:14 2006 +0200
+
+    Minor doc syntax fixes.
+
+commit 8860263c6a18a0b196e2b462a538dfc166fbea04
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 30 01:29:54 2006 +0200
+
+    Remove CAIRO_SVG_VERSION_LAST from public header file.
+
+commit 6672529541e01b0da53fff279cb1f8030c931ffb
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 30 00:58:01 2006 +0200
+
+    Hook some more symbols into docs.
+
+commit 66436d132772af627447a929ced3a8a18cc6915f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 30 00:46:48 2006 +0200
+
+    Update lots of docs.
+
+commit de939f52061ba9a1c739c193e3e4f549668855cc
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Thu Jun 29 18:54:02 2006 +0200
+
+    Require gtk-doc 1.6, and make it ignore cairo_public and cairo_private
+
+    decorators.
+
+commit 647ca37ca3d4b1954f7400deeeaaf245b5c90e69
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Thu Jun 29 18:47:35 2006 +0200
+
+    Mark enum additions as "Since 1.2" too.
+
+commit 320ce67d630e4aac1f0007982aef27c831b04b66
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Thu Jun 29 18:36:53 2006 +0200
+
+    Add "Since: 1.2" to docs for most new API functions.
+
+commit bd92eb7f3c58fdcbe05f67b9a879798246c616bc
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 19:47:26 2006 +0200
+
+    Move device_transform of path to before floating->fixed conversion.
+
+    This is an attempt to fix the following bug:
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=332266
+
+    With the recent rewrite of the device-offset code, which pushed things
+    from the gstate to the surface layer, the 16-bit limitations on
+    coordinates
+    which previously applied to device space only, have lately been
+    applying to
+    user space. This commit moves the device_transform back up above
+    the conversion
+    from floating-point to fixed-point values so that once again the
+    limitation
+    only applies to device space.
+
+commit 29caf8915f822778f0e59add7d364a03bcdb8327
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Thu Jun 29 16:09:46 2006 +0200
+
+    Fix support for non-pkg-config cflags and libs (needed for supporting
+    freetype-config)
+
+commit 195b1142e7a1652e0f65cfd822bba7ea8b6ba505
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Thu Jun 29 15:22:44 2006 +0200
+
+    Prefix "cairo_*_test_*" symbols with underscore.
+
+commit f26da6c464c60ab2ed87175ab0a9b81e3cf363fb
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Thu Jun 29 12:32:58 2006 +0200
+
+    Remove cairo_public from source files.
+
+commit 8effd25c1b05607ff6501821f1d80745677d8e72
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 06:25:24 2006 +0200
+
+    Update PDF and PS reference images for test/text-pattern.
+
+commit a64b946ee0512d85d3c790c67aad8a882c5c3533
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 06:24:44 2006 +0200
+
+    Mark test/leaky-dash as an expected failure.
+
+commit 734e10709f5c62c0b64e51a03df8e109e7eebe0d
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 06:12:48 2006 +0200
+
+    Add several more stress tests to test/dash-zero-length
+
+commit 8aa306caac99ebe074a6cde8b424b1780cafefee
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 05:13:37 2006 +0200
+
+    PS: Fix for dash-zero-length
+
+commit 7285499700a4f0f4bb95f003d0c730246bf3eabd
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 05:07:51 2006 +0200
+
+    Squelch some bogus compiler warnings about possibly uninitialized
+    values.
+
+commit 20e3a99bbaa2624ecad7b505158edc8dce706ea8
+Author: Keith Packard <keithp@neko.keithp.com>
+Date:	Thu Jun 29 04:10:35 2006 +0200
+
+    Skip TrueType font output for PS/PDF until it handles vertical layout.
+
+    The TrueType font subsetting code fails to emit VHEA/VMTX headers
+    for the
+    font, so WMode 1 doesn't work to switch to vertical metrics. Added
+    a bug
+    about this, and changed the PS/PDF output code to just use Type3
+    in this
+    case until the bug is fixed. Updated the reference images to match the
+    output for PDF/PS backends for the vertical font check.
+
+commit 2e2799d4f921b22030eb63585dcec2ed4503fd5b
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 02:41:46 2006 +0200
+
+    Ignore degenerate-path
+
+commit c90cc4e33f1549cde1d7a6a94599dbb3de84d387
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 29 02:41:17 2006 +0200
+
+    Update reference images for ft-text-vertical-layout
+
+commit 92021d169fea48eed9349e5821353f976df56be1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 28 04:14:07 2006 +0200
+
+    Make docs not build by "make all", but by "make doc", "make dist",
+    and "make
+    install".
+
+commit 0d073c2e86ced3a94ef76e7e4c2a00f8fb76efb1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 28 03:25:08 2006 +0200
+
+    Use $RELEASE_OR_SNAPSHOT to determine upload directory.
+    Turn distcheck on release-check on again, as CAIRO_TEST_TARGET=""
+    can be used
+    to disable all failures now.
+
+commit b37562868d2254d2dbd93a8808d32f0a0d769195
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 28 03:16:33 2006 +0200
+
+    Ignore *.bak
+
+commit 9fe0ea16d344d5b9bed1cd7f6046e378ce76ae1f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 28 03:15:41 2006 +0200
+
+    Update list of ignored header files.
+
+commit ddb81d3cade326fecfe1ed05037542e958e734b5
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Tue Jun 27 16:55:53 2006 +0200
+
+    Report Xlib Xrender status.
+
+commit 34f24d2aad90d4a737b513ac6858ed879316e132
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 27 15:38:45 2006 +0200
+
+    ROADMAP: Note that degenerate path stuff has been pushed out now.
+
+commit 988a28e259924e7ce50f4d3119bcef7a3b18c931
+Merge: 973c9ab... ce2b9e1...
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 27 15:37:58 2006 +0200
+
+    Merge branch 'degenerate-path' into cairo
+
+commit 973c9abd53df4e6d6583de045514e003827bc7b9
+Author: Jeff Muizelaar <jeff@infidigm.net>
+Date:	Tue Jun 27 15:33:47 2006 +0200
+
+    PS: Workaround to avoid splitting final ~> terminating sequence.
+
+commit 5d60ceb9b85a6b39865bc760ef7467c10f2ec7b6
+Author: Michael Emmel <memmel@debian.localdomain>
+Date:	Mon Jun 26 22:27:14 2006 -0700
+
+    Added major updates fixes and enhancements by
+    Claudio Ciccani klan@directfb.org
+    Almost a full rewrite
+
+commit 289e8b8af30ae3f00e7649109a933a673f346b37
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 26 12:26:15 2006 +0200
+
+    Remove config.cache in make distclean.
+
+commit 73a0e792b4115a1012c5f618650a6265377cc6e5
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 26 12:21:18 2006 +0200
+
+    More configure foo fixes for .pc files.
+
+commit 5ba974ea0b7974e8c985d7414fcf6a8a5e415c12
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 26 11:54:04 2006 +0200
+
+    Fix circular dependency in cairo.pc and cairo-xlib.pc.
+
+commit 53a478d233e7b8e02ecbc93bf102fb4dc29e0d57
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Sun Jun 25 17:43:27 2006 +0200
+
+    Rewrite configure caching.
+
+commit ce2b9e1b5cc816e4a6a4345daab539cc58e2d043
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 16:57:59 2006 +0200
+
+    Prefer TRUE and FALSE over 1 and 0 for assigning cairo_bool_t values
+
+commit 58a60ed9fdd53a4cf29d33624b866bf6ccd637ae
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 16:53:13 2006 +0200
+
+    Prefer sub-path over subpath in documentation.
+
+commit 773cb6475b68199e5ef0839cd22c9f3445d7d5d3
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 16:51:25 2006 +0200
+
+    Prefer sub_path over subpath in identifiers.
+
+commit 8f0dd658b1fff3f4e9225b8fb23884f0bbcdb822
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 16:49:45 2006 +0200
+
+    Add documentation for how degenerate segments and sub-paths are
+    treated.
+
+commit 15caa88c6416ce8e0c4c026e76f84ccaf7a3c840
+Author: Jeff Muizelaar <jeff@infidigm.net>
+Date:	Sun Jun 25 16:12:38 2006 +0200
+
+    Initial support for degenerate-path stroking
+
+    This follows the PDF and SVG specifications which only draw degenerate
+    paths when
+    round caps are in effect.
+
+    With this commit, the degenerate-path test passes with the image,
+    xlib, and pdf
+    backends, (but still fails with ps and svg backends).
+
+commit 20df4af12617ad6459dcb234dfd98954282710f5
+Author: Jeff Muizelaar <jeff@infidigm.net>
+Date:	Sun Jun 25 15:48:48 2006 +0200
+
+    Add new test case degenerate-path to show current 'bug'
+
+commit e747bbd350e9630c18849dd7975036d1260264be
+Author: Torsten Schoenfeld <kaffeetisch@gmx.de>
+Date:	Sun Jun 25 15:07:19 2006 +0200
+
+    Fix build after recent pixman.h change.
+
+    The recent pixman.h change to use configure-generated defines
+    accidentally broke the build.  Pulling in config.h fixes it.
+
+commit e32138aa93ba37d760af87294fbb47046bfe6dec
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 14:42:27 2006 +0200
+
+    Prefer using configure-generated variable for finding stdint.h
+    or similar.
+
+    We were doing something more complicated originally, and that
+    was because
+    pixman.h was an installed public header file at one time. But
+    that hasn't
+    been the case for quite a long time.
+
+commit 14ffde038038deda66973856a5f3b9442c8d3c7d
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 12:16:36 2006 +0200
+
+    ROADMAP: Note that bug 6759 is now fixed.
+
+commit d2ea21b4aef8ab5338718ddd6ccdff35609e9f6c
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 11:48:32 2006 +0200
+
+    ft-text-antialias-none: Update reference images and igore list.
+
+    Add a new ps reference image due to slightly different
+    rasterization. Also
+    update pdf and svg backends to ignore this test since those backends
+    do not
+    support ANTIALIAS_NONE.
+
+    Note in ROADMAP that bug 6759 is fixed now.
+
+commit 7e0e503fba80767dc68556054e937123fdcea359
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 11:32:36 2006 +0200
+
+    xlib: Fix failure path to do cache thawing cleanup.
+
+commit 4bff3d559e1d931cd47701f11765b1a574a7eac4
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 11:28:03 2006 +0200
+
+    ROADMAP: Note that cairo_xlib_surface_get_width/height exist now.
+
+commit ddead8e0612162e121868ba561498b8565112f8b
+Author: Robert O'Callahan <rocallahan@novell.com>
+Date:	Wed Jun 21 15:47:03 2006 +1200
+
+    Surface size getters for xlib
+
+    When accessing the underlying drawable etc of an xlib surface, it is
+    also helpful to be able to get the width and height without a server
+    round trip. This patch provides those functions.
+
+commit 113bef399a2ca27f4c49a3d917ac1e6075449616
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 11:20:50 2006 +0200
+
+    ROADMAP: Note that bug 6617 might already be fixed.
+
+commit 9ab5678e53219f95de7183e300bba3edac7fe72d
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 10:02:10 2006 +0200
+
+    Fix bug 7268: Fix coordinate space for _cairo_surface_get_extents
+
+    Previously this function was attempting to return values in surface
+    space, (but even then it was doing it wrong). However, all callers
+    actually expect values in backend space. Fixing this cleans up bug
+    7268 quite nicely.
+
+commit 95355c854f1894e7bbcd370f3bb0d00223c077b6
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 02:25:16 2006 +0200
+
+    ROADMAP: Note that SVG bitmap glyphs now work. Move some bugs to a
+    punt list.
+
+commit 4c7074ceb42c50fc55929291330658f693c66bc7
+Author: Carl Worth <cworth@cworth.org>
+Date:	Sun Jun 25 02:23:14 2006 +0200
+
+    Remove comment which had been incorrectly copied
+
+commit 3a313070e5b5a1168225dec008f63ff68ed20559
+Author: Emmanuel Pacaud <emmanuel.pacaud@free.fr>
+Date:	Fri Jun 23 20:13:58 2006 +0200
+
+    SVG: fix bit order for bitmap font data and use a group with matrix
+
+    transformation instead of applying the same matrix on each rect
+    coordinates.
+
+commit 8b6fcaf8ff17786ab5394a4aa2d6289f5d9601c2
+Author: Jonathon Jongsma <jonathon.jongsma@gmail.com>
+Date:	Fri Jun 23 08:29:17 2006 -0500
+
+    Fix a minor documentation typo in cairo_pop_group_to_source
+
+commit bfa133f9e6dbe511ab696cb1d4b1cea59451f1c1
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 22 22:39:39 2006 -0700
+
+    ROADMAP: Note that bug 6955 is fixed.
+
+commit 5488c3b462260126a000928aa599684d7b1041e7
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 22 22:38:17 2006 -0700
+
+    xlib: Prefer BAIL over FAIL when the cleanup code is also used in
+    succesful cases.
+
+commit 7e457cb4c1e69670f27e3e8e134a9e32a8f75788
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 22 22:32:57 2006 -0700
+
+    Bug 6955: Fix by adding freeze/thaw around scaled_font glyph cache
+    in _cairo_xlib_surface_show_glyphs
+
+commit 6a58658b73924fa6897bd1e290d754ce1df44b0d
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 22 22:05:20 2006 -0700
+
+    Add test/glyph-cache-pressure to demonstrate xlib failure (bug 6955)
+
+commit 333ac8f4d9ccc356cb91e7118ed56bfc07e78c2f
+Author: Carl Worth <cworth@cworth.org>
+Date:	Thu Jun 22 22:03:06 2006 -0700
+
+    Add 'private' cairo_scaled_font_test_set_max_glyphs_cached_per_font
+    for testing
+
+commit d5197c1e0defc1018320efcb461977557a7d5d6e
+Author: Emmanuel Pacaud <emmanuel.pacaud@free.fr>
+Date:	Thu Jun 22 22:32:47 2006 +0200
+
+    SVG: dumb implementation of bitmap glyphs.
+
+    Bitmap glyphs are emited as tiny svg rectangles. An improvement
+    would be
+    to calculate glyph outline from bitmap data.
+
+commit cd5eb70e4e45962c88b4bfe13de6f26211601e55
+Author: Carl Worth <cworth@cworth.org>
+Date:	Wed Jun 21 22:36:27 2006 -0700
+
+    ROADMAP: Update with 1.1.10 notes as well as new blockers and fixes
+
+commit 25e0acfee0ae790329c2f558ce6a9f997eeace6d
+Author: Carl Worth <cworth@cworth.org>
+Date:	Wed Jun 21 17:23:35 2006 -0700
+
+    PDF: Fix display of bitmapped glyphs (bitmap-font test now passes)
+
+commit b4720ca51d4b1de02d6beb898b7d04a33e1d99fd
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 20 23:12:58 2006 -0700
+
+    PDF: Push glyph stream creation down from emit glyph to outline/bitmap
+    variants
+
+commit 83a8a50735746a4591c3bcc1aaa46fb7a0f87224
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 21 19:57:40 2006 -0400
+
+    Pass --cache-file=config.cache and --disable-static to configure from
+    autogen.sh.
+
+commit f5ee9557c3dc7bc72098cd08698f147ed685ccb2
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 21 07:22:50 2006 -0400
+
+    Removed excess mkdir.
+
+commit f71313d427565cb37a25393ff8a5a2ffdcfb798b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 21 07:00:34 2006 -0400
+
+    Minor refinements, mostly to configure.in.
+
+commit c88bab66ab258e0bbd2cb80eaf4edc9e5f1ad6f0
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Wed Jun 21 06:25:01 2006 -0400
+
+    Make configure generate cairo-features.h. Generate AC_DEFINE and
+    AM_CONDITIONALS
+
+    for all CAIRO_HAS_*  in CAIRO_BACKEND_ENABLE.
+
+commit c6c1da2a2346de6c1df82fab2e7bafec7f37db50
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 20 17:49:05 2006 -0700
+
+    PS: Add support for emitting bitmapped glyphs into type3 fonts.
+
+    The bitmap-font now passes when run against the ps backend.
+
+commit cca08d9bce1647444acdb78aedb6ad6967c07661
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 20 17:48:06 2006 -0700
+
+    New bitmap-font test with bundled 6x13 font.
+
+    The 6x13 font is a public-domain terminal font from the X
+    distribution.
+
+commit ab8ae66f9d5c92af96b4a530957537ec7d33c128
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 20 17:15:07 2006 -0700
+
+    SVG: Fix to not crash on bitmapped glyphs
+
+    This is similar to a change that was recently made to the PDF and
+    PS backends.
+    Bitmap glyphs are not yet drawn correctly, (drawn as filled rectangles
+    instead),
+    but the crash is at least eliminated.
+
+commit 2f43a79e4e87341dd0df49fc6c11fd17a21350c2
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 20 11:28:23 2006 -0700
+
+    ft-font: Use compile-time test (WORDS_BIGENDIAN) rather than run-time
+    function to test endian-ness.
+
+commit b806b50cfe890b534dbf86f0b4d2cc0c22b880ff
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 20 10:59:22 2006 -0700
+
+    Add new CAIRO_BITSWAP8 macro for swapping the bits within a byte.
+
+    This uses a technique devised by Sean Anderson, July 13, 2001 as found
+    at
+    http://graphics.stanford.edu/~seander/bithacks.html#ReverseByteWith32Bits
+    This technique uses 3 multiplies rather than just shifts and masks,
+    but
+    performance seems comparable to the old approach, (but more
+    significantly,
+    the new approach is easier to implement as a macro, and I plan
+    to start
+    using this bit-swapping elsewhere very soon).
+
+commit 3465ae1c58a87382c33117f6c5dec52403c9694e
+Author: Carl Worth <cworth@cworth.org>
+Date:	Tue Jun 20 10:43:53 2006 -0700
+
+    output-stream: Support %X in addition to %x
+
+commit bb11980f14560ea16174c6531678b9b7a623f813
+Author: Kristian Høgsberg <krh@redhat.com>
+Date:	Tue Jun 20 02:16:17 2006 -0400
+
+    Add 'x' case to printf switch so we actually implement %02x.
+
+commit 651b2a9ab0bdb5f8fa952e47e95c21d2f530950d
+Author: Carl Worth <cworth@cworth.org>
+Date:	Mon Jun 19 21:16:03 2006 -0700
+
+    test/fallback-resolution: Remove extra call to cairo_show_page
+
+commit 7026e24548fd0e4fbfb2bd3af7cffab8eab88d44
+Author: Carl Worth <cworth@cworth.org>
+Date:	Mon Jun 19 21:15:26 2006 -0700
+
+    PS PDF: Drop unused hex_digit functions, (now that output stream
+    supports %02x)
+
+commit cd5e08a9fee70b1ed2252d24e04db806769babcd
+Author: Kristian Høgsberg <krh@redhat.com>
+Date:	Mon Jun 19 22:42:32 2006 -0400
+
+    Implement 0-padding and field width for _cairo_output_stream_printf().
+
+    Use it instead of %c%c in PS and PDF surfaces.
+
+commit a3f2d92f11a1ab4d30dd0e33a0cd5ee19495eeb1
+Author: Carl Worth <cworth@cworth.org>
+Date:	Mon Jun 19 11:03:32 2006 -0700
+
+    PDF: Don't fallback due to CAIRO_ANTIALIAS_NONE
+
+    This was a gratuitous thing that was causing excessive fallbacks in
+    mozilla printing to PDF. The only reason it was ever there was to
+    get some of the tests that rely on CAIRO_ANTIALIAS_NONE to pass.
+    Instead we now simply don't run those tests against the PDF backend.
+
+commit 72e7667ed904b93475d7e4540778c498aa781cdf
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 19 04:29:49 2006 -0400
+
+    Replace noinst_ with check_, such that nothing is built with
+    default make
+    target.
+
+commit fdc109dc5902f362bfec2f90b5d357c2d16b96d6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 19 04:17:19 2006 -0400
+
+    Add create-for-stream.* to .gitignore.
+
+commit d12afb7eac80d66cc140721031940feddc2586c6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 19 04:10:56 2006 -0400
+
+    Update .gitignore
+
+commit a28557f55a49ac812e69b59fe803fd0cba10d10b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 19 04:10:19 2006 -0400
+
+    Reference images for new test...
+
+commit 2f59dd4a5e9f4ce3853b055620bbada4526e3f58
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Mon Jun 19 15:52:36 2006 +0800
+
+    Turn hinting off to get consistent results for ft-text-vertical-layout
+    test case.
+
+commit f5b6fc139c8e455b27df52139578d2546a826e6d
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Mon Jun 19 15:51:43 2006 +0800
+
+    Turn hinting off to get consistent results for ft-text-antialias-none
+    test case.
+
+commit ddc01a3c5530aa9480eb19aded7ba08f97529440
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 19 03:22:53 2006 -0400
+
+    Correct comment about expected result in device-offset-positive test.
+
+commit 70d3719ec9d0dbe7e37f3ad3c5cfbe596be4f409
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Mon Jun 19 03:13:56 2006 -0400
+
+    Add test device-offset-positive.
+
+commit fde08da55f293cd40927c8a1d41db0e478785e8e
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Mon Jun 19 14:49:46 2006 +0800
+
+    freetype: Don't ignore antialias in some cases.
+
+commit c9de7b1286309fc2da1a5ea798674b528aa2eab6
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Mon Jun 19 14:17:24 2006 +0800
+
+    freetype: Compare all elements in ft_options but not use memcmp.
+
+commit e4736fcf76855c7ca5c9e8b922622dfffe08e4e1
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Sun Jun 18 23:50:51 2006 +0800
+
+    freetype: Clear target mode correctly in _cairo_ft_options_merge.
+
+commit 1e0e56e0223116bf48e5acd4a974f16fae824df2
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Sun Jun 18 17:30:39 2006 +0800
+
+    freetype: Fix warnings in _decompose_glyph_outline.
+
+commit 117b062756de9fc99f635b3e712ea3e258c53165
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Sun Jun 18 17:26:19 2006 +0800
+
+    freetype: cleanup _cairo_ft_scaled_glyph_init.
+
+commit 54b4a2fccdcaa4fbc126818c7cb7b96a1a8acf35
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Sun Jun 18 17:20:38 2006 +0800
+
+    freetype: Respect configurations in font pattern.
+
+    cairo freetype font backend doesn't handle fontconfig configurations
+    quiet well, it always renders glyphs using configurations in
+    scaled_font->base.options which usually isn't corresponding to
+    font pattern used to create the font face and the load flags. As a
+    result, turning antialias off with fontconfig doesn't work with cairo
+    HEAD, subpixel order either.
+
+    This commit make cairo respect configurations in font pattern
+    and handle
+    load flags correctly. The ft-text-antialias-none test case passess
+    now.
+    And should fix bug #6759 and #4792.
+
+commit 4b2b8f939a9e786ead080f85d1b101680230f168
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Sat Jun 17 16:29:54 2006 +0800
+
+    Add ft-text-antilaias-none test case demonstrating bug #6759.
+
+commit efaf88d4092db5e4ca37508d87fdb8ac39496018
+Author: Jinghua Luo <sunmoon1997@gmail.com>
+Date:	Sat Jun 17 15:52:05 2006 +0800
+
+    Add missing prototype for _cairo_lzw_compress.
+
+commit 6f0a85c8f76ba2fb77862f2da506bfd405ce218d
+Author: Ian Osgood <iano@quirkster.com>
+Date:	Fri Jun 16 08:18:37 2006 -0700
+
+    Update the XCB backend for screen sensitivity.
+
+commit bc4a6796f851a9f10764feb783988641d26cf2ce
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 16 19:01:20 2006 -0400
+
+    Accept CAIRO_TEST_TARGET being empty or containing a list of backends
+    to test.
+    The list can be separated by any of space, tab, comma, colon,
+    or semicolon.
+    Moreover, a CAIRO_TEST_TARGET of e.g. "glitz" matches any subtarget
+    like
+    "glitz-glx".
+
+commit 8bc05f15ab3f2054f802cfbc9564476a4acbb4a8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:	Fri Jun 16 18:39:36 2006 -0400
+
+    Note that create_similar clears surface.
+
+commit 3bad1f0b0c431f1e5832d8755d0e22fe31120007
+Author: Carl Worth <cworth@cworth.org>
+Date:	Fri Jun 16 10:09:54 2006 -0700
+
+    Increment CAIRO_VERSION to 1.1.11 after making the 1.1.10 snapshot
+
 commit 65e73c81b83222de873935cf384e514ea20ac854
 Author: Carl Worth <cworth@cworth.org>
-Date:   Fri Jun 16 09:45:44 2006 -0700
+Date:	Fri Jun 16 09:45:44 2006 -0700
 
     Update version to 1.1.10 and add notes to NEWS file.
 
@@ -8,44 +890,44 @@ Date:   Fri Jun 16 09:45:44 2006 -0700
 
 commit b992e1e29d6d63de2a6b5b48b93d23be50fc29ca
 Author: Carl Worth <cworth@cworth.org>
-Date:   Fri Jun 16 09:44:33 2006 -0700
+Date:	Fri Jun 16 09:44:33 2006 -0700
 
     Annoying doc template churn.
 
 commit 4a5111695c25ce9178f1eb69acd825b3466fcb11
 Author: Carl Worth <cworth@cworth.org>
-Date:   Fri Jun 16 09:22:36 2006 -0700
+Date:	Fri Jun 16 09:22:36 2006 -0700
 
     Update release rules in Makefile to add git signature information.
 
 commit c6164d0d2a9ca16a00c2768f24a0230de6cbc6f6
 Author: Carl Worth <cworth@cworth.org>
-Date:   Thu Jun 15 16:22:52 2006 -0700
+Date:	Thu Jun 15 16:22:52 2006 -0700
 
     New API: Add support for new CAIRO_FORMAT_RGB16_565
 
 commit 36e59ca5f854de2740c7ef4f0b6022785dd9dc4c
 Author: Jinghua Luo <sunmoon1997@gmail.com>
-Date:   Fri Jun 16 21:13:21 2006 +0800
+Date:	Fri Jun 16 21:13:21 2006 +0800
 
     xlib: free resources before return if looking up glyph surface fails.
 
 commit bf2c0e44d8c8e1e692eafba7bccddd26f1f31c1b
 Merge: b8231f8... a8b736c...
 Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Fri Jun 16 00:13:18 2006 -0400
+Date:	Fri Jun 16 00:13:18 2006 -0400
 
     Merge branch 'cairo' into cairo-origin
 
 commit a8b736c1608c3d0b98b81f79ab1f5607cce245ed
 Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Fri Jun 16 00:08:44 2006 -0400
+Date:	Fri Jun 16 00:08:44 2006 -0400
 
     Use enum time instead of int (shuts intel compiler up.)
 
 commit b8231f8949818099c4e6ed4e0669de6f8c8bf856
 Author: Kristian Høgsberg <krh@redhat.com>
-Date:   Thu Jun 15 22:07:17 2006 -0400
+Date:	Thu Jun 15 22:07:17 2006 -0400
 
     Add cairo-output-stream-private.h to libcairo_la_SOURCES.
 
@@ -53,7 +935,7 @@ Date:   Thu Jun 15 22:07:17 2006 -0400
 
 commit abe1bfad8d8a3252bdc65da40bf303626881b163
 Author: Carl Worth <cworth@cworth.org>
-Date:   Thu Jun 15 15:43:00 2006 -0700
+Date:	Thu Jun 15 15:43:00 2006 -0700
 
     Add missing breaks in switch statement.
 
@@ -61,71 +943,71 @@ Date:   Thu Jun 15 15:43:00 2006 -0700
 
 commit 9fa24975b4b9cc9983331991d2a3c53a37272162
 Author: Carl Worth <cworth@cworth.org>
-Date:   Thu Jun 15 15:33:45 2006 -0700
+Date:	Thu Jun 15 15:33:45 2006 -0700
 
     Drop _cairo_surface_is_opaque now that we have
     cairo_surface_get_content
 
 commit 0ba040d7f63c62e482d40fc6db0e1f0714806839
 Author: Carl Worth <cworth@cworth.org>
-Date:   Thu Jun 15 14:56:59 2006 -0700
+Date:	Thu Jun 15 14:56:59 2006 -0700
 
     Remove _cairo_image_surface_is_alpha_only in favor of just looking
     at content value.
 
 commit 82496a6f7c5b0a9f91db6abc9e34202b8ffa77c4
 Author: Carl Worth <cworth@cworth.org>
-Date:   Thu Jun 15 14:15:42 2006 -0700
+Date:	Thu Jun 15 14:15:42 2006 -0700
 
     _cairo_format_from_pixman_format: Add useful error mesage and
     assertion when failing.
 
 commit dedc51ba51eaa61e4b11f274fac06c6f0acd8a87
 Author: Kristian Høgsberg <krh@redhat.com>
-Date:   Wed Jun 14 19:25:37 2006 -0400
+Date:	Wed Jun 14 19:25:37 2006 -0400
 
     Only call close function for output streams if it's non-NULL.
 
 commit 9ef99d10bb7eb6cde421e0d93ae55988882d9b56
 Author: Kristian Høgsberg <krh@redhat.com>
-Date:   Wed Jun 14 19:15:50 2006 -0400
+Date:	Wed Jun 14 19:15:50 2006 -0400
 
     Add test case for the PDF, PS and SVG stream constructors.
 
 commit 8c8bcaf99b1c8d6cb26dfc89751d71de535c11e7
 Author: Emmanuel Pacaud <emmanuel.pacaud@free.fr>
-Date:   Wed Jun 14 20:57:42 2006 +0200
+Date:	Wed Jun 14 20:57:42 2006 +0200
 
     SVG: Update of reference images.
 
 commit 2cea3a2710cd4c6eb68e25eadaaf96cdc921ef14
 Merge: 17ea755... 4932d09...
 Author: Kristian Høgsberg <krh@redhat.com>
-Date:   Wed Jun 14 15:00:33 2006 -0400
+Date:	Wed Jun 14 15:00:33 2006 -0400
 
     Merge branch 'svg-rewrite'
 
 commit 4932d09a06228a08d1c8f4d2892378c004ff3313
 Author: Kristian Høgsberg <krh@redhat.com>
-Date:   Wed Jun 14 14:12:55 2006 -0400
+Date:	Wed Jun 14 14:12:55 2006 -0400
 
     Actually add src/cairo-output-stream-private.h.
 
 commit 17ea7552355d9925fb99cd4ca98cf38946f99421
 Author: Torsten Schönfeld <kaffeetisch@gmx.de>
-Date:   Wed Jun 14 11:09:00 2006 -0700
+Date:	Wed Jun 14 11:09:00 2006 -0700
 
     Add missing cairo_public tag for cairo_image_surface_get_stride
 
 commit 1599ab8fa91fd2b5b611825d1e1b46fcacfb7982
 Author: Carl Worth <cworth@cworth.org>
-Date:   Wed Jun 14 10:41:29 2006 -0700
+Date:	Wed Jun 14 10:41:29 2006 -0700
 
     Increment CAIRO_VERSION to 1.1.9 after making the 1.1.8 snapshot
 
 commit dd859b8736bb4d1bcf3ed78d0bd1f72a7aad9ca9
 Author: Carl Worth <cworth@cworth.org>
-Date:   Wed Jun 14 08:14:43 2006 -0700
+Date:	Wed Jun 14 08:14:43 2006 -0700
 
     Update version to 1.1.8 and add notes to NEWS file.
 
@@ -133,7 +1015,7 @@ Date:   Wed Jun 14 08:14:43 2006 -0700
 
 commit 65c9c072d207b04cac8da21b40b2dd5c14791547
 Author: Carl Worth <cworth@cworth.org>
-Date:   Wed Jun 14 06:39:23 2006 -0700
+Date:	Wed Jun 14 06:39:23 2006 -0700
 
     Update refefence images due to pattern source shift.
 
@@ -143,49 +1025,49 @@ Date:   Wed Jun 14 06:39:23 2006 -0700
     Author: Bertram Felgenhauer <int-e@gmx.de>
     Date:   Tue Jun 13 20:07:28 2006 -0400
 
-        Patch to fix pixman samping location bug (#2488).
+	Patch to fix pixman samping location bug (#2488).
 
 commit 4bdfff477a1d7fa19890f0a5c4f3cc6533e39149
 Author: Carl Worth <cworth@cworth.org>
-Date:   Wed Jun 14 06:00:11 2006 -0700
+Date:	Wed Jun 14 06:00:11 2006 -0700
 
     PS PDF: Update reference images due to truetype subsetting
 
 commit 7e0be461b595c3561fa75472fdfd5954e4666cfc
 Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Tue Jun 13 22:40:50 2006 -0400
+Date:	Tue Jun 13 22:40:50 2006 -0400
 
     Rename cairo-wideint.h to cairo-wideint-private.h.
 
 commit b9cfe941c8e1ae427780117fedfd47d458e29f02
 Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Tue Jun 13 22:37:34 2006 -0400
+Date:	Tue Jun 13 22:37:34 2006 -0400
 
     Add backend-specific pkg-config files.
 
 commit 2249fb89ae36859d1d3f6c9d0b72e95e45726170
 Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Tue Jun 13 19:13:05 2006 -0400
+Date:	Tue Jun 13 19:13:05 2006 -0400
 
     Move cairo.pc into src/.
 
 commit e346eca1386e8ec14f9bda7d76662a16706f1e7c
 Author: Carl Worth <cworth@cworth.org>
-Date:   Wed Jun 14 04:58:54 2006 -0700
+Date:	Wed Jun 14 04:58:54 2006 -0700
 
     Add zero-alpha reference image to Makefile.am for the sake of
     make dist
 
 commit 211741cce61075b526edfacd728c9c5de8dd1aac
 Author: Bertram Felgenhauer <bertram.felgenhauer@googlemail.com>
-Date:   Wed Jun 14 04:51:27 2006 -0700
+Date:	Wed Jun 14 04:51:27 2006 -0700
 
     Bug 4723: configure.in: Fix m4 quoting when examining pkg-config
     version
 
 commit b8e93f9c5598d5452e08728546677a977e41617f
 Author: Brian Cameron <brian.cameron@sun.com>
-Date:   Wed Jun 14 04:44:01 2006 -0700
+Date:	Wed Jun 14 04:44:01 2006 -0700
 
     Bug 4882: Flag Sun's X server has having buggy_repeat.
 
@@ -193,59 +1075,59 @@ Date:   Wed Jun 14 04:44:01 2006 -0700
 
 commit 32d049a7bf9549f8c797c50654546b6526518f0a
 Author: Dom Lachowicz <cinamod@hotmail.com>
-Date:   Wed Jun 14 04:37:08 2006 -0700
+Date:	Wed Jun 14 04:37:08 2006 -0700
 
     Bug 5306: test/pdf2png: Add missing include of stdio.h
 
 commit e9269aefcbc96a417012107c17ec2bc4de608cc1
 Author: Behdad Esfahbod <freedesktop@behdad.org>
-Date:   Wed Jun 14 04:07:29 2006 -0700
+Date:	Wed Jun 14 04:07:29 2006 -0700
 
     Bug 7075: Fix make clean to remove cairo.def
 
 commit c8e7ff096648a53b780f14c2cd2467157fae8385
 Author: Carl Worth <cworth@cworth.org>
-Date:   Wed Jun 14 04:04:21 2006 -0700
+Date:	Wed Jun 14 04:04:21 2006 -0700
 
     ROADMAP: Update with PDF bugs from minefield test. Slip non-1.0
     regressions off of 1.2.
 
 commit c515b15cfc8c88b330f16a9263841476c29ded99
 Author: Carl Worth <cworth@cworth.org>
-Date:   Wed Jun 14 03:53:18 2006 -0700
+Date:	Wed Jun 14 03:53:18 2006 -0700
 
     ft: If glyph->format is not OUTLINE use _render_glyph_bitmap to
     coerce to a bitmap
 
 commit 61a3260e44b40b8aa344f806979b60a82400105e
 Author: Jinghua Luo <sunmoon1997@gmail.com>
-Date:   Wed Jun 14 15:57:23 2006 +0800
+Date:	Wed Jun 14 15:57:23 2006 +0800
 
     ROADMAP: Mark bugs FC_ADVANCE and _transform_glyph_bitmap as fixed.
 
 commit 0d2900477cd6edfe6025be06c3f1eda63cbe5230
 Author: Jinghua Luo <sunmoon1997@gmail.com>
-Date:   Wed Jun 14 15:56:17 2006 +0800
+Date:	Wed Jun 14 15:56:17 2006 +0800
 
     freetype: Return an error if the glyph format isn't outline or bitmap
     while getting glyph surface.
 
 commit b104a79502e2c01c508e40d83613ecfa001a2a4e
 Author: Bertram Felgenhauer <int-e@gmx.de>
-Date:   Tue Jun 13 20:07:28 2006 -0400
+Date:	Tue Jun 13 20:07:28 2006 -0400
 
     Patch to fix pixman samping location bug (#2488).
 
 commit 0ee64b84689c22bba1d9bb2758170bbc104f5cf1
 Author: Carl Worth <cworth@cworth.org>
-Date:   Tue Jun 13 16:50:43 2006 -0700
+Date:	Tue Jun 13 16:50:43 2006 -0700
 
     Bug 4196: undef MIN an MAX before defining to avoid duplicate
     definition
 
 commit 1b11d3830b26f6ce7f0d8ddcc315a9c19f56658a
 Author: Carl Worth <cworth@cworth.org>
-Date:   Tue Jun 13 16:42:06 2006 -0700
+Date:	Tue Jun 13 16:42:06 2006 -0700
 
     test/zero-alpha: Drop REPS from 100 to 10 for a faster test.
 
@@ -253,7 +1135,7 @@ Date:   Tue Jun 13 16:42:06 2006 -0700
 
 commit 2d269664f166c4fc835e70a176ad46b2d7ccb41d
 Author: Carl Worth <cworth@cworth.org>
-Date:   Tue Jun 13 16:13:23 2006 -0700
+Date:	Tue Jun 13 16:13:23 2006 -0700
 
     Add new zero-alpha test to demonstrate (X server?) bug found by
     Paul Giblock
@@ -261,7 +1143,7 @@ Date:   Tue Jun 13 16:13:23 2006 -0700
 commit 1d18af9f5adb0ce2e01bc42578fe117c4e924ce8
 Merge: c7b194c... 27e9e3c...
 Author: Carl Worth <cworth@cworth.org>
-Date:   Tue Jun 13 15:51:57 2006 -0700
+Date:	Tue Jun 13 15:51:57 2006 -0700
 
     Merge branch 'type1-subsetting' into cairo
 

@@ -103,17 +103,17 @@ main (void)
 	case PDF:
 	    surface = cairo_pdf_surface_create (backend_filename[backend],
 						SIZE, SIZE);
-	    cairo_pdf_test_force_fallbacks ();
+	    _cairo_pdf_test_force_fallbacks ();
 	    break;
 	case PS:
 	    surface = cairo_ps_surface_create (backend_filename[backend],
 					       SIZE, SIZE);
-	    cairo_ps_test_force_fallbacks ();
+	    _cairo_ps_test_force_fallbacks ();
 	    break;
 	case SVG:
 	    surface = cairo_svg_surface_create (backend_filename[backend],
 						SIZE, SIZE * num_pages);
-	    cairo_svg_test_force_fallbacks ();
+	    _cairo_svg_test_force_fallbacks ();
 	    break;
 	}
 
@@ -124,8 +124,6 @@ main (void)
 	    cairo_surface_set_fallback_resolution (surface, ppi[page], ppi[page]);
 
 	    draw (cr, SIZE, SIZE, ppi[page]);
-
-	    cairo_show_page (cr);
 
 	    /* Backend-specific means of "advancing a page" */
 	    switch (backend) {

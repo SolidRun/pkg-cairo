@@ -153,7 +153,7 @@ struct _cairo_xlib_surface {
 static cairo_bool_t cairo_xlib_render_disabled = FALSE;
 
 /**
- * cairo_xlib_test_disable_render:
+ * _cairo_xlib_test_disable_render:
  *
  * Disables the use of the RENDER extension.
  *
@@ -164,7 +164,7 @@ static cairo_bool_t cairo_xlib_render_disabled = FALSE;
  * </note>
  **/
 void
-cairo_xlib_test_disable_render (void)
+_cairo_xlib_test_disable_render (void)
 {
     cairo_xlib_render_disabled = TRUE;
 }
@@ -1297,12 +1297,12 @@ _cairo_xlib_surface_composite (cairo_operator_t		op,
 						   mask_pattern != NULL);
     if (operation == DO_UNSUPPORTED) {
 	status = CAIRO_INT_STATUS_UNSUPPORTED;
-	goto FAIL;
+	goto BAIL;
     }
 
     status = _cairo_xlib_surface_set_attributes (src, &src_attr);
     if (status)
-	goto FAIL;
+	goto BAIL;
 
     switch (operation)
     {
@@ -1311,7 +1311,7 @@ _cairo_xlib_surface_composite (cairo_operator_t		op,
 	if (mask) {
 	    status = _cairo_xlib_surface_set_attributes (mask, &mask_attr);
 	    if (status)
-		goto FAIL;
+		goto BAIL;
 
 	    XRenderComposite (dst->dpy,
 			      _render_operator (op),
@@ -1386,8 +1386,7 @@ _cairo_xlib_surface_composite (cairo_operator_t		op,
 							 mask_x, mask_y,
 							 dst_x, dst_y, width, height);
 
- FAIL:
-
+ BAIL:
     if (mask)
 	_cairo_pattern_release_surface (mask_pattern, &mask->base, &mask_attr);
 
@@ -1555,7 +1554,7 @@ _cairo_xlib_surface_composite_trapezoids (cairo_operator_t	op,
     operation = _recategorize_composite_operation (dst, op, src, &attributes, TRUE);
     if (operation == DO_UNSUPPORTED) {
 	status = CAIRO_INT_STATUS_UNSUPPORTED;
-	goto FAIL;
+	goto BAIL;
     }
 
     switch (antialias) {
@@ -1581,7 +1580,7 @@ _cairo_xlib_surface_composite_trapezoids (cairo_operator_t	op,
     _cairo_xlib_surface_ensure_dst_picture (dst);
     status = _cairo_xlib_surface_set_attributes (src, &attributes);
     if (status)
-	goto FAIL;
+	goto BAIL;
 
     if (!_cairo_operator_bounded_by_mask (op)) {
 	/* XRenderCompositeTrapezoids() creates a mask only large enough for the
@@ -1598,7 +1597,7 @@ _cairo_xlib_surface_composite_trapezoids (cairo_operator_t	op,
 						       pict_format);
 	if (!mask_picture) {
 	    status = CAIRO_STATUS_NO_MEMORY;
-	    goto FAIL;
+	    goto BAIL;
 	}
 
 	XRenderComposite (dst->dpy,
@@ -1632,7 +1631,7 @@ _cairo_xlib_surface_composite_trapezoids (cairo_operator_t	op,
 				    (XTrapezoid *) traps, num_traps);
     }
 
- FAIL:
+ BAIL:
     _cairo_pattern_release_surface (pattern, &src->base, &attributes);
 
     return status;
@@ -2083,6 +2082,16 @@ cairo_xlib_surface_set_drawable (cairo_surface_t   *abstract_surface,
     surface->height = height;
 }
 
+/**
+ * cairo_xlib_surface_get_display:
+ * @surface: a #cairo_xlib_surface_t
+ *
+ * Get the X Display for the underlying X Drawable.
+ *
+ * Return value: the display.
+ *
+ * Since: 1.2
+ **/
 Display *
 cairo_xlib_surface_get_display (cairo_surface_t *abstract_surface)
 {
@@ -2096,6 +2105,16 @@ cairo_xlib_surface_get_display (cairo_surface_t *abstract_surface)
     return surface->dpy;
 }
 
+/**
+ * cairo_xlib_surface_get_drawable:
+ * @surface: a #cairo_xlib_surface_t
+ *
+ * Get the underlying X Drawable used for the surface.
+ *
+ * Return value: the drawable.
+ *
+ * Since: 1.2
+ **/
 Drawable
 cairo_xlib_surface_get_drawable (cairo_surface_t *abstract_surface)
 {
@@ -2109,6 +2128,16 @@ cairo_xlib_surface_get_drawable (cairo_surface_t *abstract_surface)
     return surface->drawable;
 }
 
+/**
+ * cairo_xlib_surface_get_screen:
+ * @surface: a #cairo_xlib_surface_t
+ *
+ * Get the X Screen for the underlying X Drawable.
+ *
+ * Return value: the screen.
+ *
+ * Since: 1.2
+ **/
 Screen *
 cairo_xlib_surface_get_screen (cairo_surface_t *abstract_surface)
 {
@@ -2122,6 +2151,16 @@ cairo_xlib_surface_get_screen (cairo_surface_t *abstract_surface)
     return surface->screen;
 }
 
+/**
+ * cairo_xlib_surface_get_visual:
+ * @surface: a #cairo_xlib_surface_t
+ *
+ * Get the X Visual used for underlying X Drawable.
+ *
+ * Return value: the visual.
+ *
+ * Since: 1.2
+ **/
 Visual *
 cairo_xlib_surface_get_visual (cairo_surface_t *abstract_surface)
 {
@@ -2135,6 +2174,16 @@ cairo_xlib_surface_get_visual (cairo_surface_t *abstract_surface)
     return surface->visual;
 }
 
+/**
+ * cairo_xlib_surface_get_depth:
+ * @surface: a #cairo_xlib_surface_t
+ *
+ * Get the number of bits used to represent each pixel value.
+ *
+ * Return value: the depth of the surface in bits.
+ *
+ * Since: 1.2
+ **/
 int
 cairo_xlib_surface_get_depth (cairo_surface_t *abstract_surface)
 {
@@ -2146,6 +2195,52 @@ cairo_xlib_surface_get_depth (cairo_surface_t *abstract_surface)
     }
 
     return surface->depth;
+}
+
+/**
+ * cairo_xlib_surface_get_width:
+ * @surface: a #cairo_xlib_surface_t
+ *
+ * Get the width of the X Drawable underlying the surface in pixels.
+ *
+ * Return value: the width of the surface in pixels.
+ *
+ * Since: 1.2
+ **/
+int
+cairo_xlib_surface_get_width (cairo_surface_t *abstract_surface)
+{
+    cairo_xlib_surface_t *surface = (cairo_xlib_surface_t *) abstract_surface;
+
+    if (! _cairo_surface_is_xlib (abstract_surface)) {
+	_cairo_error (CAIRO_STATUS_SURFACE_TYPE_MISMATCH);
+	return -1;
+    }
+
+    return surface->width;
+}
+
+/**
+ * cairo_xlib_surface_get_height:
+ * @surface: a #cairo_xlib_surface_t
+ *
+ * Get the height of the X Drawable underlying the surface in pixels.
+ *
+ * Return value: the height of the surface in pixels.
+ *
+ * Since: 1.2
+ **/
+int
+cairo_xlib_surface_get_height (cairo_surface_t *abstract_surface)
+{
+    cairo_xlib_surface_t *surface = (cairo_xlib_surface_t *) abstract_surface;
+
+    if (! _cairo_surface_is_xlib (abstract_surface)) {
+	_cairo_error (CAIRO_STATUS_SURFACE_TYPE_MISMATCH);
+	return -1;
+    }
+
+    return surface->height;
 }
 
 typedef struct _cairo_xlib_surface_font_private {
@@ -2251,6 +2346,7 @@ _cairo_xlib_surface_add_glyph (Display *dpy,
 	cairo_destroy (cr);
 
 	tmp_surface->device_transform = glyph_surface->base.device_transform;
+	tmp_surface->device_transform_inverse = glyph_surface->base.device_transform_inverse;
 
 	glyph_surface = (cairo_image_surface_t *) tmp_surface;
 
@@ -2579,7 +2675,7 @@ _cairo_xlib_surface_show_glyphs (void                *abstract_dst,
 				 int		      num_glyphs,
 				 cairo_scaled_font_t *scaled_font)
 {
-    cairo_int_status_t status;
+    cairo_int_status_t status = CAIRO_STATUS_SUCCESS;
     cairo_xlib_surface_t *dst = (cairo_xlib_surface_t*) abstract_dst;
 
     composite_operation_t operation;
@@ -2635,6 +2731,17 @@ _cairo_xlib_surface_show_glyphs (void                *abstract_dst,
 	(font_private != NULL && font_private->dpy != dst->dpy))
 	return CAIRO_INT_STATUS_UNSUPPORTED;
 
+    /* After passing all those tests, we're now committed to rendering
+     * these glyphs or to fail trying. We first upload any glyphs to
+     * the X server that it doesn't have already, then we draw
+     * them. We tie into the scaled_font's glyph cache and remove
+     * glyphs from the X server when they are ejected from the
+     * scaled_font cache. Because of this we first freeze the
+     * scaled_font's cache so that we don't cause any of our glyphs to
+     * be ejected and removed from the X server before we have a
+     * chance to render them. */
+    _cairo_scaled_font_freeze_cache (scaled_font);
+
     /* PictOpClear doesn't seem to work with CompositeText; it seems to ignore
      * the mask (the glyphs).  This code below was executed as a side effect
      * of going through the _clip_and_composite fallback code for old_show_glyphs,
@@ -2659,7 +2766,7 @@ _cairo_xlib_surface_show_glyphs (void                *abstract_dst,
                                                           num_glyphs,
                                                           &glyph_extents);
         if (status)
-            return status;
+	    goto BAIL;
 
         status = _cairo_pattern_acquire_surface (src_pattern, &dst->base,
                                                  glyph_extents.x, glyph_extents.y,
@@ -2669,17 +2776,17 @@ _cairo_xlib_surface_show_glyphs (void                *abstract_dst,
     }
 
     if (status)
-        goto FAIL;
+        goto BAIL;
 
     operation = _recategorize_composite_operation (dst, op, src, &attributes, TRUE);
     if (operation == DO_UNSUPPORTED) {
 	status = CAIRO_INT_STATUS_UNSUPPORTED;
-	goto FAIL;
+	goto BAIL;
     }
 
     status = _cairo_xlib_surface_set_attributes (src, &attributes);
     if (status)
-        goto FAIL;
+        goto BAIL;
 
     /* Send all unsent glyphs to the server, and count the max of the glyph indices */
     for (i = 0; i < num_glyphs; i++) {
@@ -2690,7 +2797,7 @@ _cairo_xlib_surface_show_glyphs (void                *abstract_dst,
 					     CAIRO_SCALED_GLYPH_INFO_SURFACE,
 					     &scaled_glyph);
 	if (status != CAIRO_STATUS_SUCCESS)
-	    goto FAIL;
+	    goto BAIL;
 	if (scaled_glyph->surface_private == NULL) {
 	    _cairo_xlib_surface_add_glyph (dst->dpy, scaled_font, scaled_glyph);
 	    scaled_glyph->surface_private = (void *) 1;
@@ -2725,10 +2832,13 @@ _cairo_xlib_surface_show_glyphs (void                *abstract_dst,
 	    break;
     }
 
-  FAIL:
+  BAIL:
+    _cairo_scaled_font_thaw_cache (scaled_font);
+
     if (src)
         _cairo_pattern_release_surface (src_pattern, &src->base, &attributes);
     if (src_pattern == &solid_pattern.base)
 	_cairo_pattern_fini (&solid_pattern.base);
+
     return status;
 }

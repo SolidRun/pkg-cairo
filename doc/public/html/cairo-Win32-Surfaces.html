@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="Surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-PostScript-Surfaces.html" title="PostScript Surfaces">
-<link rel="next" href="cairo-BeOS-Surfaces.html" title="BeOS Surfaces">
+<link rel="next" href="cairo-SVG-Surfaces.html" title="SVG Surfaces">
 <meta name="generator" content="GTK-Doc V1.6 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="pt01.html" title="Part&#160;I.&#160;Tutorial">
@@ -26,7 +26,7 @@
 <td><a accesskey="u" href="Surfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
-<td><a accesskey="n" href="cairo-BeOS-Surfaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="cairo-SVG-Surfaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts"><nobr><a href="#top_of_page" class="shortcut">Top</a>
                   &#160;|&#160;
@@ -47,6 +47,12 @@
 
 
 
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-Win32-Surfaces.html#cairo-win32-surface-create">cairo_win32_surface_create</a> (HDC hdc);
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-Win32-Surfaces.html#cairo-win32-surface-create-with-dib">cairo_win32_surface_create_with_dib</a>
+                                            (<a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
+                                             int width,
+                                             int height);
+HDC         <a href="cairo-Win32-Surfaces.html#cairo-win32-surface-get-dc">cairo_win32_surface_get_dc</a>      (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -57,6 +63,30 @@
 </div>
 <div class="refsect1" lang="en">
 <a name="details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2543796"></a><h3>
+<a name="cairo-win32-surface-create"></a>cairo_win32_surface_create ()</h3>
+<a class="indexterm" name="id2543807"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_win32_surface_create (HDC hdc);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2543830"></a><h3>
+<a name="cairo-win32-surface-create-with-dib"></a>cairo_win32_surface_create_with_dib ()</h3>
+<a class="indexterm" name="id2543843"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_win32_surface_create_with_dib
+                                            (<a href="cairo-Image-Surfaces.html#cairo-format-t">cairo_format_t</a> format,
+                                             int width,
+                                             int height);</pre>
+<p>Since  1.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2543885"></a><h3>
+<a name="cairo-win32-surface-get-dc"></a>cairo_win32_surface_get_dc ()</h3>
+<a class="indexterm" name="id2543898"></a><pre class="programlisting">HDC         cairo_win32_surface_get_dc      (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<p>Since  1.2
+</p>
+</div>
 </div>
 </div>
 </body>

@@ -41,7 +41,7 @@
       overloading. What may seem like an obvious overload now may
       turn out to be strange with future additions to cairo.
       It might seem logical to make
-      <code class="function">cairo_set_source_rgb()</code>
+      <a href="cairo-cairo-t.html#cairo-set-source-rgb"><code class="function">cairo_set_source_rgb()</code></a>
 	an overload of <code class="function">cairo_set_source()</code>, but future plans to add
 	<code class="function">cairo_set_source_rgb_premultiplied()</code>,
       which will also take three doubles make this a bad idea. For
@@ -98,9 +98,9 @@ cairo_image_surface_create_from_png_stream (cairo_read_func_t	read_func,
 <p>
       Note that there are cases where all constructors for a type
       aren't overloaded together. For example
-      <code class="function">cairo_image_surface_create_from_png()</code>
+      <a href="cairo-PNG-Support.html#cairo-image-surface-create-from-png"><code class="function">cairo_image_surface_create_from_png()</code></a>
       should <span class="emphasis"><em>not</em></span> be overloaded together with
-      <code class="function">cairo_image_surface_create()</code>.
+      <a href="cairo-Image-Surfaces.html#cairo-image-surface-create"><code class="function">cairo_image_surface_create()</code></a>.
       In such cases, the remaining constructors will typically need to
       be bound as static methods. In Java, for example, we might have:
     </p>

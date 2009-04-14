@@ -47,12 +47,23 @@
 
 
 
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PNG-Support.html#cairo-image-surface-create-from-png">cairo_image_surface_create_from_png</a>
+                                            (const char *filename);
 <a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> (<a href="cairo-PNG-Support.html#cairo-read-func-t">*cairo_read_func_t</a>)         (void *closure,
                                              unsigned char *data,
                                              unsigned int length);
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PNG-Support.html#cairo-image-surface-create-from-png-stream">cairo_image_surface_create_from_png_stream</a>
+                                            (<a href="cairo-PNG-Support.html#cairo-read-func-t">cairo_read_func_t</a> read_func,
+                                             void *closure);
+<a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> <a href="cairo-PNG-Support.html#cairo-surface-write-to-png">cairo_surface_write_to_png</a>   (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             const char *filename);
 <a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> (<a href="cairo-PNG-Support.html#cairo-write-func-t">*cairo_write_func_t</a>)        (void *closure,
                                              unsigned char *data,
                                              unsigned int length);
+<a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> <a href="cairo-PNG-Support.html#cairo-surface-write-to-png-stream">cairo_surface_write_to_png_stream</a>
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             <a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+                                             void *closure);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -64,9 +75,16 @@
 <div class="refsect1" lang="en">
 <a name="details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2520855"></a><h3>
+<a name="id2583516"></a><h3>
+<a name="cairo-image-surface-create-from-png"></a>cairo_image_surface_create_from_png ()</h3>
+<a class="indexterm" name="id2583527"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create_from_png
+                                            (const char *filename);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2584414"></a><h3>
 <a name="cairo-read-func-t"></a>cairo_read_func_t ()</h3>
-<a class="indexterm" name="id2520866"></a><pre class="programlisting"><a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> (*cairo_read_func_t)         (void *closure,
+<a class="indexterm" name="id2584427"></a><pre class="programlisting"><a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> (*cairo_read_func_t)         (void *closure,
                                              unsigned char *data,
                                              unsigned int length);</pre>
 <p>
@@ -112,9 +130,24 @@ CAIRO_STATUS_READ_ERROR otherwise.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2557243"></a><h3>
+<a name="id2584542"></a><h3>
+<a name="cairo-image-surface-create-from-png-stream"></a>cairo_image_surface_create_from_png_stream ()</h3>
+<a class="indexterm" name="id2584554"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create_from_png_stream
+                                            (<a href="cairo-PNG-Support.html#cairo-read-func-t">cairo_read_func_t</a> read_func,
+                                             void *closure);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2584586"></a><h3>
+<a name="cairo-surface-write-to-png"></a>cairo_surface_write_to_png ()</h3>
+<a class="indexterm" name="id2584597"></a><pre class="programlisting"><a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> cairo_surface_write_to_png   (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             const char *filename);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2584628"></a><h3>
 <a name="cairo-write-func-t"></a>cairo_write_func_t ()</h3>
-<a class="indexterm" name="id2557255"></a><pre class="programlisting"><a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> (*cairo_write_func_t)        (void *closure,
+<a class="indexterm" name="id2584641"></a><pre class="programlisting"><a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> (*cairo_write_func_t)        (void *closure,
                                              unsigned char *data,
                                              unsigned int length);</pre>
 <p>
@@ -157,6 +190,15 @@ CAIRO_STATUS_WRITE_ERROR otherwise.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2584755"></a><h3>
+<a name="cairo-surface-write-to-png-stream"></a>cairo_surface_write_to_png_stream ()</h3>
+<a class="indexterm" name="id2584767"></a><pre class="programlisting"><a href="cairo-Error-handling.html#cairo-status-t">cairo_status_t</a> cairo_surface_write_to_png_stream
+                                            (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             <a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+                                             void *closure);</pre>
 </div>
 </div>
 </div>

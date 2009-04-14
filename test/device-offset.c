@@ -31,7 +31,7 @@
 
 cairo_test_t test = {
     "device-offset",
-    "Simple test using a surface with a device-offset as a source.",
+    "Simple test using a surface with a negative device-offset as a source.",
     SIZE, SIZE
 };
 

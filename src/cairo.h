@@ -167,7 +167,7 @@ typedef struct _cairo_user_data_key {
  * @CAIRO_STATUS_INVALID_VISUAL: invalid value for an input Visual*
  * @CAIRO_STATUS_FILE_NOT_FOUND: file not found
  * @CAIRO_STATUS_INVALID_DASH: invalid value for a dash setting
- * @CAIRO_STATUS_INVALID_DSC_COMMENT: invalid value for a DSC comment
+ * @CAIRO_STATUS_INVALID_DSC_COMMENT: invalid value for a DSC comment (Since 1.2)
  *
  * #cairo_status_t is used to indicate errors that can occur when
  * using Cairo. In some cases it is returned directly by functions.
@@ -204,7 +204,7 @@ typedef enum _cairo_status {
  * @CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
  * @CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha content.
  *
- * @cairo_content_t is used to describe the content that a surface will
+ * #cairo_content_t is used to describe the content that a surface will
  * contain, whether color information, alpha information (translucence
  * vs. opacity), or both.
  *
@@ -929,17 +929,18 @@ cairo_font_face_status (cairo_font_face_t *font_face);
 
 /**
  * cairo_font_type_t
- * @CAIRO_FONT_TYPE_FT: The font is of type ft
- * @CAIRO_FONT_TYPE_WIN32: The font is of type win32
- * @CAIRO_FONT_TYPE_ATSUI: The font is of type atsui
+ * @CAIRO_FONT_TYPE_TOY: The font was created using cairo's toy font api
+ * @CAIRO_FONT_TYPE_FT: The font is of type FreeType
+ * @CAIRO_FONT_TYPE_WIN32: The font is of type Win32
+ * @CAIRO_FONT_TYPE_ATSUI: The font is of type ATSUI
  *
- * @cairo_font_type_t is used to describe the type of a given font
+ * #cairo_font_type_t is used to describe the type of a given font
  * face or scaled font. The font types are also known as "font
  * backends" within cairo.
  *
  * The type of a font face is determined by the function used to
  * create it, which will generally be of the form
- * cairo_<type>_font_face_create. The font face type can be queried
+ * cairo_<emphasis>type</emphasis>_font_face_create. The font face type can be queried
  * with cairo_font_face_get_type()
  *
  * The various cairo_font_face functions can be used with a font face
@@ -953,10 +954,12 @@ cairo_font_face_status (cairo_font_face_t *font_face);
  * fonts of any type, but some font backends also provide
  * type-specific functions that must only be called with a scaled font
  * of the appropriate type. These functions have names that begin with
- * cairo_<type>_scaled_font such as cairo_ft_scaled_font_lock_face.
+ * cairo_<emphasis>type</emphasis>_scaled_font such as cairo_ft_scaled_font_lock_face.
  *
  * The behavior of calling a type-specific function with a scaled font
  * of the wrong type is undefined.
+ *
+ * Since: 1.2
  */
 typedef enum _cairo_font_type {
     CAIRO_FONT_TYPE_TOY,
@@ -1228,12 +1231,12 @@ cairo_surface_status (cairo_surface_t *surface);
  * @CAIRO_SURFACE_TYPE_DIRECTFB: The surface is of type directfb
  * @CAIRO_SURFACE_TYPE_SVG: The surface is of type svg
  *
- * @cairo_surface_type_t is used to describe the type of a given
+ * #cairo_surface_type_t is used to describe the type of a given
  * surface. The surface types are also known as "backends" or "surface
  * backends" within cairo.
  *
  * The type of a surface is determined by the function used to create
- * it, which will generally be of the form cairo_<type>_surface_create,
+ * it, which will generally be of the form cairo_<emphasis>type</emphasis>_surface_create,
  * (though see cairo_surface_create_similar as well).
  *
  * The surface type can be queried with cairo_surface_get_type()
@@ -1242,10 +1245,12 @@ cairo_surface_status (cairo_surface_t *surface);
  * any type, but some backends also provide type-specific functions
  * that must only be called with a surface of the appropriate
  * type. These functions have names that begin with
- * cairo_<type>_surface such as cairo_image_surface_get_width().
+ * cairo_<emphasis>type</emphasis>_surface such as cairo_image_surface_get_width().
  *
  * The behavior of calling a type-specific function with a surface of
  * the wrong type is undefined.
+ *
+ * Since: 1.2
  */
 typedef enum _cairo_surface_type {
     CAIRO_SURFACE_TYPE_IMAGE,
@@ -1344,7 +1349,7 @@ cairo_surface_set_fallback_resolution (cairo_surface_t	*surface,
  *   machine the first pixel is in the least-significant bit.
  * @CAIRO_FORMAT_RGB16_565: each pixel is a 16-bit quantity,
  *   with red in the upper 5 bits, then green in the next 6,
- *   then blue in the lowest 5 bits.
+ *   then blue in the lowest 5 bits. (Since 1.2)
  *
  * #cairo_format_t is used to identify the memory format of
  * image data.
@@ -1426,14 +1431,13 @@ cairo_pattern_status (cairo_pattern_t *pattern);
 
 /**
  * cairo_pattern_type_t
-
  * @CAIRO_PATTERN_TYPE_SOLID: The pattern is a solid (uniform)
  * color. It may be opaque or translucent.
  * @CAIRO_PATTERN_TYPE_SURFACE: The pattern is a based on a surface (an image).
  * @CAIRO_PATTERN_TYPE_LINEAR: The pattern is a linear gradient.
  * @CAIRO_PATTERN_TYPE_RADIAL: The pattern is a radial gradient.
  *
- * @cairo_pattern_type_t us used to describe the type of a given pattern.
+ * #cairo_pattern_type_t is used to describe the type of a given pattern.
  *
  * The type of a pattern is determined by the function used to create
  * it. The cairo_pattern_create_rgb() and cairo_pattern_create_rgba()
@@ -1450,6 +1454,8 @@ cairo_pattern_status (cairo_pattern_t *pattern);
  * cairo_pattern_add_color_stop_rgba() which must only be called with
  * gradient patterns (either LINEAR or RADIAL). Otherwise the pattern
  * will be shutdown and put into an error state.
+ *
+ * Since: 1.2
  */
 typedef enum _cairo_pattern_type {
     CAIRO_PATTERN_TYPE_SOLID,
@@ -1486,9 +1492,10 @@ cairo_pattern_get_matrix (cairo_pattern_t *pattern,
  *   are fully transparent
  * @CAIRO_EXTEND_REPEAT: the pattern is tiled by repeating
  * @CAIRO_EXTEND_REFLECT: the pattern is tiled by reflecting
- *   at the edges
+ *   at the edges (not implemented for surface patterns currently)
  * @CAIRO_EXTEND_PAD: pixels outside of the pattern copy
- *   the closest pixel from the source (since cairo 1.2)
+ *   the closest pixel from the source (Since 1.2; not implemented
+ *   for surface patterns currently)
  *
  * #cairo_extend_t is used to describe how the area outside
  * of a pattern will be drawn.
@@ -1561,12 +1568,10 @@ cairo_matrix_multiply (cairo_matrix_t	    *result,
 		       const cairo_matrix_t *a,
 		       const cairo_matrix_t *b);
 
-/* XXX: Need a new name here perhaps. */
 cairo_public void
 cairo_matrix_transform_distance (const cairo_matrix_t *matrix,
 				 double *dx, double *dy);
 
-/* XXX: Need a new name here perhaps. */
 cairo_public void
 cairo_matrix_transform_point (const cairo_matrix_t *matrix,
 			      double *x, double *y);

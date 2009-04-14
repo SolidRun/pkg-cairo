@@ -53,11 +53,13 @@ typedef struct cairo_svg_surface cairo_svg_surface_t;
 
 static const int invalid_pattern_id = -1;
 
-static const cairo_svg_version_t _cairo_svg_versions[CAIRO_SVG_VERSION_LAST] =
+static const cairo_svg_version_t _cairo_svg_versions[] =
 {
     CAIRO_SVG_VERSION_1_1,
     CAIRO_SVG_VERSION_1_2
 };
+
+#define CAIRO_SVG_VERSION_LAST ((int)(sizeof (_cairo_svg_versions) / sizeof (_cairo_svg_versions[0])))
 
 static const char * _cairo_svg_version_strings[CAIRO_SVG_VERSION_LAST] =
 {
@@ -156,13 +158,13 @@ static const cairo_paginated_surface_backend_t cairo_svg_surface_paginated_backe
 
 /**
  * cairo_svg_surface_create_for_stream:
- * @write: a #cairo_write_func_t to accept the output data
- * @closure: the closure argument for @write
+ * @write_func: a #cairo_write_func_t to accept the output data
+ * @closure: the closure argument for @write_func
  * @width_in_points: width of the surface, in points (1 point == 1/72.0 inch)
  * @height_in_points: height of the surface, in points (1 point == 1/72.0 inch)
  *
  * Creates a SVG surface of the specified size in points to be written
- * incrementally to the stream represented by @write and @closure.
+ * incrementally to the stream represented by @write_func and @closure.
  *
  * Return value: a pointer to the newly created surface. The caller
  * owns the surface and should call cairo_surface_destroy when done
@@ -171,9 +173,11 @@ static const cairo_paginated_surface_backend_t cairo_svg_surface_paginated_backe
  * This function always returns a valid pointer, but it will return a
  * pointer to a "nil" surface if an error such as out of memory
  * occurs. You can use cairo_surface_status() to check for this.
+ *
+ * Since: 1.2
  */
 cairo_surface_t *
-cairo_svg_surface_create_for_stream (cairo_write_func_t		 write,
+cairo_svg_surface_create_for_stream (cairo_write_func_t		 write_func,
 				     void			*closure,
 				     double			 width,
 				     double			 height)
@@ -181,7 +185,7 @@ cairo_svg_surface_create_for_stream (cairo_write_func_t		 write,
     cairo_status_t status;
     cairo_output_stream_t *stream;
 
-    stream = _cairo_output_stream_create (write, NULL, closure);
+    stream = _cairo_output_stream_create (write_func, NULL, closure);
     status = _cairo_output_stream_get_status (stream);
     if (status) {
 	_cairo_error (status);
@@ -207,8 +211,9 @@ cairo_svg_surface_create_for_stream (cairo_write_func_t		 write,
  * This function always returns a valid pointer, but it will return a
  * pointer to a "nil" surface if an error such as out of memory
  * occurs. You can use cairo_surface_status() to check for this.
+ *
+ * Since: 1.2
  **/
-
 cairo_surface_t *
 cairo_svg_surface_create (const char	*filename,
 			  double	 width,
@@ -268,9 +273,10 @@ _extract_svg_surface (cairo_surface_t		 *surface,
  * have been performed on the given surface. The simplest way to do
  * this is to call this function immediately after creating the
  * surface.
+ *
+ * Since: 1.2
  **/
-
-cairo_public void
+void
 cairo_svg_surface_restrict_to_version (cairo_surface_t 		*abstract_surface,
 				       cairo_svg_version_t  	 version)
 {
@@ -290,14 +296,15 @@ cairo_svg_surface_restrict_to_version (cairo_surface_t 		*abstract_surface,
 
 /**
  * cairo_svg_get_versions:
- * @version: supported version list
+ * @versions: supported version list
  * @num_versions: list length
  *
- * Returns the list of supported versions. See
+ * Used to retrieve the list of supported versions. See
  * cairo_svg_surface_restrict_to_version().
+ *
+ * Since: 1.2
  **/
-
-cairo_public void
+void
 cairo_svg_get_versions (cairo_svg_version_t const	**versions,
                         int                     	 *num_versions)
 {
@@ -312,12 +319,15 @@ cairo_svg_get_versions (cairo_svg_version_t const	**versions,
  * cairo_svg_version_to_string:
  * @version: a version id
  *
- * Returns the string associated to given @version. This function
+ * Get the string representation of the given @version id. This function
  * will return NULL if @version isn't valid. See cairo_svg_get_versions()
  * for a way to get the list of valid version ids.
+ *
+ * Return value: the string associated to given version.
+ *
+ * Since: 1.2
  **/
-
-cairo_public const char *
+const char *
 cairo_svg_version_to_string (cairo_svg_version_t version)
 {
     if (version < 0 || version >= CAIRO_SVG_VERSION_LAST)
@@ -401,6 +411,21 @@ _cairo_svg_surface_create_for_stream_internal (cairo_output_stream_t	*stream,
     _cairo_svg_document_destroy (document);
 
     return surface;
+}
+
+static void
+emit_transform (cairo_output_stream_t *output,
+		char const *attribute_str,
+		char const *trailer,
+		cairo_matrix_t *matrix)
+{
+    _cairo_output_stream_printf (output,
+				 "%s=\"matrix(%f,%f,%f,%f,%f,%f)\"%s",
+				 attribute_str,
+				 matrix->xx, matrix->yx,
+				 matrix->xy, matrix->yy,
+				 matrix->x0, matrix->y0,
+				 trailer);
 }
 
 typedef struct
@@ -501,6 +526,76 @@ emit_path (cairo_output_stream_t *output,
     return status;
 }
 
+static cairo_int_status_t
+_cairo_svg_document_emit_outline_glyph_data (cairo_svg_document_t	*document,
+					     cairo_scaled_font_t	*scaled_font,
+					     unsigned long		 glyph_index)
+{
+    cairo_scaled_glyph_t *scaled_glyph;
+    cairo_int_status_t status;
+
+    status = _cairo_scaled_glyph_lookup (scaled_font,
+					 glyph_index,
+					 CAIRO_SCALED_GLYPH_INFO_METRICS|
+					 CAIRO_SCALED_GLYPH_INFO_PATH,
+					 &scaled_glyph);
+    if (status)
+	return status;
+
+    _cairo_output_stream_printf (document->xml_node_glyphs,
+				 "<path style=\"stroke: none;\" ");
+
+    status = emit_path (document->xml_node_glyphs, scaled_glyph->path, NULL);
+
+    _cairo_output_stream_printf (document->xml_node_glyphs,
+				 "/>\n");
+
+    return status;
+}
+
+static cairo_int_status_t
+_cairo_svg_document_emit_bitmap_glyph_data (cairo_svg_document_t	*document,
+					    cairo_scaled_font_t		*scaled_font,
+					    unsigned long		 glyph_index)
+{
+    cairo_image_surface_t *image;
+    cairo_scaled_glyph_t *scaled_glyph;
+    cairo_status_t status;
+    unsigned char *row, *byte;
+    int rows, cols, bytes_per_row;
+    int x, y, bit;
+
+    status = _cairo_scaled_glyph_lookup (scaled_font,
+					 glyph_index,
+					 CAIRO_SCALED_GLYPH_INFO_METRICS|
+					 CAIRO_SCALED_GLYPH_INFO_SURFACE,
+					 &scaled_glyph);
+    if (status)
+	return status;
+
+    image = scaled_glyph->surface;
+    assert (image->format == CAIRO_FORMAT_A1);
+
+    _cairo_output_stream_printf (document->xml_node_glyphs, "<g");
+    emit_transform (document->xml_node_glyphs, " transform", ">/n", &image->base.device_transform);
+
+    bytes_per_row = (image->width + 7) / 8;
+    for (y = 0, row = image->data, rows = image->height; rows; row += image->stride, rows--, y++) {
+	for (x = 0, byte = row, cols = (image->width + 7) / 8; cols; byte++, cols--) {
+	    unsigned char output_byte = CAIRO_BITSWAP8_IF_LITTLE_ENDIAN (*byte);
+	    for (bit = 7; bit >= 0 && x < image->width; bit--, x++) {
+		if (output_byte & (1 << bit)) {
+		    _cairo_output_stream_printf (document->xml_node_glyphs,
+						 "<rect x=\"%d\" y=\"%d\" width=\"1\" height=\"1\"/>\n",
+						 x, y);
+		}
+	    }
+	}
+    }
+    _cairo_output_stream_printf (document->xml_node_glyphs, "</g>\n");
+    return CAIRO_STATUS_SUCCESS;
+}
+
 static void
 _cairo_svg_document_emit_glyph (cairo_svg_document_t	*document,
 				cairo_scaled_font_t	*scaled_font,
@@ -508,37 +603,22 @@ _cairo_svg_document_emit_glyph (cairo_svg_document_t	*document,
 				unsigned int		 font_id,
 				unsigned int		 subset_glyph_index)
 {
-    cairo_scaled_glyph_t    *scaled_glyph;
     cairo_status_t	     status;
 
-    status = _cairo_scaled_glyph_lookup (scaled_font,
-					 scaled_font_glyph_index,
-					 CAIRO_SCALED_GLYPH_INFO_METRICS|
-					 CAIRO_SCALED_GLYPH_INFO_PATH,
-					 &scaled_glyph);
-    /*
-     * If that fails, try again but ask for an image instead
-     */
-    if (status)
-	status = _cairo_scaled_glyph_lookup (scaled_font,
-					     scaled_font_glyph_index,
-					     CAIRO_SCALED_GLYPH_INFO_METRICS|
-					     CAIRO_SCALED_GLYPH_INFO_SURFACE,
-					     &scaled_glyph);
-    if (status) {
-	_cairo_surface_set_error (document->owner, status);
-	return;
-    }
-
     _cairo_output_stream_printf (document->xml_node_glyphs,
- 				 "<symbol id=\"glyph%d-%d\">\n"
- 				 "<path style=\"stroke: none;\" ",
+				 "<symbol id=\"glyph%d-%d\">\n",
  				 font_id,
  				 subset_glyph_index);
 
-    status = emit_path (document->xml_node_glyphs, scaled_glyph->path, NULL);
+    status = _cairo_svg_document_emit_outline_glyph_data (document,
+							  scaled_font,
+							  scaled_font_glyph_index);
+    if (status == CAIRO_INT_STATUS_UNSUPPORTED)
+	status = _cairo_svg_document_emit_bitmap_glyph_data (document,
+							     scaled_font,
+							     scaled_font_glyph_index);
 
-    _cairo_output_stream_printf (document->xml_node_glyphs, "/>\n</symbol>\n");
+    _cairo_output_stream_printf (document->xml_node_glyphs, "</symbol>\n");
 }
 
 static void
@@ -569,7 +649,7 @@ _cairo_svg_document_emit_font_subsets (cairo_svg_document_t *document)
 static cairo_bool_t cairo_svg_force_fallbacks = FALSE;
 
 /**
- * cairo_svg_test_force_fallbacks
+ * _cairo_svg_test_force_fallbacks
  *
  * Force the SVG surface backend to use image fallbacks for every
  * operation.
@@ -581,7 +661,7 @@ static cairo_bool_t cairo_svg_force_fallbacks = FALSE;
  * </note>
  **/
 void
-cairo_svg_test_force_fallbacks (void)
+_cairo_svg_test_force_fallbacks (void)
 {
     cairo_svg_force_fallbacks = TRUE;
 }
@@ -659,21 +739,6 @@ emit_alpha_filter (cairo_svg_document_t *document)
  				 "</filter>\n");
 
     document->alpha_filter = TRUE;
-}
-
-static void
-emit_transform (cairo_output_stream_t *output,
-		char const *attribute_str,
-		char const *trailer,
-		cairo_matrix_t *matrix)
-{
-    _cairo_output_stream_printf (output,
- 				 "%s=\"matrix(%f,%f,%f,%f,%f,%f)\"%s",
- 				 attribute_str,
- 				 matrix->xx, matrix->yx,
- 				 matrix->xy, matrix->yy,
- 				 matrix->x0, matrix->y0,
- 				 trailer);
 }
 
 typedef struct {
@@ -1356,6 +1421,7 @@ _cairo_svg_surface_mask (void		    *abstract_surface,
 				 "  </g>\n"
 				 "</mask>\n");
     _cairo_memory_stream_copy (mask_stream, document->xml_node_defs);
+    _cairo_output_stream_destroy (mask_stream);
 
     snprintf (buffer, sizeof buffer, "mask=\"url(#mask%d);\"",
 	      document->mask_id);

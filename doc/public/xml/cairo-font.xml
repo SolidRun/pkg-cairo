@@ -24,6 +24,19 @@
 
 
 typedef     <link linkend="cairo-font-face-t">cairo_font_face_t</link>;
+<link linkend="cairo-font-face-t">cairo_font_face_t</link>* <link linkend="cairo-font-face-reference">cairo_font_face_reference</link>
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
+<link linkend="void">void</link>        <link linkend="cairo-font-face-destroy">cairo_font_face_destroy</link>         (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-font-face-status">cairo_font_face_status</link>       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
+<link linkend="void">void</link>*       <link linkend="cairo-font-face-get-user-data">cairo_font_face_get_user_data</link>   (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-font-face-set-user-data">cairo_font_face_set_user_data</link>
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
+                                             <link linkend="void">void</link> *user_data,
+                                             <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);
+enum        <link linkend="cairo-font-type-t">cairo_font_type_t</link>;
+<link linkend="cairo-font-type-t">cairo_font_type_t</link> <link linkend="cairo-font-face-get-type">cairo_font_face_get_type</link>  (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
 </synopsis>
 </refsynopsisdiv>
 
@@ -57,6 +70,48 @@ directions) . A font face can be set on a <link linkend="cairo-t"><type>cairo_t<
 <link linkend="cairo-set-font-size"><function>cairo_set_font_size()</function></link> and <link linkend="cairo-set-font-matrix"><function>cairo_set_font_matrix()</function></link>.</para>
 <para>
 
+</para></refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-reference" role="function"/>cairo_font_face_reference ()</title>
+<indexterm><primary>cairo_font_face_reference</primary></indexterm><programlisting><link linkend="cairo-font-face-t">cairo_font_face_t</link>* cairo_font_face_reference
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-destroy" role="function"/>cairo_font_face_destroy ()</title>
+<indexterm><primary>cairo_font_face_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_font_face_destroy         (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-status" role="function"/>cairo_font_face_status ()</title>
+<indexterm><primary>cairo_font_face_status</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_font_face_status       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-get-user-data" role="function"/>cairo_font_face_get_user_data ()</title>
+<indexterm><primary>cairo_font_face_get_user_data</primary></indexterm><programlisting><link linkend="void">void</link>*       cairo_font_face_get_user_data   (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-set-user-data" role="function"/>cairo_font_face_set_user_data ()</title>
+<indexterm><primary>cairo_font_face_set_user_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_font_face_set_user_data
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
+                                             <link linkend="void">void</link> *user_data,
+                                             <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-font-type-t" role="enum" condition="since:1.2"/>enum cairo_font_type_t</title>
+<indexterm role="1.2"><primary>cairo_font_type_t</primary></indexterm><programlisting>typedef enum _cairo_font_type {
+    CAIRO_FONT_TYPE_TOY,
+    CAIRO_FONT_TYPE_FT,
+    CAIRO_FONT_TYPE_WIN32,
+    CAIRO_FONT_TYPE_ATSUI
+} cairo_font_type_t;
+</programlisting>
+<para>Since  1.2
+</para></refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-get-type" role="function" condition="since:1.2"/>cairo_font_face_get_type ()</title>
+<indexterm role="1.2"><primary>cairo_font_face_get_type</primary></indexterm><programlisting><link linkend="cairo-font-type-t">cairo_font_type_t</link> cairo_font_face_get_type  (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<para>Since  1.2
 </para></refsect2>
 
 </refsect1>

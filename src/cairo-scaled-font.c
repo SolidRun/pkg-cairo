@@ -37,6 +37,7 @@
  */
 
 #include "cairoint.h"
+#include "cairo-scaled-font-test.h"
 
 static cairo_bool_t
 _cairo_scaled_glyph_keys_equal (const void *abstract_key_a, const void *abstract_key_b)
@@ -123,6 +124,8 @@ _cairo_scaled_font_set_error (cairo_scaled_font_t *scaled_font,
  * @scaled_font: a #cairo_scaled_font_t
  *
  * Return value: The type of @scaled_font. See #cairo_font_type_t.
+ *
+ * Since: 1.2
  **/
 cairo_font_type_t
 cairo_scaled_font_get_type (cairo_scaled_font_t *scaled_font)
@@ -313,6 +316,20 @@ _cairo_scaled_font_keys_equal (const void *abstract_key_a, const void *abstract_
 	    cairo_font_options_equal (&key_a->options, &key_b->options));
 }
 
+/* XXX: This 256 number is arbitary---we've never done any measurement
+ * of this. In fact, having a per-font glyph caches each managed
+ * separately is probably not waht we want anyway. Would probably be
+ * much better to have a single cache for glyphs with random
+ * replacement across all glyphs of all fonts. */
+static int max_glyphs_cached_per_font = 256;
+
+/* For internal testing purposes only. Not part of the supported API. */
+void
+_cairo_scaled_font_test_set_max_glyphs_cached_per_font (int max)
+{
+    max_glyphs_cached_per_font = max;
+}
+
 /*
  * Basic cairo_scaled_font_t object management
  */
@@ -338,7 +355,7 @@ _cairo_scaled_font_init (cairo_scaled_font_t               *scaled_font,
 
     scaled_font->glyphs = _cairo_cache_create (_cairo_scaled_glyph_keys_equal,
 					       _cairo_scaled_glyph_destroy,
-					       256);
+					       max_glyphs_cached_per_font);
 
     scaled_font->surface_backend = NULL;
     scaled_font->surface_private = NULL;
@@ -346,6 +363,18 @@ _cairo_scaled_font_init (cairo_scaled_font_t               *scaled_font,
     scaled_font->backend = backend;
 
     return CAIRO_STATUS_SUCCESS;
+}
+
+void
+_cairo_scaled_font_freeze_cache (cairo_scaled_font_t *scaled_font)
+{
+    _cairo_cache_freeze (scaled_font->glyphs);
+}
+
+void
+_cairo_scaled_font_thaw_cache (cairo_scaled_font_t *scaled_font)
+{
+    _cairo_cache_thaw (scaled_font->glyphs);
 }
 
 void
@@ -616,6 +645,8 @@ cairo_scaled_font_extents (cairo_scaled_font_t  *scaled_font,
  * characters. In particular, trailing whitespace characters are
  * likely to not affect the size of the rectangle, though they will
  * affect the x_advance and y_advance values.
+ *
+ * Since: 1.2
  **/
 void
 cairo_scaled_font_text_extents (cairo_scaled_font_t   *scaled_font,
@@ -1269,6 +1300,8 @@ _cairo_scaled_glyph_lookup (cairo_scaled_font_t *scaled_font,
  *
  * Return value: The #cairo_font_face_t with which @scaled_font was
  * created.
+ *
+ * Since: 1.2
  **/
 cairo_font_face_t *
 cairo_scaled_font_get_font_face (cairo_scaled_font_t *scaled_font)
@@ -1286,6 +1319,8 @@ cairo_scaled_font_get_font_face (cairo_scaled_font_t *scaled_font)
  *
  * Stores the font matrix with which @scaled_font was created into
  * @matrix.
+ *
+ * Since: 1.2
  **/
 void
 cairo_scaled_font_get_font_matrix (cairo_scaled_font_t	*scaled_font,
@@ -1305,6 +1340,8 @@ cairo_scaled_font_get_font_matrix (cairo_scaled_font_t	*scaled_font,
  * @ctm: return value for the CTM
  *
  * Stores the CTM with which @scaled_font was created into @ctm.
+ *
+ * Since: 1.2
  **/
 void
 cairo_scaled_font_get_ctm (cairo_scaled_font_t	*scaled_font,
@@ -1325,6 +1362,8 @@ cairo_scaled_font_get_ctm (cairo_scaled_font_t	*scaled_font,
  *
  * Stores the font options with which @scaled_font was created into
  * @ctm.
+ *
+ * Since: 1.2
  **/
 void
 cairo_scaled_font_get_font_options (cairo_scaled_font_t		*scaled_font,

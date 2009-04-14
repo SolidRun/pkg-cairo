@@ -47,7 +47,7 @@
 
 
 
-typedef     <a href="cairo-Types.html#cairo-bool-t">cairo_bool_t</a>                    ();
+typedef     <a href="cairo-Types.html#cairo-bool-t">cairo_bool_t</a>;
             <a href="cairo-Types.html#cairo-user-data-key-t">cairo_user_data_key_t</a>;
 void        (<a href="cairo-Types.html#cairo-destroy-func-t">*cairo_destroy_func_t</a>)         (void *data);
 </pre>
@@ -61,9 +61,10 @@ void        (<a href="cairo-Types.html#cairo-destroy-func-t">*cairo_destroy_func
 <div class="refsect1" lang="en">
 <a name="details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2522333"></a><h3>
-<a name="cairo-bool-t"></a>cairo_bool_t ()</h3>
-<a class="indexterm" name="id2522344"></a><pre class="programlisting">typedef     cairo_bool_t                    ();</pre>
+<a name="id2562768"></a><h3>
+<a name="cairo-bool-t"></a>cairo_bool_t</h3>
+<a class="indexterm" name="id2565811"></a><pre class="programlisting">typedef int cairo_bool_t;
+</pre>
 <p>
 <a href="cairo-Types.html#cairo-bool-t"><span class="type">cairo_bool_t</span></a> is used for boolean values. Returns of type
 <a href="cairo-Types.html#cairo-bool-t"><span class="type">cairo_bool_t</span></a> will always be either 0 or 1, but testing against
@@ -80,23 +81,12 @@ value as a boolean condition.
 <p>
 
 </p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td>
-<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td>
-
-
-</td>
-</tr></tbody>
-</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2522412"></a><h3>
+<a name="id2589661"></a><h3>
 <a name="cairo-user-data-key-t"></a>cairo_user_data_key_t</h3>
-<a class="indexterm" name="id2522423"></a><pre class="programlisting">typedef struct {
+<a class="indexterm" name="id2589672"></a><pre class="programlisting">typedef struct {
     int unused;
 } cairo_user_data_key_t;
 </pre>
@@ -121,9 +111,9 @@ would just use the address of a static <span class="type">cairo_data_key_t</span
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558991"></a><h3>
+<a name="id2587392"></a><h3>
 <a name="cairo-destroy-func-t"></a>cairo_destroy_func_t ()</h3>
-<a class="indexterm" name="id2559002"></a><pre class="programlisting">void        (*cairo_destroy_func_t)         (void *data);</pre>
+<a class="indexterm" name="id2587403"></a><pre class="programlisting">void        (*cairo_destroy_func_t)         (void *data);</pre>
 <p>
 <a href="cairo-Types.html#cairo-destroy-func-t"><span class="type">cairo_destroy_func_t</span></a> the type of function which is called when a
 data element is destroyed. It is passed the pointer to the data

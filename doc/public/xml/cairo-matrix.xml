@@ -24,6 +24,40 @@
 
 
             <link linkend="cairo-matrix-t">cairo_matrix_t</link>;
+<link linkend="void">void</link>        <link linkend="cairo-matrix-init">cairo_matrix_init</link>               (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> xx,
+                                             <link linkend="double">double</link> yx,
+                                             <link linkend="double">double</link> xy,
+                                             <link linkend="double">double</link> yy,
+                                             <link linkend="double">double</link> x0,
+                                             <link linkend="double">double</link> y0);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-init-identity">cairo_matrix_init_identity</link>      (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-init-translate">cairo_matrix_init_translate</link>     (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> tx,
+                                             <link linkend="double">double</link> ty);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-init-scale">cairo_matrix_init_scale</link>         (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> sx,
+                                             <link linkend="double">double</link> sy);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-init-rotate">cairo_matrix_init_rotate</link>        (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> radians);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-translate">cairo_matrix_translate</link>          (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> tx,
+                                             <link linkend="double">double</link> ty);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-scale">cairo_matrix_scale</link>              (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> sx,
+                                             <link linkend="double">double</link> sy);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-rotate">cairo_matrix_rotate</link>             (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> radians);
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-matrix-invert">cairo_matrix_invert</link>          (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-multiply">cairo_matrix_multiply</link>           (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *result,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *a,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *b);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-transform-distance">cairo_matrix_transform_distance</link> (const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> *dx,
+                                             <link linkend="double">double</link> *dy);
+<link linkend="void">void</link>        <link linkend="cairo-matrix-transform-point">cairo_matrix_transform_point</link>    (const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> *x,
+                                             <link linkend="double">double</link> *y);
 </synopsis>
 </refsynopsisdiv>
 
@@ -109,6 +143,76 @@ a point (x, y) is given by:
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-init" role="function"/>cairo_matrix_init ()</title>
+<indexterm><primary>cairo_matrix_init</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_init               (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> xx,
+                                             <link linkend="double">double</link> yx,
+                                             <link linkend="double">double</link> xy,
+                                             <link linkend="double">double</link> yy,
+                                             <link linkend="double">double</link> x0,
+                                             <link linkend="double">double</link> y0);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-init-identity" role="function"/>cairo_matrix_init_identity ()</title>
+<indexterm><primary>cairo_matrix_init_identity</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_init_identity      (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-init-translate" role="function"/>cairo_matrix_init_translate ()</title>
+<indexterm><primary>cairo_matrix_init_translate</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_init_translate     (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> tx,
+                                             <link linkend="double">double</link> ty);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-init-scale" role="function"/>cairo_matrix_init_scale ()</title>
+<indexterm><primary>cairo_matrix_init_scale</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_init_scale         (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> sx,
+                                             <link linkend="double">double</link> sy);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-init-rotate" role="function"/>cairo_matrix_init_rotate ()</title>
+<indexterm><primary>cairo_matrix_init_rotate</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_init_rotate        (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> radians);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-translate" role="function"/>cairo_matrix_translate ()</title>
+<indexterm><primary>cairo_matrix_translate</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_translate          (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> tx,
+                                             <link linkend="double">double</link> ty);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-scale" role="function"/>cairo_matrix_scale ()</title>
+<indexterm><primary>cairo_matrix_scale</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_scale              (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> sx,
+                                             <link linkend="double">double</link> sy);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-rotate" role="function"/>cairo_matrix_rotate ()</title>
+<indexterm><primary>cairo_matrix_rotate</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_rotate             (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> radians);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-invert" role="function"/>cairo_matrix_invert ()</title>
+<indexterm><primary>cairo_matrix_invert</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_matrix_invert          (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-multiply" role="function"/>cairo_matrix_multiply ()</title>
+<indexterm><primary>cairo_matrix_multiply</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_multiply           (<link linkend="cairo-matrix-t">cairo_matrix_t</link> *result,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *a,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *b);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-transform-distance" role="function"/>cairo_matrix_transform_distance ()</title>
+<indexterm><primary>cairo_matrix_transform_distance</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_transform_distance (const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> *dx,
+                                             <link linkend="double">double</link> *dy);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="cairo-matrix-transform-point" role="function"/>cairo_matrix_transform_point ()</title>
+<indexterm><primary>cairo_matrix_transform_point</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_matrix_transform_point    (const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix,
+                                             <link linkend="double">double</link> *x,
+                                             <link linkend="double">double</link> *y);</programlisting>
+</refsect2>
 
 </refsect1>
 

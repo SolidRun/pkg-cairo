@@ -23,7 +23,7 @@
 
 
 
-<link linkend="typedef">typedef</link>     <link linkend="cairo-bool-t">cairo_bool_t</link>                    ();
+typedef     <link linkend="cairo-bool-t">cairo_bool_t</link>;
             <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link>;
 <link linkend="void">void</link>        (<link linkend="cairo-destroy-func-t">*cairo_destroy_func_t</link>)         (<link linkend="void">void</link> *data);
 </synopsis>
@@ -47,8 +47,9 @@
 <refsect1 id="details">
 <title id="details.title">Details</title>
 <refsect2>
-<title><anchor id="cairo-bool-t" role="function"/>cairo_bool_t ()</title>
-<indexterm><primary>cairo_bool_t</primary></indexterm><programlisting><link linkend="typedef">typedef</link>     cairo_bool_t                    ();</programlisting>
+<title><anchor id="cairo-bool-t" role="typedef"/>cairo_bool_t</title>
+<indexterm><primary>cairo_bool_t</primary></indexterm><programlisting>typedef int cairo_bool_t;
+</programlisting>
 <para>
 <link linkend="cairo-bool-t"><type>cairo_bool_t</type></link> is used for boolean values. Returns of type
 <link linkend="cairo-bool-t"><type>cairo_bool_t</type></link> will always be either 0 or 1, but testing against
@@ -63,12 +64,7 @@ value as a boolean condition.
 </programlisting></informalexample></para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para></refsect2>
 <refsect2>
 <title><anchor id="cairo-user-data-key-t" role="struct"/>cairo_user_data_key_t</title>
 <indexterm><primary>cairo_user_data_key_t</primary></indexterm><programlisting>typedef struct {
