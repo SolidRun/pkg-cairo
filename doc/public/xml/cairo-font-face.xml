@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-cairo-font-face-t">
+<refentry id="cairo-font-face">
 <refmeta>
-<refentrytitle role="top_of_page">cairo_font_face_t</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-font-face.top_of_page">cairo_font_face_t</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>CAIRO Library</refmiscinfo>
 </refmeta>
@@ -16,13 +16,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="cairo-font-face.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 typedef             <link linkend="cairo-font-face-t">cairo_font_face_t</link>;
 <link linkend="cairo-font-face-t">cairo_font_face_t</link>*  <link linkend="cairo-font-face-reference">cairo_font_face_reference</link>           (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
 <link linkend="void">void</link>                <link linkend="cairo-font-face-destroy">cairo_font_face_destroy</link>             (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
@@ -47,7 +44,7 @@ unsigned <link linkend="int">int</link>        <link linkend="cairo-font-face-ge
 
 
 
-<refsect1 role="desc">
+<refsect1 id="cairo-font-face.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> represents a particular font at a particular weight,
@@ -63,11 +60,11 @@ or implicitly using the <firstterm>toy</firstterm> text API by way of
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="cairo-font-face.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="cairo-font-face-t" role="typedef"/>cairo_font_face_t</title>
-<indexterm><primary>cairo_font_face_t</primary></indexterm><programlisting>typedef struct _cairo_font_face cairo_font_face_t;
+<refsect2 id="cairo-font-face-t" role="typedef">
+<title>cairo_font_face_t</title>
+<indexterm zone="cairo-font-face-t"><primary>cairo_font_face_t</primary></indexterm><programlisting>typedef struct _cairo_font_face cairo_font_face_t;
 </programlisting>
 <para>
 A <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> specifies all aspects of a font other
@@ -88,9 +85,9 @@ Memory management of <link linkend="cairo-font-face-t"><type>cairo_font_face_t</
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-face-reference" role="function"/>cairo_font_face_reference ()</title>
-<indexterm><primary>cairo_font_face_reference</primary></indexterm><programlisting><link linkend="cairo-font-face-t">cairo_font_face_t</link>*  cairo_font_face_reference           (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<refsect2 id="cairo-font-face-reference" role="function">
+<title>cairo_font_face_reference ()</title>
+<indexterm zone="cairo-font-face-reference"><primary>cairo_font_face_reference</primary></indexterm><programlisting><link linkend="cairo-font-face-t">cairo_font_face_t</link>*  cairo_font_face_reference           (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
 <para>
 Increases the reference count on <parameter>font_face</parameter> by one. This prevents
 <parameter>font_face</parameter> from being destroyed until a matching call to
@@ -109,9 +106,9 @@ function does nothing).
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the referenced <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-face-destroy" role="function"/>cairo_font_face_destroy ()</title>
-<indexterm><primary>cairo_font_face_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_face_destroy             (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<refsect2 id="cairo-font-face-destroy" role="function">
+<title>cairo_font_face_destroy ()</title>
+<indexterm zone="cairo-font-face-destroy"><primary>cairo_font_face_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_face_destroy             (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
 <para>
 Decreases the reference count on <parameter>font_face</parameter> by one. If the result
 is zero, then <parameter>font_face</parameter> and all associated resources are freed.
@@ -123,9 +120,9 @@ See <link linkend="cairo-font-face-reference"><function>cairo_font_face_referenc
 <listitem><simpara> a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-face-status" role="function"/>cairo_font_face_status ()</title>
-<indexterm><primary>cairo_font_face_status</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_font_face_status              (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<refsect2 id="cairo-font-face-status" role="function">
+<title>cairo_font_face_status ()</title>
+<indexterm zone="cairo-font-face-status"><primary>cairo_font_face_status</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_font_face_status              (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
 <para>
 Checks whether an error has previously occurred for this
 font face</para>
@@ -139,13 +136,14 @@ font face</para>
   <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-type-t" role="enum" condition="since:1.2"/>enum cairo_font_type_t</title>
-<indexterm role="1.2"><primary>cairo_font_type_t</primary></indexterm><programlisting>typedef enum _cairo_font_type {
+<refsect2 id="cairo-font-type-t" role="enum" condition="since:1.2">
+<title>enum cairo_font_type_t</title>
+<indexterm zone="cairo-font-type-t" role="1.2"><primary>cairo_font_type_t</primary></indexterm><programlisting>typedef enum _cairo_font_type {
     CAIRO_FONT_TYPE_TOY,
     CAIRO_FONT_TYPE_FT,
     CAIRO_FONT_TYPE_WIN32,
-    CAIRO_FONT_TYPE_QUARTZ
+    CAIRO_FONT_TYPE_QUARTZ,
+    CAIRO_FONT_TYPE_USER
 } cairo_font_type_t;
 </programlisting>
 <para>
@@ -156,7 +154,7 @@ backends" within cairo.
 <para>
 The type of a font face is determined by the function used to
 create it, which will generally be of the form
-cairo_<emphasis>type</emphasis>_font_face_create. The font face type can be queried
+cairo_<emphasis>type</emphasis><link linkend="font-face-create"><function>_font_face_create()</function></link>. The font face type can be queried
 with <link linkend="cairo-font-face-get-type"><function>cairo_font_face_get_type()</function></link>
 </para>
 <para>
@@ -173,7 +171,7 @@ The various <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type>
 fonts of any type, but some font backends also provide
 type-specific functions that must only be called with a scaled font
 of the appropriate type. These functions have names that begin with
-cairo_<emphasis>type</emphasis>_scaled_font such as <link linkend="cairo-ft-scaled-font-lock-face"><function>cairo_ft_scaled_font_lock_face()</function></link>.
+cairo_<emphasis>type</emphasis><link linkend="scaled-font"><function>_scaled_font()</function></link> such as <link linkend="cairo-ft-scaled-font-lock-face"><function>cairo_ft_scaled_font_lock_face()</function></link>.
 </para>
 <para>
 The behavior of calling a type-specific function with a scaled font
@@ -184,31 +182,36 @@ New entries may be added in future versions.</para>
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-FONT-TYPE-TOY:CAPS" role="constant"/><literal>CAIRO_FONT_TYPE_TOY</literal></term>
+<varlistentry id="CAIRO-FONT-TYPE-TOY:CAPS" role="constant">
+<term><literal>CAIRO_FONT_TYPE_TOY</literal></term>
 <listitem><simpara> The font was created using cairo's toy font api
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-FONT-TYPE-FT:CAPS" role="constant"/><literal>CAIRO_FONT_TYPE_FT</literal></term>
+<varlistentry id="CAIRO-FONT-TYPE-FT:CAPS" role="constant">
+<term><literal>CAIRO_FONT_TYPE_FT</literal></term>
 <listitem><simpara> The font is of type FreeType
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-FONT-TYPE-WIN32:CAPS" role="constant"/><literal>CAIRO_FONT_TYPE_WIN32</literal></term>
+<varlistentry id="CAIRO-FONT-TYPE-WIN32:CAPS" role="constant">
+<term><literal>CAIRO_FONT_TYPE_WIN32</literal></term>
 <listitem><simpara> The font is of type Win32
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-FONT-TYPE-QUARTZ:CAPS" role="constant"/><literal>CAIRO_FONT_TYPE_QUARTZ</literal></term>
+<varlistentry id="CAIRO-FONT-TYPE-QUARTZ:CAPS" role="constant">
+<term><literal>CAIRO_FONT_TYPE_QUARTZ</literal></term>
 <listitem><simpara> The font is of type Quartz (Since: 1.6)
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-FONT-TYPE-USER:CAPS" role="constant">
+<term><literal>CAIRO_FONT_TYPE_USER</literal></term>
+<listitem><simpara> The font was create using cairo's user font api (Since: 1.8)
 </simpara></listitem>
 </varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-face-get-type" role="function" condition="since:1.2"/>cairo_font_face_get_type ()</title>
-<indexterm role="1.2"><primary>cairo_font_face_get_type</primary></indexterm><programlisting><link linkend="cairo-font-type-t">cairo_font_type_t</link>   cairo_font_face_get_type            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<refsect2 id="cairo-font-face-get-type" role="function" condition="since:1.2">
+<title>cairo_font_face_get_type ()</title>
+<indexterm zone="cairo-font-face-get-type" role="1.2"><primary>cairo_font_face_get_type</primary></indexterm><programlisting><link linkend="cairo-font-type-t">cairo_font_type_t</link>   cairo_font_face_get_type            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
 <para>
 This function returns the type of the backend used to create
 a font face. See <link linkend="cairo-font-type-t"><type>cairo_font_type_t</type></link> for available types.</para>
@@ -223,9 +226,9 @@ a font face. See <link linkend="cairo-font-type-t"><type>cairo_font_type_t</type
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-face-get-reference-count" role="function" condition="since:1.4"/>cairo_font_face_get_reference_count ()</title>
-<indexterm role="1.4"><primary>cairo_font_face_get_reference_count</primary></indexterm><programlisting>unsigned <link linkend="int">int</link>        cairo_font_face_get_reference_count (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<refsect2 id="cairo-font-face-get-reference-count" role="function" condition="since:1.4">
+<title>cairo_font_face_get_reference_count ()</title>
+<indexterm zone="cairo-font-face-get-reference-count" role="1.4"><primary>cairo_font_face_get_reference_count</primary></indexterm><programlisting>unsigned <link linkend="int">int</link>        cairo_font_face_get_reference_count (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
 <para>
 Returns the current reference count of <parameter>font_face</parameter>.</para>
 <para>
@@ -240,9 +243,9 @@ object is a nil object, 0 will be returned.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-face-set-user-data" role="function"/>cairo_font_face_set_user_data ()</title>
-<indexterm><primary>cairo_font_face_set_user_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_font_face_set_user_data       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+<refsect2 id="cairo-font-face-set-user-data" role="function">
+<title>cairo_font_face_set_user_data ()</title>
+<indexterm zone="cairo-font-face-set-user-data"><primary>cairo_font_face_set_user_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_font_face_set_user_data       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
                                                          const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
                                                          <link linkend="void">void</link> *user_data,
                                                          <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);</programlisting>
@@ -271,9 +274,9 @@ same key.
 slot could not be allocated for the user data.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-face-get-user-data" role="function"/>cairo_font_face_get_user_data ()</title>
-<indexterm><primary>cairo_font_face_get_user_data</primary></indexterm><programlisting><link linkend="void">void</link>*               cairo_font_face_get_user_data       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+<refsect2 id="cairo-font-face-get-user-data" role="function">
+<title>cairo_font_face_get_user_data ()</title>
+<indexterm zone="cairo-font-face-get-user-data"><primary>cairo_font_face_get_user_data</primary></indexterm><programlisting><link linkend="void">void</link>*               cairo_font_face_get_user_data       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
                                                          const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);</programlisting>
 <para>
 Return user data previously attached to <parameter>font_face</parameter> using the specified
@@ -297,7 +300,7 @@ attached to
 
 
 
-<refsect1>
+<refsect1 id="cairo-font-face.see-also">
 <title>See Also</title>
 <para>
 <itemizedlist>
@@ -306,6 +309,4 @@ attached to
 </para>
 </refsect1>
 
-
-<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>

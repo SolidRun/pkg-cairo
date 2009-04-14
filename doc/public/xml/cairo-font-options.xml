@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-Font-Options">
+<refentry id="cairo-font-options">
 <refmeta>
-<refentrytitle role="top_of_page">cairo_font_options_t</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-font-options.top_of_page">cairo_font_options_t</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>CAIRO Library</refmiscinfo>
 </refmeta>
@@ -16,13 +16,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="cairo-font-options.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 typedef             <link linkend="cairo-font-options-t">cairo_font_options_t</link>;
 <link linkend="cairo-font-options-t">cairo_font_options_t</link>* <link linkend="cairo-font-options-create">cairo_font_options_create</link>         (void);
 <link linkend="cairo-font-options-t">cairo_font_options_t</link>* <link linkend="cairo-font-options-copy">cairo_font_options_copy</link>           (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *original);
@@ -62,7 +59,7 @@ enum                <link linkend="cairo-hint-metrics-t">cairo_hint_metrics_t</l
 
 
 
-<refsect1 role="desc">
+<refsect1 id="cairo-font-options.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The font options specify how fonts should be rendered.  Most of the time the
@@ -72,11 +69,11 @@ output on a particular display.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="cairo-font-options.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="cairo-font-options-t" role="typedef"/>cairo_font_options_t</title>
-<indexterm><primary>cairo_font_options_t</primary></indexterm><programlisting>typedef struct _cairo_font_options cairo_font_options_t;
+<refsect2 id="cairo-font-options-t" role="typedef">
+<title>cairo_font_options_t</title>
+<indexterm zone="cairo-font-options-t"><primary>cairo_font_options_t</primary></indexterm><programlisting>typedef struct _cairo_font_options cairo_font_options_t;
 </programlisting>
 <para>
 An opaque structure holding all options that are used when
@@ -100,9 +97,9 @@ for equality, merge, or compute a hash value of
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-create" role="function"/>cairo_font_options_create ()</title>
-<indexterm><primary>cairo_font_options_create</primary></indexterm><programlisting><link linkend="cairo-font-options-t">cairo_font_options_t</link>* cairo_font_options_create         (void);</programlisting>
+<refsect2 id="cairo-font-options-create" role="function">
+<title>cairo_font_options_create ()</title>
+<indexterm zone="cairo-font-options-create"><primary>cairo_font_options_create</primary></indexterm><programlisting><link linkend="cairo-font-options-t">cairo_font_options_t</link>* cairo_font_options_create         (void);</programlisting>
 <para>
 Allocates a new font options object with all options initialized
  to default values.</para>
@@ -116,9 +113,9 @@ Allocates a new font options object with all options initialized
   You can check for this with <link linkend="cairo-font-options-status"><function>cairo_font_options_status()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-copy" role="function"/>cairo_font_options_copy ()</title>
-<indexterm><primary>cairo_font_options_copy</primary></indexterm><programlisting><link linkend="cairo-font-options-t">cairo_font_options_t</link>* cairo_font_options_copy           (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *original);</programlisting>
+<refsect2 id="cairo-font-options-copy" role="function">
+<title>cairo_font_options_copy ()</title>
+<indexterm zone="cairo-font-options-copy"><primary>cairo_font_options_copy</primary></indexterm><programlisting><link linkend="cairo-font-options-t">cairo_font_options_t</link>* cairo_font_options_copy           (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *original);</programlisting>
 <para>
 Allocates a new font options object copying the option values from
  <parameter>original</parameter>.</para>
@@ -135,9 +132,9 @@ Allocates a new font options object copying the option values from
   You can check for this with <link linkend="cairo-font-options-status"><function>cairo_font_options_status()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-destroy" role="function"/>cairo_font_options_destroy ()</title>
-<indexterm><primary>cairo_font_options_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_destroy          (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<refsect2 id="cairo-font-options-destroy" role="function">
+<title>cairo_font_options_destroy ()</title>
+<indexterm zone="cairo-font-options-destroy"><primary>cairo_font_options_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_destroy          (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
 <para>
 Destroys a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link> object created with with
 <link linkend="cairo-font-options-create"><function>cairo_font_options_create()</function></link> or <link linkend="cairo-font-options-copy"><function>cairo_font_options_copy()</function></link>.</para>
@@ -148,9 +145,9 @@ Destroys a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type
 <listitem><simpara> a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-status" role="function"/>cairo_font_options_status ()</title>
-<indexterm><primary>cairo_font_options_status</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_font_options_status           (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<refsect2 id="cairo-font-options-status" role="function">
+<title>cairo_font_options_status ()</title>
+<indexterm zone="cairo-font-options-status"><primary>cairo_font_options_status</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_font_options_status           (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
 <para>
 Checks whether an error has previously occurred for this
 font options object</para>
@@ -163,9 +160,9 @@ font options object</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> or <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-merge" role="function"/>cairo_font_options_merge ()</title>
-<indexterm><primary>cairo_font_options_merge</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_merge            (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
+<refsect2 id="cairo-font-options-merge" role="function">
+<title>cairo_font_options_merge ()</title>
+<indexterm zone="cairo-font-options-merge"><primary>cairo_font_options_merge</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_merge            (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                                          const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *other);</programlisting>
 <para>
 Merges non-default options from <parameter>other</parameter> into <parameter>options</parameter>, replacing
@@ -182,9 +179,9 @@ of <link linkend="CAIRO-OPERATION-OVER:CAPS"><literal>CAIRO_OPERATION_OVER</lite
 <listitem><simpara> another <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-hash" role="function"/>cairo_font_options_hash ()</title>
-<indexterm><primary>cairo_font_options_hash</primary></indexterm><programlisting>unsigned <link linkend="long">long</link>       cairo_font_options_hash             (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<refsect2 id="cairo-font-options-hash" role="function">
+<title>cairo_font_options_hash ()</title>
+<indexterm zone="cairo-font-options-hash"><primary>cairo_font_options_hash</primary></indexterm><programlisting>unsigned <link linkend="long">long</link>       cairo_font_options_hash             (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
 <para>
 Compute a hash for the font options object; this value will
 be useful when storing an object containing a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link>
@@ -200,9 +197,9 @@ in a hash table.</para>
   32-bit hash value is needed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-equal" role="function"/>cairo_font_options_equal ()</title>
-<indexterm><primary>cairo_font_options_equal</primary></indexterm><programlisting><link linkend="cairo-bool-t">cairo_bool_t</link>        cairo_font_options_equal            (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
+<refsect2 id="cairo-font-options-equal" role="function">
+<title>cairo_font_options_equal ()</title>
+<indexterm zone="cairo-font-options-equal"><primary>cairo_font_options_equal</primary></indexterm><programlisting><link linkend="cairo-bool-t">cairo_bool_t</link>        cairo_font_options_equal            (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                                          const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *other);</programlisting>
 <para>
 Compares two font options objects for equality.</para>
@@ -220,9 +217,9 @@ Note that this function will return <link linkend="FALSE:CAPS"><literal>FALSE</l
 error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-set-antialias" role="function"/>cairo_font_options_set_antialias ()</title>
-<indexterm><primary>cairo_font_options_set_antialias</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_antialias    (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
+<refsect2 id="cairo-font-options-set-antialias" role="function">
+<title>cairo_font_options_set_antialias ()</title>
+<indexterm zone="cairo-font-options-set-antialias"><primary>cairo_font_options_set_antialias</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_antialias    (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                                          <link linkend="cairo-antialias-t">cairo_antialias_t</link> antialias);</programlisting>
 <para>
 Sets the antialiasing mode for the font options object. This
@@ -237,9 +234,9 @@ specifies the type of antialiasing to do when rendering text.</para>
 <listitem><simpara> the new antialiasing mode
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-get-antialias" role="function"/>cairo_font_options_get_antialias ()</title>
-<indexterm><primary>cairo_font_options_get_antialias</primary></indexterm><programlisting><link linkend="cairo-antialias-t">cairo_antialias_t</link>   cairo_font_options_get_antialias    (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<refsect2 id="cairo-font-options-get-antialias" role="function">
+<title>cairo_font_options_get_antialias ()</title>
+<indexterm zone="cairo-font-options-get-antialias"><primary>cairo_font_options_get_antialias</primary></indexterm><programlisting><link linkend="cairo-antialias-t">cairo_antialias_t</link>   cairo_font_options_get_antialias    (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
 <para>
 Gets the antialiasing mode for the font options object.</para>
 <para>
@@ -251,9 +248,9 @@ Gets the antialiasing mode for the font options object.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the antialiasing mode
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-subpixel-order-t" role="enum"/>enum cairo_subpixel_order_t</title>
-<indexterm><primary>cairo_subpixel_order_t</primary></indexterm><programlisting>typedef enum _cairo_subpixel_order {
+<refsect2 id="cairo-subpixel-order-t" role="enum">
+<title>enum cairo_subpixel_order_t</title>
+<indexterm zone="cairo-subpixel-order-t"><primary>cairo_subpixel_order_t</primary></indexterm><programlisting>typedef enum _cairo_subpixel_order {
     CAIRO_SUBPIXEL_ORDER_DEFAULT,
     CAIRO_SUBPIXEL_ORDER_RGB,
     CAIRO_SUBPIXEL_ORDER_BGR,
@@ -268,40 +265,40 @@ antialiasing mode of <link linkend="CAIRO-ANTIALIAS-SUBPIXEL:CAPS"><literal>CAIR
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-SUBPIXEL-ORDER-DEFAULT:CAPS" role="constant"/><literal>CAIRO_SUBPIXEL_ORDER_DEFAULT</literal></term>
+<varlistentry id="CAIRO-SUBPIXEL-ORDER-DEFAULT:CAPS" role="constant">
+<term><literal>CAIRO_SUBPIXEL_ORDER_DEFAULT</literal></term>
 <listitem><simpara> Use the default subpixel order for
   for the target device
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-SUBPIXEL-ORDER-RGB:CAPS" role="constant"/><literal>CAIRO_SUBPIXEL_ORDER_RGB</literal></term>
+<varlistentry id="CAIRO-SUBPIXEL-ORDER-RGB:CAPS" role="constant">
+<term><literal>CAIRO_SUBPIXEL_ORDER_RGB</literal></term>
 <listitem><simpara> Subpixel elements are arranged horizontally
   with red at the left
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-SUBPIXEL-ORDER-BGR:CAPS" role="constant"/><literal>CAIRO_SUBPIXEL_ORDER_BGR</literal></term>
+<varlistentry id="CAIRO-SUBPIXEL-ORDER-BGR:CAPS" role="constant">
+<term><literal>CAIRO_SUBPIXEL_ORDER_BGR</literal></term>
 <listitem><simpara>  Subpixel elements are arranged horizontally
   with blue at the left
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-SUBPIXEL-ORDER-VRGB:CAPS" role="constant"/><literal>CAIRO_SUBPIXEL_ORDER_VRGB</literal></term>
+<varlistentry id="CAIRO-SUBPIXEL-ORDER-VRGB:CAPS" role="constant">
+<term><literal>CAIRO_SUBPIXEL_ORDER_VRGB</literal></term>
 <listitem><simpara> Subpixel elements are arranged vertically
   with red at the top
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-SUBPIXEL-ORDER-VBGR:CAPS" role="constant"/><literal>CAIRO_SUBPIXEL_ORDER_VBGR</literal></term>
+<varlistentry id="CAIRO-SUBPIXEL-ORDER-VBGR:CAPS" role="constant">
+<term><literal>CAIRO_SUBPIXEL_ORDER_VBGR</literal></term>
 <listitem><simpara> Subpixel elements are arranged vertically
   with blue at the top
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-set-subpixel-order" role="function"/>cairo_font_options_set_subpixel_order ()</title>
-<indexterm><primary>cairo_font_options_set_subpixel_order</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_subpixel_order
+<refsect2 id="cairo-font-options-set-subpixel-order" role="function">
+<title>cairo_font_options_set_subpixel_order ()</title>
+<indexterm zone="cairo-font-options-set-subpixel-order"><primary>cairo_font_options_set_subpixel_order</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_subpixel_order
                                                         (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                                          <link linkend="cairo-subpixel-order-t">cairo_subpixel_order_t</link> subpixel_order);</programlisting>
 <para>
@@ -320,9 +317,9 @@ the display device when rendering with an antialiasing mode of
 <listitem><simpara> the new subpixel order
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-get-subpixel-order" role="function"/>cairo_font_options_get_subpixel_order ()</title>
-<indexterm><primary>cairo_font_options_get_subpixel_order</primary></indexterm><programlisting><link linkend="cairo-subpixel-order-t">cairo_subpixel_order_t</link> cairo_font_options_get_subpixel_order
+<refsect2 id="cairo-font-options-get-subpixel-order" role="function">
+<title>cairo_font_options_get_subpixel_order ()</title>
+<indexterm zone="cairo-font-options-get-subpixel-order"><primary>cairo_font_options_get_subpixel_order</primary></indexterm><programlisting><link linkend="cairo-subpixel-order-t">cairo_subpixel_order_t</link> cairo_font_options_get_subpixel_order
                                                         (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
 <para>
 Gets the subpixel order for the font options object.
@@ -336,9 +333,9 @@ See the documentation for <link linkend="cairo-subpixel-order-t"><type>cairo_sub
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the subpixel order for the font options object
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-hint-style-t" role="enum"/>enum cairo_hint_style_t</title>
-<indexterm><primary>cairo_hint_style_t</primary></indexterm><programlisting>typedef enum _cairo_hint_style {
+<refsect2 id="cairo-hint-style-t" role="enum">
+<title>enum cairo_hint_style_t</title>
+<indexterm zone="cairo-hint-style-t"><primary>cairo_hint_style_t</primary></indexterm><programlisting>typedef enum _cairo_hint_style {
     CAIRO_HINT_STYLE_DEFAULT,
     CAIRO_HINT_STYLE_NONE,
     CAIRO_HINT_STYLE_SLIGHT,
@@ -359,40 +356,40 @@ New entries may be added in future versions.</para>
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-HINT-STYLE-DEFAULT:CAPS" role="constant"/><literal>CAIRO_HINT_STYLE_DEFAULT</literal></term>
+<varlistentry id="CAIRO-HINT-STYLE-DEFAULT:CAPS" role="constant">
+<term><literal>CAIRO_HINT_STYLE_DEFAULT</literal></term>
 <listitem><simpara> Use the default hint style for
   font backend and target device
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-HINT-STYLE-NONE:CAPS" role="constant"/><literal>CAIRO_HINT_STYLE_NONE</literal></term>
+<varlistentry id="CAIRO-HINT-STYLE-NONE:CAPS" role="constant">
+<term><literal>CAIRO_HINT_STYLE_NONE</literal></term>
 <listitem><simpara> Do not hint outlines
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-HINT-STYLE-SLIGHT:CAPS" role="constant"/><literal>CAIRO_HINT_STYLE_SLIGHT</literal></term>
+<varlistentry id="CAIRO-HINT-STYLE-SLIGHT:CAPS" role="constant">
+<term><literal>CAIRO_HINT_STYLE_SLIGHT</literal></term>
 <listitem><simpara> Hint outlines slightly to improve
   contrast while retaining good fidelity to the original
   shapes.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-HINT-STYLE-MEDIUM:CAPS" role="constant"/><literal>CAIRO_HINT_STYLE_MEDIUM</literal></term>
+<varlistentry id="CAIRO-HINT-STYLE-MEDIUM:CAPS" role="constant">
+<term><literal>CAIRO_HINT_STYLE_MEDIUM</literal></term>
 <listitem><simpara> Hint outlines with medium strength
   giving a compromise between fidelity to the original shapes
   and contrast
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-HINT-STYLE-FULL:CAPS" role="constant"/><literal>CAIRO_HINT_STYLE_FULL</literal></term>
+<varlistentry id="CAIRO-HINT-STYLE-FULL:CAPS" role="constant">
+<term><literal>CAIRO_HINT_STYLE_FULL</literal></term>
 <listitem><simpara> Hint outlines to maximize contrast
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-set-hint-style" role="function"/>cairo_font_options_set_hint_style ()</title>
-<indexterm><primary>cairo_font_options_set_hint_style</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_hint_style   (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
+<refsect2 id="cairo-font-options-set-hint-style" role="function">
+<title>cairo_font_options_set_hint_style ()</title>
+<indexterm zone="cairo-font-options-set-hint-style"><primary>cairo_font_options_set_hint_style</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_hint_style   (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                                          <link linkend="cairo-hint-style-t">cairo_hint_style_t</link> hint_style);</programlisting>
 <para>
 Sets the hint style for font outlines for the font options object.
@@ -409,9 +406,9 @@ See the documentation for <link linkend="cairo-hint-style-t"><type>cairo_hint_st
 <listitem><simpara> the new hint style
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-get-hint-style" role="function"/>cairo_font_options_get_hint_style ()</title>
-<indexterm><primary>cairo_font_options_get_hint_style</primary></indexterm><programlisting><link linkend="cairo-hint-style-t">cairo_hint_style_t</link>  cairo_font_options_get_hint_style   (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<refsect2 id="cairo-font-options-get-hint-style" role="function">
+<title>cairo_font_options_get_hint_style ()</title>
+<indexterm zone="cairo-font-options-get-hint-style"><primary>cairo_font_options_get_hint_style</primary></indexterm><programlisting><link linkend="cairo-hint-style-t">cairo_hint_style_t</link>  cairo_font_options_get_hint_style   (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
 <para>
 Gets the hint style for font outlines for the font options object.
 See the documentation for <link linkend="cairo-hint-style-t"><type>cairo_hint_style_t</type></link> for full details.</para>
@@ -424,9 +421,9 @@ See the documentation for <link linkend="cairo-hint-style-t"><type>cairo_hint_st
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the hint style for the font options object
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-hint-metrics-t" role="enum"/>enum cairo_hint_metrics_t</title>
-<indexterm><primary>cairo_hint_metrics_t</primary></indexterm><programlisting>typedef enum _cairo_hint_metrics {
+<refsect2 id="cairo-hint-metrics-t" role="enum">
+<title>enum cairo_hint_metrics_t</title>
+<indexterm zone="cairo-hint-metrics-t"><primary>cairo_hint_metrics_t</primary></indexterm><programlisting>typedef enum _cairo_hint_metrics {
     CAIRO_HINT_METRICS_DEFAULT,
     CAIRO_HINT_METRICS_OFF,
     CAIRO_HINT_METRICS_ON
@@ -441,26 +438,26 @@ will be laid out differently at different zoom factors.</para>
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-HINT-METRICS-DEFAULT:CAPS" role="constant"/><literal>CAIRO_HINT_METRICS_DEFAULT</literal></term>
+<varlistentry id="CAIRO-HINT-METRICS-DEFAULT:CAPS" role="constant">
+<term><literal>CAIRO_HINT_METRICS_DEFAULT</literal></term>
 <listitem><simpara> Hint metrics in the default
  manner for the font backend and target device
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-HINT-METRICS-OFF:CAPS" role="constant"/><literal>CAIRO_HINT_METRICS_OFF</literal></term>
+<varlistentry id="CAIRO-HINT-METRICS-OFF:CAPS" role="constant">
+<term><literal>CAIRO_HINT_METRICS_OFF</literal></term>
 <listitem><simpara> Do not hint font metrics
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-HINT-METRICS-ON:CAPS" role="constant"/><literal>CAIRO_HINT_METRICS_ON</literal></term>
+<varlistentry id="CAIRO-HINT-METRICS-ON:CAPS" role="constant">
+<term><literal>CAIRO_HINT_METRICS_ON</literal></term>
 <listitem><simpara> Hint font metrics
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-set-hint-metrics" role="function"/>cairo_font_options_set_hint_metrics ()</title>
-<indexterm><primary>cairo_font_options_set_hint_metrics</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_hint_metrics (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
+<refsect2 id="cairo-font-options-set-hint-metrics" role="function">
+<title>cairo_font_options_set_hint_metrics ()</title>
+<indexterm zone="cairo-font-options-set-hint-metrics"><primary>cairo_font_options_set_hint_metrics</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_font_options_set_hint_metrics (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                                          <link linkend="cairo-hint-metrics-t">cairo_hint_metrics_t</link> hint_metrics);</programlisting>
 <para>
 Sets the metrics hinting mode for the font options object. This
@@ -477,9 +474,9 @@ See the documentation for <link linkend="cairo-hint-metrics-t"><type>cairo_hint_
 <listitem><simpara> the new metrics hinting mode
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-get-hint-metrics" role="function"/>cairo_font_options_get_hint_metrics ()</title>
-<indexterm><primary>cairo_font_options_get_hint_metrics</primary></indexterm><programlisting><link linkend="cairo-hint-metrics-t">cairo_hint_metrics_t</link> cairo_font_options_get_hint_metrics
+<refsect2 id="cairo-font-options-get-hint-metrics" role="function">
+<title>cairo_font_options_get_hint_metrics ()</title>
+<indexterm zone="cairo-font-options-get-hint-metrics"><primary>cairo_font_options_get_hint_metrics</primary></indexterm><programlisting><link linkend="cairo-hint-metrics-t">cairo_hint_metrics_t</link> cairo_font_options_get_hint_metrics
                                                         (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
 <para>
 Gets the metrics hinting mode for the font options object.
@@ -498,7 +495,7 @@ See the documentation for <link linkend="cairo-hint-metrics-t"><type>cairo_hint_
 
 
 
-<refsect1>
+<refsect1 id="cairo-font-options.see-also">
 <title>See Also</title>
 <para>
 <itemizedlist>
@@ -507,6 +504,4 @@ See the documentation for <link linkend="cairo-hint-metrics-t"><type>cairo_hint_
 </para>
 </refsect1>
 
-
-<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>

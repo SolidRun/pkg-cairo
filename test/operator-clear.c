@@ -65,17 +65,15 @@ draw_mask (cairo_t *cr, int x, int y)
 						 CAIRO_CONTENT_ALPHA,
 						 width, height);
     cr2 = cairo_create (mask_surface);
+    cairo_surface_destroy (mask_surface);
 
     cairo_set_source_rgb (cr2, 1, 1, 1); /* white */
 
     cairo_arc (cr2, 0.5 * width, 0.5 * height, 0.45 * height, 0, 2 * M_PI);
     cairo_fill (cr2);
 
+    cairo_mask_surface (cr, cairo_get_target (cr2), x, y);
     cairo_destroy (cr2);
-
-    cairo_mask_surface (cr, mask_surface, x, y);
-
-    cairo_surface_destroy (mask_surface);
 }
 
 static void
@@ -128,12 +126,12 @@ draw_rects (cairo_t *cr, int x, int y)
     cairo_fill (cr);
 }
 
-static void (*pattern_funcs[])(cairo_t *cr, int x, int y) = {
+static void (* const pattern_funcs[])(cairo_t *cr, int x, int y) = {
     set_solid_pattern,
     set_gradient_pattern,
 };
 
-static void (*draw_funcs[])(cairo_t *cr, int x, int y) = {
+static void (* const draw_funcs[])(cairo_t *cr, int x, int y) = {
     draw_mask,
     draw_glyphs,
     draw_polygon,
@@ -146,7 +144,7 @@ static void (*draw_funcs[])(cairo_t *cr, int x, int y) = {
 
 static cairo_test_draw_function_t draw;
 
-cairo_test_t test = {
+static const cairo_test_t test = {
     "operator-clear",
     "Test of CAIRO_OPERATOR_CLEAR",
     IMAGE_WIDTH, IMAGE_HEIGHT,
@@ -156,6 +154,7 @@ cairo_test_t test = {
 static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
+    const cairo_test_context_t *ctx = cairo_test_get_context (cr);
     size_t i, j, x, y;
     cairo_pattern_t *pattern;
 
@@ -187,14 +186,14 @@ draw (cairo_t *cr, int width, int height)
 	    pattern_funcs[i] (cr, x, y);
 	    draw_funcs[j] (cr, x, y);
 	    if (cairo_status (cr))
-		cairo_test_log ("%d %d HERE!\n", (int)i, (int)j);
+		cairo_test_log (ctx, "%d %d HERE!\n", (int)i, (int)j);
 
 	    cairo_restore (cr);
 	}
     }
 
     if (cairo_status (cr) != CAIRO_STATUS_SUCCESS)
-	cairo_test_log ("%d %d .HERE!\n", (int)i, (int)j);
+	cairo_test_log (ctx, "%d %d .HERE!\n", (int)i, (int)j);
 
     return CAIRO_TEST_SUCCESS;
 }

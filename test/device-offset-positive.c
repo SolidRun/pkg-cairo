@@ -31,7 +31,7 @@
 
 static cairo_test_draw_function_t draw;
 
-cairo_test_t test = {
+static const cairo_test_t test = {
     "device-offset-positive",
     "Simple test using a surface with a positive device-offset as a source.",
     SIZE, SIZE,
@@ -64,22 +64,20 @@ draw (cairo_t *cr, int width, int height)
 					    cairo_surface_get_content (target),
 					    SIZE / 2, SIZE / 2);
     cr2 = cairo_create (surface);
+    cairo_surface_destroy (surface);
 
     cairo_set_source_rgb (cr2, 1, 0, 0); /* red */
     draw_square (cr2);
 
-    cairo_destroy (cr2);
-
-    cairo_surface_set_device_offset (surface, + SIZE / 2, + SIZE / 2);
-
     /* Finally, copy the offset surface to the original destination.
-    * The final result should be a blue square with the upper-left
-    * quarter red. */
+     * The final result should be a blue square with the upper-left
+     * quarter red. */
+    surface = cairo_surface_reference (cairo_get_target (cr2));
+    cairo_destroy (cr2);
+    cairo_surface_set_device_offset (surface, + SIZE / 2, + SIZE / 2);
     cairo_set_source_surface (cr, surface, SIZE / 2, SIZE / 2);
 
     cairo_paint (cr);
-
-    cairo_surface_destroy (surface);
 
     return CAIRO_TEST_SUCCESS;
 }

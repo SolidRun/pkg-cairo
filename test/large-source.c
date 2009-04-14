@@ -30,14 +30,11 @@
  *	crafted gif file will crash firefox
  *	[XError: 'BadAlloc (insufficient resources for operation)']
  *	https://bugzilla.mozilla.org/show_bug.cgi?id=424333
- *
- * The output is currently marked as XFAIL as pixman is still limited
- * to 16.16.
  */
 
 static cairo_test_draw_function_t draw;
 
-cairo_test_t test = {
+static const cairo_test_t test = {
     "large-source",
     "Exercises mozilla bug 424333 - handling of massive images",
     20, 20,

@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-XLib/Xrender-Backend">
+<refentry id="cairo-xlib-xrender-surface">
 <refmeta>
-<refentrytitle role="top_of_page">XLib/XRender Backend</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-xlib-xrender-surface.top_of_page">XLib/XRender Backend</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>CAIRO Library</refmiscinfo>
 </refmeta>
@@ -16,13 +16,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="cairo-xlib-xrender-surface.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 #define             <link linkend="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS">CAIRO_HAS_XLIB_XRENDER_SURFACE</link>
 <link linkend="cairo-surface-t">cairo_surface_t</link>*    <link linkend="cairo-xlib-surface-create-with-xrender-format">cairo_xlib_surface_create_with_xrender_format</link>
                                                         (<link linkend="Display">Display</link> *dpy,
@@ -44,7 +41,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="cairo-xlib-xrender-surface.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The XLib surface is used to render cairo graphics to X Window System
@@ -56,19 +53,19 @@ if it is available.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="cairo-xlib-xrender-surface.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS" role="macro"/>CAIRO_HAS_XLIB_XRENDER_SURFACE</title>
-<indexterm><primary>CAIRO_HAS_XLIB_XRENDER_SURFACE</primary></indexterm><programlisting>#define CAIRO_HAS_XLIB_XRENDER_SURFACE 1
+<refsect2 id="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS" role="macro">
+<title>CAIRO_HAS_XLIB_XRENDER_SURFACE</title>
+<indexterm zone="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS"><primary>CAIRO_HAS_XLIB_XRENDER_SURFACE</primary></indexterm><programlisting>#define CAIRO_HAS_XLIB_XRENDER_SURFACE 1
 </programlisting>
 <para>
 Defined if the XLib/XRender surface functions are available.
 This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-xlib-surface-create-with-xrender-format" role="function"/>cairo_xlib_surface_create_with_xrender_format ()</title>
-<indexterm><primary>cairo_xlib_surface_create_with_xrender_format</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>*    cairo_xlib_surface_create_with_xrender_format
+<refsect2 id="cairo-xlib-surface-create-with-xrender-format" role="function">
+<title>cairo_xlib_surface_create_with_xrender_format ()</title>
+<indexterm zone="cairo-xlib-surface-create-with-xrender-format"><primary>cairo_xlib_surface_create_with_xrender_format</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>*    cairo_xlib_surface_create_with_xrender_format
                                                         (<link linkend="Display">Display</link> *dpy,
                                                          <link linkend="Drawable">Drawable</link> drawable,
                                                          <link linkend="Screen">Screen</link> *screen,
@@ -82,7 +79,7 @@ by the provided picture format.
 </para>
 <para>
 Note: If <parameter>drawable</parameter> is a Window, then the function
-cairo_xlib_surface_set_size must be called whenever the size of the
+<link linkend="cairo-xlib-surface-set-size"><function>cairo_xlib_surface_set_size()</function></link> must be called whenever the size of the
 window changes.</para>
 <para>
 
@@ -109,9 +106,9 @@ window changes.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the newly created surface
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-xlib-surface-get-xrender-format" role="function" condition="since:1.6"/>cairo_xlib_surface_get_xrender_format ()</title>
-<indexterm role="1.6"><primary>cairo_xlib_surface_get_xrender_format</primary></indexterm><programlisting><link linkend="XRenderPictFormat">XRenderPictFormat</link>*  cairo_xlib_surface_get_xrender_format
+<refsect2 id="cairo-xlib-surface-get-xrender-format" role="function" condition="since:1.6">
+<title>cairo_xlib_surface_get_xrender_format ()</title>
+<indexterm zone="cairo-xlib-surface-get-xrender-format" role="1.6"><primary>cairo_xlib_surface_get_xrender_format</primary></indexterm><programlisting><link linkend="XRenderPictFormat">XRenderPictFormat</link>*  cairo_xlib_surface_get_xrender_format
                                                         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);</programlisting>
 <para>
 Gets the X Render picture format that <parameter>surface</parameter> uses for rendering with the
@@ -136,7 +133,7 @@ or if the X Render extension is not available.
 
 
 
-<refsect1>
+<refsect1 id="cairo-xlib-xrender-surface.see-also">
 <title>See Also</title>
 <para>
 <itemizedlist>
@@ -145,6 +142,4 @@ or if the X Render extension is not available.
 </para>
 </refsect1>
 
-
-<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>
