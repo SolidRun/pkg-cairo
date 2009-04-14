@@ -1,5 +1,5 @@
 /*
- * $Id: fbpict.c,v 1.5.2.2 2005/09/19 02:55:54 vektor Exp $
+ * $Id: fbpict.c,v 1.6 2005-09-12 12:55:11 otaylor Exp $
  *
  * Copyright © 2000 SuSE, Inc.
  *
@@ -1151,7 +1151,7 @@ fbCompositeTrans_0888xnx0888(pixman_operator_t      op,
 				setupPackedReader(ws,wt,isrc,wsrc,workingSource);
 
 				/* get to word aligned */
-				switch(!(long)dst&3)
+				switch(~(long)dst&3)
 				{
 					case 1:
 						readPackedSource(rs);
@@ -1227,7 +1227,7 @@ fbCompositeTrans_0888xnx0888(pixman_operator_t      op,
 				srcLine += srcStride;
 				w = width*3;
 				/* get to word aligned */
-				switch(!(long)src&3)
+				switch(~(long)src&3)
 				{
 					case 1:
 						rd=alphamaskCombine24(*src++, *dst)>>8;

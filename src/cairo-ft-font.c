@@ -65,6 +65,7 @@
  */
 #define PRIVATE_FLAG_HINT_METRICS (0x01 << 24)
 #define PRIVATE_FLAG_EMBOLDEN     (0x02 << 24)
+#define PRIVATE_FLAG_BGR          (0x04 << 24)
 #define PRIVATE_FLAGS_MASK        (0xff << 24)
 
  /* This is the max number of FT_face objects we keep open at once
@@ -719,12 +720,7 @@ _get_bitmap_surface (cairo_image_glyph_cache_entry_t *val,
     width = bitmap->width;
     height = bitmap->rows;
     
-    if (width * height == 0) {
-	if (own_buffer && bitmap->buffer)
-	    free (bitmap->buffer);
-	
-	val->image = NULL;
-    } else {
+    {
 	switch (bitmap->pixel_mode) {
 	case FT_PIXEL_MODE_MONO:
 	    stride = (((width + 31) & ~31) >> 3);
@@ -973,11 +969,20 @@ _render_glyph_outline (FT_Face                          face,
 	    /* XXX not a complete set of flags. This code
 	     * will go away when cworth rewrites the glyph
 	     * cache code */
-	    if (FT_LOAD_TARGET_MODE (val->key.flags) == FT_RENDER_MODE_LCD)
-		rgba = FC_RGBA_RGB;
-	    else if (FT_LOAD_TARGET_MODE (val->key.flags) == FT_RENDER_MODE_LCD_V)
-		rgba = FC_RGBA_VBGR;
-	
+	    if (FT_LOAD_TARGET_MODE (val->key.flags) == FT_RENDER_MODE_LCD) {
+		    if (val->key.flags & PRIVATE_FLAG_BGR) {
+		        rgba = FC_RGBA_BGR;
+		    } else {
+			rgba = FC_RGBA_RGB;
+		    }
+	    }
+	    else if (FT_LOAD_TARGET_MODE (val->key.flags) == FT_RENDER_MODE_LCD_V) {
+		       if (val->key.flags & PRIVATE_FLAG_BGR) {
+			rgba = FC_RGBA_VBGR;
+		    } else {
+			rgba = FC_RGBA_VRGB;
+		    }
+	    }
 	    switch (rgba) {
 	    case FC_RGBA_RGB:
 	    case FC_RGBA_BGR:
@@ -1070,7 +1075,9 @@ _render_glyph_bitmap (FT_Face                          face,
     if (error)
 	return CAIRO_STATUS_NO_MEMORY;
 
-    _get_bitmap_surface (val, &glyphslot->bitmap, FALSE, FC_RGBA_NONE);
+    status = _get_bitmap_surface (val, &glyphslot->bitmap, FALSE, FC_RGBA_NONE);
+    if (status)
+	return status;
 
     val->size.x = glyphslot->bitmap_left;
     val->size.y = - glyphslot->bitmap_top;
@@ -1333,8 +1340,7 @@ _get_pattern_load_flags (FcPattern *pattern)
 #ifdef FC_HINT_STYLE    
     int hintstyle;
 #endif    
-    int load_flags = 0;
-    int target_flags = 0;
+    int load_flags = FT_LOAD_DEFAULT;
 
     /* disable antialiasing if requested */
     if (FcPatternGetBool (pattern,
@@ -1359,46 +1365,46 @@ _get_pattern_load_flags (FcPattern *pattern)
 	load_flags |= FT_LOAD_NO_HINTING;
     
     if (antialias) {
-	switch (hintstyle) {
-	case FC_HINT_SLIGHT:
-	case FC_HINT_MEDIUM:
-	    target_flags = FT_LOAD_TARGET_LIGHT;
-	    break;
-	default:
-	    target_flags = FT_LOAD_TARGET_NORMAL;
-	    break;
-	}
+    	if (FcPatternGetInteger (pattern,
+			     FC_RGBA, 0, &rgba) != FcResultMatch)
+		rgba = FC_RGBA_UNKNOWN;
+
+	switch (rgba) {
+	    case FC_RGBA_UNKNOWN:
+	    case FC_RGBA_NONE:
+		switch (hintstyle) {
+			case FC_HINT_NONE:
+				break;
+			case FC_HINT_SLIGHT:
+			case FC_HINT_MEDIUM:
+				load_flags |= FT_LOAD_TARGET_LIGHT;
+		    		break;
+			default:
+				load_flags |= FT_LOAD_TARGET_NORMAL;
+			break;
+		}
+		break;
+	    case FC_RGBA_BGR:
+	    	load_flags |= PRIVATE_FLAG_BGR;
+	    case FC_RGBA_RGB:
+			load_flags |= FT_LOAD_TARGET_LCD;
+			break;
+	    case FC_RGBA_VBGR:
+	    	load_flags |= PRIVATE_FLAG_BGR;
+	    case FC_RGBA_VRGB:
+			load_flags |= FT_LOAD_TARGET_LCD_V;
+			break;
+	    }
     } else {
 #ifdef FT_LOAD_TARGET_MONO
-	target_flags = FT_LOAD_TARGET_MONO;
+	load_flags |= FT_LOAD_TARGET_MONO;
 #endif	
     }
 #else /* !FC_HINT_STYLE */
     if (!hinting)
-	target_flags = FT_LOAD_NO_HINTING;
+	load_flags |= FT_LOAD_NO_HINTING;
 #endif /* FC_FHINT_STYLE */
 
-    if (FcPatternGetInteger (pattern,
-			     FC_RGBA, 0, &rgba) != FcResultMatch)
-	rgba = FC_RGBA_UNKNOWN;
-
-    switch (rgba) {
-    case FC_RGBA_UNKNOWN:
-    case FC_RGBA_NONE:
-    default:
-	break;
-    case FC_RGBA_RGB:
-    case FC_RGBA_BGR:
-	target_flags = FT_LOAD_TARGET_LCD;
-	break;
-    case FC_RGBA_VRGB:
-    case FC_RGBA_VBGR:
-	target_flags = FT_LOAD_TARGET_LCD_V;
-	break;
-    }
-
-    load_flags |= target_flags;
-    
     /* force autohinting if requested */
     if (FcPatternGetBool (pattern,
 			  FC_AUTOHINT, 0, &autohint) != FcResultMatch)
@@ -1433,7 +1439,7 @@ _get_pattern_load_flags (FcPattern *pattern)
 static int
 _get_options_load_flags (const cairo_font_options_t *options)
 {
-    int load_flags = 0;
+    int load_flags = FT_LOAD_DEFAULT;
 
     /* disable antialiasing if requested */
     switch (options->antialias) {
@@ -1444,37 +1450,41 @@ _get_options_load_flags (const cairo_font_options_t *options)
 	load_flags |= FT_LOAD_MONOCHROME;
 	break;
     case CAIRO_ANTIALIAS_SUBPIXEL:
+	load_flags |= FT_LOAD_NO_BITMAP;
 	switch (options->subpixel_order) {
+	case CAIRO_SUBPIXEL_ORDER_BGR:
+	    load_flags |= PRIVATE_FLAG_BGR;
 	case CAIRO_SUBPIXEL_ORDER_DEFAULT:
 	case CAIRO_SUBPIXEL_ORDER_RGB:
-	case CAIRO_SUBPIXEL_ORDER_BGR:
 	    load_flags |= FT_LOAD_TARGET_LCD;
 	    break;
-	case CAIRO_SUBPIXEL_ORDER_VRGB:
 	case CAIRO_SUBPIXEL_ORDER_VBGR:
+	    load_flags |= PRIVATE_FLAG_BGR;
+	case CAIRO_SUBPIXEL_ORDER_VRGB:
 	    load_flags |= FT_LOAD_TARGET_LCD_V;
 	    break;
 	}
+	break;
+
 	/* fall through ... */
     case CAIRO_ANTIALIAS_DEFAULT:
     case CAIRO_ANTIALIAS_GRAY:
 	load_flags |= FT_LOAD_NO_BITMAP;
+	 /* disable hinting if requested */
+	switch (options->hint_style) {
+	  case CAIRO_HINT_STYLE_NONE:
+		load_flags |= FT_LOAD_NO_HINTING;
+	      	break;
+	  case CAIRO_HINT_STYLE_SLIGHT:
+	  case CAIRO_HINT_STYLE_MEDIUM:
+	 	load_flags |= FT_LOAD_TARGET_LIGHT;
+	 	break;
+	  case CAIRO_HINT_STYLE_FULL:
+	  default:
+	 	load_flags |= FT_LOAD_TARGET_NORMAL;
+	 	break;
+	}
 	break;
-    }
-     
-    /* disable hinting if requested */
-    switch (options->hint_style) {
-    case CAIRO_HINT_STYLE_NONE:
-	load_flags |= FT_LOAD_NO_HINTING;
-	break;
-    case CAIRO_HINT_STYLE_SLIGHT:
-    case CAIRO_HINT_STYLE_MEDIUM:
- 	load_flags |= FT_LOAD_TARGET_LIGHT;
- 	break;
-    case CAIRO_HINT_STYLE_FULL:
-    default:
- 	load_flags |= FT_LOAD_TARGET_NORMAL;
- 	break;
     }
      
     return load_flags;

@@ -29,7 +29,6 @@ typedef     <link linkend="cairo-font-options-t">cairo_font_options_t</link>;
 <link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-font-options-status">cairo_font_options_status</link>    (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);
 <link linkend="void">void</link>        <link linkend="cairo-font-options-merge">cairo_font_options_merge</link>        (<link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                              const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *other);
-unsigned <link linkend="long">long</link> <link linkend="cairo-font-options-hash">cairo_font_options_hash</link>       (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);
 <link linkend="cairo-bool-t">cairo_bool_t</link> <link linkend="cairo-font-options-equal">cairo_font_options_equal</link>       (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options,
                                              const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *other);
 <link linkend="void">void</link>        <link linkend="cairo-font-options-set-antialias">cairo_font_options_set_antialias</link>
@@ -164,24 +163,6 @@ of <literal>CAIRO_OPERATION_OVER</literal>.</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>other</parameter>&nbsp;:</term>
 <listitem><simpara> another <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link>
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-font-options-hash"/>cairo_font_options_hash ()</title>
-<indexterm><primary>cairo_font_options_hash</primary></indexterm><programlisting>unsigned <link linkend="long">long</link> cairo_font_options_hash       (const <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
-<para>
-Compute a hash for the font options object; this value will
-be useful when storing an object containing a cairo_font_options_t
-in a hash table.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>options</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the hash value for the font options object.
-  The return value can be cast to a 32-bit type if a
-  32-bit hash value is needed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

@@ -1,3 +1,13 @@
+2005-11-21  Carl Worth  <cworth@cworth.org>
+
+	* src/pixman-remap.h: Remove duplicate definitions of
+	pixman_color_to_pixel and pixman_composite.
+
+2005-11-18  Carl Worth  <cworth@cworth.org>
+
+	* src/pixman-remap.h: Remove spurios INT_ prefixes which break the
+	build with very recent binutils.
+
 2005-09-18  Billy Biggs  <vektor@dumbterm.net>
 
 	Bug #4414, reviewed by otaylor, cworth.
@@ -21,6 +31,17 @@
  	'dest' as an argument, if pict and dest don't match for RGB, BGR,
  	swap result.
 
+2005-08-28  Owen Taylor  <otaylor@redhat.com>
+
+	Bug #4260, Reviewed by B. Biggs
+ 
+ 	* src/fbcompose.c (fbStore_a8b8g8r8, fbStore_x8b8g8r8): Use & not
+ 	&& for bitwise AND.
+ 
+ 	* src/fbpict.h (fbComposeGetSolid) src/fbpict.c src/fbmmx.c: Take
+ 	'dest' as an argument, if pict and dest don't match for RGB, BGR,
+ 	swap result.
+	
 2005-08-28  Owen Taylor  <otaylor@redhat.com>
 
 	* src/fbmmx.c (detectCPUFeatures): Use local labels rather than
