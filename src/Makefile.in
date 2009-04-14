@@ -120,12 +120,12 @@ am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
 	cairo-scaled-font-subsets.c \
 	cairo-scaled-font-subsets-private.h cairo-type1-subset.c \
 	cairo-xlib-surface.c cairo-xlib-surface-private.h \
-	cairo-xlib-screen.c cairo-xlib-private.h cairo-xcb-surface.c \
-	cairo-quartz-surface.c cairo-quartz-private.h \
-	cairo-glitz-surface.c cairo-glitz-private.h \
-	cairo-win32-surface.c cairo-win32-private.h cairo-win32-font.c \
-	cairo-os2-surface.c cairo-os2-private.h \
-	cairo-directfb-surface.c cairoint.h
+	cairo-xlib-display.c cairo-xlib-screen.c cairo-xlib-private.h \
+	cairo-xcb-surface.c cairo-quartz-surface.c \
+	cairo-quartz-private.h cairo-glitz-surface.c \
+	cairo-glitz-private.h cairo-win32-surface.c \
+	cairo-win32-private.h cairo-win32-font.c cairo-os2-surface.c \
+	cairo-os2-private.h cairo-directfb-surface.c cairoint.h
 @CAIRO_HAS_ATSUI_FONT_TRUE@am__objects_1 = cairo-atsui-font.lo
 @CAIRO_HAS_FT_FONT_TRUE@am__objects_2 = cairo-ft-font.lo
 @CAIRO_HAS_PS_SURFACE_TRUE@am__objects_3 = cairo-ps-surface.lo
@@ -145,6 +145,7 @@ am__objects_9 = cairo-cff-subset.lo cairo-truetype-subset.lo \
 @CAIRO_HAS_PDF_SURFACE_FALSE@@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_10 = $(am__objects_9)
 @CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_10 = $(am__objects_9)
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__objects_11 = cairo-xlib-surface.lo \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@	cairo-xlib-display.lo \
 @CAIRO_HAS_XLIB_SURFACE_TRUE@	cairo-xlib-screen.lo
 @CAIRO_HAS_XCB_SURFACE_TRUE@am__objects_12 = cairo-xcb-surface.lo
 @CAIRO_HAS_QUARTZ_SURFACE_TRUE@am__objects_13 =  \
@@ -473,8 +474,11 @@ backend_pkgconfigs = $(am__append_2) $(am__append_3) $(am__append_4) \
 @CAIRO_HAS_TEST_SURFACES_TRUE@			test-paginated-surface.c test-paginated-surface.h
 
 @CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_headers = cairo-xlib.h cairo-xlib-xrender.h
-@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_sources = cairo-xlib-surface.c cairo-xlib-surface-private.h \
-@CAIRO_HAS_XLIB_SURFACE_TRUE@			cairo-xlib-screen.c cairo-xlib-private.h
+@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_sources = cairo-xlib-surface.c \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@			cairo-xlib-surface-private.h \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@			cairo-xlib-display.c \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@			cairo-xlib-screen.c \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@			cairo-xlib-private.h
 
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@libcairo_xlib_xrender_headers = cairo-xlib-xrender.h
 @CAIRO_HAS_XCB_SURFACE_TRUE@libcairo_xcb_headers = cairo-xcb.h cairo-xcb-xrender.h
@@ -771,6 +775,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-win32-font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-win32-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-xcb-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-xlib-display.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-xlib-screen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-xlib-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo.Plo@am__quote@
