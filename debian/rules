@@ -87,7 +87,6 @@ configure-common-stamp: patch-stamp
 	touch $@
 
 # Calling GNU configure properly; advice from autotools-dev README.Debian
-configure-main: configure-common-stamp configure-stamp-main
 configure-stamp-main: configure-common-stamp
 	dh_testdir
 	mkdir -p $(main_BUILD_DIR); \
@@ -101,7 +100,6 @@ configure-stamp-main: configure-common-stamp
 		$(main_CONFIGURE_FLAGS)
 	touch $@
 
-configure-udeb: configure-common-stamp configure-stamp-udeb
 configure-stamp-udeb: configure-common-stamp
 	dh_testdir
 	mkdir -p $(udeb_BUILD_DIR); \
