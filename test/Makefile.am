@@ -1,7 +1,9 @@
 # All test cases go here
 TESTS = 			\
 a8-mask				\
+caps-joins			\
 caps-sub-paths			\
+clip-all			\
 clip-nesting			\
 clip-operator			\
 clip-twice			\
@@ -10,6 +12,7 @@ composite-integer-translate-over \
 composite-integer-translate-over-repeat \
 create-from-png			\
 create-from-png-stream		\
+dash-caps-joins			\
 dash-offset-negative		\
 fill-and-stroke			\
 fill-rule			\
@@ -55,6 +58,10 @@ unbounded-operator		\
 user-data			\
 rel-path
 
+if HAVE_PTHREAD
+TESTS += pthread-show-text
+endif
+
 if CAIRO_HAS_FT_FONT
 TESTS += ft-font-create-for-ft-face
 endif
@@ -76,7 +83,9 @@ endif
 # way to avoid it? Can I use a wildcard here?
 EXTRA_DIST =				\
 a8-mask-ref.png				\
+caps-joins-ref.png			\
 caps-sub-paths-ref.png			\
+clip-all-ref.png			\
 clip-nesting-ref.png			\
 clip-operator-ref.png			\
 clip-twice-ref.png			\
@@ -85,6 +94,7 @@ composite-integer-translate-over-ref.png		\
 composite-integer-translate-over-repeat-ref.png		\
 create-from-png-ref.png			\
 create-from-png-stream-ref.png		\
+dash-caps-joins-ref.png			\
 dash-offset-negative-ref.png		\
 fill-and-stroke-ref.png			\
 fill-rule-ref.png			\
@@ -183,7 +193,9 @@ endif
 # time to break down and auto-generate the Makefile.am or something
 # from autogen.sh. My, but this is painful...
 a8_mask_LDADD = $(LDADDS)
+caps_joins_LDADD = $(LDADDS)
 caps_sub_paths_LDADD = $(LDADDS)
+clip_all_LDADD = $(LDADDS)
 clip_nesting_LDADD = $(LDADDS)
 clip_operator_LDADD = $(LDADDS)
 clip_twice_LDADD = $(LDADDS)
@@ -192,6 +204,7 @@ composite_integer_translate_over_LDADD = $(LDADDS)
 composite_integer_translate_over_repeat_LDADD = $(LDADDS)
 create_from_png_LDADD = $(LDADDS)
 create_from_png_stream_LDADD = $(LDADDS)
+dash_caps_joins_LDADD = $(LDADDS)
 dash_offset_negative_LDADD = $(LDADDS)
 fill_and_stroke_LDADD = $(LDADDS)
 fill_rule_LDADD = $(LDADDS)
@@ -214,8 +227,9 @@ paint_with_alpha_LDADD = $(LDADDS)
 path_data_LDADD = $(LDADDS)
 pdf_surface_LDADD = $(LDADDS)
 pdf_clip_LDADD = $(LDADDS)
-ps_surface_LDADD = $(LDADDS)
 pixman_rotate_LDADD = $(LDADDS)
+ps_surface_LDADD = $(LDADDS)
+pthread_show_text_LDADD = $(LDADDS)
 rectangle_rounding_error_LDADD = $(LDADDS)
 scale_source_surface_paint_LDADD = $(LDADDS)
 select_font_no_show_text_LDADD = $(LDADDS)

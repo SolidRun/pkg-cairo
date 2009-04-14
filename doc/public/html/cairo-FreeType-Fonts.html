@@ -1,15 +1,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>
-  FreeType Fonts</title>
+<title>FreeType Fonts</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
 <link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="Fonts.html" title="Fonts">
-<link rel="prev" href="cairo-Font-Options.html" title="
-  Font Options">
-<link rel="next" href="cairo-Win32-Fonts.html" title="
-  Win32 Fonts">
+<link rel="prev" href="cairo-Font-Options.html" title="Font Options">
+<link rel="next" href="cairo-Win32-Fonts.html" title="Win32 Fonts">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="pt01.html" title="Part&#160;I.&#160;Tutorial">
@@ -33,11 +30,8 @@
 <a name="cairo-FreeType-Fonts"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2><span class="refentrytitle">
-  FreeType Fonts</span></h2>
-<p>
-  FreeType Fonts &#8212; 
-  Font support for FreeType</p>
+<h2><span class="refentrytitle">FreeType Fonts</span></h2>
+<p>FreeType Fonts &#8212; Font support for FreeType</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -61,17 +55,17 @@ void        <a href="cairo-FreeType-Fonts.html#cairo-ft-scaled-font-unlock-face"
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2847387"></a><h2>Description</h2>
+<a name="id2577474"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2847398"></a><h2>Details</h2>
+<a name="id2577485"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2847404"></a><h3>
+<a name="id2577492"></a><h3>
 <a name="cairo-ft-font-face-create-for-ft-face"></a>cairo_ft_font_face_create_for_ft_face ()</h3>
-<a class="indexterm" name="id2847416"></a><pre class="programlisting"><a href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_ft_face
+<a class="indexterm" name="id2577503"></a><pre class="programlisting"><a href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_ft_face
                                             (FT_Face face,
                                              int load_flags);</pre>
 <p>
@@ -121,9 +115,9 @@ and can be used with functions such as <code class="function">cairo_ft_font_lock
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2802873"></a><h3>
+<a name="id2519756"></a><h3>
 <a name="cairo-ft-font-face-create-for-pattern"></a>cairo_ft_font_face_create_for_pattern ()</h3>
-<a class="indexterm" name="id2802884"></a><pre class="programlisting"><a href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_pattern
+<a class="indexterm" name="id2519767"></a><pre class="programlisting"><a href="cairo-cairo-font-face-t.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_pattern
                                             (FcPattern *pattern);</pre>
 <p>
 Creates a new font face for the FreeType font backend based on a
@@ -168,9 +162,9 @@ appropriately to reflect the options in a <a href="cairo-Font-Options.html#cairo
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2849316"></a><h3>
+<a name="id2583327"></a><h3>
 <a name="cairo-ft-font-options-substitute"></a>cairo_ft_font_options_substitute ()</h3>
-<a class="indexterm" name="id2849327"></a><pre class="programlisting">void        cairo_ft_font_options_substitute
+<a class="indexterm" name="id2583338"></a><pre class="programlisting">void        cairo_ft_font_options_substitute
                                             (const <a href="cairo-Font-Options.html#cairo-font-options-t">cairo_font_options_t</a> *options,
                                              FcPattern *pattern);</pre>
 <p>
@@ -202,9 +196,9 @@ before calling <code class="function">FcDefaultSubstitute()</code>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2796759"></a><h3>
+<a name="id2578259"></a><h3>
 <a name="cairo-ft-scaled-font-lock-face"></a>cairo_ft_scaled_font_lock_face ()</h3>
-<a class="indexterm" name="id2796770"></a><pre class="programlisting">FT_Face     cairo_ft_scaled_font_lock_face  (<a href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
+<a class="indexterm" name="id2578270"></a><pre class="programlisting">FT_Face     cairo_ft_scaled_font_lock_face  (<a href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 <code class="function">cairo_ft_font_lock_face()</code> gets the <span class="type">FT_Face</span> object from a FreeType
 backend font and scales it appropriately for the font. You must
@@ -252,9 +246,9 @@ or <code class="literal">NULL</code> if <em class="parameter"><code>scaled_font<
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851156"></a><h3>
+<a name="id2584670"></a><h3>
 <a name="cairo-ft-scaled-font-unlock-face"></a>cairo_ft_scaled_font_unlock_face ()</h3>
-<a class="indexterm" name="id2851166"></a><pre class="programlisting">void        cairo_ft_scaled_font_unlock_face
+<a class="indexterm" name="id2584681"></a><pre class="programlisting">void        cairo_ft_scaled_font_unlock_face
                                             (<a href="cairo-Scaled-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 Releases a face obtained with <a href="cairo-FreeType-Fonts.html#cairo-ft-scaled-font-lock-face"><code class="function">cairo_ft_scaled_font_lock_face()</code></a>.</p>
@@ -277,10 +271,8 @@ Releases a face obtained with <a href="cairo-FreeType-Fonts.html#cairo-ft-scaled
 </div>
 </div>
 <table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="cairo-Font-Options.html"><b>&lt;&lt;&#160;
-  Font Options</b></a></td>
-<td align="right"><a accesskey="n" href="cairo-Win32-Fonts.html"><b>
-  Win32 Fonts&#160;&gt;&gt;</b></a></td>
+<td align="left"><a accesskey="p" href="cairo-Font-Options.html"><b>&lt;&lt;&#160;Font Options</b></a></td>
+<td align="right"><a accesskey="n" href="cairo-Win32-Fonts.html"><b>Win32 Fonts&#160;&gt;&gt;</b></a></td>
 </tr></table>
 </body>
 </html>

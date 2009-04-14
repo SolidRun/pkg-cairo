@@ -25,57 +25,55 @@
 
 #include "cairo-test.h"
 
+#define LINE_WIDTH 	10.
+#define SIZE 		(5 * LINE_WIDTH)
+#define PAD		(2 * LINE_WIDTH)
+
 cairo_test_t test = {
-    "set-source",
-    "Tests calls to various set_source functions",
-    5, 5
+    "caps-joins",
+    "Test caps and joins",
+    3 * (PAD + SIZE) + PAD,
+    PAD + SIZE + PAD
 };
+
+static void
+make_path (cairo_t *cr)
+{
+    cairo_move_to (cr, 0., 0.);
+    cairo_rel_line_to (cr, 0., SIZE);
+    cairo_rel_line_to (cr, SIZE, 0.);
+    cairo_close_path (cr);
+
+    cairo_move_to (cr, 2 * LINE_WIDTH, 0.);
+    cairo_rel_line_to (cr, 3 * LINE_WIDTH, 0.);
+    cairo_rel_line_to (cr, 0., 3 * LINE_WIDTH);
+}
 
 static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
-    int i;
-    /* This color value might need to change in the future when we fix
-     * the rounding in cairo-color.c */
-    uint32_t color = 0x7f19334C;
-    cairo_surface_t *surface;
-    cairo_pattern_t *pattern;
+    cairo_set_line_width (cr, LINE_WIDTH);
 
-    surface = cairo_image_surface_create_for_data ((unsigned char *) &color,
-						   CAIRO_FORMAT_ARGB32, 1, 1, 4);
-    pattern = cairo_pattern_create_for_surface (surface);
-    cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
+    cairo_translate (cr, PAD, PAD);
 
-    /* Several different means of making mostly the same color (though
-     * we can't get anything but alpha==1.0 out of
-     * cairo_set_source_rgb. */
-    for (i=0; i < width; i++) {
-	switch (i) {
-	case 0:
-	    cairo_set_source_rgb (cr, .6, .7, .8);
-	    break;
-	case 1:
-	    cairo_set_source_rgba (cr, .2, .4, .6, 0.5);
-	    break;
-	case 2:
-#if WE_HAD_SUPPORT_FOR_PREMULTIPLIED
-	    cairo_set_source_rgba_premultiplied (cr, .1, .2, .3, 0.5);
-#else
-	    cairo_set_source_rgba (cr, .2, .4, .6, 0.5);
-#endif
-	    break;
-	case 3:
-	default:
-	    cairo_set_source (cr, pattern);
-	    break;
-	}
+    make_path (cr);
+    cairo_set_line_cap (cr, CAIRO_LINE_CAP_BUTT);
+    cairo_set_line_join (cr, CAIRO_LINE_JOIN_BEVEL);
+    cairo_stroke (cr);
 
-	cairo_rectangle (cr, i, 0, 1, height);
-	cairo_fill (cr);
-    }
+    cairo_translate (cr, SIZE + PAD, 0.);
 
-    cairo_pattern_destroy (pattern);
-    cairo_surface_destroy (surface);
+    make_path (cr);
+    cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
+    cairo_set_line_join (cr, CAIRO_LINE_JOIN_ROUND);
+    cairo_stroke (cr);
+
+    cairo_translate (cr, SIZE + PAD, 0.);
+
+    make_path (cr);
+    cairo_set_line_cap (cr, CAIRO_LINE_CAP_SQUARE);
+    cairo_set_line_join (cr, CAIRO_LINE_JOIN_MITER);
+    cairo_stroke (cr);
 
     return CAIRO_TEST_SUCCESS;
 }

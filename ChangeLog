@@ -1,3 +1,345 @@
+2005-10-03  Carl Worth  <cworth@cworth.org>
+
+	* configure.in: Increment CAIRO_VERSION to 1.0.2 and libtool
+	versioning to 4:3:2.
+	
+	* NEWS: Add notes for the 1.0.2 release.
+
+2005-09-30  Bertram Felgenhauer  <int-e@gmx.de>
+
+	reviewed by: keithp
+
+	* src/cairo-hull.c (_cairo_hull_create): simplify id
+	initialisation of last patch
+
+	reviewed by: cworth
+
+	* src/cairo-hull.c (_cairo_hull_create),
+	(_cairo_hull_vertex_compare): Using a pointer comparison as the
+	fallback total order was wrong - these pointers are not stable.
+	So we introduce our own total order instead. (#4599)
+
+2005-09-28  T Rowley  <tim.rowley@gmail.com>
+
+        * src/cairo-atsui-font.c (_cairo_atsui_font_text_to_glyphs):
+        Use _cairo_utf8_to_utf16 for character conversion.
+
+2005-09-28  T Rowley  <tim.rowley@gmail.com>
+
+	Bug #4612, reviewed by cworth.
+	
+	* src/cairo-win32-font.c (_cairo_win32_scaled_font_glyph_bbox):
+	Add cast so that sign conversion doesn't alter comparison.
+
+2005-09-27  T Rowley  <tim.rowley@gmail.com>
+
+	Bug #4602, reviewed by cworth.
+	
+	* src/cairo-win32-surface.c (_create_dc_and_bitmap):
+	Avoid creating size-0 bitmap, which fails.
+
+2005-09-27  Carl Worth  <cworth@cworth.org>
+
+	* ROADMAP: Note that bug #4409 (Dashes are missing initial caps)
+	is now fixed.
+
+	* src/cairo-path-stroke.c: (_cairo_stroker_add_cap),
+	(_cairo_stroker_add_leading_cap),
+	(_cairo_stroker_add_trailing_cap),
+	(_cairo_stroker_add_caps): Move face-flipping from inside
+	_cairo_stroker_add_caps to new _cairo_stroker_add_leading_cap
+	variant of _cairo_stoker_add_cap.
+
+	* src/cairo-path-stroke.c: (_cairo_stroker_line_to_dashed): Change
+	to call _cairo_stroker_add_leading_cap or
+	_cairo_stroker_add_trailing_cap as appropriate.
+
+	* test/Makefile.am (XFAIL_TESTS): 
+	* test/dash-caps-joins-ref.png:
+	* test/dash-caps-joins.c: (main): Remove dash-caps-joins from the
+	XFAIL list and add reference image.
+
+2005-09-27  Carl Worth  <cworth@cworth.org>
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/caps-joins-ref.png:
+	* test/caps-joins.c: (make_path), (draw), (main):
+	* test/dash-caps-joins.c: (make_path), (draw), (main): Add two
+	test cases. One for caps and joins (passes), and one for dashed
+	caps and joins, (fails, see bug #4409).
+
+2005-09-26  Carl Worth  <cworth@cworth.org>
+
+	Backported from HEAD:
+	2005-09-07  Carl Worth  <cworth@cworth.org>
+  
+	Portability improvements for win32 thanks to Hans Breuer
+	<hans@breuer.org>:
+	
+	* pixman/src/pixman.h: Defined sized-integer types when under the
+	influence of _MSC_VER and without stdint.h.
+	
+	* src/cairoint.h: Use #error which is more portable than #warning,
+	(and more indicative of where we want to be before the next
+	release).
+
+2005-09-26  Carl Worth  <cworth@cworth.org>
+
+	Backported from HEAD:
+	2005-08-31  Owen Taylor  <otaylor@redhat.com>
+
+	* test/cairo-test.c: Protect inclusion of fontconfig.h
+	with HAVE_FCFINI.
+
+	* test/nil-surface.c: Remove stray cairo-ft.h include.
+
+	* test/nil-surface.c: Include stddef.h for NULL.
+
+	* test/create-from-png-stream.c (draw): Open the file "rb".
+
+2005-09-26  Tor Lillqvist  <tml@novell.com>
+
+	* src/cairo-win32-font.c (_win32_scaled_font_get_scaled_hfont),
+	(_win32_scaled_font_get_unscaled_hfont): Set LOGFONT::lfHeight
+	negative. A negative lfHeight means "em height" which is what we
+	want, and matches how other toolkits interpret font sizes on
+	Win32. (Positive lfHeight means "cell height".) (#4593)
+	(_cairo_win32_scaled_font_init_glyph_metrics): If
+	GetGlyphOutlineW() fails, set metrics to zero. (#3927, Hans
+	Breuer) (Don't print error message, as this might occur frequently
+	with a misconfigured Pango 1.10.0.)
+
+2005-09-20  T Rowley  <tim.rowley@gmail.com>
+
+        * src/cairo-atsui-font.c (_cairo_atsui_font_show_glyphs):
+        Pass scratch space instead of NULL for image_extra to
+        acquire/release_dest_image.
+
+2005-09-19  Carl Worth  <cworth@cworth.org>
+
+        * src/cairo-xlib-surface.c: (_create_a8_picture): Avoid attempting
+        to create a size-0 Pixmap, (to prevent the associated X
+        error). This actually showed up when the clip region is
+        empty. Thanks to Radek Doulík for the bug report.
+
+        * test/Makefile.am:
+        * test/clip-all.c: (main): Remove clip-all from the XFAIL list
+        since it works now.
+
+2005-09-19  Carl Worth  <cworth@cworth.org>
+
+        Originally: 2005-09-19  Hans Breuer  <hans@breuer.org>
+
+        * src/cairoint.h : win32 specific definitions for
+        CAIRO_MUTEX_DECLARE, CAIRO_MUTEX_LOCK etc. [not based on win32
+        mutex but critical sections]
+
+        * src/cairo-win32-surface.c : add DllMain() to do global,
+        single-threaded 'mutex' (de)initialization. No ifdefs needed, some
+        variables would simply not be used when the respective backend
+        would not be compiled in.
+
+2005-09-18  Billy Biggs  <vektor@dumbterm.net>
+
+	Bug #4414, reviewed by otaylor, cworth.
+
+	* configure.in: Remove -msse from the MMX CFLAGS as it causes
+	gcc to emit SSE instructions, however the detection code only
+	checks for processors supporting MMX and does not require SSE.
+	Fix the MMX test to only check for MMX intrinsics and not the
+	SSE intrinsics.
+
+2005-09-16  Carl Worth  <cworth@cworth.org>
+
+        Tested by: John Ellson
+        Closes bug #4408
+        https://bugs.freedesktop.org/show_bug.cgi?id=4408
+
+        * src/cairo-path-stroke.c: (_cairo_stroker_curve_to_dashed),
+        (_cairo_path_fixed_stroke_to_traps): Add support for dashed
+        splines. (The antialiasing quality isn't perfect, but at least the
+        curves are dashed now).
+
+2005-09-13  Carl Worth  <cworth@cworth.org>
+
+	* src/cairo-ft-font.c: (_cairo_ft_scaled_font_text_to_glyphs):
+	Expand locking to include all modification of cairo_scaled_font
+	and related objects.
+
+2005-09-13  Carl Worth  <cworth@cworth.org>
+
+	* test/pthread-show-text.c: (start), (main): Adjust parameters to
+	stress things a bit more, (better exposing another locking bug).
+
+2005-09-13  Carl Worth  <cworth@cworth.org>
+
+	* src/cairo-scaled-font.c: (cairo_scaled_font_reference),
+	(cairo_scaled_font_destroy): Expand locking to encapsulate any
+	modification to the reference count of a scaled font, rather than
+	just modifcations of the scaled_font_map, since scaled fonts are
+	shared between threads.
+
+2005-09-13  Carl Worth  <cworth@cworth.org>
+
+	* test/cairo-test.h: Add documentation for cairo_test functions.
+	
+	* test/cairo-test.c: (cairo_test_init), (cairo_test_expecting):
+	Abstract log fie creation into cairo_test_init for use by tests
+	that don't use cairo_test().
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/pthread-show-text.c: (start), (main): Add new test for bug
+	#4299 as reported by Alexey Shabalin.
+
+2005-09-12  Carl Worth  <cworth@cworth.org>
+
+	Fix for bug #4401 as reported by Tim Mooney:
+
+	* configure.in: Don't bother checking for sincos function.
+	
+	* src/cairo-matrix.c: (cairo_matrix_init_rotate): Don't use sincos
+	function since it is apparently buggy on some platforms, (Tru64 at
+	least).
+
+2005-09-01  Carl Worth  <cworth@cworth.org>
+
+	* test/cairo-test.h: Add includes to get sized-integer types such
+	as uint32_t.
+	
+	* test/filter-nearest-offset.c: (draw):
+	* test/mask-ctm.c: (draw):
+	* test/mask-surface-ctm.c: (draw):
+	* test/move-to-show-surface.c: (draw):
+	* test/paint-with-alpha.c: (draw):
+	* test/scale-source-surface-paint.c: (draw):
+	* test/set-source.c: (draw):
+	* test/source-surface-scale-paint.c: (draw):
+	* test/translate-show-surface.c: (draw): Fix declaration of image
+	data array to be uint32_t rather than unsigned long. Fixes four
+	out of the remaining five failures in bug #4245.
+
+2005-08-31  Carl Worth  <cworth@cworth.org>
+
+	* test/cairo-test.c: (create_xlib_surface): Add call to
+	XSynchronize, (the expected clip-all failure isn't occuring
+	without it for some reason).
+	
+	* test/clip-all.c: (main): Note reason for expected failure.
+
+2005-08-31  Owen Taylor  <otaylor@redhat.com>
+
+	* src/cairo-xlib-surface.c (_get_image_surface) 
+	(_draw_image_surface): Handle displays which don't match
+	the local endianness by byteswapping on GetImage/PutImage.
+	(#4321, reported by Sjoerd Simons)
+
+2005-08-31  Carl Worth  <cworth@cworth.org>
+
+	* INSTALL: Add note to use ./autogen.sh instead of ./configure
+	when working with source from cvs.
+
+2005-08-31  Carl Worth  <cworth@cworth.org>
+
+	* test/get-and-set.c: Fix test to not try to set a non-invertible
+	matrix. (We'd gotten away with this due to round-off error on many
+	systems). Fixes one out of six failures in bug #4245.
+
+2005-08-31  Carl Worth  <cworth@cworth.org>
+
+	* AUTHORS: Add Radek Doulík.
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/clip-all.c: (draw), (main): Add test exposing a BadValue
+	(0-size pixmap) bug in cairo-xlib-surface when everything is
+	clipped away (thanks to Radek Doulík <rodo@novell.com>).
+
+2005-08-30  Owen Taylor  <otaylor@redhat.com>
+
+	* src/cairo-xlib-surface.c (_cairo_xlib_surface_create_internal):
+	Liberalize the ServerVendor check so that we can handle
+	the Mandriva vendor string. (#4298, Frederic Crozat)
+
+2005-08-27  Owen Taylor  <otaylor@redhat.com>
+
+	* src/cairo-pattern.c (_cairo_pattern_acquire_surface_for_gradient): 
+	Use a 8xN rather than a 1xN strip for a vertical gradient. This
+	is much more tolerant of slow compositing code, and is worth some
+	extra expense computing the gradient. (#4263, found in test case
+	from Richard Stellingwerff)
+
+2005-08-27  Owen Taylor  <otaylor@redhat.com>
+
+	reviewed by: cworth
+
+	* src/cairo-traps.c (_cairo_traps_extract_region): Make the 
+	check for rectangular trapezoids simpler and more accurate.
+	(#4220, found using test case from Richard Stellingwerff)
+	
+2005-08-27  Owen Taylor  <otaylor@redhat.com>
+
+	* src/cairo-xlib-surface.c (_cairo_xlib_surface_create_internal): 
+	Make the vendor string check for XFree86 more liberal, to deal
+	with older versions of gentoo that modified it in a different
+	way. (#4231, fix from Billy Biggs)
+
+2005-08-27  Owen Taylor  <otaylor@redhat.com>
+
+	* src/cairoint.h: Undef MIN/MAX before defining them in case
+	some system header happens to define them. (#4196, Christian
+	Biesinger)
+
+2005-08-27  Owen Taylor  <otaylor@redhat.com>
+
+	* src/cairo-image-surface.c (cairo_image_surface_create)
+	(cairo_image_surface_create_for_data): Fix docs not to talk about
+	%NULL returns. (#4271, Duncan Coutts.)
+
+2005-08-25  Tor Lillqvist  <tml@novell.com>
+
+	* Makefile.am (developer_zip_file): Include the documentation, too.
+
+2005-08-24  Billy Biggs  <vektor@dumbterm.net>
+
+	* doc/public/tmpl/cairo-font-options.sgml:
+	* doc/public/tmpl/cairo-font.sgml:
+	* doc/public/tmpl/cairo-ft.sgml:
+	* doc/public/tmpl/cairo-glitz.sgml:
+	* doc/public/tmpl/cairo-image.sgml:
+	* doc/public/tmpl/cairo-matrix.sgml:
+	* doc/public/tmpl/cairo-paths.sgml:
+	* doc/public/tmpl/cairo-pattern.sgml:
+	* doc/public/tmpl/cairo-pdf.sgml:
+	* doc/public/tmpl/cairo-png.sgml:
+	* doc/public/tmpl/cairo-ps.sgml:
+	* doc/public/tmpl/cairo-quartz.sgml:
+	* doc/public/tmpl/cairo-scaled-font.sgml:
+	* doc/public/tmpl/cairo-status.sgml:
+	* doc/public/tmpl/cairo-surface.sgml:
+	* doc/public/tmpl/cairo-text.sgml:
+	* doc/public/tmpl/cairo-transforms.sgml:
+	* doc/public/tmpl/cairo-types.sgml:
+	* doc/public/tmpl/cairo-version.sgml:
+	* doc/public/tmpl/cairo-win32-fonts.sgml:
+	* doc/public/tmpl/cairo-win32.sgml:
+	* doc/public/tmpl/cairo-xcb-xrender.sgml:
+	* doc/public/tmpl/cairo-xcb.sgml:
+	* doc/public/tmpl/cairo-xlib.sgml:
+	* doc/public/tmpl/cairo.sgml: Update formatting of the title
+	and short description, as this actually changes how the TOC
+	appears in devhelp.
+
+2005-08-24  Bertram Felgenhauer  <int-e@gmx.de>
+
+	* Makefile.am (.PHONY): add docs-publish as a phony target
+
+2005-08-24  Carl Worth  <cworth@cworth.org>
+
+	* configure.in: Increment CAIRO_VERSION to 1.0.1 after tagging
+	RELEASE_1_0_0.
+	
 2005-08-24  Carl Worth  <cworth@cworth.org>
 
 	* configure.in: Increment CAIRO_VERSION to 1.0.0 and libtool
