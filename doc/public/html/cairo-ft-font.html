@@ -8,7 +8,7 @@
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-font-options.html" title="cairo_font_options_t">
 <link rel="next" href="cairo-win32-font.html" title="Win32 Fonts">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="cairo-drawing.html" title="Drawing">
 <link rel="chapter" href="cairo-fonts.html" title="Fonts">
@@ -30,9 +30,11 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-win32-font.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#cairo-ft-font.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#cairo-ft-font.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#cairo-ft-font.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#cairo-ft-font.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-ft-font"></a><div class="titlepage"></div>
@@ -46,11 +48,11 @@
 <div class="refsynopsisdiv">
 <a name="cairo-ft-font.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-#define             <a class="link" href="cairo-ft-font.html#CAIRO-HAS-FT-FONT:CAPS" title="CAIRO_HAS_FT_FONT">CAIRO_HAS_FT_FONT</a>
-<a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a>*  <a class="link" href="cairo-ft-font.html#cairo-ft-font-face-create-for-ft-face" title="cairo_ft_font_face_create_for_ft_face ()">cairo_ft_font_face_create_for_ft_face</a>
+#define             <a class="link" href="cairo-ft-font.html#CAIRO-HAS-FT-FONT--CAPS" title="CAIRO_HAS_FT_FONT">CAIRO_HAS_FT_FONT</a>
+<a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * <a class="link" href="cairo-ft-font.html#cairo-ft-font-face-create-for-ft-face" title="cairo_ft_font_face_create_for_ft_face ()">cairo_ft_font_face_create_for_ft_face</a>
                                                         (FT_Face face,
                                                          int load_flags);
-<a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a>*  <a class="link" href="cairo-ft-font.html#cairo-ft-font-face-create-for-pattern" title="cairo_ft_font_face_create_for_pattern ()">cairo_ft_font_face_create_for_pattern</a>
+<a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * <a class="link" href="cairo-ft-font.html#cairo-ft-font-face-create-for-pattern" title="cairo_ft_font_face_create_for_pattern ()">cairo_ft_font_face_create_for_pattern</a>
                                                         (FcPattern *pattern);
 void                <a class="link" href="cairo-ft-font.html#cairo-ft-font-options-substitute" title="cairo_ft_font_options_substitute ()">cairo_ft_font_options_substitute</a>    (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
                                                          FcPattern *pattern);
@@ -68,7 +70,7 @@ systems, but can be used on other platforms too.
 <div class="refsect1" lang="en">
 <a name="cairo-ft-font.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="CAIRO-HAS-FT-FONT:CAPS"></a><h3>CAIRO_HAS_FT_FONT</h3>
+<a name="CAIRO-HAS-FT-FONT--CAPS"></a><h3>CAIRO_HAS_FT_FONT</h3>
 <pre class="programlisting">#define CAIRO_HAS_FT_FONT 1
 </pre>
 <p>
@@ -79,7 +81,7 @@ This macro can be used to conditionally compile backend-specific code.
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-ft-font-face-create-for-ft-face"></a><h3>cairo_ft_font_face_create_for_ft_face ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a>*  cairo_ft_font_face_create_for_ft_face
+<pre class="programlisting"><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * cairo_ft_font_face_create_for_ft_face
                                                         (FT_Face face,
                                                          int load_flags);</pre>
 <p>
@@ -113,7 +115,6 @@ if (status) {
 }
 </pre></div>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -151,7 +152,7 @@ if (status) {
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-ft-font-face-create-for-pattern"></a><h3>cairo_ft_font_face_create_for_pattern ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a>*  cairo_ft_font_face_create_for_pattern
+<pre class="programlisting"><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * cairo_ft_font_face_create_for_pattern
                                                         (FcPattern *pattern);</pre>
 <p>
 Creates a new font face for the FreeType font backend based on a
@@ -181,7 +182,6 @@ time of the returned <a class="link" href="cairo-font-face.html#cairo-font-face-
 <a class="link" href="cairo-ft-font.html#cairo-ft-font-face-create-for-ft-face" title="cairo_ft_font_face_create_for_ft_face ()"><code class="function">cairo_ft_font_face_create_for_ft_face()</code></a> for an exmaple of how to couple
 the life time of the FT_Face to that of the cairo font-face.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -218,7 +218,6 @@ so you should call this function after calling <code class="function">FcConfigSu
 user's settings should override options based on the surface type), but
 before calling <code class="function">FcDefaultSubstitute()</code>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -261,7 +260,6 @@ own locking to protect any use of that object, (and which also must
 protect any other calls into cairo as almost any cairo function
 might result in a call into the freetype library).</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -278,7 +276,7 @@ might result in a call into the freetype library).</p>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The <span class="type">FT_Face</span> object for <em class="parameter"><code>font</code></em>, scaled appropriately,
 or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a> if <em class="parameter"><code>scaled_font</code></em> is in an error state (see
 <a class="link" href="cairo-scaled-font.html#cairo-scaled-font-status" title="cairo_scaled_font_status ()"><code class="function">cairo_scaled_font_status()</code></a>) or there is insufficient memory.
 </td>
@@ -293,7 +291,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 <p>
 Releases a face obtained with <a class="link" href="cairo-ft-font.html#cairo-ft-scaled-font-lock-face" title="cairo_ft_scaled_font_lock_face ()"><code class="function">cairo_ft_scaled_font_lock_face()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -319,6 +316,6 @@ Releases a face obtained with <a class="link" href="cairo-ft-font.html#cairo-ft-
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

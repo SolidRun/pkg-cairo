@@ -8,7 +8,7 @@
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-image-surface.html" title="Image Surfaces">
 <link rel="next" href="cairo-png-functions.html" title="PNG Support">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="cairo-drawing.html" title="Drawing">
 <link rel="chapter" href="cairo-fonts.html" title="Fonts">
@@ -30,9 +30,11 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-png-functions.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#cairo-pdf-surface.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#cairo-pdf-surface.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#cairo-pdf-surface.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#cairo-pdf-surface.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-pdf-surface"></a><div class="titlepage"></div>
@@ -46,11 +48,11 @@
 <div class="refsynopsisdiv">
 <a name="cairo-pdf-surface.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-#define             <a class="link" href="cairo-pdf-surface.html#CAIRO-HAS-PDF-SURFACE:CAPS" title="CAIRO_HAS_PDF_SURFACE">CAIRO_HAS_PDF_SURFACE</a>
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    <a class="link" href="cairo-pdf-surface.html#cairo-pdf-surface-create" title="cairo_pdf_surface_create ()">cairo_pdf_surface_create</a>            (const char *filename,
+#define             <a class="link" href="cairo-pdf-surface.html#CAIRO-HAS-PDF-SURFACE--CAPS" title="CAIRO_HAS_PDF_SURFACE">CAIRO_HAS_PDF_SURFACE</a>
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-pdf-surface.html#cairo-pdf-surface-create" title="cairo_pdf_surface_create ()">cairo_pdf_surface_create</a>            (const char *filename,
                                                          double width_in_points,
                                                          double height_in_points);
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    <a class="link" href="cairo-pdf-surface.html#cairo-pdf-surface-create-for-stream" title="cairo_pdf_surface_create_for_stream ()">cairo_pdf_surface_create_for_stream</a> (<a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()">cairo_write_func_t</a> write_func,
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-pdf-surface.html#cairo-pdf-surface-create-for-stream" title="cairo_pdf_surface_create_for_stream ()">cairo_pdf_surface_create_for_stream</a> (<a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()">cairo_write_func_t</a> write_func,
                                                          void *closure,
                                                          double width_in_points,
                                                          double height_in_points);
@@ -69,7 +71,7 @@ PDF files and is a multi-page vector surface backend.
 <div class="refsect1" lang="en">
 <a name="cairo-pdf-surface.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="CAIRO-HAS-PDF-SURFACE:CAPS"></a><h3>CAIRO_HAS_PDF_SURFACE</h3>
+<a name="CAIRO-HAS-PDF-SURFACE--CAPS"></a><h3>CAIRO_HAS_PDF_SURFACE</h3>
 <pre class="programlisting">#define CAIRO_HAS_PDF_SURFACE 1
 </pre>
 <p>
@@ -80,14 +82,13 @@ This macro can be used to conditionally compile backend-specific code.
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-pdf-surface-create"></a><h3>cairo_pdf_surface_create ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    cairo_pdf_surface_create            (const char *filename,
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_pdf_surface_create            (const char *filename,
                                                          double width_in_points,
                                                          double height_in_points);</pre>
 <p>
 Creates a PDF surface of the specified size in points to be written
 to <em class="parameter"><code>filename</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -95,7 +96,7 @@ to <em class="parameter"><code>filename</code></em>.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>filename</code></em> :</span></p></td>
 <td> a filename for the PDF output (must be writable), <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a> may be
            used to specify no output. This will generate a PDF surface that
            may be queried and used as a source, without generating a
@@ -126,13 +127,12 @@ occurs. You can use <a class="link" href="cairo-surface.html#cairo-surface-statu
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-pdf-surface-create-for-stream"></a><h3>cairo_pdf_surface_create_for_stream ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    cairo_pdf_surface_create_for_stream (<a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()">cairo_write_func_t</a> write_func,
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_pdf_surface_create_for_stream (<a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()">cairo_write_func_t</a> write_func,
                                                          void *closure,
                                                          double width_in_points,
                                                          double height_in_points);</pre>
@@ -140,7 +140,6 @@ occurs. You can use <a class="link" href="cairo-surface.html#cairo-surface-statu
 Creates a PDF surface of the specified size in points to be written
 incrementally to the stream represented by <em class="parameter"><code>write_func</code></em> and <em class="parameter"><code>closure</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -148,7 +147,7 @@ incrementally to the stream represented by <em class="parameter"><code>write_fun
 <tr>
 <td><p><span class="term"><em class="parameter"><code>write_func</code></em> :</span></p></td>
 <td> a <a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> to accept the output data, may be <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
              to indicate a no-op <em class="parameter"><code>write_func</code></em>. With a no-op <em class="parameter"><code>write_func</code></em>,
              the surface may be queried or used as a source without
@@ -184,8 +183,7 @@ occurs. You can use <a class="link" href="cairo-surface.html#cairo-surface-statu
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -204,7 +202,6 @@ this is to call this function immediately after creating the
 surface or immediately after completing a page with either
 <a class="link" href="cairo-context.html#cairo-show-page" title="cairo_show_page ()"><code class="function">cairo_show_page()</code></a> or <a class="link" href="cairo-context.html#cairo-copy-page" title="cairo_copy_page ()"><code class="function">cairo_copy_page()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -226,8 +223,7 @@ surface or immediately after completing a page with either
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
@@ -241,6 +237,6 @@ surface or immediately after completing a page with either
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>
