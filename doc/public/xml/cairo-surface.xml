@@ -19,12 +19,6 @@
 
 
 typedef     <link linkend="cairo-surface-t">cairo_surface_t</link>;
-<link linkend="cairo-surface-t">cairo_surface_t</link>* <link linkend="cairo-surface-create-for-image">cairo_surface_create_for_image</link>
-                                            (<link linkend="char">char</link> *data,
-                                             <link linkend="cairo-format-t">cairo_format_t</link> format,
-                                             <link linkend="int">int</link> width,
-                                             <link linkend="int">int</link> height,
-                                             <link linkend="int">int</link> stride);
 <link linkend="cairo-surface-t">cairo_surface_t</link>* <link linkend="cairo-surface-create-similar">cairo_surface_create_similar</link>
                                             (<link linkend="cairo-surface-t">cairo_surface_t</link> *other,
                                              <link linkend="cairo-format-t">cairo_format_t</link> format,
@@ -32,15 +26,16 @@ typedef     <link linkend="cairo-surface-t">cairo_surface_t</link>;
                                              <link linkend="int">int</link> height);
 <link linkend="void">void</link>        <link linkend="cairo-surface-reference">cairo_surface_reference</link>         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
 <link linkend="void">void</link>        <link linkend="cairo-surface-destroy">cairo_surface_destroy</link>           (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
-<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-set-repeat">cairo_surface_set_repeat</link>     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="int">int</link> repeat);
-<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-set-matrix">cairo_surface_set_matrix</link>     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);
-<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-get-matrix">cairo_surface_get_matrix</link>     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);
-<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-set-filter">cairo_surface_set_filter</link>     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="cairo-filter-t">cairo_filter_t</link> filter);
-<link linkend="cairo-filter-t">cairo_filter_t</link> <link linkend="cairo-surface-get-filter">cairo_surface_get_filter</link>     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-finish">cairo_surface_finish</link>         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-set-user-data">cairo_surface_set_user_data</link>  (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
+                                             <link linkend="void">void</link> *user_data,
+                                             <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);
+<link linkend="void">void</link>*       <link linkend="cairo-surface-get-user-data">cairo_surface_get_user_data</link>     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);
+<link linkend="void">void</link>        <link linkend="cairo-surface-set-device-offset">cairo_surface_set_device_offset</link> (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             <link linkend="double">double</link> x_offset,
+                                             <link linkend="double">double</link> y_offset);
 </synopsis>
 </refsynopsisdiv>
 
@@ -78,37 +73,6 @@ Memory management of <link linkend="cairo-surface-t"><type>cairo_surface_t</type
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-surface-create-for-image"/>cairo_surface_create_for_image ()</title>
-<indexterm><primary>cairo_surface_create_for_image</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>* cairo_surface_create_for_image
-                                            (<link linkend="char">char</link> *data,
-                                             <link linkend="cairo-format-t">cairo_format_t</link> format,
-                                             <link linkend="int">int</link> width,
-                                             <link linkend="int">int</link> height,
-                                             <link linkend="int">int</link> stride);</programlisting>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>format</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>stride</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-surface-create-similar"/>cairo_surface_create_similar ()</title>
 <indexterm><primary>cairo_surface_create_similar</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>* cairo_surface_create_similar
@@ -161,89 +125,115 @@ Memory management of <link linkend="cairo-surface-t"><type>cairo_surface_t</type
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="cairo-surface-set-repeat"/>cairo_surface_set_repeat ()</title>
-<indexterm><primary>cairo_surface_set_repeat</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_surface_set_repeat     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="int">int</link> repeat);</programlisting>
+<title><anchor id="cairo-surface-finish"/>cairo_surface_finish ()</title>
+<indexterm><primary>cairo_surface_finish</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_surface_finish         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);</programlisting>
+<para>
+This function finishes the surface and drops all references to
+external resources.  For example, for the Xlib backend it means
+that cairo will no longer access the drawable, which can be freed.
+After calling <link linkend="cairo-surface-finish"><function>cairo_surface_finish()</function></link> the only valid operations on a
+surface are getting and setting user data and referencing and
+destroying it.  Further drawing the the surface will not affect the
+surface but set the surface status to
+CAIRO_STATUS_SURFACE_FINISHED.
+</para>
+<para>
+When the last call to <link linkend="cairo-surface-destroy"><function>cairo_surface_destroy()</function></link> decreases the
+reference count to zero, cairo will call <link linkend="cairo-surface-finish"><function>cairo_surface_finish()</function></link> if
+it hasn't been called already, before freeing the resources
+associated with the surface.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> to finish
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>repeat</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> CAIRO_STATUS_SUCCESS if the surface was finished
+successfully, otherwise CAIRO_STATUS_NO_MEMORY or
+CAIRO_STATUS_WRITE_ERROR.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="cairo-surface-set-matrix"/>cairo_surface_set_matrix ()</title>
-<indexterm><primary>cairo_surface_set_matrix</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_surface_set_matrix     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);</programlisting>
+<title><anchor id="cairo-surface-set-user-data"/>cairo_surface_set_user_data ()</title>
+<indexterm><primary>cairo_surface_set_user_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_surface_set_user_data  (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
+                                             <link linkend="void">void</link> *user_data,
+                                             <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);</programlisting>
+<para>
+Attach user data to <parameter>surface</parameter>.  To remove user data from a surface,
+call this function with the key that was used to set it and <literal>NULL</literal>
+for <parameter>data</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> the address of a <link linkend="cairo-user-data-key-t"><type>cairo_user_data_key_t</type></link> to attach the user data to
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> the user data to attach to the surface
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-destroy-func-t"><type>cairo_destroy_func_t</type></link> which will be called when the
+surface is destroyed or when new user data is attached using the
+same key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>CAIRO_STATUS_SUCCESS</literal> or <literal>CAIRO_STATUS_NO_MEMORY</literal> if a
+slot could not be allocated for the user data.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="cairo-surface-get-matrix"/>cairo_surface_get_matrix ()</title>
-<indexterm><primary>cairo_surface_get_matrix</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_surface_get_matrix     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="cairo-matrix-t">cairo_matrix_t</link> *matrix);</programlisting>
+<title><anchor id="cairo-surface-get-user-data"/>cairo_surface_get_user_data ()</title>
+<indexterm><primary>cairo_surface_get_user_data</primary></indexterm><programlisting><link linkend="void">void</link>*       cairo_surface_get_user_data     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);</programlisting>
+<para>
+Return user data previously attached to <parameter>surface</parameter> using the specified
+key.  If no user data has been attached with the given key this
+function returns <literal>NULL</literal>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> the address of the <link linkend="cairo-user-data-key-t"><type>cairo_user_data_key_t</type></link> the user data was
+attached to
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the user data previously attached or <literal>NULL</literal>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="cairo-surface-set-filter"/>cairo_surface_set_filter ()</title>
-<indexterm><primary>cairo_surface_set_filter</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_surface_set_filter     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
-                                             <link linkend="cairo-filter-t">cairo_filter_t</link> filter);</programlisting>
+<title><anchor id="cairo-surface-set-device-offset"/>cairo_surface_set_device_offset ()</title>
+<indexterm><primary>cairo_surface_set_device_offset</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_surface_set_device_offset (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             <link linkend="double">double</link> x_offset,
+                                             <link linkend="double">double</link> y_offset);</programlisting>
+<para>
+Sets an offset that is added to the device coordinates determined
+by the CTM when drawing to <parameter>surface</parameter>. One use case for this function
+is when we want to create a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> that redirects drawing
+for a portion of an onscreen surface to an offscreen surface in a
+way that is completely invisible to the user of the cairo
+API. Setting a transformation via <link linkend="cairo-translate"><function>cairo_translate()</function></link> isn't
+sufficient to do this, since functions like
+<link linkend="cairo-device-to-user"><function>cairo_device_to_user()</function></link> will expose the hidden offset.
+</para>
+<para>
+Note that the offset only affects drawing to the surface, not using
+the surface in a surface pattern.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>filter</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>x_offset</parameter>&nbsp;:</term>
+<listitem><simpara> the offset in the X direction, in device units
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-surface-get-filter"/>cairo_surface_get_filter ()</title>
-<indexterm><primary>cairo_surface_get_filter</primary></indexterm><programlisting><link linkend="cairo-filter-t">cairo_filter_t</link> cairo_surface_get_filter     (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);</programlisting>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><parameter>y_offset</parameter>&nbsp;:</term>
+<listitem><simpara> the offset in the Y direction, in device units
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
