@@ -45,17 +45,27 @@
 # define CAIRO_END_DECLS
 #endif
 
+#ifndef cairo_public
+# define cairo_public
+#endif
+
 #define CAIRO_VERSION_MAJOR 1
-#define CAIRO_VERSION_MINOR 0
-#define CAIRO_VERSION_MICRO 4
+#define CAIRO_VERSION_MINOR 1
+#define CAIRO_VERSION_MICRO 10
 
-#define CAIRO_VERSION_STRING "1.0.4"
+#define CAIRO_VERSION_STRING "1.1.10"
 
+#define CAIRO_HAS_PS_SURFACE 1
 
+#define CAIRO_HAS_PDF_SURFACE 1
 
-
+#define CAIRO_HAS_SVG_SURFACE 1
 
 #define CAIRO_HAS_XLIB_SURFACE 1
+
+
+
+
 
 
 

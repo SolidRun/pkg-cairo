@@ -9,8 +9,7 @@ endif
 EXTRA_DIST = \
 	COPYING \
 	COPYING-LGPL-2.1 \
-	COPYING-MPL-1.1 \
-	cairo.pc.in
+	COPYING-MPL-1.1
 MAINTAINERCLEANFILES = \
 	$(srcdir)/INSTALL \
 	$(srcdir)/aclocal.m4 \
@@ -26,9 +25,6 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/missing \
 	$(srcdir)/mkinstalldirs \
 	`find "$(srcdir)" -type f -name Makefile.in -print`
-
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = cairo.pc
 
 check-valgrind: all
 	$(MAKE) -C test check-valgrind
@@ -66,9 +62,10 @@ $(srcdir)/ChangeLog:
 
 RELEASE_UPLOAD_HOST =   cairographics.org
 RELEASE_UPLOAD_BASE =	/srv/cairo.freedesktop.org/www
-RELEASE_UPLOAD_DIR =	$(RELEASE_UPLOAD_BASE)/releases
-RELEASE_URL_BASE = 	http://cairographics.org/releases
+RELEASE_UPLOAD_DIR =	$(RELEASE_UPLOAD_BASE)/snapshots
+RELEASE_URL_BASE = 	http://cairographics.org/snapshots
 RELEASE_ANNOUNCE_LIST = cairo-announce@cairographics.org (and CC gnome-announce-list@gnome.org)
+RELEASE_OR_SNAPSHOT = `if [ "$(CAIRO_VERSION_MINOR)" = $$(echo "$(CAIRO_VERSION_MINOR)/2*2" | bc) ]; then echo release; else echo snapshot; fi`
 
 MANUAL_DATED =		cairo-manual-`date +%Y%m%d`
 MANUAL_TAR_FILE = 	$(MANUAL_DATED).tar.gz
@@ -97,9 +94,17 @@ $(runtime_zip_file): install
 $(developer_zip_file): install
 	-rm $@
 	cd $(prefix); \
-	zip -r $@ include/cairo lib/libcairo.dll.a lib/cairo.lib lib/pkgconfig/cairo.pc share/gtk-doc/html/cairo
+	zip -r $@ include/cairo lib/libcairo.dll.a lib/cairo.lib lib/pkgconfig/cairo.pc lib/pkgconfig/cairo-*.pc share/gtk-doc/html/cairo
 
 zips: $(runtime_zip_file) $(developer_zip_file)
+
+release-verify-soname-major:
+	@echo -n "Checking that the cairo soname major number is 2..."
+	@test "$(LT_CURRENT_MINUS_AGE)" = "2" \
+		|| (echo "Ouch." && echo "The soname major number is $(LT_CURRENT_MINUS_AGE) instead of 2." \
+		&& echo "The libtool shared library version numbers in configure.in must be incremented properly." \
+		&& false)
+	@echo "Good."
 
 release-verify-even-micro:
 	@echo -n "Checking that $(VERSION) has an even micro component..."
@@ -128,7 +133,7 @@ release-remove-old:
 release-cleanup-group-sticky:
 	find . -type f | xargs chmod g-s
 
-release-check: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky distcheck
+release-check: release-verify-soname-major release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky dist
 
 release-upload: release-check $(tar_file) $(sha1_file) $(gpg_file)
 	mkdir -p releases
@@ -137,15 +142,18 @@ release-upload: release-check $(tar_file) $(sha1_file) $(gpg_file)
 	ssh $(RELEASE_UPLOAD_HOST) "rm -f $(RELEASE_UPLOAD_DIR)/LATEST-$(PACKAGE)-[0-9]* && ln -s $(tar_file) $(RELEASE_UPLOAD_DIR)/LATEST-$(PACKAGE)-$(VERSION)"
 	git tag -s $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO)
 
-release-publish: release-upload releases/$(sha1_file)
+release-publish-message: releases/$(sha1_file)
+	@echo "Pleas push the new tag with a command such as:"
+	@echo ""
+	@echo "	git push master $(VERSION)"
 	@echo ""
 	@echo "Please send an announcement to $(RELEASE_ANNOUNCE_LIST)"
 	@echo "including the following:"
 	@echo ""
-	@echo "Subject: $(PACKAGE) release $(VERSION) now available"
+	@echo "Subject: $(PACKAGE) $(RELEASE_OR_SNAPSHOT) $(VERSION) now available"
 	@echo ""
 	@echo "============================== CUT HERE =============================="
-	@echo "A new $(PACKAGE) release $(VERSION) is now available from:"
+	@echo "A new $(PACKAGE) $(RELEASE_OR_SNAPSHOT) $(VERSION) is now available from:"
 	@echo ""
 	@echo "	$(RELEASE_URL_BASE)/$(tar_file)"
 	@echo ""
@@ -157,12 +165,29 @@ release-publish: release-upload releases/$(sha1_file)
 	@echo ""
 	@echo "	$(RELEASE_URL_BASE)/$(gpg_file)"
 	@echo "	(signed by `getent passwd "$$USER" | cut -d: -f 5 | cut -d, -f 1`)"
+	@echo "  Additionally, a git clone of the source tree:"
+	@echo ""
+	@echo "	git clone git://git.cairographics.org/git/cairo"
+	@echo ""
+	@echo "    will include a signed $(VERSION) tag which points to a commit named:"
+	@echo "	`git cat-file tag $(VERSION) | grep ^object | sed -e 's,object ,,'`"
+	@echo ""
+	@echo "    which can be verified with:"
+	@echo "	git verify-tag $(VERSION)"
+	@echo ""
+	@echo "    and can be checked out with a command such as:"
+	@echo "	git checkout -b build $(VERSION)"
 	@echo ""
 	@echo "============================== CUT HERE =============================="
-	@echo "Also, please include the new entries from the NEWS file."
+	@echo "Also, please add the new entries from the NEWS file as well as the detailed"
+	@echo "change log sent to the cairo-announce list when the tag is pushed."
+	@echo ""
+	@echo "The same NEWS entries should be posted on the cairographics.org wiki as well."
 	@echo ""
 	@echo "Last but not least, do not forget to bump up the micro"
 	@echo "version component to the next (odd) number and commit."
+
+release-publish: release-upload release-publish-message
 
 # XXX: Depending on all here is rather overkill. We don't really need
 # the library built in order to create the documentation.

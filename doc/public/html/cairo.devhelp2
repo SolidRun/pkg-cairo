@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="Cairo: A Vector Graphics Library" link="index.html" author="" name="cairo" version="2">
+  <chapters>
+    <sub name="Tutorial" link="pt01.html"/>
+    <sub name="Reference" link="pt02.html">
+      <sub name="Drawing" link="Drawing.html">
+        <sub name="cairo_t" link="cairo-cairo-t.html"/>
+        <sub name="Paths" link="cairo-Paths.html"/>
+        <sub name="Patterns" link="cairo-Patterns.html"/>
+        <sub name="Transformations" link="cairo-Transformations.html"/>
+        <sub name="Text" link="cairo-Text.html"/>
+      </sub>
+      <sub name="Fonts" link="Fonts.html">
+        <sub name="cairo_font_face_t" link="cairo-cairo-font-face-t.html"/>
+        <sub name="Scaled Fonts" link="cairo-Scaled-Fonts.html"/>
+        <sub name="Font Options" link="cairo-Font-Options.html"/>
+        <sub name="FreeType Fonts" link="cairo-FreeType-Fonts.html"/>
+        <sub name="Win32 Fonts" link="cairo-Win32-Fonts.html"/>
+      </sub>
+      <sub name="Surfaces" link="Surfaces.html">
+        <sub name="cairo_surface_t" link="cairo-cairo-surface-t.html"/>
+        <sub name="Image Surfaces" link="cairo-Image-Surfaces.html"/>
+        <sub name="Glitz Surfaces" link="cairo-Glitz-Surfaces.html"/>
+        <sub name="PDF Surfaces" link="cairo-PDF-Surfaces.html"/>
+        <sub name="PNG Support" link="cairo-PNG-Support.html"/>
+        <sub name="PostScript Surfaces" link="cairo-PostScript-Surfaces.html"/>
+        <sub name="Win32 Surfaces" link="cairo-Win32-Surfaces.html"/>
+        <sub name="BeOS Surfaces" link="cairo-BeOS-Surfaces.html"/>
+        <sub name="SVG Surfaces" link="cairo-SVG-Surfaces.html"/>
+        <sub name="XLib Surfaces" link="cairo-XLib-Surfaces.html"/>
+      </sub>
+      <sub name="Utilities" link="Support.html">
+        <sub name="cairo_matrix_t" link="cairo-cairo-matrix-t.html"/>
+        <sub name="Error handling" link="cairo-Error-handling.html"/>
+        <sub name="Version Information" link="cairo-Version-Information.html"/>
+        <sub name="Types" link="cairo-Types.html"/>
+      </sub>
+    </sub>
+    <sub name="Index" link="ix01.html"/>
+    <sub name="Creating a language binding for cairo" link="language-bindings.html">
+      <sub name="General considerations" link="language-bindings.html#bindings-general"/>
+      <sub name="Memory Management" link="bindings-memory.html"/>
+      <sub name="Multiple return values" link="bindings-return-values.html"/>
+      <sub name="Overloading and optional arguments" link="bindings-overloading.html"/>
+      <sub name="Streams and File I/O" link="bindings-streams.html"/>
+      <sub name="Error handling" link="bindings-errors.html"/>
+      <sub name="Patterns" link="bindings-patterns.html"/>
+      <sub name="Surfaces" link="bindings-surfaces.html"/>
+      <sub name="Fonts" link="bindings-fonts.html"/>
+      <sub name="cairo_path_t" link="bindings-path.html"/>
+    </sub>
+  </chapters>
+  <functions>
+    <keyword type="typedef" name="cairo_t" link="cairo-cairo-t.html#cairo-t"/>
+    <keyword type="enum" name="enum cairo_antialias_t" link="cairo-cairo-t.html#cairo-antialias-t"/>
+    <keyword type="enum" name="enum cairo_fill_rule_t" link="cairo-cairo-t.html#cairo-fill-rule-t"/>
+    <keyword type="enum" name="enum cairo_line_cap_t" link="cairo-cairo-t.html#cairo-line-cap-t"/>
+    <keyword type="enum" name="enum cairo_line_join_t" link="cairo-cairo-t.html#cairo-line-join-t"/>
+    <keyword type="enum" name="enum cairo_operator_t" link="cairo-cairo-t.html#cairo-operator-t"/>
+    <keyword type="struct" name="cairo_path_t" link="cairo-Paths.html#cairo-path-t"/>
+    <keyword type="union" name="union cairo_path_data_t" link="cairo-Paths.html#cairo-path-data-t"/>
+    <keyword type="enum" name="enum cairo_path_data_type_t" link="cairo-Paths.html#cairo-path-data-type-t"/>
+    <keyword type="typedef" name="cairo_pattern_t" link="cairo-Patterns.html#cairo-pattern-t"/>
+    <keyword type="enum" name="enum cairo_extend_t" link="cairo-Patterns.html#cairo-extend-t"/>
+    <keyword type="enum" name="enum cairo_filter_t" link="cairo-Patterns.html#cairo-filter-t"/>
+    <keyword type="struct" name="cairo_glyph_t" link="cairo-Text.html#cairo-glyph-t"/>
+    <keyword type="enum" name="enum cairo_font_slant_t" link="cairo-Text.html#cairo-font-slant-t"/>
+    <keyword type="enum" name="enum cairo_font_weight_t" link="cairo-Text.html#cairo-font-weight-t"/>
+    <keyword type="typedef" name="cairo_font_face_t" link="cairo-cairo-font-face-t.html#cairo-font-face-t"/>
+    <keyword type="typedef" name="cairo_scaled_font_t" link="cairo-Scaled-Fonts.html#cairo-scaled-font-t"/>
+    <keyword type="struct" name="cairo_font_extents_t" link="cairo-Scaled-Fonts.html#cairo-font-extents-t"/>
+    <keyword type="struct" name="cairo_text_extents_t" link="cairo-Scaled-Fonts.html#cairo-text-extents-t"/>
+    <keyword type="typedef" name="cairo_font_options_t" link="cairo-Font-Options.html#cairo-font-options-t"/>
+    <keyword type="enum" name="enum cairo_subpixel_order_t" link="cairo-Font-Options.html#cairo-subpixel-order-t"/>
+    <keyword type="enum" name="enum cairo_hint_style_t" link="cairo-Font-Options.html#cairo-hint-style-t"/>
+    <keyword type="enum" name="enum cairo_hint_metrics_t" link="cairo-Font-Options.html#cairo-hint-metrics-t"/>
+    <keyword type="typedef" name="cairo_surface_t" link="cairo-cairo-surface-t.html#cairo-surface-t"/>
+    <keyword type="enum" name="enum cairo_content_t" link="cairo-cairo-surface-t.html#cairo-content-t"/>
+    <keyword type="enum" name="enum cairo_format_t" link="cairo-Image-Surfaces.html#cairo-format-t"/>
+    <keyword type="macro" name="cairo_pdf_surface_set_dpi" link="cairo-PDF-Surfaces.html#cairo-pdf-surface-set-dpi"/>
+    <keyword type="function" name="cairo_read_func_t ()" link="cairo-PNG-Support.html#cairo-read-func-t"/>
+    <keyword type="function" name="cairo_write_func_t ()" link="cairo-PNG-Support.html#cairo-write-func-t"/>
+    <keyword type="macro" name="cairo_ps_surface_set_dpi" link="cairo-PostScript-Surfaces.html#cairo-ps-surface-set-dpi"/>
+    <keyword type="macro" name="cairo_svg_surface_set_dpi" link="cairo-SVG-Surfaces.html#cairo-svg-surface-set-dpi"/>
+    <keyword type="struct" name="cairo_matrix_t" link="cairo-cairo-matrix-t.html#cairo-matrix-t"/>
+    <keyword type="enum" name="enum cairo_status_t" link="cairo-Error-handling.html#cairo-status-t"/>
+    <keyword type="" name="Compatibility" link="cairo-Version-Information.html#id2521870"/>
+    <keyword type="" name="Examining the version" link="cairo-Version-Information.html#id2521908"/>
+    <keyword type="macro" name="CAIRO_VERSION" link="cairo-Version-Information.html#CAIRO-VERSION:CAPS"/>
+    <keyword type="macro" name="CAIRO_VERSION_ENCODE()" link="cairo-Version-Information.html#CAIRO-VERSION-ENCODE:CAPS"/>
+    <keyword type="function" name="cairo_bool_t ()" link="cairo-Types.html#cairo-bool-t"/>
+    <keyword type="struct" name="cairo_user_data_key_t" link="cairo-Types.html#cairo-user-data-key-t"/>
+    <keyword type="function" name="cairo_destroy_func_t ()" link="cairo-Types.html#cairo-destroy-func-t"/>
+  </functions>
+</book>
