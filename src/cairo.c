@@ -63,11 +63,11 @@ static const cairo_t _cairo_nil = {
 
 #include <assert.h>
 
-/* This has to be updated whenever cairo_status_t is extended.  That's
+/* This has to be updated whenever #cairo_status_t is extended.  That's
  * a bit of a pain, but it should be easy to always catch as long as
  * one adds a new test case to test a trigger of the new status value.
  */
-#define CAIRO_STATUS_LAST_STATUS CAIRO_STATUS_TEMP_FILE_ERROR
+#define CAIRO_STATUS_LAST_STATUS CAIRO_STATUS_INVALID_STRIDE
 
 /**
  * _cairo_error:
@@ -125,7 +125,7 @@ _cairo_set_error (cairo_t *cr, cairo_status_t status)
  * cairo_version:
  *
  * Returns the version of the cairo library encoded in a single
- * integer as per CAIRO_VERSION_ENCODE. The encoding ensures that
+ * integer as per %CAIRO_VERSION_ENCODE. The encoding ensures that
  * later versions compare greater than earlier versions.
  *
  * A run-time comparison to check that cairo's version is greater than
@@ -172,7 +172,7 @@ slim_hidden_def (cairo_version_string);
  * default values and with @target as a target surface. The target
  * surface should be constructed with a backend-specific function such
  * as cairo_image_surface_create() (or any other
- * <literal>cairo_&lt;backend&gt;_surface_create</literal> variant).
+ * cairo_<emphasis>backend</emphasis>_surface_create variant).
  *
  * This function references @target, so you can immediately
  * call cairo_surface_destroy() on it if you don't need to
@@ -461,7 +461,7 @@ slim_hidden_def(cairo_push_group);
 /**
  * cairo_push_group_with_content:
  * @cr: a cairo context
- * @content: a %cairo_content_t indicating the type of group that
+ * @content: a %#cairo_content_t indicating the type of group that
  *           will be created
  *
  * Temporarily redirects drawing to an intermediate surface known as a
@@ -605,7 +605,7 @@ slim_hidden_def(cairo_pop_group);
  * operations:
  *
  * <informalexample><programlisting>
- * cairo_pattern_t *group = cairo_pop_group (cr);
+ * #cairo_pattern_t *group = cairo_pop_group (cr);
  * cairo_set_source (cr, group);
  * cairo_pattern_destroy (group);
  * </programlisting></informalexample>
@@ -1021,7 +1021,7 @@ cairo_set_line_join (cairo_t *cr, cairo_line_join_t line_join)
  *
  * Each "on" segment will have caps applied as if the segment were a
  * separate sub-path. In particular, it is valid to use an "on" length
- * of 0.0 with CAIRO_LINE_CAP_ROUND or CAIRO_LINE_CAP_SQUARE in order
+ * of 0.0 with %CAIRO_LINE_CAP_ROUND or %CAIRO_LINE_CAP_SQUARE in order
  * to distributed dots or squares along a path.
  *
  * Note: The length values are in user-space units as evaluated at the
@@ -1035,8 +1035,8 @@ cairo_set_line_join (cairo_t *cr, cairo_line_join_t line_join)
  * @dashes.
  *
  * If any value in @dashes is negative, or if all values are 0, then
- * @cairo_t will be put into an error state with a status of
- * #CAIRO_STATUS_INVALID_DASH.
+ * @cr will be put into an error state with a status of
+ * #%CAIRO_STATUS_INVALID_DASH.
  **/
 void
 cairo_set_dash (cairo_t	     *cr,
@@ -1145,7 +1145,7 @@ cairo_set_miter_limit (cairo_t *cr, double limit)
  * Modifies the current transformation matrix (CTM) by translating the
  * user-space origin by (@tx, @ty). This offset is interpreted as a
  * user-space coordinate according to the CTM in place before the new
- * call to cairo_translate. In other words, the translation of the
+ * call to cairo_translate(). In other words, the translation of the
  * user-space origin takes place after any existing transformation.
  **/
 void
@@ -1844,10 +1844,10 @@ cairo_stroke_to_path (cairo_t *cr)
  * the ends of the sub-path. Instead, there is a line join connecting
  * the final and initial segments of the sub-path.
  *
- * If there is no current point before the call to cairo_close_path,
+ * If there is no current point before the call to cairo_close_path(),
  * this function will have no effect.
  *
- * Note: As of cairo version 1.2.4 any call to cairo_close_path will
+ * Note: As of cairo version 1.2.4 any call to cairo_close_path() will
  * place an explicit MOVE_TO element into the path immediately after
  * the CLOSE_PATH element, (which can be seen in cairo_copy_path() for
  * example). This can simplify path processing in some cases as it may
@@ -1868,6 +1868,60 @@ cairo_close_path (cairo_t *cr)
 	_cairo_set_error (cr, status);
 }
 slim_hidden_def(cairo_close_path);
+
+/**
+ * cairo_path_extents:
+ * @cr: a cairo context
+ * @x1: left of the resulting extents
+ * @y1: top of the resulting extents
+ * @x2: right of the resulting extents
+ * @y2: bottom of the resulting extents
+ *
+ * Computes a bounding box in user-space coordinates covering the
+ * points on the current path. If the current path is empty, returns
+ * an empty rectangle ((0,0), (0,0)). Stroke parameters, fill rule,
+ * surface dimensions and clipping are not taken into account.
+ *
+ * Contrast with cairo_fill_extents() and cairo_stroke_extents() which
+ * return the extents of only the area that would be "inked" by
+ * the corresponding drawing operations.
+ *
+ * The result of cairo_path_extents() is defined as equivalent to the
+ * limit of cairo_stroke_extents() with %CAIRO_LINE_CAP_ROUND as the
+ * line width approaches 0.0, (but never reaching the empty-rectangle
+ * returned by cairo_stroke_extents() for a line width of 0.0).
+ *
+ * Specifically, this means that zero-area sub-paths such as
+ * cairo_move_to();cairo_line_to() segments, (even degenerate cases
+ * where the coordinates to both calls are identical), will be
+ * considered as contributing to the extents. However, a lone
+ * cairo_move_to() will not contribute to the results of
+ * cairo_path_extents().
+ *
+ * Since: 1.6
+ **/
+void
+cairo_path_extents (cairo_t *cr,
+		    double *x1, double *y1, double *x2, double *y2)
+{
+    if (cr->status) {
+	if (x1)
+	    *x1 = 0.0;
+	if (y1)
+	    *y1 = 0.0;
+	if (x2)
+	    *x2 = 0.0;
+	if (y2)
+	    *y2 = 0.0;
+
+	return;
+    }
+
+    _cairo_gstate_path_extents (cr->gstate,
+				cr->path,
+				x1, y1, x2, y2);
+}
+slim_hidden_def (cairo_path_extents);
 
 /**
  * cairo_paint:
@@ -2015,20 +2069,20 @@ cairo_mask_surface (cairo_t         *cr,
  * situations:
  *
  * 1. Zero-length "on" segments set in cairo_set_dash(). If the cap
- * style is CAIRO_LINE_CAP_ROUND or CAIRO_LINE_CAP_SQUARE then these
+ * style is %CAIRO_LINE_CAP_ROUND or %CAIRO_LINE_CAP_SQUARE then these
  * segments will be drawn as circular dots or squares respectively. In
- * the case of CAIRO_LINE_CAP_SQUARE, the orientation of the squares
+ * the case of %CAIRO_LINE_CAP_SQUARE, the orientation of the squares
  * is determined by the direction of the underlying path.
  *
  * 2. A sub-path created by cairo_move_to() followed by either a
  * cairo_close_path() or one or more calls to cairo_line_to() to the
  * same coordinate as the cairo_move_to(). If the cap style is
  * CAIRO_LINE_CAP_ROUND then these sub-paths will be drawn as circular
- * dots. Note that in the case of CAIRO_LINE_CAP_SQUARE a degenerate
+ * dots. Note that in the case of %CAIRO_LINE_CAP_SQUARE a degenerate
  * sub-path will not be drawn at all, (since the correct orientation
  * is indeterminate).
  *
- * In no case will a cap style of CAIRO_LINE_CAP_BUTT cause anything
+ * In no case will a cap style of %CAIRO_LINE_CAP_BUTT cause anything
  * to be drawn in the case of either degenerate segments or sub-paths.
  **/
 void
@@ -2045,7 +2099,7 @@ cairo_stroke (cairo_t *cr)
  *
  * A drawing operator that strokes the current path according to the
  * current line width, line join, line cap, and dash settings. Unlike
- * cairo_stroke(), cairo_stroke_preserve preserves the path within the
+ * cairo_stroke(), cairo_stroke_preserve() preserves the path within the
  * cairo context.
  *
  * See cairo_set_line_width(), cairo_set_line_join(),
@@ -2072,7 +2126,7 @@ slim_hidden_def(cairo_stroke_preserve);
  *
  * A drawing operator that fills the current path according to the
  * current fill rule, (each sub-path is implicitly closed before being
- * filled). After cairo_fill, the current path will be cleared from
+ * filled). After cairo_fill(), the current path will be cleared from
  * the cairo context. See cairo_set_fill_rule() and
  * cairo_fill_preserve().
  **/
@@ -2090,7 +2144,7 @@ cairo_fill (cairo_t *cr)
  *
  * A drawing operator that fills the current path according to the
  * current fill rule, (each sub-path is implicitly closed before being
- * filled). Unlike cairo_fill(), cairo_fill_preserve preserves the
+ * filled). Unlike cairo_fill(), cairo_fill_preserve() preserves the
  * path within the cairo context.
  *
  * See cairo_set_fill_rule() and cairo_fill().
@@ -2236,10 +2290,16 @@ cairo_in_fill (cairo_t *cr, double x, double y)
  * @y2: bottom of the resulting extents
  *
  * Computes a bounding box in user coordinates covering the area that
- * would be affected by a cairo_stroke() operation operation given the
- * current path and stroke parameters. If the current path is empty,
- * returns an empty rectangle (0,0, 0,0). Surface dimensions and
- * clipping are not taken into account.
+ * would be affected, (the "inked" area), by a cairo_stroke()
+ * operation operation given the current path and stroke
+ * parameters. If the current path is empty, returns an empty
+ * rectangle ((0,0), (0,0)). Surface dimensions and clipping are not
+ * taken into account.
+ *
+ * Note that if the line width is set to exactly zero, then
+ * cairo_stroke_extents will return an empty rectangle. Contrast with
+ * cairo_path_extents() which can be used to compute the non-empty
+ * bounds as the line width approaches zero.
  *
  * See cairo_stroke(), cairo_set_line_width(), cairo_set_line_join(),
  * cairo_set_line_cap(), cairo_set_dash(), and
@@ -2251,8 +2311,18 @@ cairo_stroke_extents (cairo_t *cr,
 {
     cairo_status_t status;
 
-    if (cr->status)
+    if (cr->status) {
+	if (x1)
+	    *x1 = 0.0;
+	if (y1)
+	    *y1 = 0.0;
+	if (x2)
+	    *x2 = 0.0;
+	if (y2)
+	    *y2 = 0.0;
+
 	return;
+    }
 
     status = _cairo_gstate_stroke_extents (cr->gstate,
 					   cr->path,
@@ -2270,10 +2340,14 @@ cairo_stroke_extents (cairo_t *cr,
  * @y2: bottom of the resulting extents
  *
  * Computes a bounding box in user coordinates covering the area that
- * would be affected by a cairo_fill() operation given the current path
- * and fill parameters. If the current path is empty, returns an empty
- * rectangle (0,0, 0,0). Surface dimensions and clipping are not taken
- * into account.
+ * would be affected, (the "inked" area), by a cairo_fill() operation
+ * given the current path and fill parameters. If the current path is
+ * empty, returns an empty rectangle ((0,0), (0,0)). Surface
+ * dimensions and clipping are not taken into account.
+ *
+ * Contrast with cairo_path_extents(), which is similar, but returns
+ * non-zero extents for some paths no inked area, (such as a simple
+ * line segment).
  *
  * See cairo_fill(), cairo_set_fill_rule() and cairo_fill_preserve().
  **/
@@ -2283,8 +2357,18 @@ cairo_fill_extents (cairo_t *cr,
 {
     cairo_status_t status;
 
-    if (cr->status)
+    if (cr->status) {
+	if (x1)
+	    *x1 = 0.0;
+	if (y1)
+	    *y1 = 0.0;
+	if (x2)
+	    *x2 = 0.0;
+	if (y2)
+	    *y2 = 0.0;
+
 	return;
+    }
 
     status = _cairo_gstate_fill_extents (cr->gstate,
 					 cr->path,
@@ -2301,7 +2385,7 @@ cairo_fill_extents (cairo_t *cr,
  * region with the current path as it would be filled by cairo_fill()
  * and according to the current fill rule (see cairo_set_fill_rule()).
  *
- * After cairo_clip, the current path will be cleared from the cairo
+ * After cairo_clip(), the current path will be cleared from the cairo
  * context.
  *
  * The current clip region affects all drawing operations by
@@ -2331,7 +2415,7 @@ cairo_clip (cairo_t *cr)
  * region with the current path as it would be filled by cairo_fill()
  * and according to the current fill rule (see cairo_set_fill_rule()).
  *
- * Unlike cairo_clip(), cairo_clip_preserve preserves the path within
+ * Unlike cairo_clip(), cairo_clip_preserve() preserves the path within
  * the cairo context.
  *
  * The current clip region affects all drawing operations by
@@ -2408,8 +2492,18 @@ cairo_clip_extents (cairo_t *cr,
 {
     cairo_status_t status;
 
-    if (cr->status)
+    if (cr->status) {
+	if (x1)
+	    *x1 = 0.0;
+	if (y1)
+	    *y1 = 0.0;
+	if (x2)
+	    *x2 = 0.0;
+	if (y2)
+	    *y2 = 0.0;
+
 	return;
+    }
 
     status = _cairo_gstate_clip_extents (cr->gstate, x1, y1, x2, y2);
     if (status)
@@ -2443,15 +2537,13 @@ _cairo_rectangle_list_create_in_error (cairo_status_t status)
  * Gets the current clip region as a list of rectangles in user coordinates.
  * Never returns %NULL.
  *
- * The status in the list may be CAIRO_STATUS_CLIP_NOT_REPRESENTABLE to
+ * The status in the list may be %CAIRO_STATUS_CLIP_NOT_REPRESENTABLE to
  * indicate that the clip region cannot be represented as a list of
  * user-space rectangles. The status may have other values to indicate
  * other errors.
  *
- * The caller must always call cairo_rectangle_list_destroy on the result of
- * this function.
- *
- * Returns: the current clip region as a list of rectangles in user coordinates.
+ * Returns: the current clip region as a list of rectangles in user coordinates,
+ * which should be destroyed using cairo_rectangle_list_destroy().
  *
  * Since: 1.4
  **/
@@ -2509,6 +2601,12 @@ cairo_font_extents (cairo_t              *cr,
 {
     cairo_status_t status;
 
+    extents->ascent = 0.0;
+    extents->descent = 0.0;
+    extents->height = 0.0;
+    extents->max_x_advance = 0.0;
+    extents->max_y_advance = 0.0;
+
     if (cr->status)
 	return;
 
@@ -2556,7 +2654,7 @@ cairo_set_font_face (cairo_t           *cr,
  * this nil object will cause its error state to propagate to other
  * objects it is passed to, (for example, calling
  * cairo_set_font_face() with a nil font will trigger an error that
- * will shutdown the cairo_t object).
+ * will shutdown the #cairo_t object).
  **/
 cairo_font_face_t *
 cairo_get_font_face (cairo_t *cr)
@@ -2666,10 +2764,12 @@ cairo_set_font_options (cairo_t                    *cr,
     if (cr->status)
 	return;
 
-    status = cairo_font_options_status ((cairo_font_options_t *) options);
-    if (status) {
-	_cairo_set_error (cr, status);
-	return;
+    if (options != NULL) {
+	status = cairo_font_options_status ((cairo_font_options_t *) options);
+	if (status) {
+	    _cairo_set_error (cr, status);
+	    return;
+	}
     }
 
     _cairo_gstate_set_font_options (cr->gstate, options);
@@ -2760,7 +2860,7 @@ BAIL:
  * this nil object will cause its error state to propagate to other
  * objects it is passed to, (for example, calling
  * cairo_set_scaled_font() with a nil font will trigger an error that
- * will shutdown the cairo_t object).
+ * will shutdown the #cairo_t object).
  *
  * Since: 1.4
  **/
@@ -2812,33 +2912,29 @@ cairo_text_extents (cairo_t              *cr,
     int num_glyphs;
     double x, y;
 
+    extents->x_bearing = 0.0;
+    extents->y_bearing = 0.0;
+    extents->width  = 0.0;
+    extents->height = 0.0;
+    extents->x_advance = 0.0;
+    extents->y_advance = 0.0;
+
     if (cr->status)
 	return;
 
-    if (utf8 == NULL) {
-	extents->x_bearing = 0.0;
-	extents->y_bearing = 0.0;
-	extents->width = 0.0;
-	extents->height = 0.0;
-	extents->x_advance = 0.0;
-	extents->y_advance = 0.0;
+    if (utf8 == NULL)
 	return;
-    }
 
-    cairo_get_current_point (cr, &x, &y);
+    (void) cairo_get_current_point (cr, &x, &y);
 
     status = _cairo_gstate_text_to_glyphs (cr->gstate, utf8,
 					   x, y,
 					   &glyphs, &num_glyphs);
 
-    if (status) {
-	if (glyphs)
-	    free (glyphs);
-	_cairo_set_error (cr, status);
-	return;
-    }
-
-    status = _cairo_gstate_glyph_extents (cr->gstate, glyphs, num_glyphs, extents);
+    if (status == CAIRO_STATUS_SUCCESS)
+	status = _cairo_gstate_glyph_extents (cr->gstate,
+		                              glyphs, num_glyphs,
+					      extents);
     if (glyphs)
 	free (glyphs);
 
@@ -2872,6 +2968,13 @@ cairo_glyph_extents (cairo_t                *cr,
 {
     cairo_status_t status;
 
+    extents->x_bearing = 0.0;
+    extents->y_bearing = 0.0;
+    extents->width  = 0.0;
+    extents->height = 0.0;
+    extents->x_advance = 0.0;
+    extents->y_advance = 0.0;
+
     if (cr->status)
 	return;
 
@@ -2902,7 +3005,7 @@ cairo_glyph_extents (cairo_t                *cr,
  * by its advance values. This allows for easy display of a single
  * logical string with multiple calls to cairo_show_text().
  *
- * NOTE: The cairo_show_text() function call is part of what the cairo
+ * Note: The cairo_show_text() function call is part of what the cairo
  * designers call the "toy" text API. It is convenient for short demos
  * and simple programs, but it is not expected to be adequate for
  * serious text-using applications. See cairo_show_glyphs() for the
@@ -2923,7 +3026,7 @@ cairo_show_text (cairo_t *cr, const char *utf8)
     if (utf8 == NULL)
 	return;
 
-    cairo_get_current_point (cr, &x, &y);
+    (void) cairo_get_current_point (cr, &x, &y);
 
     status = _cairo_gstate_text_to_glyphs (cr->gstate, utf8,
 					       x, y,
@@ -3001,7 +3104,7 @@ cairo_show_glyphs (cairo_t *cr, const cairo_glyph_t *glyphs, int num_glyphs)
  * This allows for chaining multiple calls to to cairo_text_path()
  * without having to set current point in between.
  *
- * NOTE: The cairo_text_path() function call is part of what the cairo
+ * Note: The cairo_text_path() function call is part of what the cairo
  * designers call the "toy" text API. It is convenient for short demos
  * and simple programs, but it is not expected to be adequate for
  * serious text-using applications. See cairo_glyph_path() for the
@@ -3022,7 +3125,7 @@ cairo_text_path  (cairo_t *cr, const char *utf8)
     if (utf8 == NULL)
 	return;
 
-    cairo_get_current_point (cr, &x, &y);
+    (void) cairo_get_current_point (cr, &x, &y);
 
     status = _cairo_gstate_text_to_glyphs (cr->gstate, utf8,
 					   x, y,
@@ -3169,10 +3272,17 @@ cairo_get_antialias (cairo_t *cr)
  *
  * Some functions unset the current path and as a result, current point:
  * cairo_fill(), cairo_stroke().
+ *
+ * Returns: %CAIRO_STATUS_SUCCESS if current point was successfully
+ * retrieved.  Otherwise, if @cr has been in an error status, that status
+ * is returned, otherwise %CAIRO_STATUS_NO_CURRENT_POINT is returned if
+ * no current point exists.  In all error cases, both @x and @y will be
+ * set to 0.0.
  **/
-void
+cairo_status_t
 cairo_get_current_point (cairo_t *cr, double *x_ret, double *y_ret)
 {
+    cairo_status_t status = CAIRO_STATUS_SUCCESS;
     cairo_fixed_t x_fixed, y_fixed;
     double x, y;
 
@@ -3185,6 +3295,11 @@ cairo_get_current_point (cairo_t *cr, double *x_ret, double *y_ret)
     }
     else
     {
+	if (cr->status)
+	    status = cr->status;
+	else
+	    status = CAIRO_STATUS_NO_CURRENT_POINT;
+
 	x = 0.0;
 	y = 0.0;
     }
@@ -3193,6 +3308,8 @@ cairo_get_current_point (cairo_t *cr, double *x_ret, double *y_ret)
 	*x_ret = x;
     if (y_ret)
 	*y_ret = y;
+
+    return status;
 }
 slim_hidden_def(cairo_get_current_point);
 
@@ -3366,7 +3483,7 @@ cairo_get_group_target (cairo_t *cr)
  * over the returned data structure.
  *
  * This function will always return a valid pointer, but the result
- * will have no data (<literal>data==NULL</literal> and
+ * will have no data (<literal>data==%NULL</literal> and
  * <literal>num_data==0</literal>), if either of the following
  * conditions hold:
  *
@@ -3412,7 +3529,7 @@ cairo_copy_path (cairo_t *cr)
  * series of %CAIRO_PATH_LINE_TO elements.
  *
  * This function will always return a valid pointer, but the result
- * will have no data (<literal>data==NULL</literal> and
+ * will have no data (<literal>data==%NULL</literal> and
  * <literal>num_data==0</literal>), if either of the following
  * conditions hold:
  *
@@ -3492,7 +3609,7 @@ cairo_append_path (cairo_t		*cr,
  *
  * Checks whether an error has previously occurred for this context.
  *
- * Returns the current status of this context, see #cairo_status_t
+ * Returns: the current status of this context, see #cairo_status_t
  **/
 cairo_status_t
 cairo_status (cairo_t *cr)
@@ -3507,7 +3624,7 @@ slim_hidden_def (cairo_status);
  *
  * Provides a human-readable description of a #cairo_status_t.
  *
- * Returns a string representation of the status
+ * Returns: a string representation of the status
  */
 const char *
 cairo_status_to_string (cairo_status_t status)
@@ -3561,6 +3678,8 @@ cairo_status_to_string (cairo_status_t status)
         return "clip region not representable in desired format";
     case CAIRO_STATUS_TEMP_FILE_ERROR:
 	return "error creating or writing to a temporary file";
+    case CAIRO_STATUS_INVALID_STRIDE:
+	return "invalid value for stride";
     }
 
     return "<unknown error status>";

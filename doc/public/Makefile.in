@@ -302,13 +302,18 @@ CFILE_GLOB = $(top_srcdir)/src/*.c $(top_srcdir)/src/*.h
 PRIVATE_TEST_HFILES = \
 	cairo-analysis-surface-private.h \
 	cairo-arc-private.h \
+	cairo-atomic-private.h \
 	cairo-cache-private.h \
 	cairo-clip-private.h \
+	cairo-compiler-private.h \
+	cairo-fixed-private.h \
+	cairo-fixed-type-private.h \
 	cairo-freelist-private.h \
 	cairo-ft-private.h \
 	cairo-glitz-private.h \
 	cairo-gstate-private.h \
 	cairo-hash-private.h \
+	cairo-malloc-private.h \
 	cairo-meta-surface-private.h \
 	cairo-mutex-list-private.h \
 	cairo-mutex-private.h \
@@ -319,10 +324,13 @@ PRIVATE_TEST_HFILES = \
 	cairo-paginated-surface-private.h \
 	cairo-path-fixed-private.h \
 	cairo-path-private.h \
+	cairo-pdf-operators-private.h \
 	cairo-pdf-surface-private.h \
 	cairo-private.h \
 	cairo-ps-surface-private.h \
 	cairo-quartz-private.h \
+	cairo-reference-count-private.h \
+	cairo-region-private.h \
 	cairo-scaled-font-private.h \
 	cairo-scaled-font-subsets-private.h \
 	cairo-skiplist-private.h \
@@ -333,9 +341,11 @@ PRIVATE_TEST_HFILES = \
 	cairo-type1-private.h \
 	cairo-types-private.h \
 	cairo-wideint-private.h \
+	cairo-wideint-type-private.h \
 	cairo-win32-private.h \
 	cairo-xlib-private.h \
 	cairo-xlib-surface-private.h \
+	cairo-xlib-xrender-private.h \
 	cairoint.h
 
 UNSUPPORTED_HFILES = \
@@ -393,7 +403,7 @@ TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)
 # Version information for marking the documentation
 EXTRA_DIST = $(content_files) $(HTML_IMAGES) $(DOC_MAIN_SGML_FILE) \
 	$(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt \
-	version.xml.in
+	version.xml.in $(TESTS)
 DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp \
 	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
 
@@ -405,6 +415,8 @@ SCANOBJ_FILES = \
 	$(DOC_MODULE).signals
 
 CLEANFILES = $(SCANOBJ_FILES) $(DOC_MODULE)-unused.txt $(DOC_STAMPS)
+TESTS_ENVIRONMENT = srcdir="$(srcdir)" top_srcdir="$(top_srcdir)" MAKE="$(MAKE)"
+TESTS = check-doc-coverage.sh check-doc-syntax.sh
 all: all-am
 
 .SUFFIXES:
@@ -456,6 +468,79 @@ ctags: CTAGS
 CTAGS:
 
 
+check-TESTS: $(TESTS)
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
+	srcdir=$(srcdir); export srcdir; \
+	list='$(TESTS)'; \
+	if test -n "$$list"; then \
+	  for tst in $$list; do \
+	    if test -f ./$$tst; then dir=./; \
+	    elif test -f $$tst; then dir=; \
+	    else dir="$(srcdir)/"; fi; \
+	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xpass=`expr $$xpass + 1`; \
+		failed=`expr $$failed + 1`; \
+		echo "XPASS: $$tst"; \
+	      ;; \
+	      *) \
+		echo "PASS: $$tst"; \
+	      ;; \
+	      esac; \
+	    elif test $$? -ne 77; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xfail=`expr $$xfail + 1`; \
+		echo "XFAIL: $$tst"; \
+	      ;; \
+	      *) \
+		failed=`expr $$failed + 1`; \
+		echo "FAIL: $$tst"; \
+	      ;; \
+	      esac; \
+	    else \
+	      skip=`expr $$skip + 1`; \
+	      echo "SKIP: $$tst"; \
+	    fi; \
+	  done; \
+	  if test "$$failed" -eq 0; then \
+	    if test "$$xfail" -eq 0; then \
+	      banner="All $$all tests passed"; \
+	    else \
+	      banner="All $$all tests behaved as expected ($$xfail expected failures)"; \
+	    fi; \
+	  else \
+	    if test "$$xpass" -eq 0; then \
+	      banner="$$failed of $$all tests failed"; \
+	    else \
+	      banner="$$failed of $$all tests did not behave as expected ($$xpass unexpected passes)"; \
+	    fi; \
+	  fi; \
+	  dashes="$$banner"; \
+	  skipped=""; \
+	  if test "$$skip" -ne 0; then \
+	    skipped="($$skip tests were not run)"; \
+	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$skipped"; \
+	  fi; \
+	  report=""; \
+	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
+	    report="Please report to $(PACKAGE_BUGREPORT)"; \
+	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$report"; \
+	  fi; \
+	  dashes=`echo "$$dashes" | sed s/./=/g`; \
+	  echo "$$dashes"; \
+	  echo "$$banner"; \
+	  test -z "$$skipped" || echo "$$skipped"; \
+	  test -z "$$report" || echo "$$report"; \
+	  echo "$$dashes"; \
+	  test "$$failed" -eq 0; \
+	else :; fi
+
 distdir: $(DISTFILES)
 	$(mkdir_p) $(distdir)/../..
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
@@ -488,6 +573,7 @@ distdir: $(DISTFILES)
 	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
 	  dist-hook
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
 all-am: Makefile
 installdirs:
@@ -563,16 +649,17 @@ ps-am:
 
 uninstall-am: uninstall-info-am uninstall-local
 
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	clean-local dist-hook distclean distclean-generic \
-	distclean-libtool distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am \
-	install-data-local install-exec install-exec-am install-info \
-	install-info-am install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic maintainer-clean-local mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-info-am uninstall-local
+.PHONY: all all-am check check-TESTS check-am clean clean-generic \
+	clean-libtool clean-local dist-hook distclean \
+	distclean-generic distclean-libtool distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-data-local install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
+	uninstall-info-am uninstall-local
 
 
 Headers.mk:
@@ -694,6 +781,8 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	fi
 
 .PHONY : dist-hook-local
+
+check: doc
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

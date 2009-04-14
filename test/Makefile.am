@@ -2,6 +2,8 @@ SUBDIRS=pdiff .
 
 # Here are all the tests that are run unconditionally
 TESTS =							\
+a1-image-sample$(EXEEXT)				\
+a1-traps-sample$(EXEEXT)				\
 a8-mask$(EXEEXT)					\
 big-trap$(EXEEXT)					\
 caps-joins$(EXEEXT)					\
@@ -25,6 +27,7 @@ create-for-stream$(EXEEXT)				\
 create-from-png$(EXEEXT)				\
 create-from-png-stream$(EXEEXT)				\
 dash-caps-joins$(EXEEXT)				\
+dash-curve$(EXEEXT)					\
 dash-no-dash$(EXEEXT)					\
 dash-offset-negative$(EXEEXT)				\
 dash-scale$(EXEEXT)					\
@@ -35,6 +38,10 @@ degenerate-pen$(EXEEXT)					\
 device-offset$(EXEEXT)					\
 device-offset-positive$(EXEEXT)				\
 extend-pad$(EXEEXT)					\
+extend-reflect$(EXEEXT)					\
+extend-reflect-similar$(EXEEXT)				\
+extend-repeat$(EXEEXT)					\
+extend-repeat-similar$(EXEEXT)				\
 fill-and-stroke$(EXEEXT)				\
 fill-and-stroke-alpha$(EXEEXT)				\
 fill-and-stroke-alpha-add$(EXEEXT)			\
@@ -44,15 +51,18 @@ fill-rule$(EXEEXT)					\
 filter-nearest-offset$(EXEEXT)				\
 font-face-get-type$(EXEEXT)				\
 font-matrix-translation$(EXEEXT)			\
+font-options$(EXEEXT)					\
 glyph-cache-pressure$(EXEEXT)				\
 get-and-set$(EXEEXT)					\
 get-clip$(EXEEXT)					\
 get-group-target$(EXEEXT)				\
 get-path-extents$(EXEEXT)				\
+get-xrender-format$(EXEEXT)				\
 gradient-alpha$(EXEEXT)					\
 gradient-zero-stops$(EXEEXT)				\
 infinite-join$(EXEEXT)					\
 in-fill-empty-trapezoid$(EXEEXT)			\
+in-fill-trapezoid$(EXEEXT)			\
 invalid-matrix$(EXEEXT)					\
 leaky-dash$(EXEEXT)					\
 leaky-polygon$(EXEEXT)					\
@@ -88,6 +98,7 @@ push-group$(EXEEXT)					\
 radial-gradient$(EXEEXT)				\
 random-intersections$(EXEEXT)				\
 rectangle-rounding-error$(EXEEXT)			\
+rectilinear-miter-limit$(EXEEXT)			\
 rectilinear-stroke$(EXEEXT)				\
 rel-path$(EXEEXT)					\
 rgb24-ignore-alpha$(EXEEXT)				\
@@ -167,7 +178,6 @@ zero-alpha$(EXEEXT)
 #	that's just a bug in the test rig that should just consider
 #	the abort an XFAIL like any other.
 DISABLED_TESTS =			\
-extend-reflect$(EXEEXT)			\
 show-glyphs-many$(EXEEXT)		\
 text-glyph-range$(EXEEXT)
 
@@ -202,6 +212,10 @@ if CAIRO_HAS_XLIB_SURFACE
 TESTS += xlib-surface$(EXEEXT)
 endif
 
+if CAIRO_HAS_XLIB_XRENDER_SURFACE
+TESTS += get-xrender-format$(EXEEXT)
+endif
+
 if CAIRO_HAS_MULTI_PAGE_SURFACES
 TESTS += multi-page$(EXEEXT)
 endif
@@ -216,6 +230,8 @@ endif
 
 # All tests which have a reference image go here.
 REFERENCE_IMAGES = \
+	a1-image-sample-ref.png		\
+	a1-traps-sample-ref.png		\
 	a8-mask-ref.png	\
 	bitmap-font-pdf-argb32-ref.png	\
 	bitmap-font-ref.png	\
@@ -265,6 +281,7 @@ REFERENCE_IMAGES = \
 	dash-caps-joins-ps-rgb24-ref.png	\
 	dash-caps-joins-quartz-ref.png	\
 	dash-caps-joins-ref.png	\
+	dash-curve-ref.png	\
 	dash-no-dash-ref.png	\
 	dash-offset-negative-ref.png	\
 	dash-scale-ps-argb32-ref.png	\
@@ -288,6 +305,9 @@ REFERENCE_IMAGES = \
 	device-offset-rgb24-ref.png	\
 	extend-pad-ref.png	\
 	extend-reflect-ref.png	\
+	extend-reflect-similar-ref.png	\
+	extend-repeat-ref.png	\
+	extend-repeat-similar-ref.png	\
 	fill-and-stroke-alpha-add-quartz-ref.png	\
 	fill-and-stroke-alpha-add-ref.png	\
 	fill-and-stroke-alpha-quartz-ref.png	\
@@ -311,6 +331,7 @@ REFERENCE_IMAGES = \
 	fill-rule-quartz-rgb24-ref.png	\
 	fill-rule-ref.png	\
 	fill-rule-rgb24-ref.png	\
+	fill-rule-ps-rgb24-ref.png \
 	filter-nearest-offset-ref.png	\
 	font-matrix-translation-ps-argb32-ref.png	\
 	font-matrix-translation-ps-rgb24-ref.png	\
@@ -361,6 +382,8 @@ REFERENCE_IMAGES = \
 	mask-svg-argb32-ref.png	\
 	meta-surface-pattern-ref.png		\
 	meta-surface-pattern-rgb24-ref.png	\
+	meta-surface-pattern-pdf-ref.png	\
+	meta-surface-pattern-pdf-rgb24-ref.png	\
 	miter-precision-ref.png \
 	move-to-show-surface-ref.png	\
 	new-sub-path-ps-argb32-ref.png	\
@@ -413,6 +436,7 @@ REFERENCE_IMAGES = \
 	random-intersections-ref.png	\
 	rgb24-ignore-alpha-ref.png \
 	rectangle-rounding-error-ref.png	\
+	rectilinear-miter-limit-ref.png		\
 	rectilinear-stroke-ref.png	\
 	rel-path-quartz-ref.png	\
 	rel-path-quartz-rgb24-ref.png	\
@@ -504,11 +528,7 @@ $(REFERENCE_IMAGES)
 # Of course, before any "release" of cairo we should eliminate
 # everything from this list by fixing the bugs. (We don't necessarily
 # have to be that strict for "snapshots" though.)
-#
-# Also, any test listed here should call cairo_test_expect_failure and
-# provide an explanation for the expected failure.
 XFAIL_TESTS =					\
-a8-mask$(EXEEXT)				\
 big-trap$(EXEEXT)				\
 extend-pad$(EXEEXT)				\
 filter-nearest-offset$(EXEEXT)			\
@@ -521,19 +541,20 @@ surface-pattern-scale-up$(EXEEXT)
 
 # Any test that doesn't generate a log file goes here
 NOLOG_TESTS =			\
-user-data			\
-svg-surface			\
-svg-clip			\
+fallback-resolution		\
+font-options			\
+multi-page			\
 pdf-features			\
 ps-features			\
-multi-page			\
-fallback-resolution
+svg-clip			\
+svg-surface			\
+user-data
 
 # A hook that summarises the failures
 check: AM_MAKEFLAGS+=-k
 check-local:
 	@FAILED_TESTS=""; \
-	for t in *.log; do \
+	for t in $(TESTS:$(EXEEXT)=.log); do \
 	    if grep -e '\<FAIL\>' $$t >/dev/null 2>&1; then \
 		FAILED_TESTS="$$FAILED_TESTS $${t%.log}"; \
 	    fi; \
@@ -694,13 +715,40 @@ index.html: $(srcdir)/make-html.pl $(TESTS:$(EXEEXT)=.log)
 
 # Identify identical reference images
 check-ref-dups:
-	@sha1sum *-ref.png > ref.hash
-	@join ref.hash ref.hash | grep -v -E '( .*-ref.png).*\1' | cut -d' ' -f 1-2 | sort -u
+	@LANG=C; \
+	( cd "$(scrdir)" && sha1sum *-ref.png | sort ) > ref.hash; \
+	join ref.hash ref.hash | grep -v -E '( .*-ref.png).*\1' | cut -d' ' -f 1-2 | sort -u
 
 # Not exactly the best script in the world...
 check-ref-missing:
-	@for i in *-ref.png; do\
-	    echo ${REFERENCE_IMAGES} | grep -sq $$i || echo $$i; \
-	done
+	@cd "$(srcdir)"; \
+	REFS=`git ls-files "*-ref.png"`; \
+	test x = "x$$REFS" && REFS=`ls *-ref.png`; \
+	ret=true; \
+	missing=""; \
+	for i in $$REFS; do \
+	    echo "" $(REFERENCE_IMAGES) "" | grep -sq " $$i " || missing="$$missing $$i" ; \
+	done ; \
+	if test -n "$$missing"; then \
+		echo "*** Error: Sanity check failed"; \
+		echo "Some reference files are not included in the distribution."; \
+		echo "You probably need to add these to Makefile.am's REFERENCE_IMAGES."; \
+		echo "Missing: $$missing"; \
+		ret=false; \
+	fi >&2; \
+	missing=""; \
+	for i in $(REFERENCE_IMAGES); do \
+	    echo "" $$REFS "" | grep -sq " $$i " || missing="$$missing $$i" ; \
+	done ; \
+	if test -n "$$missing"; then \
+		echo "*** Error: Sanity check failed"; \
+		echo "Some reference files included in the distribution do not exist"; \
+		echo "or are not in git.  You probably want to add these to git first."; \
+		echo "Missing: $$missing"; \
+		ret=false; \
+	fi >&2; \
+	$$ret
 
-.PHONY: check-valgrind test recheck retest html rehtml check-ref-dups check-ref-missing
+release-verify-sane-tests: check-ref-missing
+
+.PHONY: check-valgrind test recheck retest html rehtml check-ref-dups check-ref-missing release-verify-sane-tests

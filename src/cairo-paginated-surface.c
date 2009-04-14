@@ -162,8 +162,10 @@ _cairo_paginated_surface_finish (void *abstract_surface)
     cairo_paginated_surface_t *surface = abstract_surface;
     cairo_status_t status = CAIRO_STATUS_SUCCESS;
 
-    if (surface->page_is_blank == FALSE || surface->page_num == 1)
-	status = cairo_surface_show_page (abstract_surface);
+    if (surface->page_is_blank == FALSE || surface->page_num == 1) {
+	cairo_surface_show_page (abstract_surface);
+	status = cairo_surface_status (abstract_surface);
+    }
 
     if (status == CAIRO_STATUS_SUCCESS) {
 	cairo_surface_finish (surface->target);
@@ -294,9 +296,8 @@ _paint_page (cairo_paginated_surface_t *surface)
 
     analysis = _cairo_analysis_surface_create (surface->target,
 					       surface->width, surface->height);
-    if (analysis == NULL)
-	return _cairo_surface_set_error (surface->target,
-		                         CAIRO_STATUS_NO_MEMORY);
+    if (analysis->status)
+	return _cairo_surface_set_error (surface->target, analysis->status);
 
     surface->backend->set_paginated_mode (surface->target, CAIRO_PAGINATED_MODE_ANALYZE);
     status = _cairo_meta_surface_replay_and_create_regions (surface->meta, analysis);
@@ -328,6 +329,16 @@ _paint_page (cairo_paginated_surface_t *surface)
             has_finegrained_fallback = _cairo_analysis_surface_has_unsupported (analysis);
             break;
 
+	case CAIRO_SURFACE_TYPE_IMAGE:
+	case CAIRO_SURFACE_TYPE_XLIB:
+	case CAIRO_SURFACE_TYPE_XCB:
+	case CAIRO_SURFACE_TYPE_GLITZ:
+	case CAIRO_SURFACE_TYPE_QUARTZ:
+	case CAIRO_SURFACE_TYPE_WIN32:
+	case CAIRO_SURFACE_TYPE_BEOS:
+	case CAIRO_SURFACE_TYPE_DIRECTFB:
+	case CAIRO_SURFACE_TYPE_SVG:
+	case CAIRO_SURFACE_TYPE_OS2:
         default:
             if (_cairo_analysis_surface_has_unsupported (analysis)) {
                 has_supported = FALSE;
@@ -435,7 +446,8 @@ _cairo_paginated_surface_copy_page (void *abstract_surface)
      * show_page and we implement the copying by simply not destroying
      * the meta-surface. */
 
-    return cairo_surface_show_page (surface->target);
+    cairo_surface_show_page (surface->target);
+    return cairo_surface_status (surface->target);
 }
 
 static cairo_int_status_t
@@ -452,7 +464,8 @@ _cairo_paginated_surface_show_page (void *abstract_surface)
     if (status)
 	return status;
 
-    status = cairo_surface_show_page (surface->target);
+    cairo_surface_show_page (surface->target);
+    status = cairo_surface_status (surface->target);
     if (status)
 	return status;
 
