@@ -1,6 +1,6 @@
 /* -*- Mode: c; c-basic-offset: 4; indent-tabs-mode: t; tab-width: 8; -*- */
 /*
- * Copyright © 2004,2007 Red Hat, Inc.
+ * Copyright © 2007 Red Hat, Inc.
  *
  * Permission to use, copy, modify, distribute, and sell this software
  * and its documentation for any purpose is hereby granted without
@@ -21,40 +21,13 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * Author: Carl D. Worth <cworth@cworth.org>
+ * Author: Behdad Esfahbod <behdad@behdad.org>
  */
 
-#include "cairo-boilerplate.h"
-#include "cairo-quartz-boilerplate-private.h"
+#ifndef _CAIRO_BOILERPLATE_SVG_H_
+#define _CAIRO_BOILERPLATE_SVG_H_
 
-#include <cairo-quartz.h>
+cairo_status_t
+cairo_boilerplate_svg_surface_force_fallbacks (cairo_surface_t *surface);
 
-cairo_surface_t *
-_cairo_quartz_boilerplate_create_surface (const char		*name,
-					  cairo_content_t	 content,
-					  int			 width,
-					  int			 height,
-					  cairo_boilerplate_mode_t  mode,
-					  void			**closure)
-{
-    cairo_format_t format;
-
-    switch (content) {
-	case CAIRO_CONTENT_COLOR: format = CAIRO_FORMAT_RGB24; break;
-	case CAIRO_CONTENT_COLOR_ALPHA: format = CAIRO_FORMAT_ARGB32; break;
-	case CAIRO_CONTENT_ALPHA: format = CAIRO_FORMAT_A8; break;
-	default:
-	    assert (0); /* not reached */
-	    return NULL;
-    }
-
-    *closure = NULL;
-
-    return cairo_quartz_surface_create (format, width, height);
-}
-
-void
-_cairo_quartz_boilerplate_cleanup (void *closure)
-{
-    /* nothing */
-}
+#endif

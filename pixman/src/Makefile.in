@@ -91,6 +91,7 @@ AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -166,6 +167,7 @@ DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLE_SOME_FLOATING_POINT_FALSE = @DISABLE_SOME_FLOATING_POINT_FALSE@
 DISABLE_SOME_FLOATING_POINT_TRUE = @DISABLE_SOME_FLOATING_POINT_TRUE@
+DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -212,6 +214,7 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
 OS_WIN32_TRUE = @OS_WIN32_TRUE@
@@ -306,6 +309,7 @@ xlib_xrender_LIBS = @xlib_xrender_LIBS@
 noinst_LTLIBRARIES = libpixman.la $(am__append_1)
 libpixman_la_SOURCES = \
 	pixman.h \
+	pixmanint.h \
 	pixman-remap.h \
 	pixman-xserver-compat.h \
 	pixregion.c \
@@ -318,7 +322,6 @@ libpixman_la_SOURCES = \
 	icformat.c \
 	icimage.c \
 	icimage.h \
-	icint.h \
 	icpixels.c \
 	icrect.c \
 	icrop.h \
@@ -342,7 +345,7 @@ libpixman_la_LIBADD = $(PIXMAN_LDADD) $(am__append_2)
 
 @USE_MMX_TRUE@libpixman_mmx_la_CFLAGS = $(PIXMAN_CFLAGS)
 @USE_MMX_TRUE@libpixman_mmx_la_LIBADD = $(PIXMAN_LDADD)
-TESTS = check-config.sh
+TESTS = check-pixmanint.sh
 EXTRA_DIST = $(TESTS)
 all: all-am
 
