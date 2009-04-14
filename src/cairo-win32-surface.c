@@ -240,27 +240,32 @@ _create_dc_and_bitmap (cairo_win32_surface_t *surface,
 static cairo_surface_t *
 _cairo_win32_surface_create_for_dc (HDC             original_dc,
 				    cairo_format_t  format,
-				    int	            drawable,
 				    int	            width,
 				    int	            height)
 {
+    cairo_status_t status;
     cairo_win32_surface_t *surface;
     char *bits;
     int rowstride;
 
     surface = malloc (sizeof (cairo_win32_surface_t));
-    if (!surface)
-	return NULL;
+    if (surface == NULL) {
+	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return &_cairo_surface_nil;
+    }
 
-    if (_create_dc_and_bitmap (surface, original_dc, format,
-			       width, height,
-			       &bits, &rowstride) != CAIRO_STATUS_SUCCESS)
+    status = _create_dc_and_bitmap (surface, original_dc, format,
+				    width, height,
+				    &bits, &rowstride);
+    if (status)
 	goto FAIL;
 
     surface->image = cairo_image_surface_create_for_data (bits, format,
 							  width, height, rowstride);
-    if (!surface->image)
+    if (surface->image->status) {
+	status = CAIRO_STATUS_NO_MEMORY;
 	goto FAIL;
+    }
     
     surface->format = format;
     
@@ -284,21 +289,26 @@ _cairo_win32_surface_create_for_dc (HDC             original_dc,
     }
     if (surface)
 	free (surface);
-    
-    return NULL;
-    
+
+    if (status == CAIRO_STATUS_NO_MEMORY) {
+	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return &_cairo_surface_nil;
+    } else {
+	_cairo_error (status);
+	return &_cairo_surface_nil;
+    }
 }
 
 static cairo_surface_t *
 _cairo_win32_surface_create_similar (void	    *abstract_src,
-				     cairo_format_t  format,
+				     cairo_content_t content,
 				     int	     width,
 				     int	     height)
 {
     cairo_win32_surface_t *src = abstract_src;
+    cairo_format_t format = _cairo_format_from_content (content);
 
-    return _cairo_win32_surface_create_for_dc (src->dc, format, drawable,
-					       width, height);
+    return _cairo_win32_surface_create_for_dc (src->dc, format, width, height);
 }
 
 /**
@@ -319,8 +329,7 @@ _cairo_win32_surface_create_dib (cairo_format_t format,
 				 int	        width,
 				 int	        height)
 {
-    return _cairo_win32_surface_create_for_dc (NULL, format, TRUE,
-					       width, height);
+    return _cairo_win32_surface_create_for_dc (NULL, format, width, height);
 }
 
 static cairo_status_t
@@ -354,12 +363,14 @@ _cairo_win32_surface_get_subimage (cairo_win32_surface_t  *surface,
 {
     cairo_win32_surface_t *local;
     cairo_status_t status;
+    cairo_content_t content = _cairo_content_from_format (surface->format);
 
     local = 
 	(cairo_win32_surface_t *) _cairo_win32_surface_create_similar (surface,
-								       surface->format,
-								       width, height);
-    if (!local)
+								       content,
+								       width,
+								       height);
+    if (local->base.status)
 	return CAIRO_STATUS_NO_MEMORY;
     
     if (!BitBlt (local->dc, 
@@ -577,7 +588,6 @@ _cairo_win32_surface_composite (cairo_operator_t	operator,
     } else if (integer_transform &&
 	       (src->format == CAIRO_FORMAT_RGB24 || src->format == CAIRO_FORMAT_ARGB32) &&
 	       dst->format == CAIRO_FORMAT_RGB24 &&
-	       !src->base.repeat &&
 	       operator == CAIRO_OPERATOR_OVER) {
 
 	BLENDFUNCTION blend_function;
@@ -675,6 +685,9 @@ categorize_solid_dest_operator (cairo_operator_t operator,
 	    return DO_UNSUPPORTED;
 	break;
     }	
+
+    ASSERT_NOT_REACHED;
+    return DO_UNSUPPORTED;
 }
 
 static cairo_int_status_t
@@ -704,7 +717,7 @@ _cairo_win32_surface_fill_rectangles (void			*abstract_surface,
 	new_color = RGB (0, 0, 0);
 	break;	
     case DO_SOURCE:
-	new_color = RGB (color->red_short >> 8, color->blue_short >> 8, color->green_short >> 8);
+	new_color = RGB (color->red_short >> 8, color->green_short >> 8, color->blue_short >> 8);
 	break;
     case DO_NOTHING:
 	return CAIRO_STATUS_SUCCESS;
@@ -751,8 +764,12 @@ _cairo_win32_surface_set_clip_region (void              *abstract_surface,
     /* If we are in-memory, then we set the clip on the image surface
      * as well as on the underlying GDI surface.
      */
-    if (surface->image)
-	_cairo_surface_set_clip_region (surface->image, region);
+    if (surface->image) {
+	unsigned int serial;
+
+	serial = _cairo_surface_allocate_clip_serial (surface->image);
+	_cairo_surface_set_clip_region (surface->image, region, serial);
+    }
 
     /* The semantics we want is that any clip set by cairo combines
      * is intersected with the clip on device context that the
@@ -886,12 +903,16 @@ cairo_win32_surface_create (HDC hdc)
      */
     if (GetClipBox (hdc, &rect) == ERROR) {
 	_cairo_win32_print_gdi_error ("cairo_win32_surface_create");
-	return NULL;
+	/* XXX: Can we make a more reasonable guess at the error cause here? */
+	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return &_cairo_surface_nil;
     }
     
     surface = malloc (sizeof (cairo_win32_surface_t));
-    if (!surface)
-	return NULL;
+    if (surface == NULL) {
+	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return &_cairo_surface_nil;
+    }
 
     surface->image = NULL;
     surface->format = CAIRO_FORMAT_RGB24;

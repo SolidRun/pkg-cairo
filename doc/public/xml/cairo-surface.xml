@@ -21,12 +21,14 @@
 typedef     <link linkend="cairo-surface-t">cairo_surface_t</link>;
 <link linkend="cairo-surface-t">cairo_surface_t</link>* <link linkend="cairo-surface-create-similar">cairo_surface_create_similar</link>
                                             (<link linkend="cairo-surface-t">cairo_surface_t</link> *other,
-                                             <link linkend="cairo-format-t">cairo_format_t</link> format,
+                                             <link linkend="cairo-content-t">cairo_content_t</link> content,
                                              <link linkend="int">int</link> width,
                                              <link linkend="int">int</link> height);
 <link linkend="void">void</link>        <link linkend="cairo-surface-reference">cairo_surface_reference</link>         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
 <link linkend="void">void</link>        <link linkend="cairo-surface-destroy">cairo_surface_destroy</link>           (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
-<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-finish">cairo_surface_finish</link>         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
+<link linkend="void">void</link>        <link linkend="cairo-surface-finish">cairo_surface_finish</link>            (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
+<link linkend="void">void</link>        <link linkend="cairo-surface-get-font-options">cairo_surface_get_font_options</link>  (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);
 <link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-surface-set-user-data">cairo_surface_set_user_data</link>  (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
                                              const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
                                              <link linkend="void">void</link> *user_data,
@@ -77,27 +79,35 @@ Memory management of <link linkend="cairo-surface-t"><type>cairo_surface_t</type
 <title><anchor id="cairo-surface-create-similar"/>cairo_surface_create_similar ()</title>
 <indexterm><primary>cairo_surface_create_similar</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>* cairo_surface_create_similar
                                             (<link linkend="cairo-surface-t">cairo_surface_t</link> *other,
-                                             <link linkend="cairo-format-t">cairo_format_t</link> format,
+                                             <link linkend="cairo-content-t">cairo_content_t</link> content,
                                              <link linkend="int">int</link> width,
                                              <link linkend="int">int</link> height);</programlisting>
+<para>
+Create a new surface that is as compatible as possible with an
+existing surface. The new surface will use the same backend as
+<parameter>other</parameter> unless that is not possible for some reason.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>other</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> an existing surface used to select the backend of the new surface
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>format</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>content</parameter>&nbsp;:</term>
+<listitem><simpara> the content for the new surface
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> width of the new surface, (in device-space units)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> height of the new surface (in device-space units)
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a pointer to the newly allocated surface. The caller
+owns the surface and should call cairo_surface_destroy when done
+with it.
 
-
+This function always returns a valid pointer, but it will return a
+pointer to a "nil" surface if <parameter>other</parameter> is already in an error state
+or any other error occurs.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -126,16 +136,16 @@ Memory management of <link linkend="cairo-surface-t"><type>cairo_surface_t</type
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-surface-finish"/>cairo_surface_finish ()</title>
-<indexterm><primary>cairo_surface_finish</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_surface_finish         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);</programlisting>
+<indexterm><primary>cairo_surface_finish</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_surface_finish            (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);</programlisting>
 <para>
 This function finishes the surface and drops all references to
 external resources.  For example, for the Xlib backend it means
 that cairo will no longer access the drawable, which can be freed.
 After calling <link linkend="cairo-surface-finish"><function>cairo_surface_finish()</function></link> the only valid operations on a
 surface are getting and setting user data and referencing and
-destroying it.  Further drawing the the surface will not affect the
-surface but set the surface status to
-CAIRO_STATUS_SURFACE_FINISHED.
+destroying it.  Further drawing to the surface will not affect the
+surface but will instead trigger a CAIRO_STATUS_SURFACE_FINISHED
+error.
 </para>
 <para>
 When the last call to <link linkend="cairo-surface-destroy"><function>cairo_surface_destroy()</function></link> decreases the
@@ -148,9 +158,26 @@ associated with the surface.</para>
 <varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
 <listitem><simpara> the <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> to finish
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> CAIRO_STATUS_SUCCESS if the surface was finished
-successfully, otherwise CAIRO_STATUS_NO_MEMORY or
-CAIRO_STATUS_WRITE_ERROR.
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-surface-get-font-options"/>cairo_surface_get_font_options ()</title>
+<indexterm><primary>cairo_surface_get_font_options</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_surface_get_font_options  (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             <link linkend="cairo-font-options-t">cairo_font_options_t</link> *options);</programlisting>
+<para>
+Retrieves the default font rendering options for the surface.
+This allows display surfaces to report the correct subpixel order
+for rendering on them, print surfaces to disable hinting of
+metrics and so forth. The result can then be used with
+<link linkend="cairo-scaled-font-create"><function>cairo_scaled_font_create()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>options</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link> object into which to store
+  the retrieved options. All existing values are overwritten
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

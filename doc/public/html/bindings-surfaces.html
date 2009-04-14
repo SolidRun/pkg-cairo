@@ -2,10 +2,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Surfaces</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
-<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
+<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
-<link rel="previous" href="bindings-patterns.html" title="Patterns">
+<link rel="prev" href="bindings-patterns.html" title="Patterns">
 <link rel="next" href="bindings-fonts.html" title="Fonts">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -23,15 +23,12 @@
 <td><a accesskey="n" href="bindings-fonts.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="sect1" lang="en">
-<div class="titlepage">
-<div><div><h2 class="title" style="clear: both">
-<a name="bindings-surfaces"></a>Surfaces</h2></div></div>
-<div></div>
-</div>
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="bindings-surfaces"></a>Surfaces</h2></div></div></div>
 <p>
       Like patterns, surfaces, which use only the
       <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
-      type in the C API should be broken up into a heirarchy of types
+      type in the C API should be broken up into a hierarchy of types
       in a language binding.
     </p>
 <pre class="programlisting">
@@ -61,35 +58,35 @@ cairo_surface_t
       ways to get references to platform specific surfaces.
     </p>
 <p>
-      The <a href="cairo-cairo-surface-t.html#cairo-surface-set-user-data"><tt class="function">cairo_surface_set_user_data()</tt></a>,
-      and <a href="cairo-cairo-surface-t.html#cairo-surface-get-user-data"><tt class="function">cairo_surface_get_user_data()</tt></a>
+      The <a href="cairo-cairo-surface-t.html#cairo-surface-set-user-data"><code class="function">cairo_surface_set_user_data()</code></a>,
+      and <a href="cairo-cairo-surface-t.html#cairo-surface-get-user-data"><code class="function">cairo_surface_get_user_data()</code></a>
       methods are provided for use in language bindings, and should
       not be directly exposed to applications. One example of the use
       of these functions in a language binding is creating a binding for:
     </p>
 <pre class="programlisting">
 cairo_surface_t *
-<a href="cairo-cairo-t.html#cairo-image-surface-create-for-data"><tt class="function">cairo_image_surface_create_for_data</tt></a> (unsigned char	       *data,
+<a href="cairo-cairo-t.html#cairo-image-surface-create-for-data"><code class="function">cairo_image_surface_create_for_data</code></a> (unsigned char	       *data,
 				     cairo_format_t		format,
 				     int			width,
 				     int			height,
 				     int			stride);
 </pre>
 <p>
-      The memory block passed in for <i class="parameter"><tt>data</tt></i> must be
+      The memory block passed in for <em class="parameter"><code>data</code></em> must be
       kept around until the surface is destroyed, so the language
       binding must have some way of determining when that happens. The
-      way to do this is to use the <i class="parameter"><tt>destroy</tt></i>
-      argument to <tt class="function">cairo_surface_set_user_data()</tt>.
+      way to do this is to use the <em class="parameter"><code>destroy</code></em>
+      argument to <code class="function">cairo_surface_set_user_data()</code>.
     </p>
-<i><span class="remark">
+<p class="remark"><i><span class="remark">
       Some languages may not have a suitable &#8220;pointer to a block of
-      data&#8221; type to pass in for <i class="parameter"><tt>data</tt></i>. And even
+      data&#8221; type to pass in for <em class="parameter"><code>data</code></em>. And even
       where a language does have such a type, the user will be
       frequently able to cause the backing store to be reallocated
       to a different location or truncated. Should we recommend a
       standard type name and binding for a buffer object here?
-    </span></i>
+    </span></i></p>
 </div>
 <table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
 <td align="left"><a accesskey="p" href="bindings-patterns.html"><b>&lt;&lt;&#160;Patterns</b></a></td>

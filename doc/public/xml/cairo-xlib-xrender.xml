@@ -21,6 +21,7 @@
 <link linkend="cairo-surface-t">cairo_surface_t</link>* <link linkend="cairo-xlib-surface-create-with-xrender-format">cairo_xlib_surface_create_with_xrender_format</link>
                                             (<link linkend="Display">Display</link> *dpy,
                                              <link linkend="Drawable">Drawable</link> drawable,
+                                             <link linkend="Screen">Screen</link> *screen,
                                              <link linkend="XRenderPictFormat">XRenderPictFormat</link> *format,
                                              <link linkend="int">int</link> width,
                                              <link linkend="int">int</link> height);
@@ -49,6 +50,7 @@
 <indexterm><primary>cairo_xlib_surface_create_with_xrender_format</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>* cairo_xlib_surface_create_with_xrender_format
                                             (<link linkend="Display">Display</link> *dpy,
                                              <link linkend="Drawable">Drawable</link> drawable,
+                                             <link linkend="Screen">Screen</link> *screen,
                                              <link linkend="XRenderPictFormat">XRenderPictFormat</link> *format,
                                              <link linkend="int">int</link> width,
                                              <link linkend="int">int</link> height);</programlisting>
@@ -69,6 +71,9 @@ window changes.</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
 <listitem><simpara> an X Drawable, (a Pixmap or a Window)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> the X Screen associated with <parameter>drawable</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>format</parameter>&nbsp;:</term>
 <listitem><simpara> the picture format to use for drawing to <parameter>drawable</parameter>. The depth

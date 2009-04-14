@@ -2,10 +2,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Streams and File I/O</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
-<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
+<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
-<link rel="previous" href="bindings-overloading.html" title="Overloading and optional arguments">
+<link rel="prev" href="bindings-overloading.html" title="Overloading and optional arguments">
 <link rel="next" href="bindings-errors.html" title="Error handling">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -23,11 +23,8 @@
 <td><a accesskey="n" href="bindings-errors.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="sect1" lang="en">
-<div class="titlepage">
-<div><div><h2 class="title" style="clear: both">
-<a name="bindings-streams"></a>Streams and File I/O</h2></div></div>
-<div></div>
-</div>
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="bindings-streams"></a>Streams and File I/O</h2></div></div></div>
 <p>
       Various places in the cairo API deal with reading and writing
       data, whether from and to files, or to other sources and
@@ -72,24 +69,24 @@ public void writeToPNG (OutputStream stream) throws IOException;
       filename version in C. The reason for this is that will
       naturally give a more standard handling of file errors for
       the language, as seen in the above Java example, where
-      <tt class="methodname">createFromPNG()</tt> is marked as raising
+      <code class="methodname">createFromPNG()</code> is marked as raising
       an exception. Propagating exceptions from inside the callback
       function to the caller will pose a challenge to the language
       binding implementor, since an exception must not propagate
       through the Cairo code. A technique that will be useful in
       some cases is to catch the exception in the callback,
       store the exception object inside a structure pointed to by
-      <i class="parameter"><tt>closure</tt></i>, and then rethrow it once
+      <em class="parameter"><code>closure</code></em>, and then rethrow it once
       the function returns.
     </p>
-<i><span class="remark">
+<p class="remark"><i><span class="remark">
       I'm not sure how to handle this for
-      <tt class="function">cairo_pdf_surface_create_for_callback()</tt>.
+      <code class="function">cairo_pdf_surface_create_for_callback()</code>.
       Other than keep a &#8220;exception to rethrow&#8221; thread-specific
       variable
       that is checked after <span class="emphasis"><em>every</em></span> call to a Cairo
       function.
-    </span></i>
+    </span></i></p>
 </div>
 <table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
 <td align="left"><a accesskey="p" href="bindings-overloading.html"><b>&lt;&lt;&#160;Overloading and optional arguments</b></a></td>

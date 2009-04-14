@@ -90,9 +90,20 @@ typedef struct _cairo_surface cairo_surface_t;
 
 /**
  * cairo_matrix_t:
+ * @xx: xx component of the affine transformation
+ * @yx: yx component of the affine transformation
+ * @xy: xy component of the affine transformation
+ * @yy: yy component of the affine transformation
+ * @x0: X translation component of the affine transformation
+ * @y0: Y translation component of the affine transformation
  *
  * A #cairo_matrix_t holds an affine transformation, such as a scale,
- * rotation, or shear, or a combination of those.
+ * rotation, or shear, or a combination of those. The transformation is given
+ * by:
+ * <programlisting>
+ *  x_new = xx * x + xy * y + x0;
+ *  y_new = yx * x + yy * y + y0;
+ * </programlisting>
  **/
 typedef struct _cairo_matrix {
     double xx; double yx;
@@ -103,7 +114,8 @@ typedef struct _cairo_matrix {
 typedef struct _cairo_pattern cairo_pattern_t;
 
 /**
- * cairo_destroy_func_t
+ * cairo_destroy_func_t:
+ * @data: The data element being destroyed.
  *
  * #cairo_destroy_func_t the type of function which is called when a
  * data element is destroyed. It is passed the pointer to the data
@@ -112,7 +124,8 @@ typedef struct _cairo_pattern cairo_pattern_t;
 typedef void (*cairo_destroy_func_t) (void *data);
 
 /**
- * cairo_user_data_key_t
+ * cairo_user_data_key_t:
+ * @unused: not used; ignore.
  *
  * #cairo_user_data_key_t is used for attaching user data to cairo
  * data structures.  The actual contents of the struct is never used,
@@ -127,33 +140,38 @@ typedef struct _cairo_user_data_key {
 /**
  * cairo_status_t
  * @CAIRO_STATUS_SUCCESS: no error has occurred
- * @CAIRO_STATUS_NO_MEMORY: 
- * @CAIRO_STATUS_INVALID_RESTORE:
- * @CAIRO_STATUS_INVALID_POP_GROUP:
- * @CAIRO_STATUS_NO_CURRENT_POINT:
- * @CAIRO_STATUS_INVALID_MATRIX:
- * @CAIRO_STATUS_NO_TARGET_SURFACE:
- * @CAIRO_STATUS_NULL_POINTER:
- * @CAIRO_STATUS_INVALID_STRING:
- * @CAIRO_STATUS_INVALID_PATH_DATA:
- * @CAIRO_STATUS_READ_ERROR:
- * @CAIRO_STATUS_WRITE_ERROR:
- * @CAIRO_STATUS_SURFACE_FINISHED:
- * @CAIRO_STATUS_SURFACE_TYPE_MISMATCH:
+ * @CAIRO_STATUS_NO_MEMORY: out of memory
+ * @CAIRO_STATUS_INVALID_RESTORE: cairo_restore without matching cairo_save
+ * @CAIRO_STATUS_INVALID_POP_GROUP: no saved group to pop
+ * @CAIRO_STATUS_NO_CURRENT_POINT: no current point defined
+ * @CAIRO_STATUS_INVALID_MATRIX: invalid matrix (not invertible)
+ * @CAIRO_STATUS_INVALID_STATUS: invalid value for an input cairo_status_t
+ * @CAIRO_STATUS_NULL_POINTER: NULL pointer
+ * @CAIRO_STATUS_INVALID_STRING: input string not valid UTF-8
+ * @CAIRO_STATUS_INVALID_PATH_DATA: input path data not valid
+ * @CAIRO_STATUS_READ_ERROR: error while reading from input stream
+ * @CAIRO_STATUS_WRITE_ERROR: error while writing to output stream
+ * @CAIRO_STATUS_SURFACE_FINISHED: target surface has been finished
+ * @CAIRO_STATUS_SURFACE_TYPE_MISMATCH: the surface type is not appropriate for the operation
+ * @CAIRO_STATUS_PATTERN_TYPE_MISMATCH: the pattern type is not appropriate for the operation
+ * @CAIRO_STATUS_INVALID_CONTENT: invalid value for an input cairo_content_t
+ * @CAIRO_STATUS_INVALID_FORMAT: invalid value for an input cairo_format_t
+ * @CAIRO_STATUS_INVALID_VISUAL: invalid value for an input Visual*
+ * @CAIRO_STATUS_FILE_NOT_FOUND: file not found
  *
  * #cairo_status_t is used to indicate errors that can occur when
  * using Cairo. In some cases it is returned directly by functions.
  * but when using #cairo_t, the last error, if any, is stored in
  * the context and can be retrieved with cairo_status().
  **/
-typedef enum cairo_status {
+typedef enum _cairo_status {
     CAIRO_STATUS_SUCCESS = 0,
     CAIRO_STATUS_NO_MEMORY,
     CAIRO_STATUS_INVALID_RESTORE,
     CAIRO_STATUS_INVALID_POP_GROUP,
     CAIRO_STATUS_NO_CURRENT_POINT,
     CAIRO_STATUS_INVALID_MATRIX,
-    CAIRO_STATUS_NO_TARGET_SURFACE,
+    CAIRO_STATUS_INVALID_STATUS,
     CAIRO_STATUS_NULL_POINTER,
     CAIRO_STATUS_INVALID_STRING,
     CAIRO_STATUS_INVALID_PATH_DATA,
@@ -161,11 +179,18 @@ typedef enum cairo_status {
     CAIRO_STATUS_WRITE_ERROR,
     CAIRO_STATUS_SURFACE_FINISHED,
     CAIRO_STATUS_SURFACE_TYPE_MISMATCH,
-    CAIRO_STATUS_PATTERN_TYPE_MISMATCH
+    CAIRO_STATUS_PATTERN_TYPE_MISMATCH,
+    CAIRO_STATUS_INVALID_CONTENT,
+    CAIRO_STATUS_INVALID_FORMAT,
+    CAIRO_STATUS_INVALID_VISUAL,
+    CAIRO_STATUS_FILE_NOT_FOUND
 } cairo_status_t;
 
 /**
- * cairo_write_func_t
+ * cairo_write_func_t:
+ * @closure: the output closure
+ * @data: the buffer containing the data to write
+ * @length: the amount of data to write
  *
  * #cairo_write_func_t is the type of function which is called when a
  * backend needs to write data to an output stream.  It is passed the
@@ -174,21 +199,28 @@ typedef enum cairo_status {
  * data in bytes.  The write function should return
  * CAIRO_STATUS_SUCCESS if all the data was successfully written,
  * CAIRO_STATUS_WRITE_ERROR otherwise.
+ *
+ * Returns: the status code of the write operation
  */
 typedef cairo_status_t (*cairo_write_func_t) (void		  *closure,
 					      const unsigned char *data,
 					      unsigned int	   length);
 
 /**
- * cairo_read_func_t
+ * cairo_read_func_t:
+ * @closure: the input closure
+ * @data: the buffer into which to read the data
+ * @length: the amount of data to read
  *
  * #cairo_read_func_t is the type of function which is called when a
  * backend needs to read data from an intput stream.  It is passed the
  * closure which was specified by the user at the time the read
  * function was registered, the buffer to read the data into and the
  * length of the data in bytes.  The read function should return
- * CAIRO_STATUS_SUCCESS if all the data was successfully written,
+ * CAIRO_STATUS_SUCCESS if all the data was successfully read,
  * CAIRO_STATUS_READ_ERROR otherwise.
+ *
+ * Returns: the status code of the read operation
  */
 typedef cairo_status_t (*cairo_read_func_t) (void		*closure,
 					     unsigned char	*data,
@@ -220,7 +252,7 @@ cairo_pop_group (cairo_t *cr);
 
 /* Modify state */
 
-typedef enum cairo_operator {
+typedef enum _cairo_operator {
     CAIRO_OPERATOR_CLEAR,
 
     CAIRO_OPERATOR_SOURCE,
@@ -284,7 +316,7 @@ cairo_set_tolerance (cairo_t *cr, double tolerance);
  * (Note that filling is not actually implemented in this way. This
  * is just a description of the rule that is applied.)
  **/
-typedef enum cairo_fill_rule {
+typedef enum _cairo_fill_rule {
     CAIRO_FILL_RULE_WINDING,
     CAIRO_FILL_RULE_EVEN_ODD
 } cairo_fill_rule_t;
@@ -304,7 +336,7 @@ cairo_set_line_width (cairo_t *cr, double width);
  *
  * enumeration for style of line-endings
  **/
-typedef enum cairo_line_cap {
+typedef enum _cairo_line_cap {
     CAIRO_LINE_CAP_BUTT,
     CAIRO_LINE_CAP_ROUND,
     CAIRO_LINE_CAP_SQUARE
@@ -313,7 +345,7 @@ typedef enum cairo_line_cap {
 void
 cairo_set_line_cap (cairo_t *cr, cairo_line_cap_t line_cap);
 
-typedef enum cairo_line_join {
+typedef enum _cairo_line_join {
     CAIRO_LINE_JOIN_MITER,
     CAIRO_LINE_JOIN_ROUND,
     CAIRO_LINE_JOIN_BEVEL
@@ -624,17 +656,158 @@ typedef struct {
     double max_y_advance;
 } cairo_font_extents_t;
 
-typedef enum cairo_font_slant {
+typedef enum _cairo_font_slant {
   CAIRO_FONT_SLANT_NORMAL,
   CAIRO_FONT_SLANT_ITALIC,
   CAIRO_FONT_SLANT_OBLIQUE
 } cairo_font_slant_t;
   
-typedef enum cairo_font_weight {
+typedef enum _cairo_font_weight {
   CAIRO_FONT_WEIGHT_NORMAL,
   CAIRO_FONT_WEIGHT_BOLD
 } cairo_font_weight_t;
-  
+
+/**
+ * cairo_antialias_t:
+ * @CAIRO_ANTIALIAS_DEFAULT: Use the default antialiasing for
+ *   the font subsystem and target device
+ * @CAIRO_ANTIALIAS_NONE: Do no antialiasing of fonts; use bilevel text
+ * @CAIRO_ANTIALIAS_GRAY: Perform single-color antialiasing (using
+ *  shades of gray for black text on a white background, for example).
+ * @CAIRO_ANTIALIAS_SUBPIXEL: Perform antialiasing by taking
+ *  advantage of the order of subpixel elements on devices
+ *  such as LCD panels
+ * 
+ * Specifies the type of antialiasing to do when rendering text.
+ **/
+typedef enum _cairo_antialias {
+    CAIRO_ANTIALIAS_DEFAULT,
+    CAIRO_ANTIALIAS_NONE,
+    CAIRO_ANTIALIAS_GRAY,
+    CAIRO_ANTIALIAS_SUBPIXEL
+} cairo_antialias_t;
+
+/**
+ * cairo_subpixel_order_t:
+ * @CAIRO_SUBPIXEL_ORDER_DEFAULT: Use the default subpixel order for
+ *   for the target device
+ * @CAIRO_SUBPIXEL_ORDER_RGB: Subpixel elements are arranged horizontally
+ *   with red at the left
+ * @CAIRO_SUBPIXEL_ORDER_BGR:  Subpixel elements are arranged horizontally
+ *   with blue at the left
+ * @CAIRO_SUBPIXEL_ORDER_VRGB: Subpixel elements are arranged vertically
+ *   with red at the top
+ * @CAIRO_SUBPIXEL_ORDER_VBGR: Subpixel elements are arranged vertically
+ *   with blue at the top
+ * 
+ * The subpixel order specifies the order of color elements within
+ * each pixel on the display device when rendering with an
+ * antialiasing mode of %CAIRO_ANTIALIAS_SUBPIXEL.
+ **/
+typedef enum _cairo_subpixel_order {
+    CAIRO_SUBPIXEL_ORDER_DEFAULT,
+    CAIRO_SUBPIXEL_ORDER_RGB,
+    CAIRO_SUBPIXEL_ORDER_BGR,
+    CAIRO_SUBPIXEL_ORDER_VRGB,
+    CAIRO_SUBPIXEL_ORDER_VBGR
+} cairo_subpixel_order_t;
+
+/**
+ * cairo_hint_style_t:
+ * @CAIRO_HINT_STYLE_DEFAULT: Use the default hint style for
+ *   for font backend and target device
+ * @CAIRO_HINT_STYLE_NONE: Do not hint outlines
+ * @CAIRO_HINT_STYLE_SLIGHT: Hint outlines slightly to improve
+ *   contrast while retaining good fidelity to the original
+ *   shapes.
+ * @CAIRO_HINT_STYLE_MEDIUM: Hint outlines with medium strength
+ *   giving a compromise between fidelity to the original shapes
+ *   and contrast
+ * @CAIRO_HINT_STYLE_FULL: Hint outlines to maximize contrast
+ *
+ * Specifies the type of hinting to do on font outlines. Hinting
+ * is the process of fitting outlines to the pixel grid in order
+ * to improve the appearance of the result. Since hinting outlines
+ * involves distorting them, it also reduces the faithfulness
+ * to the original outline shapes. Not all of the outline hinting
+ * styles are supported by all font backends.
+ */
+typedef enum _cairo_hint_style {
+    CAIRO_HINT_STYLE_DEFAULT,
+    CAIRO_HINT_STYLE_NONE,
+    CAIRO_HINT_STYLE_SLIGHT,
+    CAIRO_HINT_STYLE_MEDIUM,
+    CAIRO_HINT_STYLE_FULL
+} cairo_hint_style_t;
+
+/**
+ * cairo_hint_metrics_t:
+ * @CAIRO_HINT_METRICS_DEFAULT: Hint metrics in the default
+ *  manner for the font backend and target device
+ * @CAIRO_HINT_METRICS_OFF: Do not hint font metrics
+ * @CAIRO_HINT_METRICS_ON: Hint font metrics
+ *
+ * Specifies whether to hint font metrics; hinting font metrics
+ * means quantizing them so that they are integer values in
+ * device space. Doing this improves the consistency of
+ * letter and line spacing, however it also means that text
+ * will be laid out differently at different zoom factors.
+ */
+typedef enum _cairo_hint_metrics {
+    CAIRO_HINT_METRICS_DEFAULT,
+    CAIRO_HINT_METRICS_OFF,
+    CAIRO_HINT_METRICS_ON
+} cairo_hint_metrics_t;
+
+typedef struct _cairo_font_options cairo_font_options_t;
+
+cairo_font_options_t *
+cairo_font_options_create (void);
+
+cairo_font_options_t *
+cairo_font_options_copy (const cairo_font_options_t *original);
+
+void 
+cairo_font_options_destroy (cairo_font_options_t *options);
+
+cairo_status_t
+cairo_font_options_status (cairo_font_options_t *options);
+
+void
+cairo_font_options_merge (cairo_font_options_t       *options,
+			  const cairo_font_options_t *other);
+cairo_bool_t
+cairo_font_options_equal (const cairo_font_options_t *options,
+			  const cairo_font_options_t *other);
+
+unsigned long
+cairo_font_options_hash (const cairo_font_options_t *options);
+
+void
+cairo_font_options_set_antialias (cairo_font_options_t *options,
+				  cairo_antialias_t     antialias);
+cairo_antialias_t
+cairo_font_options_get_antialias (const cairo_font_options_t *options);
+
+void
+cairo_font_options_set_subpixel_order (cairo_font_options_t   *options,
+				       cairo_subpixel_order_t  subpixel_order);
+cairo_subpixel_order_t
+cairo_font_options_get_subpixel_order (const cairo_font_options_t *options);
+			 
+void
+cairo_font_options_set_hint_style (cairo_font_options_t *options,
+				   cairo_hint_style_t     hint_style);
+cairo_hint_style_t
+cairo_font_options_get_hint_style (const cairo_font_options_t *options);
+
+void
+cairo_font_options_set_hint_metrics (cairo_font_options_t *options,
+				     cairo_hint_metrics_t  hint_metrics);
+cairo_hint_metrics_t
+cairo_font_options_get_hint_metrics (const cairo_font_options_t *options);
+
+
 /* This interface is for dealing with text as text, not caring about the
    font object inside the the cairo_t. */
 
@@ -654,6 +827,14 @@ cairo_set_font_matrix (cairo_t		    *cr,
 void
 cairo_get_font_matrix (cairo_t *cr,
 		       cairo_matrix_t *matrix);
+
+void
+cairo_set_font_options (cairo_t                    *cr,
+			const cairo_font_options_t *options);
+
+void
+cairo_get_font_options (cairo_t              *cr,
+			cairo_font_options_t *options);
 
 void
 cairo_show_text (cairo_t *cr, const char *utf8);
@@ -696,6 +877,9 @@ cairo_font_face_reference (cairo_font_face_t *font_face);
 void
 cairo_font_face_destroy (cairo_font_face_t *font_face);
 
+cairo_status_t
+cairo_font_face_status (cairo_font_face_t *font_face);
+
 void *
 cairo_font_face_get_user_data (cairo_font_face_t	   *font_face,
 			       const cairo_user_data_key_t *key);
@@ -709,9 +893,10 @@ cairo_font_face_set_user_data (cairo_font_face_t	   *font_face,
 /* Portable interface to general font features. */
 
 cairo_scaled_font_t *
-cairo_scaled_font_create (cairo_font_face_t    *font_face,
-			  const cairo_matrix_t *font_matrix,
-			  const cairo_matrix_t *ctm);
+cairo_scaled_font_create (cairo_font_face_t          *font_face,
+			  const cairo_matrix_t       *font_matrix,
+			  const cairo_matrix_t       *ctm,
+			  const cairo_font_options_t *options);
 
 void
 cairo_scaled_font_reference (cairo_scaled_font_t *scaled_font);
@@ -720,6 +905,9 @@ void
 cairo_scaled_font_destroy (cairo_scaled_font_t *scaled_font);
 
 cairo_status_t
+cairo_scaled_font_status (cairo_scaled_font_t *scaled_font);
+
+void
 cairo_scaled_font_extents (cairo_scaled_font_t  *scaled_font,
 			   cairo_font_extents_t *extents);
 
@@ -824,7 +1012,7 @@ cairo_get_target (cairo_t *cr);
  *	cairo_path_destroy (path);
  * </programlisting></informalexample>
  */
-typedef enum cairo_path_data_type {
+typedef enum _cairo_path_data_type {
     CAIRO_PATH_MOVE_TO,
     CAIRO_PATH_LINE_TO,
     CAIRO_PATH_CURVE_TO,
@@ -843,6 +1031,9 @@ typedef union {
 
 /**
  * cairo_path_t:
+ * @status: the current error status
+ * @data: the elements in the path
+ * @num_data: the number of elements in the data array
  *
  * A data structure for holding a path. This data structure serves as
  * the return value for cairo_copy_path_data() and
@@ -887,39 +1078,34 @@ cairo_status_to_string (cairo_status_t status);
 /* Surface manipulation */
 
 /**
- * cairo_format_t
- * @CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
- *   alpha in the upper 8 bits, then red, then green, then blue.
- *   The 32-bit quantities are stored native-endian. Pre-multiplied
- *   alpha is used. (That is, 50% transparent red is 0x80800000,
- *   not 0x80ff0000.)
- * @CAIRO_FORMAT_RGB24: each pixel is a 32-bit quantity, with
- *   the upper 8 bits unused. Red, Green, and Blue are stored
- *   in the remaining 24 bits in that order.
- * @CAIRO_FORMAT_A8: each pixel is a 8-bit quantity holding
- *   an alpha value.
- * @CAIRO_FORMAT_A1: each pixel is a 1-bit quantity holding
- *   an alpha value. Pixels are packed together into 32-bit
- *   quantities. The ordering of the bits matches the
- *   endianess of the platform. On a big-endian machine, the
- *   first pixel is in the uppermost bit, on a little-endian
- *   machine the first pixel is in the least-significant bit.
+ * cairo_content_t
+ * @CAIRO_CONTENT_COLOR: The surface will hold color content only.
+ * @CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
+ * @CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha content.
  *
- * #cairo_format_t is used to identify the memory format of
- * image data.
+ * @cairo_content_t is used to describe the content that a surface will
+ * contain, whether color information, alpha information (translucence
+ * vs. opacity), or both.
+ *
+ * Note: The large values here are designed to keep cairo_content_t
+ * values distinct from cairo_format_t values so that the
+ * implementation can detect the error if users confuse the two types.
  */
-typedef enum cairo_format {
-    CAIRO_FORMAT_ARGB32,
-    CAIRO_FORMAT_RGB24,
-    CAIRO_FORMAT_A8,
-    CAIRO_FORMAT_A1
-} cairo_format_t;
+typedef enum _cairo_content {
+    CAIRO_CONTENT_COLOR		= 0x1000,
+    CAIRO_CONTENT_ALPHA		= 0x2000,
+    CAIRO_CONTENT_COLOR_ALPHA	= 0x3000
+} cairo_content_t;
 
-/* XXX: I want to remove this function, (replace with
-   cairo_begin_group and friends). */
+#define CAIRO_CONTENT_VALID(content) ((content) && 			         \
+				      (((content) & ~(CAIRO_CONTENT_COLOR |      \
+						      CAIRO_CONTENT_ALPHA |      \
+						      CAIRO_CONTENT_COLOR_ALPHA))\
+				       == 0))
+
 cairo_surface_t *
-cairo_surface_create_similar (cairo_surface_t	*other,
-			      cairo_format_t	format,
+cairo_surface_create_similar (cairo_surface_t  *other,
+			      cairo_content_t	content,
 			      int		width,
 			      int		height);
 
@@ -930,6 +1116,9 @@ void
 cairo_surface_destroy (cairo_surface_t *surface);
 
 cairo_status_t
+cairo_surface_status (cairo_surface_t *surface);
+
+void
 cairo_surface_finish (cairo_surface_t *surface);
 
 #if CAIRO_HAS_PNG_FUNCTIONS
@@ -956,11 +1145,47 @@ cairo_surface_set_user_data (cairo_surface_t		 *surface,
 			     cairo_destroy_func_t	 destroy);
 
 void
+cairo_surface_get_font_options (cairo_surface_t      *surface,
+				cairo_font_options_t *options);
+
+void
 cairo_surface_set_device_offset (cairo_surface_t *surface,
 				 double           x_offset,
 				 double           y_offset);
 
 /* Image-surface functions */
+
+/**
+ * cairo_format_t
+ * @CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
+ *   alpha in the upper 8 bits, then red, then green, then blue.
+ *   The 32-bit quantities are stored native-endian. Pre-multiplied
+ *   alpha is used. (That is, 50% transparent red is 0x80800000,
+ *   not 0x80ff0000.)
+ * @CAIRO_FORMAT_RGB24: each pixel is a 32-bit quantity, with
+ *   the upper 8 bits unused. Red, Green, and Blue are stored
+ *   in the remaining 24 bits in that order.
+ * @CAIRO_FORMAT_A8: each pixel is a 8-bit quantity holding
+ *   an alpha value.
+ * @CAIRO_FORMAT_A1: each pixel is a 1-bit quantity holding
+ *   an alpha value. Pixels are packed together into 32-bit
+ *   quantities. The ordering of the bits matches the
+ *   endianess of the platform. On a big-endian machine, the
+ *   first pixel is in the uppermost bit, on a little-endian
+ *   machine the first pixel is in the least-significant bit.
+ *
+ * #cairo_format_t is used to identify the memory format of
+ * image data.
+ */
+typedef enum _cairo_format {
+    CAIRO_FORMAT_ARGB32,
+    CAIRO_FORMAT_RGB24,
+    CAIRO_FORMAT_A8,
+    CAIRO_FORMAT_A1
+} cairo_format_t;
+
+#define CAIRO_FORMAT_VALID(format) ((format) >= CAIRO_FORMAT_ARGB32 && \
+				    (format) <= CAIRO_FORMAT_A1)
 
 cairo_surface_t *
 cairo_image_surface_create (cairo_format_t	format,
@@ -992,6 +1217,14 @@ cairo_image_surface_create_from_png_stream (cairo_read_func_t	read_func,
 #endif
 
 /* Pattern creation functions */
+
+cairo_pattern_t *
+cairo_pattern_create_rgb (double red, double green, double blue);
+
+cairo_pattern_t *
+cairo_pattern_create_rgba (double red, double green, double blue,
+			   double alpha);
+
 cairo_pattern_t *
 cairo_pattern_create_for_surface (cairo_surface_t *surface);
 
@@ -1031,7 +1264,7 @@ void
 cairo_pattern_get_matrix (cairo_pattern_t *pattern,
 			  cairo_matrix_t  *matrix);
 
-typedef enum {
+typedef enum _cairo_extend {
     CAIRO_EXTEND_NONE,
     CAIRO_EXTEND_REPEAT,
     CAIRO_EXTEND_REFLECT
@@ -1043,7 +1276,7 @@ cairo_pattern_set_extend (cairo_pattern_t *pattern, cairo_extend_t extend);
 cairo_extend_t
 cairo_pattern_get_extend (cairo_pattern_t *pattern);
 
-typedef enum {
+typedef enum _cairo_filter {
     CAIRO_FILTER_FAST,
     CAIRO_FILTER_GOOD,
     CAIRO_FILTER_BEST,

@@ -8,7 +8,6 @@
       <sub name="cairo_pattern_t" link="cairo-cairo-pattern-t.html"/>
       <sub name="cairo_matrix_t" link="cairo-cairo-matrix-t.html"/>
       <sub name="Fonts" link="cairo-Fonts.html"/>
-      <sub name="ATSUI Fonts" link="cairo-ATSUI-Fonts.html"/>
       <sub name="FreeType Fonts" link="cairo-FreeType-Fonts.html"/>
       <sub name="Glitz backend" link="cairo-Glitz-backend.html"/>
       <sub name="PDF Backend" link="cairo-PDF-Backend.html"/>
@@ -40,7 +39,10 @@
     <function name="cairo_destroy ()" link="cairo-cairo-t.html#cairo-destroy"/>
     <function name="cairo_save ()" link="cairo-cairo-t.html#cairo-save"/>
     <function name="cairo_restore ()" link="cairo-cairo-t.html#cairo-restore"/>
+    <function name="enum cairo_content_t" link="cairo-cairo-t.html#cairo-content-t"/>
+    <function name="CAIRO_CONTENT_VALID()" link="cairo-cairo-t.html#CAIRO-CONTENT-VALID:CAPS"/>
     <function name="enum cairo_format_t" link="cairo-cairo-t.html#cairo-format-t"/>
+    <function name="CAIRO_FORMAT_VALID()" link="cairo-cairo-t.html#CAIRO-FORMAT-VALID:CAPS"/>
     <function name="enum cairo_operator_t" link="cairo-cairo-t.html#cairo-operator-t"/>
     <function name="cairo_set_operator ()" link="cairo-cairo-t.html#cairo-set-operator"/>
     <function name="cairo_set_source_rgb ()" link="cairo-cairo-t.html#cairo-set-source-rgb"/>
@@ -103,6 +105,8 @@
     <function name="cairo_set_font_size ()" link="cairo-cairo-t.html#cairo-set-font-size"/>
     <function name="cairo_set_font_matrix ()" link="cairo-cairo-t.html#cairo-set-font-matrix"/>
     <function name="cairo_get_font_matrix ()" link="cairo-cairo-t.html#cairo-get-font-matrix"/>
+    <function name="cairo_set_font_options ()" link="cairo-cairo-t.html#cairo-set-font-options"/>
+    <function name="cairo_get_font_options ()" link="cairo-cairo-t.html#cairo-get-font-options"/>
     <function name="cairo_show_text ()" link="cairo-cairo-t.html#cairo-show-text"/>
     <function name="cairo_show_glyphs ()" link="cairo-cairo-t.html#cairo-show-glyphs"/>
     <function name="cairo_get_font_face ()" link="cairo-cairo-t.html#cairo-get-font-face"/>
@@ -147,10 +151,13 @@
     <function name="cairo_surface_reference ()" link="cairo-cairo-surface-t.html#cairo-surface-reference"/>
     <function name="cairo_surface_destroy ()" link="cairo-cairo-surface-t.html#cairo-surface-destroy"/>
     <function name="cairo_surface_finish ()" link="cairo-cairo-surface-t.html#cairo-surface-finish"/>
+    <function name="cairo_surface_get_font_options ()" link="cairo-cairo-surface-t.html#cairo-surface-get-font-options"/>
     <function name="cairo_surface_set_user_data ()" link="cairo-cairo-surface-t.html#cairo-surface-set-user-data"/>
     <function name="cairo_surface_get_user_data ()" link="cairo-cairo-surface-t.html#cairo-surface-get-user-data"/>
     <function name="cairo_surface_set_device_offset ()" link="cairo-cairo-surface-t.html#cairo-surface-set-device-offset"/>
     <function name="cairo_pattern_t" link="cairo-cairo-pattern-t.html#cairo-pattern-t"/>
+    <function name="cairo_pattern_create_rgb ()" link="cairo-cairo-pattern-t.html#cairo-pattern-create-rgb"/>
+    <function name="cairo_pattern_create_rgba ()" link="cairo-cairo-pattern-t.html#cairo-pattern-create-rgba"/>
     <function name="cairo_pattern_create_for_surface ()" link="cairo-cairo-pattern-t.html#cairo-pattern-create-for-surface"/>
     <function name="cairo_pattern_create_linear ()" link="cairo-cairo-pattern-t.html#cairo-pattern-create-linear"/>
     <function name="cairo_pattern_create_radial ()" link="cairo-cairo-pattern-t.html#cairo-pattern-create-radial"/>
@@ -192,6 +199,27 @@
     <function name="cairo_scaled_font_extents ()" link="cairo-Fonts.html#cairo-scaled-font-extents"/>
     <function name="cairo_text_extents_t" link="cairo-Fonts.html#cairo-text-extents-t"/>
     <function name="cairo_scaled_font_glyph_extents ()" link="cairo-Fonts.html#cairo-scaled-font-glyph-extents"/>
+    <function name="cairo_font_options_t" link="cairo-Fonts.html#cairo-font-options-t"/>
+    <function name="cairo_font_options_create ()" link="cairo-Fonts.html#cairo-font-options-create"/>
+    <function name="cairo_font_options_copy ()" link="cairo-Fonts.html#cairo-font-options-copy"/>
+    <function name="cairo_font_options_destroy ()" link="cairo-Fonts.html#cairo-font-options-destroy"/>
+    <function name="cairo_font_options_status ()" link="cairo-Fonts.html#cairo-font-options-status"/>
+    <function name="cairo_font_options_merge ()" link="cairo-Fonts.html#cairo-font-options-merge"/>
+    <function name="cairo_font_options_hash ()" link="cairo-Fonts.html#cairo-font-options-hash"/>
+    <function name="cairo_font_options_equal ()" link="cairo-Fonts.html#cairo-font-options-equal"/>
+    <function name="enum cairo_antialias_t" link="cairo-Fonts.html#cairo-antialias-t"/>
+    <function name="cairo_font_options_set_antialias ()" link="cairo-Fonts.html#cairo-font-options-set-antialias"/>
+    <function name="cairo_font_options_get_antialias ()" link="cairo-Fonts.html#cairo-font-options-get-antialias"/>
+    <function name="enum cairo_subpixel_order_t" link="cairo-Fonts.html#cairo-subpixel-order-t"/>
+    <function name="cairo_font_options_set_subpixel_order ()" link="cairo-Fonts.html#cairo-font-options-set-subpixel-order"/>
+    <function name="cairo_font_options_get_subpixel_order ()" link="cairo-Fonts.html#cairo-font-options-get-subpixel-order"/>
+    <function name="enum cairo_hint_style_t" link="cairo-Fonts.html#cairo-hint-style-t"/>
+    <function name="cairo_font_options_set_hint_style ()" link="cairo-Fonts.html#cairo-font-options-set-hint-style"/>
+    <function name="cairo_font_options_get_hint_style ()" link="cairo-Fonts.html#cairo-font-options-get-hint-style"/>
+    <function name="enum cairo_hint_metrics_t" link="cairo-Fonts.html#cairo-hint-metrics-t"/>
+    <function name="cairo_font_options_set_hint_metrics ()" link="cairo-Fonts.html#cairo-font-options-set-hint-metrics"/>
+    <function name="cairo_font_options_get_hint_metrics ()" link="cairo-Fonts.html#cairo-font-options-get-hint-metrics"/>
+    <function name="cairo_ft_font_options_substitute ()" link="cairo-FreeType-Fonts.html#cairo-ft-font-options-substitute"/>
     <function name="cairo_ft_font_face_create_for_pattern ()" link="cairo-FreeType-Fonts.html#cairo-ft-font-face-create-for-pattern"/>
     <function name="cairo_ft_font_face_create_for_ft_face ()" link="cairo-FreeType-Fonts.html#cairo-ft-font-face-create-for-ft-face"/>
     <function name="cairo_ft_scaled_font_lock_face ()" link="cairo-FreeType-Fonts.html#cairo-ft-scaled-font-lock-face"/>

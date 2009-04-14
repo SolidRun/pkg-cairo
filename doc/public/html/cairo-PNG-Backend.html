@@ -2,10 +2,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>PNG Backend</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
-<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
+<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="pt02.html" title="Part&#160;II.&#160;Reference">
-<link rel="previous" href="cairo-PDF-Backend.html" title="PDF Backend">
+<link rel="prev" href="cairo-PDF-Backend.html" title="PDF Backend">
 <link rel="next" href="cairo-PS-Backend.html" title="PS Backend">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -23,10 +23,7 @@
 <td><a accesskey="n" href="cairo-PS-Backend.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="refentry" lang="en">
-<a name="cairo-PNG-Backend"></a><div class="titlepage">
-<div></div>
-<div></div>
-</div>
+<a name="cairo-PNG-Backend"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle">PNG Backend</span></h2>
@@ -54,17 +51,17 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2972224"></a><h2>Description</h2>
+<a name="id2649260"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2972235"></a><h2>Details</h2>
+<a name="id2649271"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2972242"></a><h3>
+<a name="id2649277"></a><h3>
 <a name="cairo-image-surface-create-from-png"></a>cairo_image_surface_create_from_png ()</h3>
-<a class="indexterm" name="id2972250"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create_from_png
+<a class="indexterm" name="id2649286"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create_from_png
                                             (const char *filename);</pre>
 <p>
 Creates a new image surface and initializes the contents to the
@@ -77,7 +74,7 @@ given PNG file.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>filename</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
 <td> name of PNG file to load 
 </td>
 </tr>
@@ -85,8 +82,13 @@ given PNG file.</p>
 <td>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
 <td> a new <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> initialized with the contents
-of the PNG file or <tt class="literal">NULL</tt> if the file is not a valid PNG file or
-memory could not be allocated for the operation.
+of the PNG file, or a "nil" surface if any error occurred. A nil
+surface can be checked for with cairo_surface_status(surface) which
+may return one of the following values: 
+
+CAIRO_STATUS_NO_MEMORY
+CAIRO_STATUS_FILE_NOT_FOUND
+CAIRO_STATUS_READ_ERROR
 </td>
 </tr>
 </tbody>
@@ -94,14 +96,14 @@ memory could not be allocated for the operation.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2973862"></a><h3>
+<a name="id2652067"></a><h3>
 <a name="cairo-image-surface-create-from-png-stream"></a>cairo_image_surface_create_from_png_stream ()</h3>
-<a class="indexterm" name="id2973873"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create_from_png_stream
+<a class="indexterm" name="id2652077"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_image_surface_create_from_png_stream
                                             (<a href="cairo-cairo-t.html#cairo-read-func-t">cairo_read_func_t</a> read_func,
                                              void *closure);</pre>
 <p>
 Creates a new image surface from PNG data read incrementally
-via the <i class="parameter"><tt>read_func</tt></i> function.</p>
+via the <em class="parameter"><code>read_func</code></em> function.</p>
 <p>
 
 </p>
@@ -110,21 +112,21 @@ via the <i class="parameter"><tt>read_func</tt></i> function.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>read_func</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>read_func</code></em>&#160;:</span></td>
 <td> function called to read the data of the file
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>closure</tt></i>&#160;:</span></td>
-<td> data to pass to <i class="parameter"><tt>read_func</tt></i>.
+<span class="term"><em class="parameter"><code>closure</code></em>&#160;:</span></td>
+<td> data to pass to <em class="parameter"><code>read_func</code></em>.
 </td>
 </tr>
 <tr>
 <td>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
 <td> a new <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> initialized with the contents
-of the PNG file or <tt class="literal">NULL</tt> if the data read is not a valid PNG image or
+of the PNG file or <code class="literal">NULL</code> if the data read is not a valid PNG image or
 memory could not be allocated for the operation.
 </td>
 </tr>
@@ -133,12 +135,12 @@ memory could not be allocated for the operation.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2970718"></a><h3>
+<a name="id2652188"></a><h3>
 <a name="cairo-surface-write-to-png"></a>cairo_surface_write_to_png ()</h3>
-<a class="indexterm" name="id2970727"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_surface_write_to_png   (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2652197"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_surface_write_to_png   (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              const char *filename);</pre>
 <p>
-Writes the contents of <i class="parameter"><tt>surface</tt></i> to a new file <i class="parameter"><tt>filename</tt></i> as a PNG
+Writes the contents of <em class="parameter"><code>surface</code></em> to a new file <em class="parameter"><code>filename</code></em> as a PNG
 image.</p>
 <p>
 
@@ -148,13 +150,13 @@ image.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> with pixel contents
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>filename</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
 <td> the name of a file to write to
 </td>
 </tr>
@@ -174,9 +176,9 @@ while attempting to write the file.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2970831"></a><h3>
+<a name="id2651723"></a><h3>
 <a name="cairo-surface-write-to-png-stream"></a>cairo_surface_write_to_png_stream ()</h3>
-<a class="indexterm" name="id2970841"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_surface_write_to_png_stream
+<a class="indexterm" name="id2651732"></a><pre class="programlisting"><a href="cairo-cairo-t.html#cairo-status-t">cairo_status_t</a> cairo_surface_write_to_png_stream
                                             (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              <a href="cairo-cairo-t.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
                                              void *closure);</pre>
@@ -190,19 +192,19 @@ Writes the image surface to the write function.</p>
 <tbody>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> with pixel contents
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>write_func</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>write_func</code></em>&#160;:</span></td>
 <td> a <a href="cairo-cairo-t.html#cairo-write-func-t"><span class="type">cairo_write_func_t</span></a>
 </td>
 </tr>
 <tr>
 <td>
-<span class="term"><i class="parameter"><tt>closure</tt></i>&#160;:</span></td>
+<span class="term"><em class="parameter"><code>closure</code></em>&#160;:</span></td>
 <td> closure data for the write function
 </td>
 </tr>

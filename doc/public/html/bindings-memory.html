@@ -2,10 +2,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Memory Management</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
-<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
+<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
-<link rel="previous" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
+<link rel="prev" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
 <link rel="next" href="bindings-return-values.html" title="Multiple return values">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -23,14 +23,11 @@
 <td><a accesskey="n" href="bindings-return-values.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="sect1" lang="en">
-<div class="titlepage">
-<div><div><h2 class="title" style="clear: both">
-<a name="bindings-memory"></a>Memory Management</h2></div></div>
-<div></div>
-</div>
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="bindings-memory"></a>Memory Management</h2></div></div></div>
 <p>
       The objects in cairo can roughly be divided into two types:
-      refcounted opaque types like
+      reference-counted, opaque types like
       <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
       and plain structures like
       <a href="cairo-cairo-t.html#cairo-glyph-t"><span class="type">cairo_glyph_t</span></a>.
@@ -41,9 +38,9 @@
     </p>
 <p>
       Refcounted opaque types all have a
-      <tt class="function">..._reference()</tt>
+      <code class="function">..._reference()</code>
       function to increase the refcount by one and a
-      <tt class="function">..._destroy()</tt> to decrease the refcount
+      <code class="function">..._destroy()</code> to decrease the refcount
       by one. These should not be exposed to the user of the language
       binding, but rather used to implement memory management within
       the language binding. The simplest way to do memory management
@@ -61,10 +58,10 @@
 	  equality operation, then this is fixable by comparing
 	  the underlying pointers. It also can be fixed by creating
 	  at most one language object per cairo object, and
-	  uniquifying via a <i class="firstterm">pin table</i> (a hash
+	  uniquifying via a <em class="firstterm">pin table</em> (a hash
 	  table that goes from cairo object to language object).
 	  For <span class="type">cairo_surface_t</span> you can use also 
-	  <a href="cairo-cairo-surface-t.html#cairo-surface-set-user-data"><tt class="function">cairo_surface_set_user_data()</tt></a>
+	  <a href="cairo-cairo-surface-t.html#cairo-surface-set-user-data"><code class="function">cairo_surface_set_user_data()</code></a>
 	  instead of a separate pin table.
 	</p></li>
 <li>
@@ -87,8 +84,8 @@ public class MySurface (ImageSurface) {
    surface = cr.getTarget();
 </pre>
 <p>
-	  Can result in <tt class="varname">surface</tt> containing an
-	  <tt class="classname">ImageSurface</tt> not a <tt class="classname">MySurface</tt>.
+	  Can result in <code class="varname">surface</code> containing an
+	  <code class="classname">ImageSurface</code> not a <code class="classname">MySurface</code>.
 	  This is not easily fixable without creating memory leaks,
 	  and it's probably best to simply forbid deriving from the
 	  language objects.
