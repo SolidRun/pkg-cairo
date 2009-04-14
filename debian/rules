@@ -43,14 +43,14 @@ UDEB_DIST_DIR=$(CURDIR)/debian/dist-udeb
 export DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 export DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
-CFLAGS = -g
+CFLAGS_MAIN = -g
 CFLAGS_UDEB = -g
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
+	CFLAGS_MAIN += -O0
 	CFLAGS_UDEB += -O0
 else
-	CFLAGS += -O2
+	CFLAGS_MAIN += -O2
 	CFLAGS_UDEB += -Os
 endif
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
@@ -93,7 +93,7 @@ configure-main-stamp: configure-common-stamp
 	mkdir -p $(MAIN_BUILD_DIR); \
 	cd $(MAIN_BUILD_DIR); \
 	$(SRC_DIR)/configure \
-		CFLAGS="$(CFLAGS)" \
+		CFLAGS="$(CFLAGS_MAIN)" \
 		$(CONFFLAGS) \
 		--prefix=$(prefix) \
 		--mandir=$(share)/man \
