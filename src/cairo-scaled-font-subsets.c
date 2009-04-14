@@ -40,6 +40,7 @@
  *	Adrian Johnson <ajohnson@redneon.com>
  */
 
+#define _BSD_SOURCE /* for snprintf(), strdup() */
 #include "cairoint.h"
 #include "cairo-scaled-font-subsets-private.h"
 
@@ -217,23 +218,22 @@ _cairo_sub_font_init_key (cairo_sub_font_t	*sub_font,
     }
 }
 
-static cairo_sub_font_t *
+static cairo_status_t
 _cairo_sub_font_create (cairo_scaled_font_subsets_t	*parent,
 			cairo_scaled_font_t		*scaled_font,
 			unsigned int			 font_id,
 			int				 max_glyphs_per_subset,
                         cairo_bool_t                     is_scaled,
-                        cairo_bool_t                     is_composite)
+			cairo_bool_t                     is_composite,
+			cairo_sub_font_t               **sub_font_out)
 {
     cairo_sub_font_t *sub_font;
     cairo_status_t status;
     cairo_scaled_font_subsets_glyph_t subset_glyph;
 
     sub_font = malloc (sizeof (cairo_sub_font_t));
-    if (sub_font == NULL) {
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	return NULL;
-    }
+    if (sub_font == NULL)
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
     sub_font->is_scaled = is_scaled;
     sub_font->is_composite = is_composite;
@@ -248,19 +248,21 @@ _cairo_sub_font_create (cairo_scaled_font_subsets_t	*parent,
     sub_font->max_glyphs_per_subset = max_glyphs_per_subset;
 
     sub_font->sub_font_glyphs = _cairo_hash_table_create (_cairo_sub_font_glyphs_equal);
-    if (! sub_font->sub_font_glyphs) {
+    if (sub_font->sub_font_glyphs == NULL) {
 	free (sub_font);
-	return NULL;
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
     }
 
     /* Reserve first glyph in subset for the .notdef glyph */
     status = _cairo_sub_font_map_glyph (sub_font, 0, &subset_glyph);
     if (status) {
-	_cairo_error_throw (status);
-	return NULL;
+	_cairo_hash_table_destroy (sub_font->sub_font_glyphs);
+	free (sub_font);
+	return status;
     }
 
-    return sub_font;
+    *sub_font_out = sub_font;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 static void
@@ -337,6 +339,7 @@ _cairo_sub_font_map_glyph (cairo_sub_font_t	*sub_font,
                                              scaled_font_glyph_index,
                                              CAIRO_SCALED_GLYPH_INFO_METRICS,
                                              &scaled_glyph);
+	assert (status != CAIRO_INT_STATUS_UNSUPPORTED);
 	if (status)
 	    return status;
 
@@ -542,11 +545,21 @@ _cairo_scaled_font_subsets_map_glyph (cairo_scaled_font_subsets_t	*subsets,
     }
 
     /* Glyph not found. Determine whether the glyph is outline or
-     * bitmap and add to the appropriate subset */
-    status = _cairo_scaled_glyph_lookup (scaled_font,
-                                         scaled_font_glyph_index,
-					 CAIRO_SCALED_GLYPH_INFO_PATH,
-                                         &scaled_glyph);
+     * bitmap and add to the appropriate subset.
+     *
+     * glyph_index 0 (the .notdef glyph) is a special case. Some fonts
+     * will return CAIRO_INT_STATUS_UNSUPPORTED when doing a
+     * _scaled_glyph_lookup(_GLYPH_INFO_PATH). Type1-fallback creates
+     * empty glyphs in this case so we can put the glyph in a unscaled
+     * subset. */
+    if (scaled_font_glyph_index == 0) {
+	status = CAIRO_STATUS_SUCCESS;
+    } else {
+	status = _cairo_scaled_glyph_lookup (scaled_font,
+					     scaled_font_glyph_index,
+					     CAIRO_SCALED_GLYPH_INFO_PATH,
+					     &scaled_glyph);
+    }
     if (status && status != CAIRO_INT_STATUS_UNSUPPORTED)
         return status;
 
@@ -584,15 +597,16 @@ _cairo_scaled_font_subsets_map_glyph (cairo_scaled_font_subsets_t	*subsets,
                 subset_glyph->is_composite = FALSE;
             }
 
-            sub_font = _cairo_sub_font_create (subsets,
-                                               unscaled_font,
-                                               subsets->num_sub_fonts,
-                                               max_glyphs,
-                                               subset_glyph->is_scaled,
-                                               subset_glyph->is_composite);
-            if (sub_font == NULL) {
+            status = _cairo_sub_font_create (subsets,
+					     unscaled_font,
+					     subsets->num_sub_fonts,
+					     max_glyphs,
+					     subset_glyph->is_scaled,
+					     subset_glyph->is_composite,
+					     &sub_font);
+            if (status) {
 		cairo_scaled_font_destroy (unscaled_font);
-                return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+                return status;
 	    }
 
             status = _cairo_hash_table_insert (subsets->unscaled_sub_fonts,
@@ -618,15 +632,16 @@ _cairo_scaled_font_subsets_map_glyph (cairo_scaled_font_subsets_t	*subsets,
             else
                 max_glyphs = MAX_GLYPHS_PER_SIMPLE_FONT;
 
-            sub_font = _cairo_sub_font_create (subsets,
-                                               cairo_scaled_font_reference (scaled_font),
-                                               subsets->num_sub_fonts,
-                                               max_glyphs,
-                                               subset_glyph->is_scaled,
-                                               subset_glyph->is_composite);
-            if (sub_font == NULL) {
+            status = _cairo_sub_font_create (subsets,
+					     cairo_scaled_font_reference (scaled_font),
+					     subsets->num_sub_fonts,
+					     max_glyphs,
+					     subset_glyph->is_scaled,
+					     subset_glyph->is_composite,
+					     &sub_font);
+            if (status) {
 		cairo_scaled_font_destroy (scaled_font);
-                return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+                return status;
 	    }
 
             status = _cairo_hash_table_insert (subsets->scaled_sub_fonts,

@@ -236,9 +236,12 @@ release-publish-message: releases/$(sha1_file)
 release-publish: release-upload release-publish-message
 
 doc-publish: doc
+	rm -rf ./$(MANUAL_DATED)
 	cp -a doc/public/html $(MANUAL_DATED)
 	tar czf $(MANUAL_TAR_FILE) $(MANUAL_DATED)
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
 	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && rm -f manual && ln -s $(MANUAL_DATED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
 
 .PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish lcov lcov-perf lcov-clean genlcov
+
+EXTRA_DIST += Makefile.win32

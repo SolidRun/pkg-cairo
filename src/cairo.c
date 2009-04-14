@@ -63,12 +63,6 @@ static const cairo_t _cairo_nil = {
 
 #include <assert.h>
 
-/* This has to be updated whenever #cairo_status_t is extended.  That's
- * a bit of a pain, but it should be easy to always catch as long as
- * one adds a new test case to test a trigger of the new status value.
- */
-#define CAIRO_STATUS_LAST_STATUS CAIRO_STATUS_INVALID_STRIDE
-
 /**
  * _cairo_error:
  * @status: a status value indicating an error, (eg. not
@@ -640,9 +634,7 @@ slim_hidden_def(cairo_pop_group_to_source);
  * operations. See #cairo_operator_t for details on the semantics of
  * each available compositing operator.
  *
- * XXX: I'd also like to direct the reader's attention to some
- * (not-yet-written) section on cairo's imaging model. How would I do
- * that if such a section existed? (cworth).
+ * The default operator is %CAIRO_OPERATOR_OVER.
  **/
 void
 cairo_set_operator (cairo_t *cr, cairo_operator_t op)
@@ -672,6 +664,9 @@ slim_hidden_def (cairo_set_operator);
  * The color components are floating point numbers in the range 0 to
  * 1. If the values passed in are outside that range, they will be
  * clamped.
+ *
+ * The default source pattern is opaque black, (that is, it is
+ * equivalent to cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)).
  **/
 void
 cairo_set_source_rgb (cairo_t *cr, double red, double green, double blue)
@@ -704,6 +699,9 @@ cairo_set_source_rgb (cairo_t *cr, double red, double green, double blue)
  * The color and alpha components are floating point numbers in the
  * range 0 to 1. If the values passed in are outside that range, they
  * will be clamped.
+ *
+ * The default source pattern is opaque black, (that is, it is
+ * equivalent to cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)).
  **/
 void
 cairo_set_source_rgba (cairo_t *cr,
@@ -786,9 +784,9 @@ slim_hidden_def (cairo_set_source_surface);
  * that further modifications of the current transformation matrix
  * will not affect the source pattern. See cairo_pattern_set_matrix().
  *
- * XXX: I'd also like to direct the reader's attention to some
- * (not-yet-written) section on cairo's imaging model. How would I do
- * that if such a section existed? (cworth).
+ * The default source pattern is a solid pattern that is opaque black,
+ * (that is, it is equivalent to cairo_set_source_rgb (cr, 0.0, 0.0,
+ * 0.0)).
  **/
 void
 cairo_set_source (cairo_t *cr, cairo_pattern_t *source)
@@ -897,6 +895,8 @@ cairo_set_antialias (cairo_t *cr, cairo_antialias_t antialias)
  * (potentially self-intersecting) path. The current fill rule affects
  * both cairo_fill() and cairo_clip(). See #cairo_fill_rule_t for details
  * on the semantics of each available fill rule.
+ *
+ * The default fill rule is %CAIRO_FILL_RULE_WINDING.
  **/
 void
 cairo_set_fill_rule (cairo_t *cr, cairo_fill_rule_t fill_rule)
@@ -965,6 +965,8 @@ cairo_set_line_width (cairo_t *cr, double width)
  * examined by cairo_stroke(), cairo_stroke_extents(), and
  * cairo_stroke_to_path(), but does not have any effect during path
  * construction.
+ *
+ * The default line cap style is %CAIRO_LINE_CAP_BUTT.
  **/
 void
 cairo_set_line_cap (cairo_t *cr, cairo_line_cap_t line_cap)
@@ -982,7 +984,7 @@ cairo_set_line_cap (cairo_t *cr, cairo_line_cap_t line_cap)
 /**
  * cairo_set_line_join:
  * @cr: a cairo context
- * @line_join: a line joint style
+ * @line_join: a line join style
  *
  * Sets the current line join style within the cairo context. See
  * #cairo_line_join_t for details about how the available line join
@@ -992,6 +994,8 @@ cairo_set_line_cap (cairo_t *cr, cairo_line_cap_t line_cap)
  * examined by cairo_stroke(), cairo_stroke_extents(), and
  * cairo_stroke_to_path(), but does not have any effect during path
  * construction.
+ *
+ * The default line join style is %CAIRO_LINE_JOIN_MITER.
  **/
 void
 cairo_set_line_join (cairo_t *cr, cairo_line_join_t line_join)
@@ -1122,6 +1126,15 @@ cairo_get_dash (cairo_t *cr,
  * examined by cairo_stroke(), cairo_stroke_extents(), and
  * cairo_stroke_to_path(), but does not have any effect during path
  * construction.
+ *
+ * The default miter limit value is 10.0, which will convert joins
+ * with interior angles less than 11 degrees to bevels instead of
+ * miters. For reference, a miter limit of 2.0 makes the miter cutoff
+ * at 60 degrees, and a miter limit of 1.414 makes the cutoff at 90
+ * degrees.
+ *
+ * A miter limit for a desired angle can be computed as: miter limit =
+ * 1/sin(angle/2)
  **/
 void
 cairo_set_miter_limit (cairo_t *cr, double limit)
@@ -1904,6 +1917,8 @@ void
 cairo_path_extents (cairo_t *cr,
 		    double *x1, double *y1, double *x2, double *y2)
 {
+    cairo_status_t status;
+
     if (cr->status) {
 	if (x1)
 	    *x1 = 0.0;
@@ -1917,9 +1932,11 @@ cairo_path_extents (cairo_t *cr,
 	return;
     }
 
-    _cairo_gstate_path_extents (cr->gstate,
-				cr->path,
-				x1, y1, x2, y2);
+    status = _cairo_gstate_path_extents (cr->gstate,
+				         cr->path,
+					 x1, y1, x2, y2);
+    if (status)
+	_cairo_set_error (cr, status);
 }
 slim_hidden_def (cairo_path_extents);
 
@@ -2297,9 +2314,14 @@ cairo_in_fill (cairo_t *cr, double x, double y)
  * taken into account.
  *
  * Note that if the line width is set to exactly zero, then
- * cairo_stroke_extents will return an empty rectangle. Contrast with
+ * cairo_stroke_extents() will return an empty rectangle. Contrast with
  * cairo_path_extents() which can be used to compute the non-empty
  * bounds as the line width approaches zero.
+ *
+ * Note that cairo_stroke_extents() must necessarily do more work to
+ * compute the precise inked areas in light of the stroke parameters,
+ * so cairo_path_extents() may be more desirable for sake of
+ * performance if non-inked path extents are desired.
  *
  * See cairo_stroke(), cairo_set_line_width(), cairo_set_line_join(),
  * cairo_set_line_cap(), cairo_set_dash(), and
@@ -2346,8 +2368,13 @@ cairo_stroke_extents (cairo_t *cr,
  * dimensions and clipping are not taken into account.
  *
  * Contrast with cairo_path_extents(), which is similar, but returns
- * non-zero extents for some paths no inked area, (such as a simple
- * line segment).
+ * non-zero extents for some paths with no inked area, (such as a
+ * simple line segment).
+ *
+ * Note that cairo_fill_extents() must necessarily do more work to
+ * compute the precise inked areas in light of the fill rule, so
+ * cairo_path_extents() may be more desirable for sake of performance
+ * if the non-inked path extents are desired.
  *
  * See cairo_fill(), cairo_set_fill_rule() and cairo_fill_preserve().
  **/
@@ -2563,13 +2590,38 @@ cairo_copy_clip_rectangle_list (cairo_t *cr)
  * @slant: the slant for the font
  * @weight: the weight for the font
  *
+ * Note: The cairo_select_font_face() function call is part of what
+ * the cairo designers call the "toy" text API. It is convenient for
+ * short demos and simple programs, but it is not expected to be
+ * adequate for serious text-using applications.
+ *
  * Selects a family and style of font from a simplified description as
- * a family name, slant and weight. This function is meant to be used
- * only for applications with simple font needs: Cairo doesn't provide
- * for operations such as listing all available fonts on the system,
- * and it is expected that most applications will need to use a more
- * comprehensive font handling and text layout library in addition to
- * cairo.
+ * a family name, slant and weight. Cairo provides no operation to
+ * list available family names on the system (this is a "toy",
+ * remember"), but the standard CSS2 generic family names, ("serif",
+ * "sans-serif", "cursive", "fantasy", "monospace"), are likely to
+ * work as expected.
+ *
+ * For "real" font selection, see the font-backend-specific
+ * font_face_create functions for the font backend you are using. (For
+ * example, if you are using the freetype-based cairo-ft font backend,
+ * see cairo_ft_font_face_create_for_ft_face() or
+ * cairo_ft_font_face_create_for_pattern().) The resulting font face
+ * could then be used with cairo_scaled_font_create() and
+ * cairo_set_scaled_font().
+ *
+ * Similarly, when using the "real" font support, you can call
+ * directly into the underlying font system, (such as fontconfig or
+ * freetype), for operations such as listing available fonts, etc.
+ *
+ * It is expected that most applications will need to use a more
+ * comprehensive font handling and text layout library, (for example,
+ * pango), in conjunction with cairo.
+ *
+ * If text is drawn without a call to cairo_select_font_face(), (nor
+ * cairo_set_font_face() nor cairo_set_scaled_font()), the default
+ * family is "sans", slant is %CAIRO_FONT_SLANT_NORMAL, and weight is
+ * %CAIRO_FONT_WEIGHT_NORMAL.
  **/
 void
 cairo_select_font_face (cairo_t              *cr,
@@ -2684,6 +2736,10 @@ cairo_get_font_face (cairo_t *cr)
  * cairo_set_font_matrix(). This results in a font size of @size user space
  * units. (More precisely, this matrix will result in the font's
  * em-square being a @size by @size square in user space.)
+ *
+ * If text is drawn without a call to cairo_set_font_size(), (nor
+ * cairo_set_font_matrix() nor cairo_set_scaled_font()), the default
+ * font size is 10.0.
  **/
 void
 cairo_set_font_size (cairo_t *cr, double size)
@@ -2764,12 +2820,10 @@ cairo_set_font_options (cairo_t                    *cr,
     if (cr->status)
 	return;
 
-    if (options != NULL) {
-	status = cairo_font_options_status ((cairo_font_options_t *) options);
-	if (status) {
-	    _cairo_set_error (cr, status);
-	    return;
-	}
+    status = cairo_font_options_status ((cairo_font_options_t *) options);
+    if (status) {
+	_cairo_set_error (cr, status);
+	return;
     }
 
     _cairo_gstate_set_font_options (cr->gstate, options);
@@ -2871,12 +2925,12 @@ cairo_get_scaled_font (cairo_t *cr)
     cairo_scaled_font_t *scaled_font;
 
     if (cr->status)
-	return (cairo_scaled_font_t *)&_cairo_scaled_font_nil;
+	return _cairo_scaled_font_create_in_error (cr->status);
 
     status = _cairo_gstate_get_scaled_font (cr->gstate, &scaled_font);
     if (status) {
 	_cairo_set_error (cr, status);
-	return (cairo_scaled_font_t *)&_cairo_scaled_font_nil;
+	return _cairo_scaled_font_create_in_error (status);
     }
 
     return scaled_font;
@@ -2925,7 +2979,7 @@ cairo_text_extents (cairo_t              *cr,
     if (utf8 == NULL)
 	return;
 
-    (void) cairo_get_current_point (cr, &x, &y);
+    cairo_get_current_point (cr, &x, &y);
 
     status = _cairo_gstate_text_to_glyphs (cr->gstate, utf8,
 					   x, y,
@@ -3026,7 +3080,7 @@ cairo_show_text (cairo_t *cr, const char *utf8)
     if (utf8 == NULL)
 	return;
 
-    (void) cairo_get_current_point (cr, &x, &y);
+    cairo_get_current_point (cr, &x, &y);
 
     status = _cairo_gstate_text_to_glyphs (cr->gstate, utf8,
 					       x, y,
@@ -3125,7 +3179,7 @@ cairo_text_path  (cairo_t *cr, const char *utf8)
     if (utf8 == NULL)
 	return;
 
-    (void) cairo_get_current_point (cr, &x, &y);
+    cairo_get_current_point (cr, &x, &y);
 
     status = _cairo_gstate_text_to_glyphs (cr->gstate, utf8,
 					   x, y,
@@ -3245,6 +3299,26 @@ cairo_get_antialias (cairo_t *cr)
 }
 
 /**
+ * cairo_has_current_point:
+ * @cr: a cairo context
+ *
+ * Returns whether a current point is defined on the current path.
+ * See cairo_get_current_point() for details on the current point.
+ *
+ * Return value: whether a current point is defined.
+ *
+ * Since: 1.6
+ **/
+cairo_bool_t
+cairo_has_current_point (cairo_t *cr)
+{
+    if (cr->status)
+    return FALSE;
+
+    return cr->path->has_current_point;
+}
+
+/**
  * cairo_get_current_point:
  * @cr: a cairo context
  * @x: return value for X coordinate of the current point
@@ -3254,8 +3328,9 @@ cairo_get_antialias (cairo_t *cr)
  * conceptually the final point reached by the path so far.
  *
  * The current point is returned in the user-space coordinate
- * system. If there is no defined current point then @x and @y will
- * both be set to 0.0.
+ * system. If there is no defined current point or if @cr is in an
+ * error status, @x and @y will both be set to 0.0. It is possible to
+ * check this in advance with cairo_has_current_point().
  *
  * Most path construction functions alter the current point. See the
  * following for details on how they affect the current point:
@@ -3272,17 +3347,10 @@ cairo_get_antialias (cairo_t *cr)
  *
  * Some functions unset the current path and as a result, current point:
  * cairo_fill(), cairo_stroke().
- *
- * Returns: %CAIRO_STATUS_SUCCESS if current point was successfully
- * retrieved.  Otherwise, if @cr has been in an error status, that status
- * is returned, otherwise %CAIRO_STATUS_NO_CURRENT_POINT is returned if
- * no current point exists.  In all error cases, both @x and @y will be
- * set to 0.0.
  **/
-cairo_status_t
+void
 cairo_get_current_point (cairo_t *cr, double *x_ret, double *y_ret)
 {
-    cairo_status_t status = CAIRO_STATUS_SUCCESS;
     cairo_fixed_t x_fixed, y_fixed;
     double x, y;
 
@@ -3295,11 +3363,6 @@ cairo_get_current_point (cairo_t *cr, double *x_ret, double *y_ret)
     }
     else
     {
-	if (cr->status)
-	    status = cr->status;
-	else
-	    status = CAIRO_STATUS_NO_CURRENT_POINT;
-
 	x = 0.0;
 	y = 0.0;
     }
@@ -3308,8 +3371,6 @@ cairo_get_current_point (cairo_t *cr, double *x_ret, double *y_ret)
 	*x_ret = x;
     if (y_ret)
 	*y_ret = y;
-
-    return status;
 }
 slim_hidden_def(cairo_get_current_point);
 
@@ -3617,290 +3678,3 @@ cairo_status (cairo_t *cr)
     return cr->status;
 }
 slim_hidden_def (cairo_status);
-
-/**
- * cairo_status_to_string:
- * @status: a cairo status
- *
- * Provides a human-readable description of a #cairo_status_t.
- *
- * Returns: a string representation of the status
- */
-const char *
-cairo_status_to_string (cairo_status_t status)
-{
-    switch (status) {
-    case CAIRO_STATUS_SUCCESS:
-	return "success";
-    case CAIRO_STATUS_NO_MEMORY:
-	return "out of memory";
-    case CAIRO_STATUS_INVALID_RESTORE:
-	return "cairo_restore without matching cairo_save";
-    case CAIRO_STATUS_INVALID_POP_GROUP:
-	return "cairo_pop_group without matching cairo_push_group";
-    case CAIRO_STATUS_NO_CURRENT_POINT:
-	return "no current point defined";
-    case CAIRO_STATUS_INVALID_MATRIX:
-	return "invalid matrix (not invertible)";
-    case CAIRO_STATUS_INVALID_STATUS:
-	return "invalid value for an input cairo_status_t";
-    case CAIRO_STATUS_NULL_POINTER:
-	return "NULL pointer";
-    case CAIRO_STATUS_INVALID_STRING:
-	return "input string not valid UTF-8";
-    case CAIRO_STATUS_INVALID_PATH_DATA:
-	return "input path data not valid";
-    case CAIRO_STATUS_READ_ERROR:
-	return "error while reading from input stream";
-    case CAIRO_STATUS_WRITE_ERROR:
-	return "error while writing to output stream";
-    case CAIRO_STATUS_SURFACE_FINISHED:
-	return "the target surface has been finished";
-    case CAIRO_STATUS_SURFACE_TYPE_MISMATCH:
-	return "the surface type is not appropriate for the operation";
-    case CAIRO_STATUS_PATTERN_TYPE_MISMATCH:
-	return "the pattern type is not appropriate for the operation";
-    case CAIRO_STATUS_INVALID_CONTENT:
-	return "invalid value for an input cairo_content_t";
-    case CAIRO_STATUS_INVALID_FORMAT:
-	return "invalid value for an input cairo_format_t";
-    case CAIRO_STATUS_INVALID_VISUAL:
-	return "invalid value for an input Visual*";
-    case CAIRO_STATUS_FILE_NOT_FOUND:
-	return "file not found";
-    case CAIRO_STATUS_INVALID_DASH:
-	return "invalid value for a dash setting";
-    case CAIRO_STATUS_INVALID_DSC_COMMENT:
-	return "invalid value for a DSC comment";
-    case CAIRO_STATUS_INVALID_INDEX:
-	return "invalid index passed to getter";
-    case CAIRO_STATUS_CLIP_NOT_REPRESENTABLE:
-        return "clip region not representable in desired format";
-    case CAIRO_STATUS_TEMP_FILE_ERROR:
-	return "error creating or writing to a temporary file";
-    case CAIRO_STATUS_INVALID_STRIDE:
-	return "invalid value for stride";
-    }
-
-    return "<unknown error status>";
-}
-
-void
-_cairo_restrict_value (double *value, double min, double max)
-{
-    if (*value < min)
-	*value = min;
-    else if (*value > max)
-	*value = max;
-}
-
-/* This function is identical to the C99 function lround(), except that it
- * performs arithmetic rounding (instead of away-from-zero rounding) and
- * has a valid input range of (INT_MIN, INT_MAX] instead of
- * [INT_MIN, INT_MAX]. It is much faster on both x86 and FPU-less systems
- * than other commonly used methods for rounding (lround, round, rint, lrint
- * or float (d + 0.5)).
- *
- * The reason why this function is much faster on x86 than other
- * methods is due to the fact that it avoids the fldcw instruction.
- * This instruction incurs a large performance penalty on modern Intel
- * processors due to how it prevents efficient instruction pipelining.
- *
- * The reason why this function is much faster on FPU-less systems is for
- * an entirely different reason. All common rounding methods involve multiple
- * floating-point operations. Each one of these operations has to be
- * emulated in software, which adds up to be a large performance penalty.
- * This function doesn't perform any floating-point calculations, and thus
- * avoids this penalty.
-  */
-int
-_cairo_lround (double d)
-{
-    uint32_t top, shift_amount, output;
-    union {
-        double d;
-        uint64_t ui64;
-        uint32_t ui32[2];
-    } u;
-
-    u.d = d;
-
-    /* If the integer word order doesn't match the float word order, we swap
-     * the words of the input double. This is needed because we will be
-     * treating the whole double as a 64-bit unsigned integer. Notice that we
-     * use WORDS_BIGENDIAN to detect the integer word order, which isn't
-     * exactly correct because WORDS_BIGENDIAN refers to byte order, not word
-     * order. Thus, we are making the assumption that the byte order is the
-     * same as the integer word order which, on the modern machines that we
-     * care about, is OK.
-     */
-#if ( defined(FLOAT_WORDS_BIGENDIAN) && !defined(WORDS_BIGENDIAN)) || \
-    (!defined(FLOAT_WORDS_BIGENDIAN) &&  defined(WORDS_BIGENDIAN))
-    {
-        uint32_t temp = u.ui32[0];
-        u.ui32[0] = u.ui32[1];
-        u.ui32[1] = temp;
-    }
-#endif
-
-#ifdef WORDS_BIGENDIAN
-    #define MSW (0) /* Most Significant Word */
-    #define LSW (1) /* Least Significant Word */
-#else
-    #define MSW (1)
-    #define LSW (0)
-#endif
-
-    /* By shifting the most significant word of the input double to the
-     * right 20 places, we get the very "top" of the double where the exponent
-     * and sign bit lie.
-     */
-    top = u.ui32[MSW] >> 20;
-
-    /* Here, we calculate how much we have to shift the mantissa to normalize
-     * it to an integer value. We extract the exponent "top" by masking out the
-     * sign bit, then we calculate the shift amount by subtracting the exponent
-     * from the bias. Notice that the correct bias for 64-bit doubles is
-     * actually 1075, but we use 1053 instead for two reasons:
-     *
-     *  1) To perform rounding later on, we will first need the target
-     *     value in a 31.1 fixed-point format. Thus, the bias needs to be one
-     *     less: (1075 - 1: 1074).
-     *
-     *  2) To avoid shifting the mantissa as a full 64-bit integer (which is
-     *     costly on certain architectures), we break the shift into two parts.
-     *     First, the upper and lower parts of the mantissa are shifted
-     *     individually by a constant amount that all valid inputs will require
-     *     at the very least. This amount is chosen to be 21, because this will
-     *     allow the two parts of the mantissa to later be combined into a
-     *     single 32-bit representation, on which the remainder of the shift
-     *     will be performed. Thus, we decrease the bias by an additional 21:
-     *     (1074 - 21: 1053).
-     */
-    shift_amount = 1053 - (top & 0x7FF);
-
-    /* We are done with the exponent portion in "top", so here we shift it off
-     * the end.
-     */
-    top >>= 11;
-
-    /* Before we perform any operations on the mantissa, we need to OR in
-     * the implicit 1 at the top (see the IEEE-754 spec). We needn't mask
-     * off the sign bit nor the exponent bits because these higher bits won't
-     * make a bit of difference in the rest of our calculations.
-     */
-    u.ui32[MSW] |= 0x100000;
-
-    /* If the input double is negative, we have to decrease the mantissa
-     * by a hair. This is an important part of performing arithmetic rounding,
-     * as negative numbers must round towards positive infinity in the
-     * halfwase case of -x.5. Since "top" contains only the sign bit at this
-     * point, we can just decrease the mantissa by the value of "top".
-     */
-    u.ui64 -= top;
-
-    /* By decrementing "top", we create a bitmask with a value of either
-     * 0x0 (if the input was negative) or 0xFFFFFFFF (if the input was positive
-     * and thus the unsigned subtraction underflowed) that we'll use later.
-     */
-    top--;
-
-    /* Here, we shift the mantissa by the constant value as described above.
-     * We can emulate a 64-bit shift right by 21 through shifting the top 32
-     * bits left 11 places and ORing in the bottom 32 bits shifted 21 places
-     * to the right. Both parts of the mantissa are now packed into a single
-     * 32-bit integer. Although we severely truncate the lower part in the
-     * process, we still have enough significant bits to perform the conversion
-     * without error (for all valid inputs).
-     */
-    output = (u.ui32[MSW] << 11) | (u.ui32[LSW] >> 21);
-
-    /* Next, we perform the shift that converts the X.Y fixed-point number
-     * currently found in "output" to the desired 31.1 fixed-point format
-     * needed for the following rounding step. It is important to consider
-     * all possible values for "shift_amount" at this point:
-     *
-     * - {shift_amount < 0} Since shift_amount is an unsigned integer, it
-     *   really can't have a value less than zero. But, if the shift_amount
-     *   calculation above caused underflow (which would happen with
-     *   input > INT_MAX or input <= INT_MIN) then shift_amount will now be
-     *   a very large number, and so this shift will result in complete
-     *   garbage. But that's OK, as the input was out of our range, so our
-     *   output is undefined.
-     *
-     * - {shift_amount > 31} If the magnitude of the input was very small
-     *   (i.e. |input| << 1.0), shift_amount will have a value greater than
-     *   31. Thus, this shift will also result in garbage. After performing
-     *   the shift, we will zero-out "output" if this is the case.
-     *
-     * - {0 <= shift_amount < 32} In this case, the shift will properly convert
-     *   the mantissa into a 31.1 fixed-point number.
-     */
-    output >>= shift_amount;
-
-    /* This is where we perform rounding with the 31.1 fixed-point number.
-     * Since what we're after is arithmetic rounding, we simply add the single
-     * fractional bit into the integer part of "output", and just keep the
-     * integer part.
-     */
-    output = (output >> 1) + (output & 1);
-
-    /* Here, we zero-out the result if the magnitude if the input was very small
-     * (as explained in the section above). Notice that all input out of the
-     * valid range is also caught by this condition, which means we produce 0
-     * for all invalid input, which is a nice side effect.
-     *
-     * The most straightforward way to do this would be:
-     *
-     *      if (shift_amount > 31)
-     *          output = 0;
-     *
-     * But we can use a little trick to avoid the potential branch. The
-     * expression (shift_amount > 31) will be either 1 or 0, which when
-     * decremented will be either 0x0 or 0xFFFFFFFF (unsigned underflow),
-     * which can be used to conditionally mask away all the bits in "output"
-     * (in the 0x0 case), effectively zeroing it out. Certain, compilers would
-     * have done this for us automatically.
-     */
-    output &= ((shift_amount > 31) - 1);
-
-    /* If the input double was a negative number, then we have to negate our
-     * output. The most straightforward way to do this would be:
-     *
-     *      if (!top)
-     *          output = -output;
-     *
-     * as "top" at this point is either 0x0 (if the input was negative) or
-     * 0xFFFFFFFF (if the input was positive). But, we can use a trick to
-     * avoid the branch. Observe that the following snippet of code has the
-     * same effect as the reference snippet above:
-     *
-     *      if (!top)
-     *          output = 0 - output;
-     *      else
-     *          output = output - 0;
-     *
-     * Armed with the bitmask found in "top", we can condense the two statements
-     * into the following:
-     *
-     *      output = (output & top) - (output & ~top);
-     *
-     * where, in the case that the input double was negative, "top" will be 0,
-     * and the statement will be equivalent to:
-     *
-     *      output = (0) - (output);
-     *
-     * and if the input double was positive, "top" will be 0xFFFFFFFF, and the
-     * statement will be equivalent to:
-     *
-     *      output = (output) - (0);
-     *
-     * Which, as pointed out earlier, is equivalent to the original reference
-     * snippet.
-     */
-    output = (output & top) - (output & ~top);
-
-    return output;
-#undef MSW
-#undef LSW
-}

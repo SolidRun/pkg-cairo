@@ -31,7 +31,8 @@ enum                <link linkend="cairo-path-data-type-t">cairo_path_data_type_
 <link linkend="void">void</link>                <link linkend="cairo-path-destroy">cairo_path_destroy</link>                  (<link linkend="cairo-path-t">cairo_path_t</link> *path);
 <link linkend="void">void</link>                <link linkend="cairo-append-path">cairo_append_path</link>                   (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          const <link linkend="cairo-path-t">cairo_path_t</link> *path);
-<link linkend="cairo-status-t">cairo_status_t</link>      <link linkend="cairo-get-current-point">cairo_get_current_point</link>             (<link linkend="cairo-t">cairo_t</link> *cr,
+<link linkend="cairo-bool-t">cairo_bool_t</link>        <link linkend="cairo-has-current-point">cairo_has_current_point</link>             (<link linkend="cairo-t">cairo_t</link> *cr);
+<link linkend="void">void</link>                <link linkend="cairo-get-current-point">cairo_get_current_point</link>             (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> *x,
                                                          <link linkend="double">double</link> *y);
 <link linkend="void">void</link>                <link linkend="cairo-new-path">cairo_new_path</link>                      (<link linkend="cairo-t">cairo_t</link> *cr);
@@ -399,8 +400,25 @@ initialized to <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_S
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="cairo-has-current-point" role="function" condition="since:1.6"/>cairo_has_current_point ()</title>
+<indexterm role="1.6"><primary>cairo_has_current_point</primary></indexterm><programlisting><link linkend="cairo-bool-t">cairo_bool_t</link>        cairo_has_current_point             (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<para>
+Returns whether a current point is defined on the current path.
+See <link linkend="cairo-get-current-point"><function>cairo_get_current_point()</function></link> for details on the current point.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a cairo context
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> whether a current point is defined.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  1.6
+</para></refsect2>
+<refsect2>
 <title><anchor id="cairo-get-current-point" role="function"/>cairo_get_current_point ()</title>
-<indexterm><primary>cairo_get_current_point</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_get_current_point             (<link linkend="cairo-t">cairo_t</link> *cr,
+<indexterm><primary>cairo_get_current_point</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_get_current_point             (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> *x,
                                                          <link linkend="double">double</link> *y);</programlisting>
 <para>
@@ -409,8 +427,9 @@ conceptually the final point reached by the path so far.
 </para>
 <para>
 The current point is returned in the user-space coordinate
-system. If there is no defined current point then <parameter>x</parameter> and <parameter>y</parameter> will
-both be set to 0.0.
+system. If there is no defined current point or if <parameter>cr</parameter> is in an
+error status, <parameter>x</parameter> and <parameter>y</parameter> will both be set to 0.0. It is possible to
+check this in advance with <link linkend="cairo-has-current-point"><function>cairo_has_current_point()</function></link>.
 </para>
 <para>
 Most path construction functions alter the current point. See the
@@ -441,12 +460,6 @@ Some functions unset the current path and as a result, current point:
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>y</parameter>&nbsp;:</term>
 <listitem><simpara> return value for Y coordinate of the current point
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> if current point was successfully
-retrieved.  Otherwise, if <parameter>cr</parameter> has been in an error status, that status
-is returned, otherwise <link linkend="CAIRO-STATUS-NO-CURRENT-POINT:CAPS"><literal>CAIRO_STATUS_NO_CURRENT_POINT</literal></link> is returned if
-no current point exists.  In all error cases, both <parameter>x</parameter> and <parameter>y</parameter> will be
-set to 0.0.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

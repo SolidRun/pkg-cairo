@@ -238,7 +238,7 @@ typedef enum _cairo_status {
     CAIRO_STATUS_CLIP_NOT_REPRESENTABLE,
     CAIRO_STATUS_TEMP_FILE_ERROR,
     CAIRO_STATUS_INVALID_STRIDE
-    /* after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairo.c */
+    /* after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairoint.h */
 } cairo_status_t;
 
 /**
@@ -373,6 +373,8 @@ cairo_pop_group_to_source (cairo_t *cr);
  * #cairo_operator_t is used to set the compositing operator for all cairo
  * drawing operations.
  *
+ * The default operator is %CAIRO_OPERATOR_OVER.
+ *
  * The operators marked as <firstterm>unbounded</firstterm> modify their
  * destination even outside of the mask layer (that is, their effect is not
  * bound by the mask layer).  However, their effect can still be limited by
@@ -473,6 +475,8 @@ cairo_set_antialias (cairo_t *cr, cairo_antialias_t antialias);
  * (Note that filling is not actually implemented in this way. This
  * is just a description of the rule that is applied.)
  *
+ * The default fill rule is %CAIRO_FILL_RULE_WINDING.
+ *
  * New entries may be added in future versions.
  **/
 typedef enum _cairo_fill_rule {
@@ -492,7 +496,9 @@ cairo_set_line_width (cairo_t *cr, double width);
  * @CAIRO_LINE_CAP_ROUND: use a round ending, the center of the circle is the end point
  * @CAIRO_LINE_CAP_SQUARE: use squared ending, the center of the square is the end point
  *
- * Specifies how to render the endpoint of a line when stroking.
+ * Specifies how to render the endpoints of the path when stroking.
+ *
+ * The default line cap style is %CAIRO_LINE_CAP_BUTT.
  **/
 typedef enum _cairo_line_cap {
     CAIRO_LINE_CAP_BUTT,
@@ -513,6 +519,8 @@ cairo_set_line_cap (cairo_t *cr, cairo_line_cap_t line_cap);
  * the line width from the joint point
  *
  * Specifies how to render the junction of two lines when stroking.
+ *
+ * The default line join style is %CAIRO_LINE_JOIN_MITER.
  **/
 typedef enum _cairo_line_join {
     CAIRO_LINE_JOIN_MITER,
@@ -1148,7 +1156,7 @@ cairo_font_face_status (cairo_font_face_t *font_face);
  * @CAIRO_FONT_TYPE_TOY: The font was created using cairo's toy font api
  * @CAIRO_FONT_TYPE_FT: The font is of type FreeType
  * @CAIRO_FONT_TYPE_WIN32: The font is of type Win32
- * @CAIRO_FONT_TYPE_ATSUI: The font is of type ATSUI
+ * @CAIRO_FONT_TYPE_QUARTZ: The font is of type Quartz (Since: 1.6)
  *
  * #cairo_font_type_t is used to describe the type of a given font
  * face or scaled font. The font types are also known as "font
@@ -1183,7 +1191,7 @@ typedef enum _cairo_font_type {
     CAIRO_FONT_TYPE_TOY,
     CAIRO_FONT_TYPE_FT,
     CAIRO_FONT_TYPE_WIN32,
-    CAIRO_FONT_TYPE_ATSUI
+    CAIRO_FONT_TYPE_QUARTZ
 } cairo_font_type_t;
 
 cairo_public cairo_font_type_t
@@ -1276,7 +1284,10 @@ cairo_get_tolerance (cairo_t *cr);
 cairo_public cairo_antialias_t
 cairo_get_antialias (cairo_t *cr);
 
-cairo_public cairo_status_t
+cairo_public cairo_bool_t
+cairo_has_current_point (cairo_t *cr);
+
+cairo_public void
 cairo_get_current_point (cairo_t *cr, double *x, double *y);
 
 cairo_public cairo_fill_rule_t
@@ -1488,6 +1499,7 @@ cairo_surface_status (cairo_surface_t *surface);
  * @CAIRO_SURFACE_TYPE_SVG: The surface is of type svg
  * @CAIRO_SURFACE_TYPE_OS2: The surface is of type os2
  * @CAIRO_SURFACE_TYPE_WIN32_PRINTING: The surface is a win32 printing surface
+ * @CAIRO_SURFACE_TYPE_QUARTZ_IMAGE: The surface is of type quartz_image
  *
  * #cairo_surface_type_t is used to describe the type of a given
  * surface. The surface types are also known as "backends" or "surface
@@ -1525,7 +1537,8 @@ typedef enum _cairo_surface_type {
     CAIRO_SURFACE_TYPE_DIRECTFB,
     CAIRO_SURFACE_TYPE_SVG,
     CAIRO_SURFACE_TYPE_OS2,
-    CAIRO_SURFACE_TYPE_WIN32_PRINTING
+    CAIRO_SURFACE_TYPE_WIN32_PRINTING,
+    CAIRO_SURFACE_TYPE_QUARTZ_IMAGE
 } cairo_surface_type_t;
 
 cairo_public cairo_surface_type_t
@@ -1784,13 +1797,18 @@ cairo_pattern_get_matrix (cairo_pattern_t *pattern,
  *   are fully transparent
  * @CAIRO_EXTEND_REPEAT: the pattern is tiled by repeating
  * @CAIRO_EXTEND_REFLECT: the pattern is tiled by reflecting
- *   at the edges (not implemented for surface patterns currently)
+ *   at the edges (Implemented for surface patterns since 1.6)
  * @CAIRO_EXTEND_PAD: pixels outside of the pattern copy
- *   the closest pixel from the source (Since 1.2; not implemented
- *   for surface patterns currently)
+ *   the closest pixel from the source (Since 1.2; but only
+ *   implemented for surface patterns since 1.6)
  *
- * #cairo_extend_t is used to describe how the area outside
- * of a pattern will be drawn.
+ * #cairo_extend_t is used to describe how pattern color/alpha will be
+ * determined for areas "outside" the pattern's natural area, (for
+ * example, outside the surface bounds or outside the gradient
+ * geometry).
+ *
+ * The default extend mode is %CAIRO_EXTEND_NONE for surface patterns
+ * and %CAIRO_EXTEND_PAD for gradient patterns.
  *
  * New entries may be added in future versions.
  **/
