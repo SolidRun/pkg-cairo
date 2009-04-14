@@ -10,6 +10,7 @@ clip-fill-rule-pixel-aligned	\
 clip-nesting			\
 clip-operator			\
 clip-twice			\
+close-path			\
 composite-integer-translate-source \
 composite-integer-translate-over \
 composite-integer-translate-over-repeat \
@@ -41,6 +42,7 @@ leaky-polygon			\
 line-width			\
 line-width-scale		\
 linear-gradient			\
+long-lines			\
 mask				\
 mask-ctm			\
 mask-surface-ctm		\
@@ -64,6 +66,7 @@ self-intersecting		\
 set-source			\
 show-text-current-point		\
 source-clip			\
+source-clip-scale		\
 source-surface-scale-paint	\
 surface-finish-twice		\
 surface-pattern			\
@@ -93,7 +96,8 @@ endif
 if CAIRO_HAS_FT_FONT
 TESTS += bitmap-font
 TESTS += ft-font-create-for-ft-face
-TESTS += ft-text-vertical-layout
+TESTS += ft-text-vertical-layout-type1
+TESTS += ft-text-vertical-layout-type3
 TESTS += ft-text-antialias-none
 endif
 
@@ -151,6 +155,7 @@ make-html.pl						\
 a8-mask-ref.png						\
 bitmap-font-ref.png					\
 bitmap-font-rgb24-ref.png				\
+bitmap-font-pdf-argb32-ref.png				\
 caps-joins-ref.png					\
 caps-joins-ps-argb32-ref.png				\
 caps-joins-alpha-ref.png				\
@@ -171,6 +176,8 @@ clip-operator-rgb24-ref.png				\
 clip-twice-ref.png					\
 clip-twice-rgb24-ref.png				\
 clip-twice-ps-argb32-ref.png				\
+close-path-ref.png					\
+close-path-ps-argb32-ref.png				\
 composite-integer-translate-over-ref.png		\
 composite-integer-translate-over-pdf-argb32-ref.png	\
 composite-integer-translate-over-svg-ref.png		\
@@ -207,10 +214,10 @@ fill-rule-ps-argb32-ref.png				\
 filter-nearest-offset-ref.png				\
 ft-text-antialias-none-ref.png				\
 ft-text-antialias-none-ps-argb32-ref.png		\
-ft-text-vertical-layout-ref.png				\
-ft-text-vertical-layout-pdf-argb32-ref.png		\
-ft-text-vertical-layout-ps-argb32-ref.png		\
-ft-text-vertical-layout-svg-ref.png			\
+ft-text-vertical-layout-type1-ref.png			\
+ft-text-vertical-layout-type1-svg-ref.png		\
+ft-text-vertical-layout-type3-ref.png		\
+ft-text-vertical-layout-type3-svg-ref.png		\
 font-matrix-translation-ref.png				\
 font-matrix-translation-ps-argb32-ref.png		\
 font-matrix-translation-svg-ref.png			\
@@ -229,10 +236,11 @@ line-width-ref.png					\
 line-width-ps-argb32-ref.png				\
 line-width-scale-ref.png				\
 line-width-scale-ps-argb32-ref.png			\
+long-lines-ref.png					\
 mask-ref.png						\
 mask-rgb24-ref.png					\
-mask-beos_bitmap-argb32-ref.png				\
-mask-beos_bitmap-rgb24-ref.png				\
+mask-beos-bitmap-argb32-ref.png				\
+mask-beos-bitmap-rgb24-ref.png				\
 mask-beos-rgb24-ref.png					\
 mask-svg-argb32-ref.png					\
 mask-svg-rgb24-ref.png					\
@@ -285,7 +293,7 @@ self-intersecting-ref.png				\
 self-intersecting-rgb24-ref.png				\
 set-source-ref.png					\
 set-source-rgb24-ref.png				\
-set-source-beos_bitmap-rgb24-ref.png			\
+set-source-beos-bitmap-rgb24-ref.png			\
 set-source-beos-rgb24-ref.png				\
 set-source-svg-argb32-ref.png				\
 set-source-svg-rgb24-ref.png				\
@@ -294,6 +302,8 @@ show-text-current-point-ref.png				\
 show-text-current-point-ps-argb32-ref.png		\
 show-text-current-point-svg-ref.png			\
 source-clip-ref.png					\
+source-clip-scale-ref.png				\
+source-clip-scale-svg-ref.png				\
 source-surface-scale-paint-ref.png			\
 source-surface-scale-paint-rgb24-ref.png		\
 surface-pattern-ref.png					\
@@ -311,7 +321,7 @@ transforms-ps-argb32-ref.png				\
 translate-show-surface-ref.png				\
 trap-clip-ref.png					\
 trap-clip-rgb24-ref.png					\
-trap-clip-beos_bitmap-rgb24-ref.png			\
+trap-clip-beos-bitmap-rgb24-ref.png			\
 trap-clip-beos-rgb24-ref.png				\
 trap-clip-svg-argb32-ref.png				\
 trap-clip-svg-rgb24-ref.png				\
@@ -337,7 +347,10 @@ XFAIL_TESTS =			\
 a8-mask				\
 extend-reflect			\
 filter-nearest-offset		\
+ft-text-vertical-layout-type1	\
+ft-text-vertical-layout-type3	\
 leaky-dash			\
+long-lines			\
 self-intersecting		\
 text-rotate
 
@@ -420,7 +433,7 @@ endif
 if CAIRO_CAN_TEST_SVG_SURFACE
 SUPPORT_PROGS += svg2png
 svg2png_CFLAGS = $(LIBRSVG_CFLAGS)
-svg2png_LDADD = $(LIBRSVG_LIBS)
+svg2png_LDADD = $(LDADD) $(LIBRSVG_LIBS)
 endif
 
 EXTRA_PROGRAMS = $(TESTS) $(SUPPORT_PROGS)
@@ -432,6 +445,10 @@ TARGETS = $(CAIRO_TEST_TARGET)
 
 TESTS_ENVIRONMENT = CAIRO_XFAIL_TESTS="$(XFAIL_TESTS)" CAIRO_TEST_TARGET="$(TARGETS)"
 
+VALGRIND_FLAGS = \
+	--tool=memcheck --suppressions=./.valgrind-suppressions \
+	--leak-check=yes --show-reachable=yes
+
 CLEANFILES =					\
 	*.ps					\
 	*.pdf					\
@@ -440,20 +457,15 @@ CLEANFILES =					\
 	*-diff.png				\
 	*.log					\
 	valgrind-log				\
-	multi-page.ps				\
-	multi-page.pdf				\
-	pdf-features.pdf			\
-	ps-features.ps				\
-	svg-surface.svg				\
-	svg-clip.svg				\
 	index.html				\
+	ref.hash				\
 	$(EXTRA_LTLIBRARIES)			\
 	$(EXTRA_PROGRAMS)
 
 # Check tests under valgrind
 # Saves log to valgrind-log
 check-valgrind:
-	$(MAKE) check TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) $(top_srcdir)/libtool --mode=execute valgrind --tool=memcheck --suppressions=./.valgrind-suppressions --leak-check=yes --show-reachable=yes' 2>&1 | tee valgrind-log
+	$(MAKE) $(AM_MAKEFLAGS) check TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) $(top_srcdir)/libtool --mode=execute valgrind $(VALGRIND_FLAGS)' 2>&1 | tee valgrind-log
 
 # The following definitions both should work.
 #FAILED_TESTS = `grep -l '\<FAIL\>' $(TESTS:=.log) 2>/dev/null | sed -e 's/[.]log$$//' | xargs echo`
@@ -464,20 +476,20 @@ recheck = check TESTS="$(FAILED_TESTS)"
 # Re-checks all failed tests, i.e. tests with a log file that has a failure
 recheck:
 	@echo Re-checking failed tests
-	@$(MAKE) $(recheck)
+	@$(MAKE) $(AM_MAKEFLAGS) $(recheck)
 
 # Checks tests and creates index.html.
 # Target doesn't fail if tests fail.
 test:
-	@$(MAKE) check; \
-	$(MAKE) html
+	@$(MAKE) $(AM_MAKEFLAGS) check; \
+	$(MAKE) $(AM_MAKEFLAGS) html
 
 # Re-checks tests and creates index.html.
 # Target doesn't fail if tests fail.
 retest:
 	@TESTS="$(FAILED_TESTS)"; \
-	$(MAKE) TESTS="$$TESTS" check; \
-	$(MAKE) TESTS="$$TESTS" html
+	$(MAKE) $(AM_MAKEFLAGS) TESTS="$$TESTS" check; \
+	$(MAKE) $(AM_MAKEFLAGS) TESTS="$$TESTS" html
 
 # Make index.html with no dependency tracking.
 html:
@@ -486,7 +498,7 @@ html:
 
 # Make index.html with no dependency tracking, containing only the failed tests.
 rehtml:
-	@$(MAKE) TESTS="$(FAILED_TESTS)" html
+	@$(MAKE) $(AM_MAKEFLAGS) TESTS="$(FAILED_TESTS)" html
 
 $(TESTS): $(SUPPORT_PROGS)
 
@@ -502,4 +514,9 @@ index.html: $(srcdir)/make-html.pl $(TESTS:=.log)
 	@echo Creating index.html
 	@perl $^ > $@
 
-.PHONY: check-valgrind test recheck retest html rehtml
+# Identify identical reference images
+check-ref-dups:
+	@sha1sum *-ref.png > ref.hash
+	@join ref.hash ref.hash | grep -v -E '( .*-ref.png).*\1' | cut -d' ' -f 1-2 | sort -u
+
+.PHONY: check-valgrind test recheck retest html rehtml check-ref-dups

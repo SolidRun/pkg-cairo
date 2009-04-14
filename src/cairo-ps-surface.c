@@ -547,7 +547,11 @@ _cairo_ps_surface_emit_bitmap_glyph_data (cairo_ps_surface_t	*surface,
 					 &scaled_glyph);
 
     image = scaled_glyph->surface;
-    assert (image->format == CAIRO_FORMAT_A1);
+    if (image->format != CAIRO_FORMAT_A1) {
+	image = _cairo_image_surface_clone (image, CAIRO_FORMAT_A1);
+	if (cairo_surface_status (&image->base))
+	    return cairo_surface_status (&image->base);
+    }
 
     _cairo_output_stream_printf (surface->final_stream,
 				 "0 0 %f %f %f %f setcachedevice\n",
@@ -566,12 +570,12 @@ _cairo_ps_surface_emit_bitmap_glyph_data (cairo_ps_surface_t	*surface,
 				 "   /BitsPerComponent 1\n",
 				 image->width,
 				 image->height,
-				 image->base.device_transform.xx,
-				 image->base.device_transform.yx,
-				 image->base.device_transform.xy,
-				 image->base.device_transform.yy,
-				 image->base.device_transform.x0,
-				 - image->base.device_transform.y0);
+				 image->base.device_transform_inverse.xx,
+				 image->base.device_transform_inverse.yx,
+				 image->base.device_transform_inverse.xy,
+				 image->base.device_transform_inverse.yy,
+				 image->base.device_transform_inverse.x0,
+				 image->base.device_transform_inverse.y0);
 
     _cairo_output_stream_printf (surface->final_stream,
 				 "   /DataSource   {<");
@@ -590,6 +594,9 @@ _cairo_ps_surface_emit_bitmap_glyph_data (cairo_ps_surface_t	*surface,
 
     _cairo_output_stream_printf (surface->final_stream,
 				 "imagemask\n");
+
+    if (image != scaled_glyph->surface)
+	cairo_surface_destroy (&image->base);
 
     return CAIRO_STATUS_SUCCESS;
 }

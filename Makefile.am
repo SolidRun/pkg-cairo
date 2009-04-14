@@ -1,15 +1,17 @@
 DIST_SUBDIRS = pixman src test doc
 SUBDIRS = pixman src doc
 
-.PHONY: doc test
+.PHONY: doc test retest recheck check-valgrind
 doc:
-	-$(MAKE) -C doc doc
+	cd doc && $(MAKE) $(AM_MAKEFLAGS) doc
 test: all
-	-$(MAKE) -C test test
+	cd test && $(MAKE) $(AM_MAKEFLAGS) test
 retest: all
-	-$(MAKE) -C test retest
+	cd test && $(MAKE) $(AM_MAKEFLAGS) retest
 recheck: all
-	-$(MAKE) -C test recheck
+	cd test && $(MAKE) $(AM_MAKEFLAGS) recheck
+check-valgrind: all
+	cd test && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
 
 # libpng is required for our test programs
 if CAIRO_HAS_PNG_FUNCTIONS
@@ -17,9 +19,15 @@ SUBDIRS += test
 endif
 
 EXTRA_DIST = \
+	BUGS \
+	CODING_STYLE \
 	COPYING \
 	COPYING-LGPL-2.1 \
-	COPYING-MPL-1.1
+	COPYING-MPL-1.1 \
+	PORTING_GUIDE \
+	RELEASING \
+	ROADMAP \
+	TODO
 DISTCLEANFILES = config.cache
 MAINTAINERCLEANFILES = \
 	$(srcdir)/aclocal.m4 \
@@ -36,41 +44,16 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/mkinstalldirs \
 	`find "$(srcdir)" -type f -name Makefile.in -print`
 
-check-valgrind: all
-	$(MAKE) -C test check-valgrind
-
 DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
 
-# Creating ChangeLog from git log:
-
-MAINTAINERCLEANFILES += ChangeLog
-
-EXTRA_DIST += ChangeLog
-
-ChangeLog: $(srcdir)/ChangeLog
-
-$(srcdir)/ChangeLog:
-	@if test -d "$(srcdir)/.git"; then \
-	  (cd "$(srcdir)" && \
-	  ./missing --run git-log --stat) | fmt --split-only > $@.tmp \
-	  && mv -f $@.tmp $@ \
-	  || ($(RM) $@.tmp; \
-	      echo Failed to generate ChangeLog, your ChangeLog may be outdated >&2; \
-	      (test -f $@ || echo git-log is required to generate this file >> $@)); \
-	else \
-	  test -f $@ || \
-	  (echo A git checkout and git-log is required to generate ChangeLog >&2 && \
-	  echo A git checkout and git-log is required to generate this file >> $@); \
-	fi
-
-.PHONY: ChangeLog $(srcdir)/ChangeLog
+include $(srcdir)/ChangeLog.mk
 
 # Some custom targets to make it easier to release things.
 # Use either:
 #		make release-check
 # or		make release-publish
 
-RELEASE_OR_SNAPSHOT = `if [ "$(CAIRO_VERSION_MINOR)" = $$(echo "$(CAIRO_VERSION_MINOR)/2*2" | bc) ]; then echo release; else echo snapshot; fi`
+RELEASE_OR_SNAPSHOT = $$(if test "x$(CAIRO_VERSION_MINOR)" = "x$$(echo "$(CAIRO_VERSION_MINOR)/2*2" | bc)" ; then echo release; else echo snapshot; fi)
 RELEASE_UPLOAD_HOST =   cairographics.org
 RELEASE_UPLOAD_BASE =	/srv/cairo.freedesktop.org/www
 RELEASE_UPLOAD_DIR =	$(RELEASE_UPLOAD_BASE)/$(RELEASE_OR_SNAPSHOT)s
@@ -207,4 +190,4 @@ docs-publish: all
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
 	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && rm -f manual && ln -s $(MANUAL_DATED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
 
-.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish test retest recheck
+.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish

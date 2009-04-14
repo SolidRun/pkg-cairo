@@ -98,6 +98,7 @@ struct _cairo_ft_unscaled_font {
     double y_scale;             /* Extracted Y scale factor */
     cairo_bool_t have_shape;	/* true if the current scale has a non-scale component*/
     cairo_matrix_t current_shape;
+    FT_Matrix Current_Shape;
 
     int lock;		/* count of how many times this font has been locked */
 
@@ -632,6 +633,7 @@ _cairo_ft_unscaled_font_set_scale (cairo_ft_unscaled_font_t *unscaled,
 			    mat.xy != 0x00000 ||
 			    mat.yy != 0x10000);
 
+    unscaled->Current_Shape = mat;
     cairo_matrix_init (&unscaled->current_shape,
 		       sf.shape[0][0], sf.shape[0][1],
 		       sf.shape[1][0], sf.shape[1][1],
@@ -1465,7 +1467,7 @@ _cairo_ft_scaled_font_create (cairo_ft_unscaled_font_t	 *unscaled,
 	fs_metrics.ascent =        DOUBLE_FROM_26_6(metrics->ascender) * y_factor;
 	fs_metrics.descent =       DOUBLE_FROM_26_6(- metrics->descender) * y_factor;
 	fs_metrics.height =        DOUBLE_FROM_26_6(metrics->height) * y_factor;
-	if (!(scaled_font->ft_options.load_flags & FT_LOAD_VERTICAL_LAYOUT)) {
+	if (!_cairo_ft_scaled_font_is_vertical (&scaled_font->base)) {
 	    fs_metrics.max_x_advance = DOUBLE_FROM_26_6(metrics->max_advance) * x_factor;
 	    fs_metrics.max_y_advance = 0;
 	} else {
@@ -1478,7 +1480,7 @@ _cairo_ft_scaled_font_create (cairo_ft_unscaled_font_t	 *unscaled,
 	fs_metrics.ascent =        face->ascender / scale;
 	fs_metrics.descent =       - face->descender / scale;
 	fs_metrics.height =        face->height / scale;
-	if (!(scaled_font->ft_options.load_flags & FT_LOAD_VERTICAL_LAYOUT)) {
+	if (!_cairo_ft_scaled_font_is_vertical (&scaled_font->base)) {
 	    fs_metrics.max_x_advance = face->max_advance_width / scale;
 	    fs_metrics.max_y_advance = 0;
 	} else {
@@ -1733,16 +1735,21 @@ _decompose_glyph_outline (FT_Face		  face,
  * Translate glyph to match its metrics.
  */
 static void
-_cairo_ft_scaled_glyph_vertical_layout_bearing_fix (FT_GlyphSlot glyph)
+_cairo_ft_scaled_glyph_vertical_layout_bearing_fix (void        *abstract_font,
+						    FT_GlyphSlot glyph)
 {
-    FT_Pos x = glyph->metrics.vertBearingX - glyph->metrics.horiBearingX;
-    FT_Pos y = -glyph->metrics.vertBearingY - glyph->metrics.horiBearingY;
+    cairo_ft_scaled_font_t *scaled_font = abstract_font;
+    FT_Vector vector;
 
-    if (glyph->format == FT_GLYPH_FORMAT_OUTLINE)
-	FT_Outline_Translate(&glyph->outline, x, y);
-    else if (glyph->format == FT_GLYPH_FORMAT_BITMAP) {
-	glyph->bitmap_left += x / 64;
-	glyph->bitmap_top  += y / 64;
+    vector.x = glyph->metrics.vertBearingX - glyph->metrics.horiBearingX;
+    vector.y = -glyph->metrics.vertBearingY - glyph->metrics.horiBearingY;
+
+    if (glyph->format == FT_GLYPH_FORMAT_OUTLINE) {
+	FT_Vector_Transform (&vector, &scaled_font->unscaled->Current_Shape);
+	FT_Outline_Translate(&glyph->outline, vector.x, vector.y);
+    } else if (glyph->format == FT_GLYPH_FORMAT_BITMAP) {
+	glyph->bitmap_left += vector.x / 64;
+	glyph->bitmap_top  += vector.y / 64;
     }
 }
 
@@ -1803,7 +1810,7 @@ _cairo_ft_scaled_glyph_init (void			*abstract_font,
 #endif
 
     if (vertical_layout)
-	_cairo_ft_scaled_glyph_vertical_layout_bearing_fix (glyph);
+	_cairo_ft_scaled_glyph_vertical_layout_bearing_fix (scaled_font, glyph);
 
     if (info & CAIRO_SCALED_GLYPH_INFO_METRICS) {
 	/*
@@ -1822,8 +1829,7 @@ _cairo_ft_scaled_glyph_init (void			*abstract_font,
 	    y_factor = 1 / unscaled->y_scale;
 
 	/*
-	 * Note: the font's coordinate system is upside down from ours, so the
-	 * Y coordinates of the bearing and advance need to be negated.
+	 * Note: Y coordinates of the horizontal bearing need to be negated.
 	 *
 	 * Scale metrics back to glyph space from the scaled glyph space returned
 	 * by FreeType
@@ -1941,7 +1947,7 @@ _cairo_ft_scaled_glyph_init (void			*abstract_font,
 		FT_GlyphSlot_Embolden (glyph);
 #endif
 	    if (vertical_layout)
-		_cairo_ft_scaled_glyph_vertical_layout_bearing_fix (glyph);
+		_cairo_ft_scaled_glyph_vertical_layout_bearing_fix (scaled_font, glyph);
 
 	}
 	if (glyph->format == FT_GLYPH_FORMAT_OUTLINE)
@@ -2012,6 +2018,7 @@ _cairo_ft_load_truetype_table (void	       *abstract_font,
     if (_cairo_ft_scaled_font_is_vertical (&scaled_font->base))
         return CAIRO_INT_STATUS_UNSUPPORTED;
 
+#if HAVE_FT_LOAD_SFNT_TABLE
     face = _cairo_ft_unscaled_font_lock_face (unscaled);
     if (!face)
 	return CAIRO_STATUS_NO_MEMORY;
@@ -2021,6 +2028,8 @@ _cairo_ft_load_truetype_table (void	       *abstract_font,
         status = CAIRO_STATUS_SUCCESS;
 
     _cairo_ft_unscaled_font_unlock_face (unscaled);
+#endif
+
     return status;
 }
 

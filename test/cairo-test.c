@@ -32,7 +32,9 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include <setjmp.h>
+#ifdef HAVE_SIGNAL_H
 #include <signal.h>
+#endif
 #include <assert.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -1525,12 +1527,7 @@ cairo_ref_name_for_test_target_format (const char *test_name,
     else
 	goto done;
 
-    xasprintf (&ref_name, "/dev/null");
-    cairo_test_log ("Error: Cannot find reference image for %s/%s-%s-%s%s\n",srcdir,
-		    test_name,
-		    target_name,
-		    format,
-		    CAIRO_TEST_REF_SUFFIX);
+    ref_name = NULL;
 
 done:
     return ref_name;
@@ -1654,6 +1651,17 @@ cairo_test_for_target (cairo_test_t		 *test,
 	int pixels_changed;
 	xunlink (png_name);
 	(target->write_to_png) (surface, png_name);
+
+	if (!ref_name) {
+	    cairo_test_log ("Error: Cannot find reference image for %s/%s-%s-%s%s\n",srcdir,
+			    test->name,
+			    target->name,
+			    format,
+			    CAIRO_TEST_REF_SUFFIX);
+	    ret = CAIRO_TEST_FAILURE;
+	    goto UNWIND_CAIRO;
+	}
+
 	if (target->content == CAIRO_TEST_CONTENT_COLOR_ALPHA_FLATTENED)
 	    pixels_changed = image_diff_flattened (png_name, ref_name, diff_name, dev_offset, dev_offset, 0, 0);
 	else
@@ -1680,19 +1688,25 @@ UNWIND_SURFACE:
 	target->cleanup_target (target->closure);
 
 UNWIND_STRINGS:
-    free (png_name);
-    free (ref_name);
-    free (diff_name);
-    free (offset_str);
+    if (png_name)
+      free (png_name);
+    if (ref_name)
+      free (ref_name);
+    if (diff_name)
+      free (diff_name);
+    if (offset_str)
+      free (offset_str);
 
     return ret;
 }
 
+#ifdef HAVE_SIGNAL_H
 static void
 segfault_handler (int signal)
 {
     longjmp (jmpbuf, signal);
 }
+#endif
 
 static cairo_test_status_t
 cairo_test_expecting (cairo_test_t *test,
@@ -1703,7 +1717,9 @@ cairo_test_expecting (cairo_test_t *test,
     volatile size_t i, j, num_targets;
     volatile cairo_bool_t limited_targets = FALSE, print_fail_on_stdout = TRUE;
     const char *tname;
+#ifdef HAVE_SIGNAL_H
     void (*old_segfault_handler)(int);
+#endif
     volatile cairo_test_status_t status, ret;
     cairo_test_target_t ** volatile targets_to_test;
     cairo_test_target_t targets[] =
@@ -1822,16 +1838,16 @@ cairo_test_expecting (cairo_test_t *test,
 #if CAIRO_HAS_BEOS_SURFACE
 	    { "beos", CAIRO_SURFACE_TYPE_BEOS, CAIRO_CONTENT_COLOR,
 		create_beos_surface, cairo_surface_write_to_png, cleanup_beos},
-	    { "beos_bitmap", CAIRO_SURFACE_TYPE_BEOS, CAIRO_CONTENT_COLOR,
+	    { "beos-bitmap", CAIRO_SURFACE_TYPE_BEOS, CAIRO_CONTENT_COLOR,
 		create_beos_bitmap_surface, cairo_surface_write_to_png, cleanup_beos_bitmap},
-	    { "beos_bitmap", CAIRO_SURFACE_TYPE_BEOS, CAIRO_CONTENT_COLOR_ALPHA,
+	    { "beos-bitmap", CAIRO_SURFACE_TYPE_BEOS, CAIRO_CONTENT_COLOR_ALPHA,
 		create_beos_bitmap_surface, cairo_surface_write_to_png, cleanup_beos_bitmap},
 #endif
 
 #if CAIRO_HAS_DIRECTFB_SURFACE
 	    { "directfb", CAIRO_SURFACE_TYPE_DIRECTFB, CAIRO_CONTENT_COLOR,
 		create_directfb_surface, cairo_surface_write_to_png, cleanup_directfb},
-	    { "directfb_bitmap", CAIRO_SURFACE_TYPE_DIRECTFB, CAIRO_CONTENT_COLOR_ALPHA,
+	    { "directfb-bitmap", CAIRO_SURFACE_TYPE_DIRECTFB, CAIRO_CONTENT_COLOR_ALPHA,
 		create_directfb_bitmap_surface, cairo_surface_write_to_png,cleanup_directfb},
 #endif
 	};
@@ -1880,7 +1896,7 @@ cairo_test_expecting (cairo_test_t *test,
 	    }
 
 	    if (!found) {
-		fprintf (stderr, "Cannot test target '%.*s'\n", end - tname, tname);
+		fprintf (stderr, "Cannot test target '%.*s'\n", (int)(end - tname), tname);
 		exit(-1);
 	    }
 
@@ -1920,13 +1936,17 @@ cairo_test_expecting (cairo_test_t *test,
 		    _cairo_test_content_name (target->content),
 		    dev_offset);
 
+#ifdef HAVE_SIGNAL_H
 	    /* Set up a checkpoint to get back to in case of segfaults. */
 	    old_segfault_handler = signal (SIGSEGV, segfault_handler);
 	    if (0 == setjmp (jmpbuf))
+#endif
 		status = cairo_test_for_target (test, target, dev_offset);
+#ifdef HAVE_SIGNAL_H
 	    else
 	        status = CAIRO_TEST_CRASHED;
 	    signal (SIGSEGV, old_segfault_handler);
+#endif
 
 	    cairo_test_log ("TEST: %s TARGET: %s FORMAT: %s OFFSET: %d RESULT: ",
 			    test->name, target->name,
@@ -1984,6 +2004,11 @@ cairo_test_expecting (cairo_test_t *test,
 	}
     }
 
+    if (ret != CAIRO_TEST_SUCCESS)
+        printf ("Check %s%s out for more information.\n", test->name, CAIRO_TEST_LOG_SUFFIX);
+
+    /* if no target was requested for test, succeed, otherwise if all
+     * were untested, fail. */
     if (ret == CAIRO_TEST_UNTESTED)
 	ret = num_targets ? CAIRO_TEST_FAILURE : CAIRO_TEST_SUCCESS;
 

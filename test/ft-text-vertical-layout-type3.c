@@ -29,15 +29,15 @@
 #include "cairo-test.h"
 #include <cairo-ft.h>
 
-#define WIDTH  40
-#define HEIGHT 30
-#define TEXT_SIZE 12
+#define WIDTH  80
+#define HEIGHT 200
+#define TEXT_SIZE 30
 
 static cairo_test_draw_function_t draw;
 
 cairo_test_t test = {
-    "ft-text-vertical-layout",
-    "Tests text rendering for vertical layout",
+    "ft-text-vertical-layout-type3",
+    "Tests text rendering for vertical layout with TrueType fonts (which will be emitted as type3)",
     WIDTH, HEIGHT,
     draw
 };
@@ -76,7 +76,8 @@ create_scaled_font (cairo_t * cr)
 
     font_face = cairo_ft_font_face_create_for_pattern (resolved);
 
-    cairo_matrix_init_identity (&font_matrix);
+    cairo_matrix_init_translate (&font_matrix, 10, 30);
+    cairo_matrix_rotate (&font_matrix, M_PI_2/3);
     cairo_matrix_scale (&font_matrix, pixel_size, pixel_size);
 
     cairo_get_matrix (cr, &ctm);
@@ -99,7 +100,10 @@ draw (cairo_t *cr, int width, int height)
 {
     cairo_text_extents_t extents;
     cairo_scaled_font_t * scaled_font;
-    static char black[] = "AB", blue[] = "AB";
+    static char text[] = "i-W";
+    double line_width, x, y;
+
+    line_width = cairo_get_line_width (cr);
 
     /* We draw in the default black, so paint white first. */
     cairo_save (cr);
@@ -112,16 +116,30 @@ draw (cairo_t *cr, int width, int height)
 
     cairo_set_line_width (cr, 1.0);
     cairo_set_source_rgb (cr, 0, 0, 0); /* black */
-    cairo_text_extents (cr, black, &extents);
-    cairo_move_to (cr,
-                   width - (extents.width + extents.x_bearing),
-                   -extents.y_bearing);
-    cairo_show_text (cr, black);
+    cairo_text_extents (cr, text, &extents);
+    x = width  - (extents.width  + extents.x_bearing) - 5;
+    y = height - (extents.height + extents.y_bearing) - 5;
+    cairo_move_to (cr, x, y);
+    cairo_show_text (cr, text);
+    cairo_rectangle (cr,
+		     x + extents.x_bearing - line_width / 2,
+		     y + extents.y_bearing - line_width / 2,
+		     extents.width  + line_width,
+		     extents.height + line_width);
+    cairo_stroke (cr);
 
     cairo_set_source_rgb (cr, 0, 0, 1); /* blue */
-    cairo_text_extents (cr, blue, &extents);
-    cairo_move_to (cr, -extents.x_bearing, -extents.y_bearing);
-    cairo_text_path (cr, blue);
+    cairo_text_extents (cr, text, &extents);
+    x = -extents.x_bearing + 5;
+    y = -extents.y_bearing + 5;
+    cairo_move_to (cr, x, y);
+    cairo_text_path (cr, text);
+    cairo_fill (cr);
+    cairo_rectangle (cr,
+		     x + extents.x_bearing - line_width / 2,
+		     y + extents.y_bearing - line_width / 2,
+		     extents.width  + line_width,
+		     extents.height + line_width);
     cairo_stroke (cr);
 
     cairo_scaled_font_destroy (scaled_font);
