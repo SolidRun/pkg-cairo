@@ -32,16 +32,29 @@ flavor_get = $(or $($(current_flavor)_$(1)),$($(1)))
 # Features:
 # --enable-png  PNG (default enabled)
 
-main_CONFIGURE_FLAGS = \
---enable-xlib --enable-pdf --enable-ps --enable-svg \
---disable-glitz --enable-xcb --enable-directfb \
+configure_flags += \
+--prefix=/usr \
+--mandir=/usr/share/man \
+--infodir=/usr/share/info \
+--enable-pdf --enable-ps \
+--enable-directfb --disable-glitz \
 --enable-png
 
-udeb_CONFIGURE_FLAGS = \
---enable-directfb \
---disable-xlib  --enable-pdf --enable-ps --disable-svg \
---disable-glitz --disable-xcb \
---enable-png \
+ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+	configure_flags += $(DEB_HOST_GNU_TYPE)
+else
+	configure_flags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
+endif
+
+main_configure_flags += \
+$(configure_flags) \
+--enable-xlib --enable-svg \
+--enable-xcb
+
+udeb_configure_flags += \
+$(configure_flags) \
+--disable-xlib --disable-svg \
+--disable-xcb \
 --program-suffix=-directfb
 
 builddir = $(buildbasedir)/$(current_flavor)
@@ -67,13 +80,6 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-CONFFLAGS=
-ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
-	CONFFLAGS += $(DEB_HOST_GNU_TYPE)
-else
-	CONFFLAGS += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
-endif
-
 include /usr/share/dpatch/dpatch.make
 
 configure-common-stamp: patch-stamp
@@ -90,11 +96,7 @@ configure-stamp-%: configure-common-stamp
 	cd $(builddir); \
 	$(CURDIR)/configure \
 		CFLAGS="$(call flavor_get,CFLAGS)" \
-		$(CONFFLAGS) \
-		--prefix=/usr \
-		--mandir=/usr/share/man \
-		--infodir=/usr/share/info \
-		$(call flavor_get,CONFIGURE_FLAGS)
+		$(call flavor_get,configure_flags)
 	touch $@
 
 build: $(addprefix build-stamp-, $(FLAVORS))
