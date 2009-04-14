@@ -49,11 +49,9 @@ udeb_CONFIGURE_FLAGS = \
 --program-suffix=-directfb
 
 SRC_DIR=$(CURDIR)
-main_BUILD_DIR=$(CURDIR)/debian/build-main
-udeb_BUILD_DIR=$(CURDIR)/debian/build-udeb
 
-main_DIST_DIR=$(CURDIR)/debian/dist-main
-udeb_DIST_DIR=$(CURDIR)/debian/dist-udeb
+builddir = $(CURDIR)/debian/build-$(current_flavor)
+installdir = $(CURDIR)/debian/dist-$(current_flavor)
 
 export DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 export DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
@@ -102,8 +100,8 @@ configure-common-stamp: patch-stamp
 # Calling GNU configure properly; advice from autotools-dev README.Debian
 configure-stamp-%: configure-common-stamp
 	dh_testdir
-	mkdir -p $(call flavor_get,BUILD_DIR); \
-	cd $(call flavor_get,BUILD_DIR); \
+	mkdir -p $(builddir); \
+	cd $(builddir); \
 	$(SRC_DIR)/configure \
 		CFLAGS="$(call flavor_get,CFLAGS)" \
 		$(CONFFLAGS) \
@@ -117,7 +115,7 @@ build: $(addprefix build-stamp-, $(FLAVORS))
 
 build-stamp-%: configure-stamp-%
 	dh_testdir
-	cd $(call flavor_get,BUILD_DIR) && $(MAKE)
+	$(MAKE) -C $(builddir)
 	touch $@
 
 clean: unpatch
