@@ -1,3 +1,4 @@
+/* -*- Mode: c; c-basic-offset: 4; indent-tabs-mode: t; tab-width: 8; -*- */
 /* cairo - a vector graphics library with display and print output
  *
  * Copyright © 2003 University of Southern California
@@ -288,7 +289,7 @@ _cairo_ps_surface_path_close_path (void *closure)
  * while cairo draws something only for round caps).
  *
  * When using this function to emit a path to be filled, rather than
- * stroked, simply pass CAIRO_LINE_CAP_ROUND which will guarantee that
+ * stroked, simply pass %CAIRO_LINE_CAP_ROUND which will guarantee that
  * the stroke workaround will not modify the path being emitted.
  */
 static cairo_status_t
@@ -754,10 +755,7 @@ _cairo_ps_surface_emit_type3_font_subset (cairo_ps_surface_t		*surface,
 				 "%% _cairo_ps_surface_emit_type3_font_subset\n");
 #endif
 
-    matrix = font_subset->scaled_font->scale;
-    status = cairo_matrix_invert (&matrix);
-    /* _cairo_scaled_font_init ensures the matrix is invertible */
-    assert (status == CAIRO_STATUS_SUCCESS);
+    matrix = font_subset->scaled_font->scale_inverse;
     _cairo_output_stream_printf (surface->final_stream,
 				 "8 dict begin\n"
 				 "/FontType 3 def\n"
@@ -854,6 +852,7 @@ _cairo_ps_surface_emit_unscaled_font_subset (cairo_scaled_font_subset_t	*font_su
     if (status != CAIRO_INT_STATUS_UNSUPPORTED)
 	return status;
 
+    ASSERT_NOT_REACHED;
     return CAIRO_STATUS_SUCCESS;
 }
 
@@ -872,6 +871,7 @@ _cairo_ps_surface_emit_scaled_font_subset (cairo_scaled_font_subset_t *font_subs
     if (status != CAIRO_INT_STATUS_UNSUPPORTED)
 	return status;
 
+    ASSERT_NOT_REACHED;
     return CAIRO_STATUS_SUCCESS;
 }
 
@@ -1032,7 +1032,7 @@ _cairo_ps_surface_create_for_stream_internal (cairo_output_stream_t *stream,
  * vary. See cairo_ps_surface_set_size().
  *
  * Return value: a pointer to the newly created surface. The caller
- * owns the surface and should call cairo_surface_destroy when done
+ * owns the surface and should call cairo_surface_destroy() when done
  * with it.
  *
  * This function always returns a valid pointer, but it will return a
@@ -1073,7 +1073,7 @@ cairo_ps_surface_create (const char		*filename,
  * output can vary. See cairo_ps_surface_set_size().
  *
  * Return value: a pointer to the newly created surface. The caller
- * owns the surface and should call cairo_surface_destroy when done
+ * owns the surface and should call cairo_surface_destroy() when done
  * with it.
  *
  * This function always returns a valid pointer, but it will return a
@@ -1107,7 +1107,7 @@ _cairo_surface_is_ps (cairo_surface_t *surface)
 
 /* If the abstract_surface is a paginated surface, and that paginated
  * surface's target is a ps_surface, then set ps_surface to that
- * target. Otherwise return CAIRO_STATUS_SURFACE_TYPE_MISMATCH.
+ * target. Otherwise return %CAIRO_STATUS_SURFACE_TYPE_MISMATCH.
  */
 static cairo_status_t
 _extract_ps_surface (cairo_surface_t	 *surface,
@@ -1187,7 +1187,7 @@ cairo_ps_get_levels (cairo_ps_level_t const	**levels,
  * @level: a level id
  *
  * Get the string representation of the given @level id. This function
- * will return NULL if @level id isn't valid. See cairo_ps_get_levels()
+ * will return %NULL if @level id isn't valid. See cairo_ps_get_levels()
  * for a way to get the list of valid level ids.
  *
  * Return value: the string associated to given level.
@@ -1205,16 +1205,16 @@ cairo_ps_level_to_string (cairo_ps_level_t level)
 
 /**
  * cairo_ps_surface_set_eps:
- * @surface: a PostScript cairo_surface_t
- * @eps: TRUE to output EPS format PostScript
+ * @surface: a PostScript #cairo_surface_t
+ * @eps: %TRUE to output EPS format PostScript
  *
- * If @eps is TRUE, the PostScript surface will output Encapsulated
+ * If @eps is %TRUE, the PostScript surface will output Encapsulated
  * PostScript.
  *
  * This function should only be called before any drawing operations
  * have been performed on the current page. The simplest way to do
  * this is to call this function immediately after creating the
- * surface. An Encapsulated Postscript file should never contain more
+ * surface. An Encapsulated PostScript file should never contain more
  * than one page.
  *
  * Since: 1.6
@@ -1237,11 +1237,11 @@ cairo_ps_surface_set_eps (cairo_surface_t	*surface,
 
 /**
  * cairo_ps_surface_get_eps:
- * @surface: a PostScript cairo_surface_t
+ * @surface: a PostScript #cairo_surface_t
  *
  * Check whether the PostScript surface will output Encapsulated PostScript.
  *
- * Return value: TRUE if the surface will output Encapsulated PostScript.
+ * Return value: %TRUE if the surface will output Encapsulated PostScript.
  *
  * Since: 1.6
  **/
@@ -1262,7 +1262,7 @@ cairo_ps_surface_get_eps (cairo_surface_t	*surface)
 
 /**
  * cairo_ps_surface_set_size:
- * @surface: a PostScript cairo_surface_t
+ * @surface: a PostScript #cairo_surface_t
  * @width_in_points: new surface width, in points (1 point == 1/72.0 inch)
  * @height_in_points: new surface height, in points (1 point == 1/72.0 inch)
  *
@@ -1302,7 +1302,7 @@ cairo_ps_surface_set_size (cairo_surface_t	*surface,
 
 /**
  * cairo_ps_surface_dsc_comment:
- * @surface: a PostScript cairo_surface_t
+ * @surface: a PostScript #cairo_surface_t
  * @comment: a comment string to be emitted into the PostScript output
  *
  * Emit a comment into the PostScript output for the given surface.
@@ -1366,7 +1366,7 @@ cairo_ps_surface_set_size (cairo_surface_t	*surface,
  * Here is an example sequence showing how this function might be used:
  *
  * <informalexample><programlisting>
- * cairo_surface_t *surface = cairo_ps_surface_create (filename, width, height);
+ * #cairo_surface_t *surface = cairo_ps_surface_create (filename, width, height);
  * ...
  * cairo_ps_surface_dsc_comment (surface, "%%Title: My excellent document");
  * cairo_ps_surface_dsc_comment (surface, "%%Copyright: Copyright (C) 2006 Cairo Lover")
@@ -1430,7 +1430,7 @@ cairo_ps_surface_dsc_comment (cairo_surface_t	*surface,
 
 /**
  * cairo_ps_surface_dsc_begin_setup:
- * @surface: a PostScript cairo_surface_t
+ * @surface: a PostScript #cairo_surface_t
  *
  * This function indicates that subsequent calls to
  * cairo_ps_surface_dsc_comment() should direct comments to the Setup
@@ -1464,7 +1464,7 @@ cairo_ps_surface_dsc_begin_setup (cairo_surface_t *surface)
 
 /**
  * cairo_ps_surface_dsc_begin_page_setup:
- * @surface: a PostScript cairo_surface_t
+ * @surface: a PostScript #cairo_surface_t
  *
  * This function indicates that subsequent calls to
  * cairo_ps_surface_dsc_comment() should direct comments to the
@@ -2102,7 +2102,7 @@ _cairo_ps_surface_emit_image (cairo_ps_surface_t    *surface,
     }
 
     if (use_mask) {
-	mask_size = (image->width * image->height + 7)/8;
+	mask_size = ((image->width+7) / 8) * image->height;
 	mask = malloc (mask_size);
 	if (mask == NULL) {
 	    status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
@@ -2129,6 +2129,11 @@ _cairo_ps_surface_emit_image (cairo_ps_surface_t    *surface,
 		rgb[i++] = (*pixel & 0x00ff0000) >> 16;
 		rgb[i++] = (*pixel & 0x0000ff00) >>  8;
 		rgb[i++] = (*pixel & 0x000000ff) >>  0;
+	    }
+
+	    if (bit != 7) {
+		bit = 7;
+		byte++;
 	    }
 	}
     } else {

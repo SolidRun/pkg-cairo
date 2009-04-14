@@ -79,6 +79,8 @@ static const char *vector_ignored_tests[] = {
     /* We can't match the results of tests that depend on
      * CAIRO_ANTIALIAS_NONE/SUBPIXEL for vector backends
      * (nor do we care). */
+    "a1-image-sample",
+    "a1-traps-sample",
     "ft-text-antialias-none",
     "rectangle-rounding-error",
     "text-antialias-gray",
@@ -701,8 +703,6 @@ cairo_test_create_surface_from_png (const char *filename)
 	    image = cairo_image_surface_create_from_png (srcdir_filename);
 	    free (srcdir_filename);
 	}
-	if (cairo_surface_status(image))
-	    return NULL;
     }
 
     return image;
