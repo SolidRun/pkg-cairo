@@ -8,7 +8,7 @@
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-surfaces.html" title="Surfaces">
 <link rel="next" href="cairo-image-surface.html" title="Image Surfaces">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="cairo-drawing.html" title="Drawing">
 <link rel="chapter" href="cairo-fonts.html" title="Fonts">
@@ -30,9 +30,11 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-image-surface.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#cairo-surface.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#cairo-surface.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#cairo-surface.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#cairo-surface.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-surface"></a><div class="titlepage"></div>
@@ -48,11 +50,11 @@
 <pre class="synopsis">
 typedef             <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>;
 enum                <a class="link" href="cairo-surface.html#cairo-content-t" title="enum cairo_content_t">cairo_content_t</a>;
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    <a class="link" href="cairo-surface.html#cairo-surface-create-similar" title="cairo_surface_create_similar ()">cairo_surface_create_similar</a>        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *other,
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-surface.html#cairo-surface-create-similar" title="cairo_surface_create_similar ()">cairo_surface_create_similar</a>        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *other,
                                                          <a class="link" href="cairo-surface.html#cairo-content-t" title="enum cairo_content_t">cairo_content_t</a> content,
                                                          int width,
                                                          int height);
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    <a class="link" href="cairo-surface.html#cairo-surface-reference" title="cairo_surface_reference ()">cairo_surface_reference</a>             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-surface.html#cairo-surface-reference" title="cairo_surface_reference ()">cairo_surface_reference</a>             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
 void                <a class="link" href="cairo-surface.html#cairo-surface-destroy" title="cairo_surface_destroy ()">cairo_surface_destroy</a>               (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
 <a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      <a class="link" href="cairo-surface.html#cairo-surface-status" title="cairo_surface_status ()">cairo_surface_status</a>                (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
 void                <a class="link" href="cairo-surface.html#cairo-surface-finish" title="cairo_surface_finish ()">cairo_surface_finish</a>                (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
@@ -81,13 +83,13 @@ void                <a class="link" href="cairo-surface.html#cairo-surface-get-f
                                                          double *x_pixels_per_inch,
                                                          double *y_pixels_per_inch);
 enum                <a class="link" href="cairo-surface.html#cairo-surface-type-t" title="enum cairo_surface_type_t">cairo_surface_type_t</a>;
-<a class="link" href="cairo-surface.html#cairo-surface-type-t" title="enum cairo_surface_type_t">cairo_surface_type_t</a> <a class="link" href="cairo-surface.html#cairo-surface-get-type" title="cairo_surface_get_type ()">cairo_surface_get_type</a>             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
+<a class="link" href="cairo-surface.html#cairo-surface-type-t" title="enum cairo_surface_type_t">cairo_surface_type_t</a>  <a class="link" href="cairo-surface.html#cairo-surface-get-type" title="cairo_surface_get_type ()">cairo_surface_get_type</a>            (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
 unsigned int        <a class="link" href="cairo-surface.html#cairo-surface-get-reference-count" title="cairo_surface_get_reference_count ()">cairo_surface_get_reference_count</a>   (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
 <a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      <a class="link" href="cairo-surface.html#cairo-surface-set-user-data" title="cairo_surface_set_user_data ()">cairo_surface_set_user_data</a>         (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
                                                          const <a class="link" href="cairo-types.html#cairo-user-data-key-t" title="cairo_user_data_key_t">cairo_user_data_key_t</a> *key,
                                                          void *user_data,
                                                          <a class="link" href="cairo-types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()">cairo_destroy_func_t</a> destroy);
-void*               <a class="link" href="cairo-surface.html#cairo-surface-get-user-data" title="cairo_surface_get_user_data ()">cairo_surface_get_user_data</a>         (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
+void *              <a class="link" href="cairo-surface.html#cairo-surface-get-user-data" title="cairo_surface_get_user_data ()">cairo_surface_get_user_data</a>         (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
                                                          const <a class="link" href="cairo-types.html#cairo-user-data-key-t" title="cairo_user_data_key_t">cairo_user_data_key_t</a> *key);
 void                <a class="link" href="cairo-surface.html#cairo-surface-copy-page" title="cairo_surface_copy_page ()">cairo_surface_copy_page</a>             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
 void                <a class="link" href="cairo-surface.html#cairo-surface-show-page" title="cairo_surface_show_page ()">cairo_surface_show_page</a>             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
@@ -129,7 +131,6 @@ The type of a surface can be queried with <a class="link" href="cairo-surface.ht
 Memory management of <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> is done with
 <a class="link" href="cairo-surface.html#cairo-surface-reference" title="cairo_surface_reference ()"><code class="function">cairo_surface_reference()</code></a> and <a class="link" href="cairo-surface.html#cairo-surface-destroy" title="cairo_surface_destroy ()"><code class="function">cairo_surface_destroy()</code></a>.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -151,23 +152,22 @@ Note: The large values here are designed to keep <a class="link" href="cairo-sur
 values distinct from <a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t"><span class="type">cairo_format_t</span></a> values so that the
 implementation can detect the error if users confuse the two types.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="CAIRO-CONTENT-COLOR:CAPS"></a><span class="term"><code class="literal">CAIRO_CONTENT_COLOR</code></span></p></td>
+<td><p><a name="CAIRO-CONTENT-COLOR--CAPS"></a><span class="term"><code class="literal">CAIRO_CONTENT_COLOR</code></span></p></td>
 <td> The surface will hold color content only.
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-CONTENT-ALPHA:CAPS"></a><span class="term"><code class="literal">CAIRO_CONTENT_ALPHA</code></span></p></td>
+<td><p><a name="CAIRO-CONTENT-ALPHA--CAPS"></a><span class="term"><code class="literal">CAIRO_CONTENT_ALPHA</code></span></p></td>
 <td> The surface will hold alpha content only.
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-CONTENT-COLOR-ALPHA:CAPS"></a><span class="term"><code class="literal">CAIRO_CONTENT_COLOR_ALPHA</code></span></p></td>
+<td><p><a name="CAIRO-CONTENT-COLOR-ALPHA--CAPS"></a><span class="term"><code class="literal">CAIRO_CONTENT_COLOR_ALPHA</code></span></p></td>
 <td> The surface will hold color and alpha content.
 </td>
 </tr>
@@ -177,7 +177,7 @@ implementation can detect the error if users confuse the two types.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-surface-create-similar"></a><h3>cairo_surface_create_similar ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    cairo_surface_create_similar        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *other,
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_surface_create_similar        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *other,
                                                          <a class="link" href="cairo-surface.html#cairo-content-t" title="enum cairo_content_t">cairo_content_t</a> content,
                                                          int width,
                                                          int height);</pre>
@@ -193,7 +193,6 @@ be examined with <a class="link" href="cairo-surface.html#cairo-surface-get-type
 Initially the surface contents are all 0 (transparent if contents
 have transparency, black otherwise.)</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -235,7 +234,7 @@ or any other error occurs.
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-surface-reference"></a><h3>cairo_surface_reference ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a>*    cairo_surface_reference             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_surface_reference             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
 Increases the reference count on <em class="parameter"><code>surface</code></em> by one. This prevents
 <em class="parameter"><code>surface</code></em> from being destroyed until a matching call to
@@ -245,7 +244,6 @@ Increases the reference count on <em class="parameter"><code>surface</code></em>
 The number of references to a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> can be get using
 <a class="link" href="cairo-surface.html#cairo-surface-get-reference-count" title="cairo_surface_get_reference_count ()"><code class="function">cairo_surface_get_reference_count()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -272,7 +270,6 @@ Decreases the reference count on <em class="parameter"><code>surface</code></em>
 zero, then <em class="parameter"><code>surface</code></em> and all associated resources are freed.  See
 <a class="link" href="cairo-surface.html#cairo-surface-reference" title="cairo_surface_reference ()"><code class="function">cairo_surface_reference()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -291,7 +288,6 @@ zero, then <em class="parameter"><code>surface</code></em> and all associated re
 Checks whether an error has previously occurred for this
 surface.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -303,10 +299,10 @@ surface.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a>, <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NULL-POINTER:CAPS"><code class="literal">CAIRO_STATUS_NULL_POINTER</code></a>,
-<a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>, <a class="link" href="cairo-error-status.html#CAIRO-STATUS-READ-ERROR:CAPS"><code class="literal">CAIRO_STATUS_READ_ERROR</code></a>,
-<a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-CONTENT:CAPS"><code class="literal">CAIRO_STATUS_INVALID_CONTENT</code></a>, <a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-FORMAT:CAPS"><code class="literal">CAIRO_STATUS_INVALID_FORMAT</code></a>, or
-<a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-VISUAL:CAPS"><code class="literal">CAIRO_STATUS_INVALID_VISUAL</code></a>.
+<td> <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a>, <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NULL-POINTER--CAPS"><code class="literal">CAIRO_STATUS_NULL_POINTER</code></a>,
+<a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>, <a class="link" href="cairo-error-status.html#CAIRO-STATUS-READ-ERROR--CAPS"><code class="literal">CAIRO_STATUS_READ_ERROR</code></a>,
+<a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-CONTENT--CAPS"><code class="literal">CAIRO_STATUS_INVALID_CONTENT</code></a>, <a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-FORMAT--CAPS"><code class="literal">CAIRO_STATUS_INVALID_FORMAT</code></a>, or
+<a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-VISUAL--CAPS"><code class="literal">CAIRO_STATUS_INVALID_VISUAL</code></a>.
 </td>
 </tr>
 </tbody>
@@ -324,7 +320,7 @@ After calling <a class="link" href="cairo-surface.html#cairo-surface-finish" tit
 surface are getting and setting user, referencing and
 destroying, and flushing and finishing it.
 Further drawing to the surface will not affect the
-surface but will instead trigger a <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SURFACE-FINISHED:CAPS"><code class="literal">CAIRO_STATUS_SURFACE_FINISHED</code></a>
+surface but will instead trigger a <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SURFACE-FINISHED--CAPS"><code class="literal">CAIRO_STATUS_SURFACE_FINISHED</code></a>
 error.
 </p>
 <p>
@@ -333,7 +329,6 @@ reference count to zero, cairo will call <a class="link" href="cairo-surface.htm
 it hasn't been called already, before freeing the resources
 associated with the surface.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -356,7 +351,6 @@ drawing on the surface with cairo to drawing on it directly
 with native APIs. If the surface doesn't support direct access,
 then this function does nothing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -379,7 +373,6 @@ for rendering on them, print surfaces to disable hinting of
 metrics and so forth. The result can then be used with
 <a class="link" href="cairo-scaled-font.html#cairo-scaled-font-create" title="cairo_scaled_font_create ()"><code class="function">cairo_scaled_font_create()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -407,7 +400,6 @@ This function returns the content type of <em class="parameter"><code>surface</c
 whether the surface contains color and/or alpha information. See
 <a class="link" href="cairo-surface.html#cairo-content-t" title="enum cairo_content_t"><span class="type">cairo_content_t</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -425,8 +417,7 @@ whether the surface contains color and/or alpha information. See
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -437,7 +428,6 @@ Tells cairo that drawing has been done to surface using means other
 than cairo, and that cairo should reread any cached areas. Note
 that you must call <a class="link" href="cairo-surface.html#cairo-surface-flush" title="cairo_surface_flush ()"><code class="function">cairo_surface_flush()</code></a> before doing such drawing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -466,7 +456,6 @@ Any cached clip set on the surface will be reset by this function,
 to make sure that future cairo calls have the clip set that they
 expect.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -519,7 +508,6 @@ sufficient to do this, since functions like
 Note that the offset affects drawing to the surface as well as
 using the surface in a source pattern.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -552,7 +540,6 @@ using the surface in a source pattern.</p>
 This function returns the previous device offset set by
 <a class="link" href="cairo-surface.html#cairo-surface-set-device-offset" title="cairo_surface_set_device_offset ()"><code class="function">cairo_surface_set_device_offset()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -574,8 +561,7 @@ This function returns the previous device offset set by
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -615,7 +601,6 @@ in effect on a single page.
 The default fallback resoultion is 300 pixels per inch in both
 dimensions.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -637,8 +622,7 @@ dimensions.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -652,7 +636,6 @@ This function returns the previous fallback resolution set by
 <a class="link" href="cairo-surface.html#cairo-surface-set-fallback-resolution" title="cairo_surface_set_fallback_resolution ()"><code class="function">cairo_surface_set_fallback_resolution()</code></a>, or default fallback
 resolution if never set.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -674,8 +657,7 @@ resolution if never set.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.8
-</p>
+<p class="since">Since 1.8</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -724,95 +706,92 @@ the wrong type is undefined.
 <p>
 New entries may be added in future versions.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-IMAGE:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_IMAGE</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-IMAGE--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_IMAGE</code></span></p></td>
 <td> The surface is of type image
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-PDF:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_PDF</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-PDF--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_PDF</code></span></p></td>
 <td> The surface is of type pdf
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-PS:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_PS</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-PS--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_PS</code></span></p></td>
 <td> The surface is of type ps
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-XLIB:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_XLIB</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-XLIB--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_XLIB</code></span></p></td>
 <td> The surface is of type xlib
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-XCB:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_XCB</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-XCB--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_XCB</code></span></p></td>
 <td> The surface is of type xcb
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-GLITZ:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_GLITZ</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-GLITZ--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_GLITZ</code></span></p></td>
 <td> The surface is of type glitz
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-QUARTZ:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_QUARTZ</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-QUARTZ--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_QUARTZ</code></span></p></td>
 <td> The surface is of type quartz
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-WIN32:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_WIN32</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-WIN32--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_WIN32</code></span></p></td>
 <td> The surface is of type win32
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-BEOS:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_BEOS</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-BEOS--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_BEOS</code></span></p></td>
 <td> The surface is of type beos
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-DIRECTFB:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_DIRECTFB</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-DIRECTFB--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_DIRECTFB</code></span></p></td>
 <td> The surface is of type directfb
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-SVG:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_SVG</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-SVG--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_SVG</code></span></p></td>
 <td> The surface is of type svg
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-OS2:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_OS2</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-OS2--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_OS2</code></span></p></td>
 <td> The surface is of type os2
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-WIN32-PRINTING:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_WIN32_PRINTING</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-WIN32-PRINTING--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_WIN32_PRINTING</code></span></p></td>
 <td> The surface is a win32 printing surface
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-QUARTZ-IMAGE:CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_QUARTZ_IMAGE</code></span></p></td>
+<td><p><a name="CAIRO-SURFACE-TYPE-QUARTZ-IMAGE--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_QUARTZ_IMAGE</code></span></p></td>
 <td> The surface is of type quartz_image
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-surface-get-type"></a><h3>cairo_surface_get_type ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-type-t" title="enum cairo_surface_type_t">cairo_surface_type_t</a> cairo_surface_get_type             (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-type-t" title="enum cairo_surface_type_t">cairo_surface_type_t</a>  cairo_surface_get_type            (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
 This function returns the type of the backend used to create
 a surface. See <a class="link" href="cairo-surface.html#cairo-surface-type-t" title="enum cairo_surface_type_t"><span class="type">cairo_surface_type_t</span></a> for available types.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -830,8 +809,7 @@ a surface. See <a class="link" href="cairo-surface.html#cairo-surface-type-t" ti
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.2
-</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -840,7 +818,6 @@ a surface. See <a class="link" href="cairo-surface.html#cairo-surface-type-t" ti
 <p>
 Returns the current reference count of <em class="parameter"><code>surface</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -859,8 +836,7 @@ object is a nil object, 0 will be returned.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.4
-</p>
+<p class="since">Since 1.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -872,11 +848,10 @@ object is a nil object, 0 will be returned.
 <p>
 Attach user data to <em class="parameter"><code>surface</code></em>.  To remove user data from a surface,
 call this function with the key that was used to set it and <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 for <em class="parameter"><code>data</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -905,7 +880,7 @@ same key.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a> if a
+<td> <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a> if a
 slot could not be allocated for the user data.
 </td>
 </tr>
@@ -915,16 +890,15 @@ slot could not be allocated for the user data.
 <hr>
 <div class="refsect2" lang="en">
 <a name="cairo-surface-get-user-data"></a><h3>cairo_surface_get_user_data ()</h3>
-<pre class="programlisting">void*               cairo_surface_get_user_data         (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
+<pre class="programlisting">void *              cairo_surface_get_user_data         (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
                                                          const <a class="link" href="cairo-types.html#cairo-user-data-key-t" title="cairo_user_data_key_t">cairo_user_data_key_t</a> *key);</pre>
 <p>
 Return user data previously attached to <em class="parameter"><code>surface</code></em> using the specified
 key.  If no user data has been attached with the given key this
 function returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -943,7 +917,7 @@ attached to
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the user data previously attached or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>.
 </td>
 </tr>
@@ -964,7 +938,6 @@ want to get an empty page after the emission.
 There is a convenience function for this that takes a <a class="link" href="cairo-context.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a>,
 namely <a class="link" href="cairo-context.html#cairo-copy-page" title="cairo_copy_page ()"><code class="function">cairo_copy_page()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -974,8 +947,7 @@ namely <a class="link" href="cairo-context.html#cairo-copy-page" title="cairo_co
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  1.6
-</p>
+<p class="since">Since 1.6</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -989,7 +961,6 @@ pages.  Use <a class="link" href="cairo-surface.html#cairo-surface-copy-page" ti
 There is a convenience function for this that takes a <a class="link" href="cairo-context.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a>,
 namely <a class="link" href="cairo-context.html#cairo-show-page" title="cairo_show_page ()"><code class="function">cairo_show_page()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -999,8 +970,7 @@ namely <a class="link" href="cairo-context.html#cairo-show-page" title="cairo_sh
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  1.6
-</p>
+<p class="since">Since 1.6</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1014,7 +984,7 @@ to a <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_
 </p>
 <p>
 Note: Even if this function returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a>, a
 <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a> operation targeted at <em class="parameter"><code>surface</code></em> will
 still succeed.  It just will
@@ -1022,7 +992,6 @@ act like a <a class="link" href="cairo-text.html#cairo-show-glyphs" title="cairo
 function to avoid computing UTF-8 text and cluster mapping if the
 target surface does not use it.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1035,18 +1004,17 @@ target surface does not use it.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if <em class="parameter"><code>surface</code></em> supports
               <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a>, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a> otherwise
 
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  1.8
-</p>
+<p class="since">Since 1.8</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
@@ -1065,6 +1033,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

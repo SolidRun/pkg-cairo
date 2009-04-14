@@ -56,7 +56,8 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/src/cairo-uninstalled.pc.in AUTHORS COPYING \
 	ChangeLog INSTALL NEWS build/compile build/config.guess \
 	build/config.sub build/depcomp build/install-sh \
-	build/ltmain.sh build/missing
+	build/ltmain.sh build/missing config.guess config.sub depcomp \
+	install-sh ltmain.sh missing
 EXTRA_PROGRAMS =
 TESTS =
 check_PROGRAMS =
@@ -70,7 +71,12 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.float.m4 \
 	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
-	$(top_srcdir)/build/aclocal.pkg.m4 $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/build/aclocal.pkg.m4 \
+	$(top_srcdir)/build/libtool.m4 \
+	$(top_srcdir)/build/ltoptions.m4 \
+	$(top_srcdir)/build/ltsugar.m4 \
+	$(top_srcdir)/build/ltversion.m4 \
+	$(top_srcdir)/build/lt~obsolete.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/cairo-version.h \
 	$(top_srcdir)/build/configure.ac.version \
 	$(top_srcdir)/build/configure.ac.tools \
@@ -154,14 +160,13 @@ DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
-ECHO = @ECHO@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FFLAGS = @FFLAGS@
+FGREP = @FGREP@
 FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
@@ -185,7 +190,9 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBM = @LIBM@
 LIBOBJS = @LIBOBJS@
 LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
 LIBRSVG_LIBS = @LIBRSVG_LIBS@
@@ -193,6 +200,7 @@ LIBS = @LIBS@
 LIBSPECTRE_CFLAGS = @LIBSPECTRE_CFLAGS@
 LIBSPECTRE_LIBS = @LIBSPECTRE_LIBS@
 LIBTOOL = @LIBTOOL@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
@@ -201,9 +209,12 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -236,7 +247,7 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_F77 = @ac_ct_F77@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -273,6 +284,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -290,6 +302,7 @@ sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 xcb_CFLAGS = @xcb_CFLAGS@
@@ -967,7 +980,7 @@ $(srcdir)/ChangeLog:
 	@if test -d "$(srcdir)/.git"; then \
 		version=$(CURR_CHANGELOG_VERSION); \
 		prev=$(PREV_CHANGELOG_VERSION).0; \
-		nearest_tag=`git-describe | sed 's/-.*//'`; \
+		nearest_tag=`git describe | sed 's/-.*//'`; \
 		before=$(srcdir)/ChangeLog.cache-$$prev..$$nearest_tag; \
 		after=$(srcdir)/ChangeLog.cache-$$nearest_tag..; \
 		$(MAKE) $(AM_MAKEFLAGS) $$before $$after && \
@@ -999,7 +1012,7 @@ $(srcdir)/ChangeLog.cache-% $(srcdir)/ChangeLog.pre-%:
 		test "x$$from" = xinitial || from=$$from.0; \
 		spec=$$from..$$to; \
 	  fi; \
-	  $(srcdir)/build/missing --run git-log --stat "$$spec") > $@.tmp \
+	  $(srcdir)/build/missing --run git log --stat "$$spec") > $@.tmp \
 	  && mv -f $@.tmp $@ \
 	  || ($(RM) $@.tmp; \
 	      echo Failed to generate $@, your $@ may be outdated >&2); \
@@ -1017,7 +1030,7 @@ dist-clear-sticky-bits:
 
 snapshot:
 	distdir="$(distdir)-`date '+%Y%m%d'`"; \
-	test -d "$(srcdir)/.git" && distdir=$$distdir-`cd "$(srcdir)" && git-rev-parse HEAD | cut -c 1-6`; \
+	test -d "$(srcdir)/.git" && distdir=$$distdir-`cd "$(srcdir)" && git rev-parse HEAD | cut -c 1-6`; \
 	TAR_OPTIONS="$(TAR_OPTIONS)" $(MAKE) $(AM_MAKEFLAGS) distdir="$$distdir" snapshot-dist
 
 snapshot-dist: dist
@@ -1079,7 +1092,7 @@ release-upload: $(tar_file) $(sha1_file) $(gpg_file)
 	scp $(tar_file) $(sha1_file) $(gpg_file) $(RELEASE_UPLOAD_HOST):$(RELEASE_UPLOAD_DIR)
 	mv $(tar_file) $(sha1_file) $(gpg_file) releases
 	ssh $(RELEASE_UPLOAD_HOST) "rm -f $(RELEASE_UPLOAD_DIR)/LATEST-$(PACKAGE)-[0-9]* && ln -s $(tar_file) $(RELEASE_UPLOAD_DIR)/LATEST-$(PACKAGE)-$(VERSION)"
-	git-tag -s  -m "cairo $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO) release" $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO)
+	git tag -s  -m "cairo $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO) release" $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO)
 
 release-publish-message: releases/$(sha1_file)
 	@echo "Please follow the instructions in RELEASING to push stuff out and"

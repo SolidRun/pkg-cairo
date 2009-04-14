@@ -8,7 +8,7 @@
 <link rel="up" href="cairo-support.html" title="Utilities">
 <link rel="prev" href="cairo-support.html" title="Utilities">
 <link rel="next" href="cairo-error-status.html" title="Error handling">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="cairo-drawing.html" title="Drawing">
 <link rel="chapter" href="cairo-fonts.html" title="Fonts">
@@ -30,9 +30,11 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-error-status.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#cairo-matrix.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#cairo-matrix.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#cairo-matrix.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#cairo-matrix.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-matrix"></a><div class="titlepage"></div>
@@ -123,7 +125,6 @@ a point (x, y) is given by:
     y_new = yx * x + yy * y + y0;
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -181,7 +182,6 @@ by:
  y_new = yx * x + yy * y + y0;
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -231,7 +231,6 @@ by:
 <p>
 Modifies <em class="parameter"><code>matrix</code></em> to be an identity transformation.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -252,7 +251,6 @@ Modifies <em class="parameter"><code>matrix</code></em> to be an identity transf
 Initializes <em class="parameter"><code>matrix</code></em> to a transformation that translates by <em class="parameter"><code>tx</code></em> and
 <em class="parameter"><code>ty</code></em> in the X and Y dimensions, respectively.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -285,7 +283,6 @@ Initializes <em class="parameter"><code>matrix</code></em> to a transformation t
 Initializes <em class="parameter"><code>matrix</code></em> to a transformation that scales by <em class="parameter"><code>sx</code></em> and <em class="parameter"><code>sy</code></em>
 in the X and Y dimensions, respectively.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -316,7 +313,6 @@ in the X and Y dimensions, respectively.</p>
 <p>
 Initialized <em class="parameter"><code>matrix</code></em> to a transformation that rotates by <em class="parameter"><code>radians</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -350,7 +346,6 @@ Applies a translation by <em class="parameter"><code>tx</code></em>, <em class="
 the coordinates by <em class="parameter"><code>tx</code></em> and <em class="parameter"><code>ty</code></em>, then apply the original transformation
 to the coordinates.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -384,7 +379,6 @@ Applies scaling by <em class="parameter"><code>sx</code></em>, <em class="parame
 effect of the new transformation is to first scale the coordinates
 by <em class="parameter"><code>sx</code></em> and <em class="parameter"><code>sy</code></em>, then apply the original transformation to the coordinates.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -418,7 +412,6 @@ Applies rotation by <em class="parameter"><code>radians</code></em> to the trans
 coordinates by <em class="parameter"><code>radians</code></em>, then apply the original transformation
 to the coordinates.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -450,7 +443,6 @@ all transformation matrices have inverses; if the matrix
 collapses points together (it is <em class="firstterm">degenerate</em>),
 then it has no inverse and this function will fail.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -463,8 +455,8 @@ then it has no inverse and this function will fail.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> If <em class="parameter"><code>matrix</code></em> has an inverse, modifies <em class="parameter"><code>matrix</code></em> to
- be the inverse matrix and returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a>. Otherwise,
- returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-MATRIX:CAPS"><code class="literal">CAIRO_STATUS_INVALID_MATRIX</code></a>.
+ be the inverse matrix and returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a>. Otherwise,
+ returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-MATRIX--CAPS"><code class="literal">CAIRO_STATUS_INVALID_MATRIX</code></a>.
 </td>
 </tr>
 </tbody>
@@ -486,7 +478,6 @@ coordinates.
 <p>
 It is allowable for <em class="parameter"><code>result</code></em> to be identical to either <em class="parameter"><code>a</code></em> or <em class="parameter"><code>b</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -535,7 +526,6 @@ always transforms to the same vector. If (<em class="parameter"><code>x1</code><
 to (<em class="parameter"><code>x2</code></em>,<em class="parameter"><code>y2</code></em>) then (<em class="parameter"><code>x1</code></em>+<em class="parameter"><code>dx1</code></em>,<em class="parameter"><code>y1</code></em>+<em class="parameter"><code>dy1</code></em>) will transform to
 (<em class="parameter"><code>x1</code></em>+<em class="parameter"><code>dx2</code></em>,<em class="parameter"><code>y1</code></em>+<em class="parameter"><code>dy2</code></em>) for all values of <em class="parameter"><code>x1</code></em> and <em class="parameter"><code>x2</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -567,7 +557,6 @@ to (<em class="parameter"><code>x2</code></em>,<em class="parameter"><code>y2</c
 <p>
 Transforms the point (<em class="parameter"><code>x</code></em>, <em class="parameter"><code>y</code></em>) by <em class="parameter"><code>matrix</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -602,6 +591,6 @@ Transforms the point (<em class="parameter"><code>x</code></em>, <em class="para
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>
