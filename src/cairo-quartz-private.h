@@ -38,7 +38,7 @@
 #ifndef CAIRO_QUARTZ_PRIVATE_H
 #define CAIRO_QUARTZ_PRIVATE_H
 
-#include <cairoint.h>
+#include "cairoint.h"
 
 #ifdef CAIRO_HAS_QUARTZ_SURFACE
 #include <cairo-quartz.h>
@@ -51,7 +51,7 @@ typedef struct cairo_quartz_surface {
     CGContextRef cgContext;
     CGAffineTransform cgContextBaseCTM;
 
-    cairo_rectangle_int16_t extents;
+    cairo_rectangle_int_t extents;
 
     /* These are stored while drawing operations are in place, set up
      * by quartz_setup_source() and quartz_finish_source()

@@ -62,6 +62,8 @@ unsigned <link linkend="int">int</link>        <link linkend="cairo-surface-get-
                                                          <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);
 <link linkend="void">void</link>*               <link linkend="cairo-surface-get-user-data">cairo_surface_get_user_data</link>         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
                                                          const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);
+<link linkend="cairo-status-t">cairo_status_t</link>      <link linkend="cairo-surface-copy-page">cairo_surface_copy_page</link>             (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
+<link linkend="cairo-status-t">cairo_status_t</link>      <link linkend="cairo-surface-show-page">cairo_surface_show_page</link>             (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
 </synopsis>
 </refsynopsisdiv>
 
@@ -476,7 +478,8 @@ in effect on a single page.</para>
     CAIRO_SURFACE_TYPE_BEOS,
     CAIRO_SURFACE_TYPE_DIRECTFB,
     CAIRO_SURFACE_TYPE_SVG,
-    CAIRO_SURFACE_TYPE_OS2
+    CAIRO_SURFACE_TYPE_OS2,
+    CAIRO_SURFACE_TYPE_WIN32_PRINTING
 } cairo_surface_type_t;
 </programlisting>
 <para>
@@ -568,6 +571,11 @@ New entries may be added in future versions.</para>
 <listitem><simpara> The surface is of type os2
 </simpara></listitem>
 </varlistentry>
+<varlistentry>
+<term><anchor id="CAIRO-SURFACE-TYPE-WIN32-PRINTING:CAPS" role="constant"/><literal>CAIRO_SURFACE_TYPE_WIN32_PRINTING</literal></term>
+<listitem><simpara> The surface is a win32 printing surface
+</simpara></listitem>
+</varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
 <refsect2>
@@ -656,6 +664,44 @@ attached to
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the user data previously attached or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-surface-copy-page" role="function" condition="since:1.6"/>cairo_surface_copy_page ()</title>
+<indexterm role="1.6"><primary>cairo_surface_copy_page</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_surface_copy_page             (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);</programlisting>
+<para>
+Emits the current page for backends that support multiple pages,
+but doesn't clear it, so that the contents of the current page will
+be retained for the next page.  Use <link linkend="cairo-surface-show-page"><function>cairo_surface_show_page()</function></link> if you
+want to get an empty page after the emission.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  1.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="cairo-surface-show-page" role="function" condition="since:1.6"/>cairo_surface_show_page ()</title>
+<indexterm role="1.6"><primary>cairo_surface_show_page</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_surface_show_page             (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);</programlisting>
+<para>
+Emits and clears the current page for backends that support multiple
+pages.  Use <link linkend="cairo-surface-copy-page"><function>cairo_surface_copy_page()</function></link> if you don't want to clear the page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-Surface-t"><type>cairo_Surface_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  1.6
+</para></refsect2>
 
 </refsect1>
 

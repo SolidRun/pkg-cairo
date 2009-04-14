@@ -39,7 +39,7 @@
 #include "cairo-path-private.h"
 #include "cairo-path-fixed-private.h"
 
-const cairo_path_t _cairo_path_nil = { CAIRO_STATUS_NO_MEMORY, NULL, 0 };
+static const cairo_path_t _cairo_path_nil = { CAIRO_STATUS_NO_MEMORY, NULL, 0 };
 
 /* Closure for path interpretation. */
 typedef struct cairo_path_count {
@@ -339,7 +339,7 @@ _cairo_path_populate (cairo_path_t		*path,
     /* Sanity check the count */
     assert (cpp.data - path->data == path->num_data);
 
-    return status;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 cairo_path_t *
@@ -353,7 +353,7 @@ _cairo_path_create_in_error (cairo_status_t status)
 
     path = malloc (sizeof (cairo_path_t));
     if (path == NULL) {
-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
 	return (cairo_path_t*) &_cairo_path_nil;
     }
 
@@ -373,7 +373,7 @@ _cairo_path_create_internal (cairo_path_fixed_t *path_fixed,
 
     path = malloc (sizeof (cairo_path_t));
     if (path == NULL) {
-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
 	return (cairo_path_t*) &_cairo_path_nil;
     }
 
@@ -390,7 +390,7 @@ _cairo_path_create_internal (cairo_path_fixed_t *path_fixed,
 	       	                       sizeof (cairo_path_data_t));
 	if (path->data == NULL) {
 	    free (path);
-	    _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	    _cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
 	    return (cairo_path_t*) &_cairo_path_nil;
 	}
 
@@ -496,19 +496,19 @@ _cairo_path_append_to_context (const cairo_path_t	*path,
 	switch (p->header.type) {
 	case CAIRO_PATH_MOVE_TO:
 	    if (p->header.length < 2)
-		return CAIRO_STATUS_INVALID_PATH_DATA;
+		return _cairo_error (CAIRO_STATUS_INVALID_PATH_DATA);
 	    cairo_move_to (cr,
 			   p[1].point.x, p[1].point.y);
 	    break;
 	case CAIRO_PATH_LINE_TO:
 	    if (p->header.length < 2)
-		return CAIRO_STATUS_INVALID_PATH_DATA;
+		return _cairo_error (CAIRO_STATUS_INVALID_PATH_DATA);
 	    cairo_line_to (cr,
 			   p[1].point.x, p[1].point.y);
 	    break;
 	case CAIRO_PATH_CURVE_TO:
 	    if (p->header.length < 4)
-		return CAIRO_STATUS_INVALID_PATH_DATA;
+		return _cairo_error (CAIRO_STATUS_INVALID_PATH_DATA);
 	    cairo_curve_to (cr,
 			    p[1].point.x, p[1].point.y,
 			    p[2].point.x, p[2].point.y,
@@ -516,11 +516,11 @@ _cairo_path_append_to_context (const cairo_path_t	*path,
 	    break;
 	case CAIRO_PATH_CLOSE_PATH:
 	    if (p->header.length < 1)
-		return CAIRO_STATUS_INVALID_PATH_DATA;
+		return _cairo_error (CAIRO_STATUS_INVALID_PATH_DATA);
 	    cairo_close_path (cr);
 	    break;
 	default:
-	    return CAIRO_STATUS_INVALID_PATH_DATA;
+	    return _cairo_error (CAIRO_STATUS_INVALID_PATH_DATA);
 	}
 
 	status = cairo_status (cr);

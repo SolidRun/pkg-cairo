@@ -51,7 +51,8 @@ libcairo_xlib_sources = cairo-xlib-surface.c \
 			cairo-xlib-surface-private.h \
 			cairo-xlib-display.c \
 			cairo-xlib-screen.c \
-			cairo-xlib-private.h
+			cairo-xlib-private.h \
+			cairo-xlib-xrender-private.h
 backend_pkgconfigs += cairo-xlib.pc
 endif
 
@@ -80,7 +81,7 @@ endif
 libcairo_win32_sources =
 if CAIRO_HAS_WIN32_SURFACE
 libcairo_win32_headers = cairo-win32.h
-libcairo_win32_sources += cairo-win32-surface.c cairo-win32-private.h
+libcairo_win32_sources += cairo-win32-surface.c cairo-win32-printing-surface.c cairo-win32-private.h
 backend_pkgconfigs += cairo-win32.pc
 endif
 # This is not really a separate conditional.  Is TRUE iff the previous one is.
@@ -164,20 +165,22 @@ nodist_cairoinclude_HEADERS =		\
 
 lib_LTLIBRARIES = libcairo.la
 
-libcairo_la_SOURCES =				\
+libcairo_la_base_sources =			\
 	cairo.c					\
 	cairo.h					\
 	cairo-private.h				\
 	cairo-arc.c				\
 	cairo-arc-private.h			\
 	cairo-array.c				\
+	cairo-atomic.c				\
+	cairo-atomic-private.h			\
 	cairo-base85-stream.c			\
 	cairo-bentley-ottmann.c			\
 	cairo-cache.c				\
-	cairo-cache-private.h			\
 	cairo-clip.c				\
 	cairo-clip-private.h			\
 	cairo-color.c				\
+	cairo-compiler-private.h		\
 	cairo-debug.c				\
 	cairo-fixed.c				\
 	cairo-font-face.c			\
@@ -194,7 +197,6 @@ libcairo_la_SOURCES =				\
 	cairo-malloc-private.h			\
 	cairo-matrix.c				\
 	cairo-mutex.c				\
-	cairo-mutex-list-private.h		\
 	cairo-mutex-private.h			\
 	cairo-mutex-type-private.h		\
 	cairo-operator.c			\
@@ -208,7 +210,9 @@ libcairo_la_SOURCES =				\
 	cairo-pen.c				\
 	cairo-polygon.c				\
 	cairo-rectangle.c			\
+	cairo-reference-count-private.h		\
 	cairo-region.c				\
+	cairo-region-private.h			\
 	cairo-scaled-font.c			\
 	cairo-scaled-font-private.h		\
 	cairo-skiplist.c			\
@@ -221,7 +225,6 @@ libcairo_la_SOURCES =				\
 	cairo-surface-fallback-private.h	\
 	cairo-surface-private.h			\
 	cairo-traps.c				\
-	cairo-types-private.h			\
 	cairo-pattern.c				\
 	cairo-unicode.c				\
 	cairo-output-stream.c			\
@@ -252,13 +255,26 @@ libcairo_la_SOURCES =				\
 	$(libcairo_directfb_sources)		\
 	cairoint.h
 
+# source files that cannot be passed to compiler directly.
+# mostly when they depend recursively on cairoint.h.  that is,
+# cairoint.h includes them in the middle.
+libcairo_la_special_sources =			\
+	cairo-cache-private.h			\
+	cairo-fixed-private.h			\
+	cairo-mutex-list-private.h		\
+	cairo-types-private.h
+
+libcairo_la_SOURCES =				\
+	$(libcairo_la_base_sources)		\
+	$(libcairo_la_special_sources)
+
 libcairo_la_LDFLAGS = -version-info @VERSION_INFO@ -no-undefined $(export_symbols)
 
-INCLUDES = -I$(srcdir) -I$(top_srcdir)/pixman/src $(CAIRO_CFLAGS)
+libcairo_la_CFLAGS = -I$(srcdir) $(CAIRO_CFLAGS)
 
-libcairo_la_LIBADD = $(top_builddir)/pixman/src/libpixman.la $(CAIRO_LIBS) $(noinst_LTLIBRARIES) $(CAIRO_LDADD)
+libcairo_la_LIBADD = $(CAIRO_LIBS) $(noinst_LTLIBRARIES) $(CAIRO_LDADD)
 
-libcairo_la_DEPENDENCIES = $(cairo_def_dependency) $(top_builddir)/pixman/src/libpixman.la $(noinst_LTLIBRARIES)
+libcairo_la_DEPENDENCIES = $(cairo_def_dependency) $(noinst_LTLIBRARIES)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = cairo.pc $(backend_pkgconfigs)
@@ -301,3 +317,18 @@ install-data-local:
 TESTS_ENVIRONMENT = srcdir="$(srcdir)"
 TESTS = check-def.sh check-plt.sh check-headers.sh check-cairoint.sh
 EXTRA_DIST += $(TESTS)
+
+SPARSE = sparse
+sparse:
+	@status=true; for f in $(libcairo_la_base_sources); do \
+		echo sparse $$f; \
+		$(SPARSE) -I$(top_builddir) $(libcairo_la_CFLAGS) -DHAVE_CONFIG_H $$f || status=false; \
+	done; $$status
+
+SPLINT = splint -badflag
+splint:
+	@status=true; for f in $(libcairo_la_base_sources); do \
+		test "$$f" = "`echo "$$f" | sed 's/[.]h$$//'`" || continue; \
+		echo sparse $$f; \
+		$(SPLINT) -I$(top_builddir) $(libcairo_la_CFLAGS) -DHAVE_CONFIG_H $$f || status=false; \
+	done; $$status

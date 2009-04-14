@@ -64,10 +64,12 @@ host_triplet = @host@
 @CAIRO_HAS_TEST_SURFACES_TRUE@	cairo-boilerplate-test-surfaces-private.h
 @CAIRO_HAS_WIN32_SURFACE_TRUE@am__append_13 =  \
 @CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32.c \
+@CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32-printing.c \
 @CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32-private.h
-@CAIRO_HAS_XCB_SURFACE_TRUE@am__append_14 = cairo-boilerplate-xcb.c \
+@CAIRO_HAS_WIN32_SURFACE_TRUE@am__append_14 = -lwinspool
+@CAIRO_HAS_XCB_SURFACE_TRUE@am__append_15 = cairo-boilerplate-xcb.c \
 @CAIRO_HAS_XCB_SURFACE_TRUE@	cairo-boilerplate-xcb-private.h
-@CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__append_15 =  \
+@CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__append_16 =  \
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@	cairo-boilerplate-xlib.c \
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@	cairo-boilerplate-xlib.h \
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@	cairo-boilerplate-xlib-private.h
@@ -89,7 +91,7 @@ am__DEPENDENCIES_1 =
 libcairoboilerplate_la_DEPENDENCIES = $(top_builddir)/src/libcairo.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
-	$(am__DEPENDENCIES_5)
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
 am__libcairoboilerplate_la_SOURCES_DIST = cairo-boilerplate.c \
 	cairo-boilerplate.h cairo-boilerplate-scaled-font.h xmalloc.c \
 	xmalloc.h cairo-boilerplate-beos.cpp \
@@ -103,10 +105,10 @@ am__libcairoboilerplate_la_SOURCES_DIST = cairo-boilerplate.c \
 	cairo-boilerplate-svg.h cairo-boilerplate-svg-private.h \
 	cairo-boilerplate-test-surfaces.c \
 	cairo-boilerplate-test-surfaces-private.h \
-	cairo-boilerplate-win32.c cairo-boilerplate-win32-private.h \
-	cairo-boilerplate-xcb.c cairo-boilerplate-xcb-private.h \
-	cairo-boilerplate-xlib.c cairo-boilerplate-xlib.h \
-	cairo-boilerplate-xlib-private.h
+	cairo-boilerplate-win32.c cairo-boilerplate-win32-printing.c \
+	cairo-boilerplate-win32-private.h cairo-boilerplate-xcb.c \
+	cairo-boilerplate-xcb-private.h cairo-boilerplate-xlib.c \
+	cairo-boilerplate-xlib.h cairo-boilerplate-xlib-private.h
 @CAIRO_HAS_BEOS_SURFACE_TRUE@am__objects_1 = libcairoboilerplate_la-cairo-boilerplate-beos.lo
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__objects_2 = cairo-boilerplate-directfb.lo
 @CAIRO_HAS_GLITZ_SURFACE_TRUE@am__objects_3 =  \
@@ -118,7 +120,8 @@ am__libcairoboilerplate_la_SOURCES_DIST = cairo-boilerplate.c \
 @CAIRO_HAS_SVG_SURFACE_TRUE@am__objects_7 = cairo-boilerplate-svg.lo
 @CAIRO_HAS_TEST_SURFACES_TRUE@am__objects_8 = cairo-boilerplate-test-surfaces.lo
 @CAIRO_HAS_WIN32_SURFACE_TRUE@am__objects_9 =  \
-@CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32.lo
+@CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32.lo \
+@CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32-printing.lo
 @CAIRO_HAS_XCB_SURFACE_TRUE@am__objects_10 = cairo-boilerplate-xcb.lo
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__objects_11 = cairo-boilerplate-xlib.lo
 am_libcairoboilerplate_la_OBJECTS = cairo-boilerplate.lo xmalloc.lo \
@@ -172,6 +175,8 @@ CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_FALSE
 CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE = @CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE@
 CAIRO_CAN_TEST_PDF_SURFACE_FALSE = @CAIRO_CAN_TEST_PDF_SURFACE_FALSE@
 CAIRO_CAN_TEST_PDF_SURFACE_TRUE = @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@
+CAIRO_CAN_TEST_PS_SURFACE_FALSE = @CAIRO_CAN_TEST_PS_SURFACE_FALSE@
+CAIRO_CAN_TEST_PS_SURFACE_TRUE = @CAIRO_CAN_TEST_PS_SURFACE_TRUE@
 CAIRO_CAN_TEST_SVG_SURFACE_FALSE = @CAIRO_CAN_TEST_SVG_SURFACE_FALSE@
 CAIRO_CAN_TEST_SVG_SURFACE_TRUE = @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
@@ -185,6 +190,8 @@ CAIRO_HAS_FT_FONT_FALSE = @CAIRO_HAS_FT_FONT_FALSE@
 CAIRO_HAS_FT_FONT_TRUE = @CAIRO_HAS_FT_FONT_TRUE@
 CAIRO_HAS_GLITZ_SURFACE_FALSE = @CAIRO_HAS_GLITZ_SURFACE_FALSE@
 CAIRO_HAS_GLITZ_SURFACE_TRUE = @CAIRO_HAS_GLITZ_SURFACE_TRUE@
+CAIRO_HAS_LCOV_FALSE = @CAIRO_HAS_LCOV_FALSE@
+CAIRO_HAS_LCOV_TRUE = @CAIRO_HAS_LCOV_TRUE@
 CAIRO_HAS_MULTI_PAGE_SURFACES_FALSE = @CAIRO_HAS_MULTI_PAGE_SURFACES_FALSE@
 CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE = @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@
 CAIRO_HAS_OS2_SURFACE_FALSE = @CAIRO_HAS_OS2_SURFACE_FALSE@
@@ -259,6 +266,7 @@ GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
 GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
 GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
 GREP = @GREP@
+GS = @GS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_PTHREAD_FALSE = @HAVE_PTHREAD_FALSE@
@@ -291,8 +299,6 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
-PIXMAN_LDADD = @PIXMAN_LDADD@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
@@ -303,8 +309,6 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
-USE_MMX_FALSE = @USE_MMX_FALSE@
-USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 XARGS = @XARGS@
@@ -357,6 +361,8 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pixman_CFLAGS = @pixman_CFLAGS@
+pixman_LIBS = @pixman_LIBS@
 png_CFLAGS = @png_CFLAGS@
 png_LIBS = @png_LIBS@
 png_REQUIRES = @png_REQUIRES@
@@ -379,10 +385,10 @@ libcairoboilerplate_la_SOURCES = cairo-boilerplate.c \
 	xmalloc.h $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
 	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_15)
+	$(am__append_15) $(am__append_16)
 libcairoboilerplate_la_LIBADD = $(top_builddir)/src/libcairo.la \
 	$(CAIRO_LDADD) $(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7)
+	$(am__append_7) $(am__append_14)
 # BeOS system headers trigger this warning
 @CAIRO_HAS_BEOS_SURFACE_TRUE@libcairoboilerplate_la_CXXFLAGS = -Wno-multichar
 
@@ -450,6 +456,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate-quartz.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate-svg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate-test-surfaces.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate-win32-printing.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate-xcb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-boilerplate-xlib.Plo@am__quote@
@@ -681,6 +688,8 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-info-am
 
+
+check test: libcairoboilerplate.la
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

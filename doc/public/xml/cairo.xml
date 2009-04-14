@@ -1758,7 +1758,11 @@ outside.
 Emits the current page for backends that support multiple pages, but
 doesn't clear it, so, the contents of the current page will be retained
 for the next page too.  Use <link linkend="cairo-show-page"><function>cairo_show_page()</function></link> if you want to get an
-empty page after the emission.</para>
+empty page after the emission.
+</para>
+<para>
+This is a convenience function that simply calls
+<link linkend="cairo-surface-copy-page"><function>cairo_surface_copy_page()</function></link> on <parameter>cr</parameter>'s target.</para>
 <para>
 
 </para><variablelist role="params">
@@ -1771,7 +1775,11 @@ empty page after the emission.</para>
 <indexterm><primary>cairo_show_page</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_show_page                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Emits and clears the current page for backends that support multiple
-pages.  Use <link linkend="cairo-copy-page"><function>cairo_copy_page()</function></link> if you don't want to clear the page.</para>
+pages.  Use <link linkend="cairo-copy-page"><function>cairo_copy_page()</function></link> if you don't want to clear the page.
+</para>
+<para>
+This is a convenience function that simply calls
+<link linkend="cairo-surface-show-page"><function>cairo_surface_show_page()</function></link> on <parameter>cr</parameter>'s target.</para>
 <para>
 
 </para><variablelist role="params">

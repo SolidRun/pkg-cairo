@@ -42,7 +42,7 @@ _cairo_pen_vertices_needed (double tolerance, double radius, cairo_matrix_t *mat
 static void
 _cairo_pen_compute_slopes (cairo_pen_t *pen);
 
-static cairo_status_t
+static void
 _cairo_pen_stroke_spline_half (cairo_pen_t *pen, cairo_spline_t *spline, cairo_direction_t dir, cairo_polygon_t *polygon);
 
 void
@@ -78,10 +78,10 @@ _cairo_pen_init (cairo_pen_t	*pen,
 						    radius,
 						    ctm);
 
-    pen->vertices = _cairo_malloc_ab (pen->num_vertices, sizeof (cairo_pen_vertex_t));
-    if (pen->vertices == NULL) {
-	return CAIRO_STATUS_NO_MEMORY;
-    }
+    pen->vertices = _cairo_malloc_ab (pen->num_vertices,
+	                              sizeof (cairo_pen_vertex_t));
+    if (pen->vertices == NULL)
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
     /*
      * Compute pen coordinates.  To generate the right ellipse, compute points around
@@ -119,10 +119,11 @@ _cairo_pen_init_copy (cairo_pen_t *pen, cairo_pen_t *other)
     *pen = *other;
 
     if (pen->num_vertices) {
-	pen->vertices = _cairo_malloc_ab (pen->num_vertices, sizeof (cairo_pen_vertex_t));
-	if (pen->vertices == NULL) {
-	    return CAIRO_STATUS_NO_MEMORY;
-	}
+	pen->vertices = _cairo_malloc_ab (pen->num_vertices,
+	       	                          sizeof (cairo_pen_vertex_t));
+	if (pen->vertices == NULL)
+	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+
 	memcpy (pen->vertices, other->vertices, pen->num_vertices * sizeof (cairo_pen_vertex_t));
     }
 
@@ -139,9 +140,9 @@ _cairo_pen_add_points (cairo_pen_t *pen, cairo_point_t *point, int num_points)
 
     num_vertices = pen->num_vertices + num_points;
     vertices = _cairo_realloc_ab (pen->vertices,
-				  num_vertices, sizeof (cairo_pen_vertex_t));
+	                          num_vertices, sizeof (cairo_pen_vertex_t));
     if (vertices == NULL)
-	return CAIRO_STATUS_NO_MEMORY;
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
     pen->vertices = vertices;
     pen->num_vertices = num_vertices;
@@ -309,7 +310,7 @@ _cairo_pen_compute_slopes (cairo_pen_t *pen)
  * counterclockwise order. However, for this function, we care
  * strongly about which vertex is returned.
  */
-cairo_status_t
+void
 _cairo_pen_find_active_cw_vertex_index (cairo_pen_t *pen,
 					cairo_slope_t *slope,
 					int *active)
@@ -331,8 +332,6 @@ _cairo_pen_find_active_cw_vertex_index (cairo_pen_t *pen,
 	i = 0;
 
     *active = i;
-
-    return CAIRO_STATUS_SUCCESS;
 }
 
 /* Find active pen vertex for counterclockwise edge of stroke at the given slope.
@@ -340,7 +339,7 @@ _cairo_pen_find_active_cw_vertex_index (cairo_pen_t *pen,
  * NOTE: The behavior of this function is sensitive to the sense of
  * the inequality within _cairo_slope_clockwise/_cairo_slope_counter_clockwise.
  */
-cairo_status_t
+void
 _cairo_pen_find_active_ccw_vertex_index (cairo_pen_t *pen,
 					 cairo_slope_t *slope,
 					 int *active)
@@ -367,18 +366,15 @@ _cairo_pen_find_active_ccw_vertex_index (cairo_pen_t *pen,
 	i = pen->num_vertices - 1;
 
     *active = i;
-
-    return CAIRO_STATUS_SUCCESS;
 }
 
-static cairo_status_t
+static void
 _cairo_pen_stroke_spline_half (cairo_pen_t *pen,
 			       cairo_spline_t *spline,
 			       cairo_direction_t dir,
 			       cairo_polygon_t *polygon)
 {
     int i;
-    cairo_status_t status;
     int start, stop, step;
     int active = 0;
     cairo_point_t hull_point;
@@ -404,11 +400,9 @@ _cairo_pen_stroke_spline_half (cairo_pen_t *pen,
 	final_slope.dy = -final_slope.dy;
     }
 
-    status = _cairo_pen_find_active_cw_vertex_index (pen,
-	                                             &initial_slope,
-						     &active);
-    if (status)
-	return status;
+    _cairo_pen_find_active_cw_vertex_index (pen,
+	                                    &initial_slope,
+					    &active);
 
     i = start;
     while (i != stop) {
@@ -431,8 +425,6 @@ _cairo_pen_stroke_spline_half (cairo_pen_t *pen,
 	    i += step;
 	}
     }
-
-    return CAIRO_STATUS_SUCCESS;
 }
 
 /* Compute outline of a given spline using the pen.
@@ -458,13 +450,9 @@ _cairo_pen_stroke_spline (cairo_pen_t		*pen,
     if (status)
 	goto BAIL;
 
-    status = _cairo_pen_stroke_spline_half (pen, spline, CAIRO_DIRECTION_FORWARD, &polygon);
-    if (status)
-	goto BAIL;
+    _cairo_pen_stroke_spline_half (pen, spline, CAIRO_DIRECTION_FORWARD, &polygon);
 
-    status = _cairo_pen_stroke_spline_half (pen, spline, CAIRO_DIRECTION_REVERSE, &polygon);
-    if (status)
-	goto BAIL;
+    _cairo_pen_stroke_spline_half (pen, spline, CAIRO_DIRECTION_REVERSE, &polygon);
 
     _cairo_polygon_close (&polygon);
     status = _cairo_polygon_status (&polygon);
