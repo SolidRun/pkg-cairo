@@ -101,13 +101,12 @@ typedef struct _pixman_radial_gradient_image {
     int			   stopRange;
     uint32_t		   *colorTable;
     int			   colorTableSize;
-    double		   fx;
-    double		   fy;
-    double		   dx;
-    double		   dy;
-    double		   a;
-    double		   m;
-    double		   b;
+    pixman_circle_t	   c1;
+    pixman_circle_t	   c2;
+    double		   cdx;
+    double		   cdy;
+    double		   dr;
+    double		   A;
 } pixman_radial_gradient_image_t;
 
 typedef struct _pixman_conical_gradient_image {
@@ -243,7 +242,7 @@ FbComputeCompositeRegion (pixman_region16_t	*region,
 			  uint16_t	width,
 			  uint16_t	height);
 
-int
+pixman_private int
 miIsSolidAlpha (pixman_image_t *src);
 
 /*

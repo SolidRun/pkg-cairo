@@ -45,7 +45,6 @@ pixman_image_create (pixman_format_t	*format,
 
     return image;
 }
-slim_hidden_def(pixman_image_create);
 
 pixman_image_t *
 pixman_image_create_for_data (FbBits *data, pixman_format_t *format, int width, int height, int bpp, int stride)
@@ -248,7 +247,6 @@ pixman_image_create_radial_gradient (const pixman_radial_gradient_t *gradient,
 {
     pixman_radial_gradient_image_t *radial;
     pixman_image_t		   *image;
-    double			   x;
 
     if (n_stops < 2)
 	return NULL;
@@ -271,19 +269,14 @@ pixman_image_create_radial_gradient (const pixman_radial_gradient_t *gradient,
     memcpy (radial->stops, stops, sizeof (pixman_gradient_stop_t) * n_stops);
 
     radial->type = SourcePictTypeRadial;
-    x = (double) gradient->inner.radius / (double) gradient->outer.radius;
-    radial->dx = (gradient->outer.x - gradient->inner.x);
-    radial->dy = (gradient->outer.y - gradient->inner.y);
-    radial->fx = (gradient->inner.x) - x * radial->dx;
-    radial->fy = (gradient->inner.y) - x * radial->dy;
-    radial->m = 1. / (1 + x);
-    radial->b = -x * radial->m;
-    radial->dx /= 65536.;
-    radial->dy /= 65536.;
-    radial->fx /= 65536.;
-    radial->fy /= 65536.;
-    x = gradient->outer.radius / 65536.;
-    radial->a = x * x - radial->dx * radial->dx - radial->dy * radial->dy;
+    radial->c1 = gradient->c1;
+    radial->c2 = gradient->c2;
+    radial->cdx = xFixedToDouble (gradient->c2.x - gradient->c1.x);
+    radial->cdy = xFixedToDouble (gradient->c2.y - gradient->c1.y);
+    radial->dr = xFixedToDouble (gradient->c2.radius - gradient->c1.radius);
+    radial->A = (  radial->cdx * radial->cdx
+		 + radial->cdy * radial->cdy
+		 - radial->dr  * radial->dr);
 
     image->pSourcePict = (pixman_source_image_t *) radial;
 
@@ -369,7 +362,6 @@ pixman_image_set_component_alpha (pixman_image_t	*image,
     if (image)
 	image->componentAlpha = component_alpha;
 }
-slim_hidden_def(pixman_image_set_component_alpha);
 
 int
 pixman_image_set_transform (pixman_image_t		*image,
@@ -412,7 +404,6 @@ pixman_image_set_repeat (pixman_image_t		*image,
     if (image)
 	image->repeat = repeat;
 }
-slim_hidden_def(pixman_image_set_repeat);
 
 void
 pixman_image_set_filter (pixman_image_t	*image,
@@ -505,7 +496,6 @@ pixman_image_destroy (pixman_image_t *image)
 
     free (image);
 }
-slim_hidden_def(pixman_image_destroy);
 
 void
 pixman_image_destroyClip (pixman_image_t *image)

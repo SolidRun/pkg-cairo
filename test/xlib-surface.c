@@ -38,7 +38,6 @@
 #define OFFSCREEN_OFFSET 50
 
 cairo_bool_t result = 0;
-FILE *log_file = NULL;
 
 static void
 draw_pattern (cairo_surface_t *surface)
@@ -74,7 +73,7 @@ erase_pattern (cairo_surface_t *surface)
     cairo_destroy (cr);
 }
 
-static cairo_bool_t
+static cairo_test_status_t
 do_test (Display        *dpy,
 	 unsigned char  *reference_data,
 	 unsigned char  *test_data,
@@ -87,12 +86,12 @@ do_test (Display        *dpy,
     cairo_surface_t *surface;
     cairo_surface_t *test_surface;
     cairo_t *test_cr;
-    cairo_bool_t result;
+    buffer_diff_result_t result;
     Drawable drawable;
     int screen = DefaultScreen (dpy);
 
     if (use_pixmap && offscreen)
-	return 1;
+	return CAIRO_TEST_SUCCESS;
 
     if (use_pixmap) {
 	drawable = XCreatePixmap (dpy, DefaultRootWindow (dpy),
@@ -129,7 +128,7 @@ do_test (Display        *dpy,
 
 	if (cairo_xlib_surface_get_width (surface) != SIZE ||
 	    cairo_xlib_surface_get_height (surface) != SIZE)
-	    return 0;
+	    return CAIRO_TEST_FAILURE;
     }
 
     draw_pattern (surface);
@@ -160,35 +159,36 @@ do_test (Display        *dpy,
     if (offscreen) {
 	size_t offset = 4 * (SIZE * OFFSCREEN_OFFSET + OFFSCREEN_OFFSET);
 
-	result = !buffer_diff_noalpha (reference_data + offset,
-				       test_data + offset,
-				       diff_data + offset,
-				       SIZE - OFFSCREEN_OFFSET,
-				       SIZE - OFFSCREEN_OFFSET,
-				       4 * SIZE,
-				       4 * SIZE,
-				       4 * SIZE);
+	buffer_diff_noalpha (reference_data + offset,
+			     test_data + offset,
+			     diff_data + offset,
+			     SIZE - OFFSCREEN_OFFSET,
+			     SIZE - OFFSCREEN_OFFSET,
+			     4 * SIZE,
+			     &result);
     } else {
-	result = !buffer_diff_noalpha (reference_data,
-				       test_data,
-				       diff_data,
-				       SIZE,
-				       SIZE,
-				       4 * SIZE,
-				       4 * SIZE,
-				       4 * SIZE);
+	buffer_diff_noalpha (reference_data,
+			     test_data,
+			     diff_data,
+			     SIZE,
+			     SIZE,
+			     4 * SIZE,
+			     &result);
     }
 
-    fprintf (log_file, "xlib-surface: %s, %s, %s%s: %s\n",
-	     use_render ? "   render" : "no-render",
-	     set_size ? "   size" : "no-size",
-	     use_pixmap ? "pixmap" : "window",
-	     use_pixmap ?
-	     "           " :
-	     (offscreen ? ", offscreen" : ",  onscreen"),
-	     result ? "PASS" : "FAIL");
+    cairo_test_log ("xlib-surface: %s, %s, %s%s: %s\n",
+		    use_render ? "   render" : "no-render",
+		    set_size ? "   size" : "no-size",
+		    use_pixmap ? "pixmap" : "window",
+		    use_pixmap ?
+		    "           " :
+		    (offscreen ? ", offscreen" : ",  onscreen"),
+		    result.pixels_changed ? "FAIL" : "PASS");
 
-    return result;
+    if (result.pixels_changed)
+	return CAIRO_TEST_FAILURE;
+    else
+	return CAIRO_TEST_SUCCESS;
 }
 
 static cairo_bool_t
@@ -218,25 +218,20 @@ main (void)
     cairo_bool_t use_pixmap;
     cairo_bool_t set_size;
     cairo_bool_t offscreen;
-    result = 0;
+    cairo_test_status_t status, result = CAIRO_TEST_SUCCESS;
 
     cairo_test_init ("xlib-surface");
-    log_file = fopen ("xlib-surface.log", "w");
-    if (log_file == NULL) {
-	fprintf (stderr, "Error opening log file: %s\n", "xlib-surface.log");
-	log_file = stderr;
-    }
 
     dpy = XOpenDisplay (NULL);
     if (!dpy) {
-	fprintf (log_file, "xlib-surface: Cannot open display, skipping\n");
-	fclose (log_file);
+	cairo_test_log ("xlib-surface: Cannot open display, skipping\n");
+	cairo_test_fini ();
 	return 0;
     }
 
     if (!check_visual (dpy)) {
-	fprintf (log_file, "xlib-surface: default visual is not RGB24 or BGR24, skipping\n");
-	fclose (log_file);
+	cairo_test_log ("xlib-surface: default visual is not RGB24 or BGR24, skipping\n");
+	cairo_test_fini ();
 	return 0;
     }
 
@@ -254,21 +249,25 @@ main (void)
 
     for (set_size = 0; set_size <= 1; set_size++)
 	for (use_pixmap = 0; use_pixmap <= 1; use_pixmap++)
-	    for (offscreen = 0; offscreen <= 1; offscreen++)
-		if (!do_test (dpy,
-			      reference_data, test_data, diff_data,
-			      1, use_pixmap, set_size, offscreen))
-		    result = 1;
+	    for (offscreen = 0; offscreen <= 1; offscreen++) {
+		status = do_test (dpy,
+				  reference_data, test_data, diff_data,
+				  1, use_pixmap, set_size, offscreen);
+		if (status)
+		    result = status;
+	    }
 
     _cairo_xlib_test_disable_render ();
 
     for (set_size = 0; set_size <= 1; set_size++)
 	for (use_pixmap = 0; use_pixmap <= 1; use_pixmap++)
-	    for (offscreen = 0; offscreen <= 1; offscreen++)
-		if (!do_test (dpy,
-			      reference_data, test_data, diff_data,
-			      0, use_pixmap, set_size, offscreen))
-		    result = 1;
+	    for (offscreen = 0; offscreen <= 1; offscreen++) {
+		status = do_test (dpy,
+				  reference_data, test_data, diff_data,
+				  0, use_pixmap, set_size, offscreen);
+		if (status)
+		    result = status;
+	    }
 
     free (reference_data);
     free (test_data);
@@ -278,7 +277,7 @@ main (void)
 
     cairo_debug_reset_static_data ();
 
-    fclose (log_file);
+    cairo_test_fini ();
 
     return result;
 }

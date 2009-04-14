@@ -60,7 +60,7 @@ _cairo_output_stream_init (cairo_output_stream_t            *stream,
 			   cairo_output_stream_write_func_t  write_func,
 			   cairo_output_stream_close_func_t  close_func);
 
-cairo_private void
+cairo_private cairo_status_t
 _cairo_output_stream_fini (cairo_output_stream_t *stream);
 
 
@@ -86,10 +86,16 @@ _cairo_output_stream_create (cairo_write_func_t		write_func,
 			     cairo_close_func_t		close_func,
 			     void			*closure);
 
-cairo_private void
+/* Returns the final status value associated with this object, just
+ * before its last gasp. This final status value will capture any
+ * status failure returned by the stream's close_func as well. */
+cairo_private cairo_status_t
 _cairo_output_stream_close (cairo_output_stream_t *stream);
 
-cairo_private void
+/* Returns the final status value associated with this object, just
+ * before its last gasp. This final status value will capture any
+ * status failure returned by the stream's close_func as well. */
+cairo_private cairo_status_t
 _cairo_output_stream_destroy (cairo_output_stream_t *stream);
 
 cairo_private void
@@ -152,5 +158,9 @@ _cairo_memory_stream_length (cairo_output_stream_t *stream);
 /* cairo_base85_stream.c */
 cairo_private cairo_output_stream_t *
 _cairo_base85_stream_create (cairo_output_stream_t *output);
+
+/* cairo_deflate_stream.c */
+cairo_private cairo_output_stream_t *
+_cairo_deflate_stream_create (cairo_output_stream_t *output);
 
 #endif /* CAIRO_OUTPUT_STREAM_PRIVATE_H */

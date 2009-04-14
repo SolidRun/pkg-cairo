@@ -33,8 +33,6 @@
 #include <string.h>
 #include <limits.h>
 
-#include "slim_internal.h"
-
 #ifndef __GNUC__
 #define __inline
 #endif
@@ -806,15 +804,15 @@ fbRasterizeTrapezoid (pixman_image_t		*pMask,
    in libgcc in case a target does not have one, which should be just as
    good as the static function below.  */
 #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)
-# if __INT_MIN__ == 0x7fffffff
-#  define _FbOnes(mask)		__builtin_popcount(mask)
-# else
-#  define _FbOnes(mask)		__builtin_popcountl((mask) & 0xffffffff)
-# endif
+static INLINE int
+_FbOnes(unsigned int mask)
+{
+	return __builtin_popcount(mask);
+}
 #else
 # define ICINT_NEED_IC_ONES
-int
-_FbOnes(unsigned long mask);
+pixman_private int
+_FbOnes(unsigned int mask);
 #endif
 
 /* icformat.c */
@@ -851,17 +849,6 @@ FbPixelsDestroy (FbPixels *pixels);
 pixman_private int
 pixman_transform_point (pixman_transform_t	*transform,
 		  pixman_vector_t	*vector);
-
-/* Avoid unnessecary PLT entries.  */
-
-slim_hidden_proto(pixman_image_create)
-slim_hidden_proto(pixman_color_to_pixel)
-slim_hidden_proto(pixman_format_init)
-slim_hidden_proto(pixman_image_destroy)
-slim_hidden_proto(pixman_fill_rectangles)
-slim_hidden_proto(pixman_image_set_component_alpha)
-slim_hidden_proto(pixman_image_set_repeat)
-slim_hidden_proto(pixman_composite)
 
 #include "icrop.h"
 
@@ -998,7 +985,7 @@ typedef struct _PictFormat	*PictFormatPtr;
 #define PictureCmapPolicyColor	    3
 #define PictureCmapPolicyAll	    4
 
-extern int PictureCmapPolicy pixman_private;
+extern pixman_private int PictureCmapPolicy;
 
 int	PictureParseCmapPolicy (const char *name);
 
@@ -1039,6 +1026,7 @@ typedef	xFixed_16_16	xFixed;
 #define IntToxFixed(i)	((xFixed) (i) << XFIXED_BITS)
 #define xFixedE		((xFixed) 1)
 #define xFixed1		(IntToxFixed(1))
+#define xFixedToDouble(f) (double) ((f) / (double) xFixed1)
 #define xFixed1MinusE	(xFixed1 - xFixedE)
 #define xFixedFrac(f)	((f) & xFixed1MinusE)
 #define xFixedFloor(f)	((f) & ~xFixed1MinusE)

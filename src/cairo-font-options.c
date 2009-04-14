@@ -47,7 +47,7 @@ static const cairo_font_options_t cairo_font_options_nil = {
  * _cairo_font_options_init_default:
  * @options: a #cairo_font_options_t
  *
- * Initializes all fileds of the font options object to default values.
+ * Initializes all fields of the font options object to default values.
  **/
 void
 _cairo_font_options_init_default (cairo_font_options_t *options)
@@ -95,6 +95,7 @@ cairo_font_options_create (void)
 
     return options;
 }
+slim_hidden_def (cairo_font_options_create);
 
 /**
  * cairo_font_options_copy:
@@ -137,6 +138,7 @@ cairo_font_options_destroy (cairo_font_options_t *options)
 
     free (options);
 }
+slim_hidden_def (cairo_font_options_destroy);
 
 /**
  * cairo_font_options_status:
@@ -182,6 +184,7 @@ cairo_font_options_merge (cairo_font_options_t       *options,
     if (other->hint_metrics != CAIRO_HINT_METRICS_DEFAULT)
 	options->hint_metrics = other->hint_metrics;
 }
+slim_hidden_def (cairo_font_options_merge);
 
 /**
  * cairo_font_options_equal:
@@ -201,6 +204,7 @@ cairo_font_options_equal (const cairo_font_options_t *options,
 	    options->hint_style == other->hint_style &&
 	    options->hint_metrics == other->hint_metrics);
 }
+slim_hidden_def (cairo_font_options_equal);
 
 /**
  * cairo_font_options_hash:
@@ -222,13 +226,14 @@ cairo_font_options_hash (const cairo_font_options_t *options)
 	    (options->hint_style << 8) |
 	    (options->hint_metrics << 16));
 }
+slim_hidden_def (cairo_font_options_hash);
 
 /**
  * cairo_font_options_set_antialias:
  * @options: a #cairo_font_options_t
  * @antialias: the new antialiasing mode
  *
- * Sets the antiliasing mode for the font options object. This
+ * Sets the antialiasing mode for the font options object. This
  * specifies the type of antialiasing to do when rendering text.
  **/
 void
@@ -240,12 +245,13 @@ cairo_font_options_set_antialias (cairo_font_options_t *options,
 
     options->antialias = antialias;
 }
+slim_hidden_def (cairo_font_options_set_antialias);
 
 /**
  * cairo_font_options_get_antialias:
  * @options: a #cairo_font_options_t
  *
- * Gets the antialising mode for the font options object.
+ * Gets the antialiasing mode for the font options object.
  *
  * Return value: the antialiasing mode
  **/
@@ -275,6 +281,7 @@ cairo_font_options_set_subpixel_order (cairo_font_options_t   *options,
 
     options->subpixel_order = subpixel_order;
 }
+slim_hidden_def (cairo_font_options_set_subpixel_order);
 
 /**
  * cairo_font_options_get_subpixel_order:
@@ -310,6 +317,7 @@ cairo_font_options_set_hint_style (cairo_font_options_t *options,
 
     options->hint_style = hint_style;
 }
+slim_hidden_def (cairo_font_options_set_hint_style);
 
 /**
  * cairo_font_options_get_hint_style:
@@ -345,6 +353,7 @@ cairo_font_options_set_hint_metrics (cairo_font_options_t *options,
 
     options->hint_metrics = hint_metrics;
 }
+slim_hidden_def (cairo_font_options_set_hint_metrics);
 
 /**
  * cairo_font_options_get_hint_metrics:

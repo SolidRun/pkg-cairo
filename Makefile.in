@@ -42,14 +42,13 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-
 # libpng is required for our test programs
-@CAIRO_HAS_PNG_FUNCTIONS_TRUE@am__append_1 = test
+@CAIRO_HAS_PNG_FUNCTIONS_TRUE@am__append_1 = boilerplate test
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/ChangeLog.mk \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/config.h.in $(top_srcdir)/configure AUTHORS COPYING \
-	ChangeLog INSTALL NEWS TODO compile config.guess config.sub \
-	depcomp install-sh ltmain.sh missing
+	INSTALL NEWS TODO compile config.guess config.sub depcomp \
+	install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -116,6 +115,8 @@ CAIRO_HAS_GLITZ_SURFACE_FALSE = @CAIRO_HAS_GLITZ_SURFACE_FALSE@
 CAIRO_HAS_GLITZ_SURFACE_TRUE = @CAIRO_HAS_GLITZ_SURFACE_TRUE@
 CAIRO_HAS_MULTI_PAGE_SURFACES_FALSE = @CAIRO_HAS_MULTI_PAGE_SURFACES_FALSE@
 CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE = @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@
+CAIRO_HAS_OS2_SURFACE_FALSE = @CAIRO_HAS_OS2_SURFACE_FALSE@
+CAIRO_HAS_OS2_SURFACE_TRUE = @CAIRO_HAS_OS2_SURFACE_TRUE@
 CAIRO_HAS_PDF_SURFACE_FALSE = @CAIRO_HAS_PDF_SURFACE_FALSE@
 CAIRO_HAS_PDF_SURFACE_TRUE = @CAIRO_HAS_PDF_SURFACE_TRUE@
 CAIRO_HAS_PNG_FUNCTIONS_FALSE = @CAIRO_HAS_PNG_FUNCTIONS_FALSE@
@@ -157,6 +158,8 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_SOME_FLOATING_POINT_FALSE = @DISABLE_SOME_FLOATING_POINT_FALSE@
+DISABLE_SOME_FLOATING_POINT_TRUE = @DISABLE_SOME_FLOATING_POINT_TRUE@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -201,12 +204,11 @@ LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
-MAINT = @MAINT@
-MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
-MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 MMX_CFLAGS = @MMX_CFLAGS@
 OBJEXT = @OBJEXT@
+OS_WIN32_FALSE = @OS_WIN32_FALSE@
+OS_WIN32_TRUE = @OS_WIN32_TRUE@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -292,7 +294,7 @@ xlib_CFLAGS = @xlib_CFLAGS@
 xlib_LIBS = @xlib_LIBS@
 xlib_xrender_CFLAGS = @xlib_xrender_CFLAGS@
 xlib_xrender_LIBS = @xlib_xrender_LIBS@
-DIST_SUBDIRS = pixman src test doc
+DIST_SUBDIRS = pixman src boilerplate test perf doc
 SUBDIRS = pixman src doc $(am__append_1)
 EXTRA_DIST = \
 	BUGS \
@@ -305,7 +307,8 @@ EXTRA_DIST = \
 	ROADMAP \
 	TODO
 
-DISTCLEANFILES = config.cache $(srcdir)/ChangeLog.cache-*
+DISTCLEANFILES = config.cache $(srcdir)/ChangeLog.cache-* \
+	ChangeLog.cache-*
 MAINTAINERCLEANFILES = $(srcdir)/aclocal.m4 $(srcdir)/autoscan.log \
 	$(srcdir)/compile $(srcdir)/config.guess $(srcdir)/config.h.in \
 	$(srcdir)/config.sub $(srcdir)/configure.scan \
@@ -313,7 +316,7 @@ MAINTAINERCLEANFILES = $(srcdir)/aclocal.m4 $(srcdir)/autoscan.log \
 	$(srcdir)/missing $(srcdir)/mkinstalldirs `find "$(srcdir)" \
 	-type f -name Makefile.in -print` $(srcdir)/ChangeLog \
 	$(srcdir)/ChangeLog.pre-*
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-test-surfaces
 CURR_CHANGELOG_VERSION = $(CAIRO_VERSION_MAJOR).$$(echo "($(CAIRO_VERSION_MINOR)+1)/2*2" | bc)
 # examines $version
 PREV_CHANGELOG_VERSION = $$(if test "x$$(echo "($$version-0.1)*2/2"|bc)" = "x$$(echo "$$version*2/2"|bc)"; \
@@ -356,7 +359,7 @@ all: config.h
 .SUFFIXES:
 am--refresh:
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/ChangeLog.mk $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/ChangeLog.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -383,9 +386,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
 
-$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+$(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(srcdir) && $(AUTOCONF)
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.h: stamp-h1
@@ -397,7 +400,7 @@ config.h: stamp-h1
 stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
 	@rm -f stamp-h1
 	cd $(top_builddir) && $(SHELL) ./config.status config.h
-$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
+$(srcdir)/config.h.in:  $(am__configure_deps) 
 	cd $(top_srcdir) && $(AUTOHEADER)
 	rm -f stamp-h1
 	touch $@
@@ -792,7 +795,9 @@ uninstall-info: uninstall-info-recursive
 
 
 .PHONY: doc test retest recheck check-valgrind
-doc:
+# We have some generated header files, so we really need to build the
+# library before we can build the docs
+doc: all
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) doc
 test: all
 	cd test && $(MAKE) $(AM_MAKEFLAGS) test
@@ -802,6 +807,8 @@ recheck: all
 	cd test && $(MAKE) $(AM_MAKEFLAGS) recheck
 check-valgrind: all
 	cd test && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
+perf: all
+	cd perf && $(MAKE) $(AM_MAKEFLAGS) perf
 
 changelogs:
 	@$(MAKE) $(AM_MAKEFLAGS) $(CHANGELOGS)
@@ -817,7 +824,7 @@ $(srcdir)/ChangeLog:
 	@if test -d "$(srcdir)/.git"; then \
 		version=$(CURR_CHANGELOG_VERSION); \
 		prev=$(PREV_CHANGELOG_VERSION).0; \
-		nearest_tag=`git-describe | sed 's/-[^-]*//'`; \
+		nearest_tag=`git-describe | sed 's/-.*//'`; \
 		before=$(srcdir)/ChangeLog.cache-$$prev..$$nearest_tag; \
 		after=$(srcdir)/ChangeLog.cache-$$nearest_tag..; \
 		$(MAKE) $(AM_MAKEFLAGS) $$before $$after && \
@@ -851,12 +858,9 @@ $(srcdir)/ChangeLog.cache-% $(srcdir)/ChangeLog.pre-%:
 	  ./missing --run git-log --stat "$$spec") > $@.tmp \
 	  && mv -f $@.tmp $@ \
 	  || ($(RM) $@.tmp; \
-	      echo Failed to generate $@, your $@ may be outdated >&2; \
-	      (test -f $@ || echo git-log is required to generate this file >> $@)); \
+	      echo Failed to generate $@, your $@ may be outdated >&2); \
 	else \
-	  test -f $@ || \
-	  (echo A git checkout is required to generate $@ >&2 && \
-	  echo A git checkout is required to generate this file >> $@); \
+	  echo A git checkout is required to generate $@ >&2; \
 	fi
 
 .PHONY: changelogs ChangeLog $(srcdir)/ChangeLog
@@ -879,6 +883,14 @@ $(developer_zip_file): install
 	zip -r $@ include/cairo lib/libcairo.dll.a lib/cairo.lib lib/pkgconfig/cairo.pc lib/pkgconfig/cairo-*.pc share/gtk-doc/html/cairo
 
 zips: $(runtime_zip_file) $(developer_zip_file)
+
+release-verify-sane-changelogs: changelogs
+	@echo -n "Checking that the ChangeLog files are sane..."
+	@if grep -q "is required to generate" $(CHANGELOGS); then \
+		(echo "Ouch." && echo "Some of the ChangeLogs are not generated correctly." \
+		&& echo "Remove ChangeLog* and make changelogs" \
+		&& false); else :; fi
+	@echo "Good."
 
 release-verify-soname-major:
 	@echo -n "Checking that the cairo soname major number is 2..."
@@ -915,22 +927,18 @@ release-remove-old:
 release-cleanup-group-sticky:
 	find . -type f | xargs chmod g-s
 
-release-check: release-verify-soname-major release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky distcheck
+release-check: release-verify-sane-changelogs release-verify-soname-major release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky distcheck
 
 release-upload: release-check $(tar_file) $(sha1_file) $(gpg_file)
 	mkdir -p releases
 	scp $(tar_file) $(sha1_file) $(gpg_file) $(RELEASE_UPLOAD_HOST):$(RELEASE_UPLOAD_DIR)
 	mv $(tar_file) $(sha1_file) $(gpg_file) releases
 	ssh $(RELEASE_UPLOAD_HOST) "rm -f $(RELEASE_UPLOAD_DIR)/LATEST-$(PACKAGE)-[0-9]* && ln -s $(tar_file) $(RELEASE_UPLOAD_DIR)/LATEST-$(PACKAGE)-$(VERSION)"
-	git tag -s $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO)
+	git-tag -s  -m "cairo $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO) release" $(CAIRO_VERSION_MAJOR).$(CAIRO_VERSION_MINOR).$(CAIRO_VERSION_MICRO)
 
 release-publish-message: releases/$(sha1_file)
-	@echo "Pleas push the new tag with a command such as:"
-	@echo ""
-	@echo "	git push master $(VERSION)"
-	@echo ""
-	@echo "Please send an announcement to $(RELEASE_ANNOUNCE_LIST)"
-	@echo "including the following:"
+	@echo "Please follow the instructions in RELEASING to push stuff out and"
+	@echo "send out the announcement mails.  Here is the excerpt you need:"
 	@echo ""
 	@echo "Subject: $(PACKAGE) $(RELEASE_OR_SNAPSHOT) $(VERSION) now available"
 	@echo ""
@@ -947,6 +955,7 @@ release-publish-message: releases/$(sha1_file)
 	@echo ""
 	@echo "	$(RELEASE_URL_BASE)/$(gpg_file)"
 	@echo "	(signed by `getent passwd "$$USER" | cut -d: -f 5 | cut -d, -f 1`)"
+	@echo ""
 	@echo "  Additionally, a git clone of the source tree:"
 	@echo ""
 	@echo "	git clone git://git.cairographics.org/git/cairo"
@@ -961,19 +970,10 @@ release-publish-message: releases/$(sha1_file)
 	@echo "	git checkout -b build $(VERSION)"
 	@echo ""
 	@echo "============================== CUT HERE =============================="
-	@echo "Also, please add the new entries from the NEWS file as well as the detailed"
-	@echo "change log sent to the cairo-announce list when the tag is pushed."
-	@echo ""
-	@echo "The same NEWS entries should be posted on the cairographics.org wiki as well."
-	@echo ""
-	@echo "Last but not least, do not forget to bump up the micro"
-	@echo "version component to the next (odd) number and commit."
 
 release-publish: release-upload release-publish-message
 
-# XXX: Depending on all here is rather overkill. We don't really need
-# the library built in order to create the documentation.
-docs-publish: all
+doc-publish: doc
 	cp -a doc/public/html $(MANUAL_DATED)
 	tar czf $(MANUAL_TAR_FILE) $(MANUAL_DATED)
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
