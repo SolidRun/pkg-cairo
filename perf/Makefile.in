@@ -55,7 +55,8 @@ am__cairo_perf_SOURCES_DIST = cairo-perf.c cairo-perf.h \
 	paint-with-alpha.c pattern_create_radial.c rectangles.c \
 	stroke.c subimage_copy.c tessellate.c unaligned-clip.c text.c \
 	world-map.c world-map.h zrusin.c zrusin-another.h \
-	cairo-perf-win32.c cairo-perf-os2.c cairo-perf-posix.c
+	long-dashed-lines.c cairo-perf-win32.c cairo-perf-os2.c \
+	cairo-perf-posix.c
 @CAIRO_HAS_WIN32_SURFACE_TRUE@am__objects_1 =  \
 @CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-perf-win32.$(OBJEXT)
 @CAIRO_HAS_OS2_SURFACE_TRUE@@CAIRO_HAS_WIN32_SURFACE_FALSE@am__objects_2 = cairo-perf-os2.$(OBJEXT)
@@ -67,20 +68,21 @@ am_cairo_perf_OBJECTS = cairo-perf.$(OBJEXT) \
 	pattern_create_radial.$(OBJEXT) rectangles.$(OBJEXT) \
 	stroke.$(OBJEXT) subimage_copy.$(OBJEXT) tessellate.$(OBJEXT) \
 	unaligned-clip.$(OBJEXT) text.$(OBJEXT) world-map.$(OBJEXT) \
-	zrusin.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	zrusin.$(OBJEXT) long-dashed-lines.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
 cairo_perf_OBJECTS = $(am_cairo_perf_OBJECTS)
 cairo_perf_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
 cairo_perf_DEPENDENCIES =  \
 	$(top_builddir)/boilerplate/libcairoboilerplate.la \
-	$(top_builddir)/src/libcairo.la
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_1)
 am_cairo_perf_diff_files_OBJECTS = cairo-perf-diff-files.$(OBJEXT) \
 	cairo-stats.$(OBJEXT)
 cairo_perf_diff_files_OBJECTS = $(am_cairo_perf_diff_files_OBJECTS)
 cairo_perf_diff_files_LDADD = $(LDADD)
 cairo_perf_diff_files_DEPENDENCIES =  \
 	$(top_builddir)/boilerplate/libcairoboilerplate.la \
-	$(top_builddir)/src/libcairo.la
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -108,6 +110,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+CAIROPERF_LIBS = @CAIROPERF_LIBS@
 CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_FALSE@
 CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE = @CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE@
 CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_FALSE@
@@ -337,15 +340,16 @@ cairo_perf_SOURCES = cairo-perf.c cairo-perf.h cairo-perf-cover.c \
 	mosaic.c mosaic.h paint.c paint-with-alpha.c \
 	pattern_create_radial.c rectangles.c stroke.c subimage_copy.c \
 	tessellate.c unaligned-clip.c text.c world-map.c world-map.h \
-	zrusin.c zrusin-another.h $(am__append_1) $(am__append_2) \
-	$(am__append_3)
+	zrusin.c zrusin-another.h long-dashed-lines.c $(am__append_1) \
+	$(am__append_2) $(am__append_3)
 cairo_perf_diff_files_SOURCES = \
 	cairo-perf-diff-files.c \
 	cairo-stats.c		\
 	cairo-stats.h
 
 LDADD = $(top_builddir)/boilerplate/libcairoboilerplate.la \
-	$(top_builddir)/src/libcairo.la
+	$(top_builddir)/src/libcairo.la \
+	$(CAIROPERF_LIBS)
 
 
 # Do a funny transition of CAIRO_TEST_TARGET through TARGETS such that
@@ -428,6 +432,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-stats.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fill.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/long-dashed-lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/long-lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mosaic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint-with-alpha.Po@am__quote@
