@@ -38,21 +38,36 @@ cairo_matrix_t
     
 </para>
 
-<!-- ##### TYPEDEF cairo_matrix_t ##### -->
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT cairo_matrix_t ##### -->
 <para>
 
 </para>
 
+@xx: 
+@yx: 
+@xy: 
+@yy: 
+@x0: 
+@y0: 
 
-<!-- ##### FUNCTION cairo_matrix_create ##### -->
+<!-- ##### FUNCTION cairo_matrix_init ##### -->
 <para>
 
 </para>
 
-@Returns: 
+@matrix: 
+@xx: 
+@yx: 
+@xy: 
+@yy: 
+@x0: 
+@y0: 
 
 
-<!-- ##### FUNCTION cairo_matrix_destroy ##### -->
+<!-- ##### FUNCTION cairo_matrix_init_identity ##### -->
 <para>
 
 </para>
@@ -60,55 +75,33 @@ cairo_matrix_t
 @matrix: 
 
 
-<!-- ##### FUNCTION cairo_matrix_copy ##### -->
+<!-- ##### FUNCTION cairo_matrix_init_translate ##### -->
 <para>
 
 </para>
 
 @matrix: 
-@other: 
-@Returns: 
-
-
-<!-- ##### FUNCTION cairo_matrix_set_identity ##### -->
-<para>
-
-</para>
-
-@matrix: 
-@Returns: 
-
-
-<!-- ##### FUNCTION cairo_matrix_set_affine ##### -->
-<para>
-
-</para>
-
-@matrix: 
-@a: 
-@b: 
-@c: 
-@d: 
 @tx: 
 @ty: 
-@Returns: 
-<!-- # Unused Parameters # -->
-@cr: 
 
 
-<!-- ##### FUNCTION cairo_matrix_get_affine ##### -->
+<!-- ##### FUNCTION cairo_matrix_init_scale ##### -->
 <para>
 
 </para>
 
 @matrix: 
-@a: 
-@b: 
-@c: 
-@d: 
-@tx: 
-@ty: 
-@Returns: 
+@sx: 
+@sy: 
+
+
+<!-- ##### FUNCTION cairo_matrix_init_rotate ##### -->
+<para>
+
+</para>
+
+@matrix: 
+@radians: 
 
 
 <!-- ##### FUNCTION cairo_matrix_translate ##### -->
@@ -119,7 +112,6 @@ cairo_matrix_t
 @matrix: 
 @tx: 
 @ty: 
-@Returns: 
 
 
 <!-- ##### FUNCTION cairo_matrix_scale ##### -->
@@ -130,7 +122,6 @@ cairo_matrix_t
 @matrix: 
 @sx: 
 @sy: 
-@Returns: 
 
 
 <!-- ##### FUNCTION cairo_matrix_rotate ##### -->
@@ -140,7 +131,6 @@ cairo_matrix_t
 
 @matrix: 
 @radians: 
-@Returns: 
 
 
 <!-- ##### FUNCTION cairo_matrix_invert ##### -->
@@ -160,7 +150,6 @@ cairo_matrix_t
 @result: 
 @a: 
 @b: 
-@Returns: 
 
 
 <!-- ##### FUNCTION cairo_matrix_transform_distance ##### -->
@@ -171,23 +160,15 @@ cairo_matrix_t
 @matrix: 
 @dx: 
 @dy: 
-@Returns: 
 
 
 <!-- ##### FUNCTION cairo_matrix_transform_point ##### -->
 <para>
+
 </para>
 
 @matrix: 
 @x: 
 @y: 
-@Returns: 
-
-<!--
-Local variables:
-mode: sgml
-sgml-parent-document: ("../cairo-docs.xml" "book" "refsect2" "")
-End:
--->
 
 

@@ -39,8 +39,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@CAIRO_HAS_WIN32_SURFACE_TRUE@am__append_1 = cairo_win32_surface.c cairo-win32-private.h
-@CAIRO_HAS_WIN32_FONT_TRUE@am__append_2 = cairo_win32_font.c
+@CAIRO_HAS_WIN32_SURFACE_TRUE@am__append_1 = cairo-win32-surface.c cairo-win32-private.h
+@CAIRO_HAS_WIN32_FONT_TRUE@am__append_2 = cairo-win32-font.c
 subdir = src
 DIST_COMMON = $(am__cairoinclude_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/cairo-features.h.in
@@ -63,39 +63,43 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libcairo_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo_array.c \
-	cairo_cache.c cairo_color.c cairo_fixed.c cairo_font.c \
-	cairo_gstate.c cairo_hull.c cairo_image_surface.c \
-	cairo_matrix.c cairo_path.c cairo_path_bounds.c \
-	cairo_path_fill.c cairo_path_stroke.c cairo_pen.c \
-	cairo_polygon.c cairo_slope.c cairo_spline.c cairo_surface.c \
-	cairo_traps.c cairo_pattern.c cairo_unicode.c cairo_wideint.c \
-	cairo-wideint.h cairo_atsui_font.c cairo_ft_font.c \
-	cairo-ft-private.h cairo_ps_surface.c cairo_pdf_surface.c \
-	cairo_png_surface.c cairo_xlib_surface.c \
-	cairo_quartz_surface.c cairo_xcb_surface.c \
-	cairo_glitz_surface.c cairo_win32_surface.c \
-	cairo-win32-private.h cairo_win32_font.c cairoint.h
-@CAIRO_HAS_ATSUI_FONT_TRUE@am__objects_1 = cairo_atsui_font.lo
-@CAIRO_HAS_FT_FONT_TRUE@am__objects_2 = cairo_ft_font.lo
-@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_3 = cairo_ps_surface.lo
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_4 = cairo_pdf_surface.lo
-@CAIRO_HAS_PNG_SURFACE_TRUE@am__objects_5 = cairo_png_surface.lo
-@CAIRO_HAS_XLIB_SURFACE_TRUE@am__objects_6 = cairo_xlib_surface.lo
+am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
+	cairo-arc.c cairo-arc-private.h cairo-array.c cairo-cache.c \
+	cairo-color.c cairo-fixed.c cairo-font.c cairo-gstate.c \
+	cairo-gstate-private.h cairo-hull.c cairo-image-surface.c \
+	cairo-matrix.c cairo-path.c cairo-path-bounds.c \
+	cairo-path-data.c cairo-path-data-private.h cairo-path-fill.c \
+	cairo-path-fixed-private.h cairo-path-stroke.c cairo-pen.c \
+	cairo-polygon.c cairo-slope.c cairo-spline.c cairo-surface.c \
+	cairo-traps.c cairo-pattern.c cairo-unicode.c \
+	cairo-output-stream.c cairo-wideint.c cairo-wideint.h \
+	cairo-atsui-font.c cairo-ft-font.c cairo-ft-private.h \
+	cairo-ps-surface.c cairo-pdf-surface.c cairo-png.c \
+	cairo-xlib-surface.c cairo-xlib-test.h cairo-quartz-surface.c \
+	cairo-xcb-surface.c cairo-glitz-surface.c \
+	cairo-win32-surface.c cairo-win32-private.h cairo-win32-font.c \
+	cairoint.h
+@CAIRO_HAS_ATSUI_FONT_TRUE@am__objects_1 = cairo-atsui-font.lo
+@CAIRO_HAS_FT_FONT_TRUE@am__objects_2 = cairo-ft-font.lo
+@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_3 = cairo-ps-surface.lo
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_4 = cairo-pdf-surface.lo
+@CAIRO_HAS_PNG_FUNCTIONS_TRUE@am__objects_5 = cairo-png.lo
+@CAIRO_HAS_XLIB_SURFACE_TRUE@am__objects_6 = cairo-xlib-surface.lo
 @CAIRO_HAS_QUARTZ_SURFACE_TRUE@am__objects_7 =  \
-@CAIRO_HAS_QUARTZ_SURFACE_TRUE@	cairo_quartz_surface.lo
-@CAIRO_HAS_XCB_SURFACE_TRUE@am__objects_8 = cairo_xcb_surface.lo
-@CAIRO_HAS_GLITZ_SURFACE_TRUE@am__objects_9 = cairo_glitz_surface.lo
-@CAIRO_HAS_WIN32_SURFACE_TRUE@am__objects_10 = cairo_win32_surface.lo
-@CAIRO_HAS_WIN32_FONT_TRUE@am__objects_11 = cairo_win32_font.lo
+@CAIRO_HAS_QUARTZ_SURFACE_TRUE@	cairo-quartz-surface.lo
+@CAIRO_HAS_XCB_SURFACE_TRUE@am__objects_8 = cairo-xcb-surface.lo
+@CAIRO_HAS_GLITZ_SURFACE_TRUE@am__objects_9 = cairo-glitz-surface.lo
+@CAIRO_HAS_WIN32_SURFACE_TRUE@am__objects_10 = cairo-win32-surface.lo
+@CAIRO_HAS_WIN32_FONT_TRUE@am__objects_11 = cairo-win32-font.lo
 am__objects_12 = $(am__objects_10) $(am__objects_11)
-am_libcairo_la_OBJECTS = cairo.lo cairo_array.lo cairo_cache.lo \
-	cairo_color.lo cairo_fixed.lo cairo_font.lo cairo_gstate.lo \
-	cairo_hull.lo cairo_image_surface.lo cairo_matrix.lo \
-	cairo_path.lo cairo_path_bounds.lo cairo_path_fill.lo \
-	cairo_path_stroke.lo cairo_pen.lo cairo_polygon.lo \
-	cairo_slope.lo cairo_spline.lo cairo_surface.lo cairo_traps.lo \
-	cairo_pattern.lo cairo_unicode.lo cairo_wideint.lo \
+am_libcairo_la_OBJECTS = cairo.lo cairo-arc.lo cairo-array.lo \
+	cairo-cache.lo cairo-color.lo cairo-fixed.lo cairo-font.lo \
+	cairo-gstate.lo cairo-hull.lo cairo-image-surface.lo \
+	cairo-matrix.lo cairo-path.lo cairo-path-bounds.lo \
+	cairo-path-data.lo cairo-path-fill.lo cairo-path-stroke.lo \
+	cairo-pen.lo cairo-polygon.lo cairo-slope.lo cairo-spline.lo \
+	cairo-surface.lo cairo-traps.lo cairo-pattern.lo \
+	cairo-unicode.lo cairo-output-stream.lo cairo-wideint.lo \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
 	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
@@ -115,8 +119,9 @@ LINK = $(LIBTOOL) --mode=link --tag=CC $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 SOURCES = $(libcairo_la_SOURCES)
 DIST_SOURCES = $(am__libcairo_la_SOURCES_DIST)
 am__cairoinclude_HEADERS_DIST = cairo.h cairo-features.h cairo-atsui.h \
-	cairo-ft.h cairo-glitz.h cairo-pdf.h cairo-png.h cairo-ps.h \
-	cairo-quartz.h cairo-win32.h cairo-xcb.h cairo-xlib.h
+	cairo-ft.h cairo-glitz.h cairo-pdf.h cairo-ps.h cairo-quartz.h \
+	cairo-win32.h cairo-xcb.h cairo-xcb-xrender.h cairo-xlib.h \
+	cairo-xlib-xrender.h
 cairoincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(cairoinclude_HEADERS)
 ETAGS = etags
@@ -141,8 +146,8 @@ CAIRO_HAS_GLITZ_SURFACE_FALSE = @CAIRO_HAS_GLITZ_SURFACE_FALSE@
 CAIRO_HAS_GLITZ_SURFACE_TRUE = @CAIRO_HAS_GLITZ_SURFACE_TRUE@
 CAIRO_HAS_PDF_SURFACE_FALSE = @CAIRO_HAS_PDF_SURFACE_FALSE@
 CAIRO_HAS_PDF_SURFACE_TRUE = @CAIRO_HAS_PDF_SURFACE_TRUE@
-CAIRO_HAS_PNG_SURFACE_FALSE = @CAIRO_HAS_PNG_SURFACE_FALSE@
-CAIRO_HAS_PNG_SURFACE_TRUE = @CAIRO_HAS_PNG_SURFACE_TRUE@
+CAIRO_HAS_PNG_FUNCTIONS_FALSE = @CAIRO_HAS_PNG_FUNCTIONS_FALSE@
+CAIRO_HAS_PNG_FUNCTIONS_TRUE = @CAIRO_HAS_PNG_FUNCTIONS_TRUE@
 CAIRO_HAS_PS_SURFACE_FALSE = @CAIRO_HAS_PS_SURFACE_FALSE@
 CAIRO_HAS_PS_SURFACE_TRUE = @CAIRO_HAS_PS_SURFACE_TRUE@
 CAIRO_HAS_QUARTZ_SURFACE_FALSE = @CAIRO_HAS_QUARTZ_SURFACE_FALSE@
@@ -225,14 +230,13 @@ PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
 PIXMAN_LIBS = @PIXMAN_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 PNG_CFLAGS = @PNG_CFLAGS@
+PNG_FUNCTIONS_FEATURE = @PNG_FUNCTIONS_FEATURE@
 PNG_LIBS = @PNG_LIBS@
 PNG_REQUIRES = @PNG_REQUIRES@
-PNG_SURFACE_FEATURE = @PNG_SURFACE_FEATURE@
 PS_LIBS = @PS_LIBS@
 PS_SURFACE_FEATURE = @PS_SURFACE_FEATURE@
 QUARTZ_SURFACE_FEATURE = @QUARTZ_SURFACE_FEATURE@
 RANLIB = @RANLIB@
-SANITY_CHECKING_FEATURE = @SANITY_CHECKING_FEATURE@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -295,25 +299,24 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 @CAIRO_HAS_PS_SURFACE_TRUE@libcairo_ps_headers = cairo-ps.h
-@CAIRO_HAS_PS_SURFACE_TRUE@libcairo_ps_sources = cairo_ps_surface.c
+@CAIRO_HAS_PS_SURFACE_TRUE@libcairo_ps_sources = cairo-ps-surface.c
 @CAIRO_HAS_PDF_SURFACE_TRUE@libcairo_pdf_headers = cairo-pdf.h
-@CAIRO_HAS_PDF_SURFACE_TRUE@libcairo_pdf_sources = cairo_pdf_surface.c
-@CAIRO_HAS_PNG_SURFACE_TRUE@libcairo_png_headers = cairo-png.h
-@CAIRO_HAS_PNG_SURFACE_TRUE@libcairo_png_sources = cairo_png_surface.c
-@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_headers = cairo-xlib.h
-@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_sources = cairo_xlib_surface.c
+@CAIRO_HAS_PDF_SURFACE_TRUE@libcairo_pdf_sources = cairo-pdf-surface.c
+@CAIRO_HAS_PNG_FUNCTIONS_TRUE@libcairo_png_sources = cairo-png.c
+@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_headers = cairo-xlib.h cairo-xlib-xrender.h
+@CAIRO_HAS_XLIB_SURFACE_TRUE@libcairo_xlib_sources = cairo-xlib-surface.c cairo-xlib-test.h
 @CAIRO_HAS_QUARTZ_SURFACE_TRUE@libcairo_quartz_headers = cairo-quartz.h
-@CAIRO_HAS_QUARTZ_SURFACE_TRUE@libcairo_quartz_sources = cairo_quartz_surface.c
-@CAIRO_HAS_XCB_SURFACE_TRUE@libcairo_xcb_headers = cairo-xcb.h
-@CAIRO_HAS_XCB_SURFACE_TRUE@libcairo_xcb_sources = cairo_xcb_surface.c
+@CAIRO_HAS_QUARTZ_SURFACE_TRUE@libcairo_quartz_sources = cairo-quartz-surface.c
+@CAIRO_HAS_XCB_SURFACE_TRUE@libcairo_xcb_headers = cairo-xcb.h cairo-xcb-xrender.h
+@CAIRO_HAS_XCB_SURFACE_TRUE@libcairo_xcb_sources = cairo-xcb-surface.c
 libcairo_win32_sources = $(am__append_1) $(am__append_2)
 @CAIRO_HAS_WIN32_SURFACE_TRUE@libcairo_win32_headers = cairo-win32.h
 @CAIRO_HAS_GLITZ_SURFACE_TRUE@libcairo_glitz_headers = cairo-glitz.h
-@CAIRO_HAS_GLITZ_SURFACE_TRUE@libcairo_glitz_sources = cairo_glitz_surface.c
+@CAIRO_HAS_GLITZ_SURFACE_TRUE@libcairo_glitz_sources = cairo-glitz-surface.c
 @CAIRO_HAS_ATSUI_FONT_TRUE@libcairo_atsui_headers = cairo-atsui.h
-@CAIRO_HAS_ATSUI_FONT_TRUE@libcairo_atsui_sources = cairo_atsui_font.c
+@CAIRO_HAS_ATSUI_FONT_TRUE@libcairo_atsui_sources = cairo-atsui-font.c
 @CAIRO_HAS_FT_FONT_TRUE@libcairo_ft_headers = cairo-ft.h
-@CAIRO_HAS_FT_FONT_TRUE@libcairo_ft_sources = cairo_ft_font.c cairo-ft-private.h
+@CAIRO_HAS_FT_FONT_TRUE@libcairo_ft_sources = cairo-ft-font.c cairo-ft-private.h
 cairoincludedir = $(includedir)/cairo
 cairoinclude_HEADERS = \
 	cairo.h				\
@@ -322,7 +325,6 @@ cairoinclude_HEADERS = \
 	$(libcairo_ft_headers)		\
 	$(libcairo_glitz_headers)	\
 	$(libcairo_pdf_headers)		\
-	$(libcairo_png_headers)		\
 	$(libcairo_ps_headers)		\
 	$(libcairo_quartz_headers)	\
 	$(libcairo_win32_headers)	\
@@ -333,28 +335,36 @@ lib_LTLIBRARIES = libcairo.la
 libcairo_la_SOURCES = \
 	cairo.c			\
 	cairo.h			\
-	cairo_array.c		\
-	cairo_cache.c		\
-	cairo_color.c		\
-	cairo_fixed.c		\
-	cairo_font.c		\
-	cairo_gstate.c		\
-	cairo_hull.c		\
-	cairo_image_surface.c	\
-	cairo_matrix.c		\
-	cairo_path.c		\
-	cairo_path_bounds.c	\
-	cairo_path_fill.c	\
-	cairo_path_stroke.c	\
-	cairo_pen.c		\
-	cairo_polygon.c		\
-	cairo_slope.c		\
-	cairo_spline.c		\
-	cairo_surface.c		\
-	cairo_traps.c		\
-	cairo_pattern.c		\
-	cairo_unicode.c		\
-	cairo_wideint.c		\
+	cairo-private.h		\
+	cairo-arc.c		\
+	cairo-arc-private.h	\
+	cairo-array.c		\
+	cairo-cache.c		\
+	cairo-color.c		\
+	cairo-fixed.c		\
+	cairo-font.c		\
+	cairo-gstate.c		\
+	cairo-gstate-private.h	\
+	cairo-hull.c		\
+	cairo-image-surface.c	\
+	cairo-matrix.c		\
+	cairo-path.c		\
+	cairo-path-bounds.c	\
+	cairo-path-data.c	\
+	cairo-path-data-private.h \
+	cairo-path-fill.c	\
+	cairo-path-fixed-private.h \
+	cairo-path-stroke.c	\
+	cairo-pen.c		\
+	cairo-polygon.c		\
+	cairo-slope.c		\
+	cairo-spline.c		\
+	cairo-surface.c		\
+	cairo-traps.c		\
+	cairo-pattern.c		\
+	cairo-unicode.c		\
+	cairo-output-stream.c	\
+	cairo-wideint.c		\
 	cairo-wideint.h		\
 	$(libcairo_atsui_sources)\
 	$(libcairo_ft_sources)\
@@ -366,7 +376,6 @@ libcairo_la_SOURCES = \
 	$(libcairo_xcb_sources) \
 	$(libcairo_glitz_sources)\
 	$(libcairo_win32_sources)\
-	$(libcairo_freetype_sources)  \
 	cairoint.h
 
 libcairo_la_LDFLAGS = -version-info @VERSION_INFO@ -no-undefined
@@ -443,40 +452,43 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-arc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-array.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-atsui-font.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-cache.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-color.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-fixed.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-font.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-ft-font.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-glitz-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-gstate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-hull.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-image-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-matrix.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-output-stream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-path-bounds.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-path-data.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-path-fill.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-path-stroke.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-path.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pattern.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pdf-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-png.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-polygon.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-ps-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-quartz-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-slope.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-spline.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-traps.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-unicode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-wideint.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-win32-font.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-win32-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-xcb-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-xlib-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_array.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_atsui_font.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_cache.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_color.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_fixed.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_font.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_ft_font.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_glitz_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_gstate.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_hull.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_image_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_matrix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_path.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_path_bounds.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_path_fill.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_path_stroke.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_pattern.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_pdf_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_pen.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_png_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_polygon.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_ps_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_quartz_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_slope.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_spline.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_traps.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_unicode.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_wideint.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_win32_font.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_win32_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_xcb_surface.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_xlib_surface.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -700,7 +712,7 @@ uninstall-am: uninstall-cairoincludeHEADERS uninstall-info-am \
 
 
 install-data-local:
-	@if test -f $(includedir)/cairo.h || test -f $(includedir)/cairo-features.h ; then \
+	@if test -f "$(DESTDIR)$(includedir)/cairo.h" || test -f "$(DESTDIR)$(includedir)/cairo-features.h" ; then \
 	  echo "****************************************************************" ;	\
 	  echo "*** Error: Old headers found. You should remove the following" ;	\
 	  echo "***        files and then type 'make install' again." ;			\

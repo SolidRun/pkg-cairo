@@ -1,0 +1,419 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="cairo-Fonts">
+<refmeta>
+<refentrytitle>Fonts</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>CAIRO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Fonts</refname><refpurpose>Font Handling</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+typedef     <link linkend="cairo-font-face-t">cairo_font_face_t</link>;
+typedef     <link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link>;
+<link linkend="void">void</link>        <link linkend="cairo-font-face-reference">cairo_font_face_reference</link>       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
+<link linkend="void">void</link>        <link linkend="cairo-font-face-destroy">cairo_font_face_destroy</link>         (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);
+<link linkend="void">void</link>*       <link linkend="cairo-font-face-get-user-data">cairo_font_face_get_user_data</link>   (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-font-face-set-user-data">cairo_font_face_set_user_data</link>
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
+                                             <link linkend="void">void</link> *user_data,
+                                             <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);
+<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link>* <link linkend="cairo-scaled-font-create">cairo_scaled_font_create</link>
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *font_matrix,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *ctm);
+<link linkend="void">void</link>        <link linkend="cairo-scaled-font-reference">cairo_scaled_font_reference</link>     (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);
+<link linkend="void">void</link>        <link linkend="cairo-scaled-font-destroy">cairo_scaled_font_destroy</link>       (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);
+            <link linkend="cairo-font-extents-t">cairo_font_extents_t</link>;
+<link linkend="cairo-status-t">cairo_status_t</link> <link linkend="cairo-scaled-font-extents">cairo_scaled_font_extents</link>    (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font,
+                                             <link linkend="cairo-font-extents-t">cairo_font_extents_t</link> *extents);
+            <link linkend="cairo-text-extents-t">cairo_text_extents_t</link>;
+<link linkend="void">void</link>        <link linkend="cairo-scaled-font-glyph-extents">cairo_scaled_font_glyph_extents</link> (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font,
+                                             <link linkend="cairo-glyph-t">cairo_glyph_t</link> *glyphs,
+                                             <link linkend="int">int</link> num_glyphs,
+                                             <link linkend="cairo-text-extents-t">cairo_text_extents_t</link> *extents);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="cairo-font-face-t"/>cairo_font_face_t</title>
+<indexterm><primary>cairo_font_face_t</primary></indexterm><programlisting>typedef struct _cairo_font_face cairo_font_face_t;
+</programlisting>
+<para>
+A <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> specifies all aspects of a font other
+than the size or font matrix (a font matrix is used to distort
+a font by sheering it or scaling it unequally in the two
+directions) . A font face can be set on a <link linkend="cairo-t"><type>cairo_t</type></link> by using
+<link linkend="cairo-set-font-face"><function>cairo_set_font_face()</function></link>; the size and font matrix are set with
+<link linkend="cairo-set-font-size"><function>cairo_set_font_size()</function></link> and <link linkend="cairo-set-font-matrix"><function>cairo_set_font_matrix()</function></link>.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="cairo-scaled-font-t"/>cairo_scaled_font_t</title>
+<indexterm><primary>cairo_scaled_font_t</primary></indexterm><programlisting>typedef struct _cairo_scaled_font cairo_scaled_font_t;
+</programlisting>
+<para>
+A <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> is a font scaled to a particular size and device
+resolution. A cairo_scaled_font_t is most useful for low-level font
+usage where a library or application wants to cache a reference
+to a scaled font to speed up the computation of metrics.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-reference"/>cairo_font_face_reference ()</title>
+<indexterm><primary>cairo_font_face_reference</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_font_face_reference       (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<para>
+Increases the reference count on <parameter>font_face</parameter> by one. This prevents
+<parameter>font_face</parameter> from being destroyed until a matching call to
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> is made.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>font_face</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>, (may be NULL in which case this
+function does nothing).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-destroy"/>cairo_font_face_destroy ()</title>
+<indexterm><primary>cairo_font_face_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_font_face_destroy         (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face);</programlisting>
+<para>
+Decreases the reference count on <parameter>font_face</parameter> by one. If the result
+is zero, then <parameter>font_face</parameter> and all associated resources are freed.
+See <link linkend="cairo-font-face-reference"><function>cairo_font_face_reference()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>font_face</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-get-user-data"/>cairo_font_face_get_user_data ()</title>
+<indexterm><primary>cairo_font_face_get_user_data</primary></indexterm><programlisting><link linkend="void">void</link>*       cairo_font_face_get_user_data   (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);</programlisting>
+<para>
+Return user data previously attached to <parameter>font_face</parameter> using the specified
+key.  If no user data has been attached with the given key this
+function returns <literal>NULL</literal>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>font_face</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> the address of the <link linkend="cairo-user-data-key-t"><type>cairo_user_data_key_t</type></link> the user data was
+attached to
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the user data previously attached or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-font-face-set-user-data"/>cairo_font_face_set_user_data ()</title>
+<indexterm><primary>cairo_font_face_set_user_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_font_face_set_user_data
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
+                                             <link linkend="void">void</link> *user_data,
+                                             <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);</programlisting>
+<para>
+Attach user data to <parameter>font_face</parameter>.  To remove user data from a font face,
+call this function with the key that was used to set it and <literal>NULL</literal>
+for <parameter>data</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>font_face</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> the address of a <link linkend="cairo-user-data-key-t"><type>cairo_user_data_key_t</type></link> to attach the user data to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> the user data to attach to the font face
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-destroy-func-t"><type>cairo_destroy_func_t</type></link> which will be called when the
+font face is destroyed or when new user data is attached using the
+same key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>CAIRO_STATUS_SUCCESS</literal> or <literal>CAIRO_STATUS_NO_MEMORY</literal> if a
+slot could not be allocated for the user data.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-scaled-font-create"/>cairo_scaled_font_create ()</title>
+<indexterm><primary>cairo_scaled_font_create</primary></indexterm><programlisting><link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link>* cairo_scaled_font_create
+                                            (<link linkend="cairo-font-face-t">cairo_font_face_t</link> *font_face,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *font_matrix,
+                                             const <link linkend="cairo-matrix-t">cairo_matrix_t</link> *ctm);</programlisting>
+<para>
+Creates a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> object from a font face and matrices that
+describe the size of the font and the environment in which it will
+be used.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>font_face</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>font_matrix</parameter>&nbsp;:</term>
+<listitem><simpara> font space to user space transformation matrix for the
+      font. In the simplest case of a N point font, this matrix is
+      just a scale by N, but it can also be used to shear the font
+      or stretch it unequally along the two axes. See
+      <link linkend="cairo-set-font-matrix"><function>cairo_set_font_matrix()</function></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctm</parameter>&nbsp;:</term>
+<listitem><simpara> user to device transformation matrix with which the font will
+      be used.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly created <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link>. Destroy with
+ <link linkend="cairo-scaled-font-destroy"><function>cairo_scaled_font_destroy()</function></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-scaled-font-reference"/>cairo_scaled_font_reference ()</title>
+<indexterm><primary>cairo_scaled_font_reference</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_scaled_font_reference     (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);</programlisting>
+<para>
+Increases the reference count on <parameter>scaled_font</parameter> by one. This prevents
+<parameter>scaled_font</parameter> from being destroyed until a matching call to
+<link linkend="cairo-scaled-font-destroy"><function>cairo_scaled_font_destroy()</function></link> is made.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>scaled_font</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link>, (may be NULL in which case
+this function does nothing)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-scaled-font-destroy"/>cairo_scaled_font_destroy ()</title>
+<indexterm><primary>cairo_scaled_font_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_scaled_font_destroy       (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);</programlisting>
+<para>
+Decreases the reference count on <parameter>font</parameter> by one. If the result
+is zero, then <parameter>font</parameter> and all associated resources are freed.
+See <link linkend="cairo-scaled-font-reference"><function>cairo_scaled_font_reference()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>scaled_font</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-font-extents-t"/>cairo_font_extents_t</title>
+<indexterm><primary>cairo_font_extents_t</primary></indexterm><programlisting>typedef struct {
+    double ascent;
+    double descent;
+    double height;
+    double max_x_advance;
+    double max_y_advance;
+} cairo_font_extents_t;
+</programlisting>
+<para>
+The <link linkend="cairo-text-extents-t"><type>cairo_text_extents_t</type></link> structure stores metric information for
+a font. Values are given in the current user-space coordinate
+system.
+</para>
+<para>
+Because font metrics are in user-space coordinates, they are
+mostly, but not entirely, independent of the current transformation
+matrix. If you call <literal>cairo_scale(cr, 2.0, 2.0)</literal>,
+text will be drawn twice as big, but the reported text extents will
+not be doubled. They will change slightly due to hinting (so you
+can't assume that metrics are independent of the transformation
+matrix), but otherwise will remain unchanged.</para>
+<para>
+
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>ascent</structfield>;</term>
+<listitem><simpara> the distance that the font extends above the baseline.
+         Note that this is not always exactly equal to the maximum
+         of the extents of all the glyphs in the font, but rather
+         is picked to express the font designer's intent as to
+         how the font should align with elements above it.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>descent</structfield>;</term>
+<listitem><simpara> the distance that the font extends below the baseline.
+          This value is positive for typical fonts that include
+          portions below the baseline. Note that this is not always
+          exactly equal to the maximum of the extents of all the
+          glyphs in the font, but rather is picked to express the
+          font designer's intent as to how the the font should
+          align with elements below it.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>height</structfield>;</term>
+<listitem><simpara> the recommended vertical distance between baselines when
+         setting consecutive lines of text with the font. This
+         is greater than <parameter>ascent</parameter>+<parameter>descent</parameter> by a
+         quantity known as the <firstterm>line spacing</firstterm>
+         or <firstterm>external leading</firstterm>. When space
+         is at a premium, most fonts can be set with only
+         a distance of <parameter>ascent</parameter>+<parameter>descent</parameter> between lines.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>max_x_advance</structfield>;</term>
+<listitem><simpara> the maximum distance in the X direction that 
+        the the origin is advanced for any glyph in the font.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>max_y_advance</structfield>;</term>
+<listitem><simpara> the maximum distance in the Y direction that
+        the the origin is advanced for any glyph in the font.
+        this will be zero for normal fonts used for horizontal
+        writing. (The scripts of East Asia are sometimes written
+        vertically.)
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-scaled-font-extents"/>cairo_scaled_font_extents ()</title>
+<indexterm><primary>cairo_scaled_font_extents</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link> cairo_scaled_font_extents    (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font,
+                                             <link linkend="cairo-font-extents-t">cairo_font_extents_t</link> *extents);</programlisting>
+<para>
+Gets the metrics for a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>scaled_font</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>extents</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-font-extents-t"><type>cairo_font_extents_t</type></link> which to store the retrieved extents.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>CAIRO_STATUS_SUCCESS</literal> on success. Otherwise, an
+ error such as <literal>CAIRO_STATUS_NO_MEMORY</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-text-extents-t"/>cairo_text_extents_t</title>
+<indexterm><primary>cairo_text_extents_t</primary></indexterm><programlisting>typedef struct {
+    double x_bearing;
+    double y_bearing;
+    double width;
+    double height;
+    double x_advance;
+    double y_advance;
+} cairo_text_extents_t;
+</programlisting>
+<para>
+The <link linkend="cairo-text-extents-t"><type>cairo_text_extents_t</type></link> structure stores the extents of a single
+glyph or a string of glyphs in user-space coordinates. Because text
+extents are in user-space coordinates, they are mostly, but not
+entirely, independent of the current transformation matrix. If you call
+<literal>cairo_scale(cr, 2.0, 2.0)</literal>, text will
+be drawn twice as big, but the reported text extents will not be
+doubled. They will change slightly due to hinting (so you can't
+assume that metrics are independent of the transformation matrix),
+but otherwise will remain unchanged.</para>
+<para>
+
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>x_bearing</structfield>;</term>
+<listitem><simpara> the horizontal distance from the origin to the
+  leftmost part of the glyphs as drawn. Positive if the
+  glyphs lie entirely to the right of the origin.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>y_bearing</structfield>;</term>
+<listitem><simpara> the vertical distance from the origin to the
+  topmost part of the glyphs as drawn. Positive only if the
+  glyphs lie completely below the origin; will usually be
+  negative.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>width</structfield>;</term>
+<listitem><simpara> width of the glyphs as drawn
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>height</structfield>;</term>
+<listitem><simpara> height of the glyphs as drawn
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>x_advance</structfield>;</term>
+<listitem><simpara>distance to advance in the X direction
+   after drawing these glyphs
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link>&nbsp;<structfield>y_advance</structfield>;</term>
+<listitem><simpara> distance to advance in the Y direction
+  after drawing these glyphs. Will typically be zero except
+  for vertical text layout as found in East-Asian languages.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-scaled-font-glyph-extents"/>cairo_scaled_font_glyph_extents ()</title>
+<indexterm><primary>cairo_scaled_font_glyph_extents</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_scaled_font_glyph_extents (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font,
+                                             <link linkend="cairo-glyph-t">cairo_glyph_t</link> *glyphs,
+                                             <link linkend="int">int</link> num_glyphs,
+                                             <link linkend="cairo-text-extents-t">cairo_text_extents_t</link> *extents);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>scaled_font</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num_glyphs</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>extents</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

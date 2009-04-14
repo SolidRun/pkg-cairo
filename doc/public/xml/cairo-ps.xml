@@ -18,17 +18,17 @@
 
 
 
-<link linkend="void">void</link>        <link linkend="cairo-set-target-ps">cairo_set_target_ps</link>             (<link linkend="cairo-t">cairo_t</link> *cr,
-                                             <link linkend="FILE:CAPS">FILE</link> *file,
-                                             <link linkend="double">double</link> width_inches,
-                                             <link linkend="double">double</link> height_inches,
-                                             <link linkend="double">double</link> x_pixels_per_inch,
-                                             <link linkend="double">double</link> y_pixels_per_inch);
-<link linkend="cairo-surface-t">cairo_surface_t</link>* <link linkend="cairo-ps-surface-create">cairo_ps_surface_create</link>    (<link linkend="FILE:CAPS">FILE</link> *file,
-                                             <link linkend="double">double</link> width_inches,
-                                             <link linkend="double">double</link> height_inches,
-                                             <link linkend="double">double</link> x_pixels_per_inch,
-                                             <link linkend="double">double</link> y_pixels_per_inch);
+<link linkend="cairo-surface-t">cairo_surface_t</link>* <link linkend="cairo-ps-surface-create">cairo_ps_surface_create</link>    (const <link linkend="char">char</link> *filename,
+                                             <link linkend="double">double</link> width_in_points,
+                                             <link linkend="double">double</link> height_in_points);
+<link linkend="cairo-surface-t">cairo_surface_t</link>* <link linkend="cairo-ps-surface-create-for-stream">cairo_ps_surface_create_for_stream</link>
+                                            (<link linkend="cairo-write-func-t">cairo_write_func_t</link> write_func,
+                                             <link linkend="void">void</link> *closure,
+                                             <link linkend="double">double</link> width_in_points,
+                                             <link linkend="double">double</link> height_in_points);
+<link linkend="void">void</link>        <link linkend="cairo-ps-surface-set-dpi">cairo_ps_surface_set_dpi</link>        (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             <link linkend="double">double</link> x_dpi,
+                                             <link linkend="double">double</link> y_dpi);
 </synopsis>
 </refsynopsisdiv>
 
@@ -50,68 +50,70 @@
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="cairo-set-target-ps"/>cairo_set_target_ps ()</title>
-<indexterm><primary>cairo_set_target_ps</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_set_target_ps             (<link linkend="cairo-t">cairo_t</link> *cr,
-                                             <link linkend="FILE:CAPS">FILE</link> *file,
-                                             <link linkend="double">double</link> width_inches,
-                                             <link linkend="double">double</link> height_inches,
-                                             <link linkend="double">double</link> x_pixels_per_inch,
-                                             <link linkend="double">double</link> y_pixels_per_inch);</programlisting>
-<para>
-Directs output for a <link linkend="cairo-t"><type>cairo_t</type></link> to a postscript file. The file must
-be kept open until the <link linkend="cairo-t"><type>cairo_t</type></link> is destroyed or set to have a
-different target, and then must be closed by the application.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>file</parameter>&nbsp;:</term>
-<listitem><simpara> an open, writeable file
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width_inches</parameter>&nbsp;:</term>
-<listitem><simpara> width of the output page, in inches
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height_inches</parameter>&nbsp;:</term>
-<listitem><simpara> height of the output page, in inches
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x_pixels_per_inch</parameter>&nbsp;:</term>
-<listitem><simpara> X resolution to use for image fallbacks;
-  not all Cairo drawing can be represented in a postscript
-  file, so Cairo will write out images for some portions
-  of the output.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y_pixels_per_inch</parameter>&nbsp;:</term>
-<listitem><simpara> Y resolution to use for image fallbacks.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
 <title><anchor id="cairo-ps-surface-create"/>cairo_ps_surface_create ()</title>
-<indexterm><primary>cairo_ps_surface_create</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>* cairo_ps_surface_create    (<link linkend="FILE:CAPS">FILE</link> *file,
-                                             <link linkend="double">double</link> width_inches,
-                                             <link linkend="double">double</link> height_inches,
-                                             <link linkend="double">double</link> x_pixels_per_inch,
-                                             <link linkend="double">double</link> y_pixels_per_inch);</programlisting>
+<indexterm><primary>cairo_ps_surface_create</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>* cairo_ps_surface_create    (const <link linkend="char">char</link> *filename,
+                                             <link linkend="double">double</link> width_in_points,
+                                             <link linkend="double">double</link> height_in_points);</programlisting>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><parameter>file</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width_inches</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>width_in_points</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height_inches</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x_pixels_per_inch</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y_pixels_per_inch</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>height_in_points</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-ps-surface-create-for-stream"/>cairo_ps_surface_create_for_stream ()</title>
+<indexterm><primary>cairo_ps_surface_create_for_stream</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>* cairo_ps_surface_create_for_stream
+                                            (<link linkend="cairo-write-func-t">cairo_write_func_t</link> write_func,
+                                             <link linkend="void">void</link> *closure,
+                                             <link linkend="double">double</link> width_in_points,
+                                             <link linkend="double">double</link> height_in_points);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>write_func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width_in_points</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height_in_points</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-ps-surface-set-dpi"/>cairo_ps_surface_set_dpi ()</title>
+<indexterm><primary>cairo_ps_surface_set_dpi</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_ps_surface_set_dpi        (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                             <link linkend="double">double</link> x_dpi,
+                                             <link linkend="double">double</link> y_dpi);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x_dpi</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y_dpi</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
