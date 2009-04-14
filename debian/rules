@@ -74,8 +74,6 @@ version := $(shell dpkg-parsechangelog | \
 
 include /usr/share/dpatch/dpatch.make
 
-configure: configure-main
-
 configure-common-stamp: patch-stamp
 	dh_testdir
 
@@ -202,5 +200,5 @@ binary-arch: build install
 
 binary: binary-indep binary-arch
 
-.PHONY: build clean binary-indep binary-arch binary install configure \
+.PHONY: build clean binary-indep binary-arch binary install \
 	patch unpatch clean
