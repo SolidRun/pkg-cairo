@@ -84,9 +84,7 @@ include /usr/share/dpatch/dpatch.make
 configure-common-stamp: patch-stamp
 	dh_testdir
 	# handle timestamp skew; advice from autotools-dev README.Debian
-	touch configure.in && \
-	touch aclocal.m4 && \
-	touch configure
+	touch configure.in aclocal.m4 configure
 	touch $@
 
 configure-stamp-%: configure-common-stamp
