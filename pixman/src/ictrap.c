@@ -1,5 +1,5 @@
 /*
- * $Id: ictrap.c,v 1.27 2005/08/28 02:32:57 vektor Exp $
+ * $Id: ictrap.c,v 1.27 2005-08-28 02:32:57 vektor Exp $
  *
  * Copyright © 2002 Keith Packard
  *

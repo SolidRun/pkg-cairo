@@ -39,6 +39,7 @@ select-font-no-show-text	\
 self-copy			\
 self-intersecting		\
 set-source			\
+show-glyphs-many		\
 show-text-current-point		\
 source-clip			\
 source-surface-scale-paint	\
@@ -120,6 +121,8 @@ self-copy-ref.png			\
 self-intersecting-ref.png		\
 scale-source-surface-paint-ref.png	\
 set-source-ref.png			\
+show-glyphs-many-ref.png		\
+show-glyphs-many-rgb24-ref.png		\
 show-text-current-point-ref.png		\
 source-clip-ref.png			\
 source-surface-scale-paint-ref.png	\
@@ -128,6 +131,7 @@ text-antialias-gray-ref.png		\
 text-antialias-none-ref.png		\
 text-antialias-subpixel-ref.png		\
 text-pattern-ref.png			\
+text-rotate-ref.png			\
 transforms-ref.png			\
 translate-show-surface-ref.png		\
 trap-clip-ref.png			\
@@ -236,6 +240,7 @@ select_font_no_show_text_LDADD = $(LDADDS)
 self_copy_LDADD = $(LDADDS)
 self_intersecting_LDADD = $(LDADDS)
 set_source_LDADD = $(LDADDS)
+show_glyphs_many_LDADD = $(LDADDS)
 show_text_current_point_LDADD = $(LDADDS)
 source_clip_LDADD = $(LDADDS)
 source_surface_scale_paint_LDADD = $(LDADDS)

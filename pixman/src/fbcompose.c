@@ -33,9 +33,19 @@
 
 #include "pixregionint.h"
 
-// #define PIXMAN_CONVOLUTION
-// #define PIXMAN_GRADIENTS
-// #define PIXMAN_INDEXED_FORMATS
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
+#include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+/* #define PIXMAN_CONVOLUTION */
+/* #define PIXMAN_GRADIENTS */
+/* #define PIXMAN_INDEXED_FORMATS */
 
 static Bool
 PictureTransformPoint3d (pixman_transform_t *transform,
