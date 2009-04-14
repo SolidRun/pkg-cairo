@@ -1,33 +1,43 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>PDF Backend</title>
+<title>
+  PostScript Surfaces</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
 <link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
-<link rel="up" href="pt02.html" title="Part&#160;II.&#160;Reference">
-<link rel="prev" href="cairo-Glitz-backend.html" title="Glitz backend">
-<link rel="next" href="cairo-PNG-Backend.html" title="PNG Backend">
+<link rel="up" href="Surfaces.html" title="Surfaces">
+<link rel="prev" href="cairo-PNG-Support.html" title="
+  PNG Support">
+<link rel="next" href="cairo-Win32-Surfaces.html" title="
+  Win32 Surfaces">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="pt01.html" title="Part&#160;I.&#160;Tutorial">
 <link rel="part" href="pt02.html" title="Part&#160;II.&#160;Reference">
+<link rel="chapter" href="Drawing.html" title="Drawing">
+<link rel="chapter" href="Fonts.html" title="Fonts">
+<link rel="chapter" href="Surfaces.html" title="Surfaces">
+<link rel="chapter" href="Support.html" title="Utilities">
 <link rel="index" href="ix01.html" title="Index">
 <link rel="appendix" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="cairo-Glitz-backend.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="pt02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="cairo-PNG-Support.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="Surfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
-<td><a accesskey="n" href="cairo-PNG-Backend.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="cairo-Win32-Surfaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="refentry" lang="en">
-<a name="cairo-PDF-Backend"></a><div class="titlepage"></div>
+<a name="cairo-PostScript-Surfaces"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2><span class="refentrytitle">PDF Backend</span></h2>
-<p>PDF Backend &#8212; </p>
+<h2><span class="refentrytitle">
+  PostScript Surfaces</span></h2>
+<p>
+  PostScript Surfaces &#8212; 
+  Rendering PostScript documents</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -37,31 +47,31 @@
 
 
 
-<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PDF-Backend.html#cairo-pdf-surface-create">cairo_pdf_surface_create</a>   (const char *filename,
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-create">cairo_ps_surface_create</a>    (const char *filename,
                                              double width_in_points,
                                              double height_in_points);
-<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PDF-Backend.html#cairo-pdf-surface-create-for-stream">cairo_pdf_surface_create_for_stream</a>
-                                            (<a href="cairo-cairo-t.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-create-for-stream">cairo_ps_surface_create_for_stream</a>
+                                            (<a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
                                              void *closure,
                                              double width_in_points,
                                              double height_in_points);
-void        <a href="cairo-PDF-Backend.html#cairo-pdf-surface-set-dpi">cairo_pdf_surface_set_dpi</a>       (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+void        <a href="cairo-PostScript-Surfaces.html#cairo-ps-surface-set-dpi">cairo_ps_surface_set_dpi</a>        (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              double x_dpi,
                                              double y_dpi);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2877412"></a><h2>Description</h2>
+<a name="id2852416"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2877423"></a><h2>Details</h2>
+<a name="id2852427"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2877429"></a><h3>
-<a name="cairo-pdf-surface-create"></a>cairo_pdf_surface_create ()</h3>
-<a class="indexterm" name="id2911708"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_pdf_surface_create   (const char *filename,
+<a name="id2852434"></a><h3>
+<a name="cairo-ps-surface-create"></a>cairo_ps_surface_create ()</h3>
+<a class="indexterm" name="id2852442"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_ps_surface_create    (const char *filename,
                                              double width_in_points,
                                              double height_in_points);</pre>
 <p>
@@ -101,10 +111,10 @@ void        <a href="cairo-PDF-Backend.html#cairo-pdf-surface-set-dpi">cairo_pdf
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2911806"></a><h3>
-<a name="cairo-pdf-surface-create-for-stream"></a>cairo_pdf_surface_create_for_stream ()</h3>
-<a class="indexterm" name="id2911815"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_pdf_surface_create_for_stream
-                                            (<a href="cairo-cairo-t.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+<a name="id2844564"></a><h3>
+<a name="cairo-ps-surface-create-for-stream"></a>cairo_ps_surface_create_for_stream ()</h3>
+<a class="indexterm" name="id2844573"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_ps_surface_create_for_stream
+                                            (<a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
                                              void *closure,
                                              double width_in_points,
                                              double height_in_points);</pre>
@@ -151,11 +161,15 @@ void        <a href="cairo-PDF-Backend.html#cairo-pdf-surface-set-dpi">cairo_pdf
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2904532"></a><h3>
-<a name="cairo-pdf-surface-set-dpi"></a>cairo_pdf_surface_set_dpi ()</h3>
-<a class="indexterm" name="id2904541"></a><pre class="programlisting">void        cairo_pdf_surface_set_dpi       (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a name="id2853632"></a><h3>
+<a name="cairo-ps-surface-set-dpi"></a>cairo_ps_surface_set_dpi ()</h3>
+<a class="indexterm" name="id2853641"></a><pre class="programlisting">void        cairo_ps_surface_set_dpi        (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              double x_dpi,
                                              double y_dpi);</pre>
+<p>
+Set horizontal and vertical resolution for image fallbacks.  When
+the postscript backend needs to fall back to image overlays, it
+will use this resolution.</p>
 <p>
 
 </p>
@@ -165,21 +179,19 @@ void        <a href="cairo-PDF-Backend.html#cairo-pdf-surface-set-dpi">cairo_pdf
 <tr>
 <td>
 <span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
-<td>
+<td> a postscript cairo_surface_t
 </td>
 </tr>
 <tr>
 <td>
 <span class="term"><em class="parameter"><code>x_dpi</code></em>&#160;:</span></td>
-<td>
+<td> horizontal dpi
 </td>
 </tr>
 <tr>
 <td>
 <span class="term"><em class="parameter"><code>y_dpi</code></em>&#160;:</span></td>
-<td>
-
-
+<td> vertical dpi
 </td>
 </tr>
 </tbody>
@@ -188,8 +200,10 @@ void        <a href="cairo-PDF-Backend.html#cairo-pdf-surface-set-dpi">cairo_pdf
 </div>
 </div>
 <table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="cairo-Glitz-backend.html"><b>&lt;&lt;&#160;Glitz backend</b></a></td>
-<td align="right"><a accesskey="n" href="cairo-PNG-Backend.html"><b>PNG Backend&#160;&gt;&gt;</b></a></td>
+<td align="left"><a accesskey="p" href="cairo-PNG-Support.html"><b>&lt;&lt;&#160;
+  PNG Support</b></a></td>
+<td align="right"><a accesskey="n" href="cairo-Win32-Surfaces.html"><b>
+  Win32 Surfaces&#160;&gt;&gt;</b></a></td>
 </tr></table>
 </body>
 </html>
