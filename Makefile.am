@@ -1,9 +1,15 @@
 DIST_SUBDIRS = pixman src test doc
 SUBDIRS = pixman src doc
 
-.PHONY: doc
+.PHONY: doc test
 doc:
 	-$(MAKE) -C doc doc
+test: all
+	-$(MAKE) -C test test
+retest: all
+	-$(MAKE) -C test retest
+recheck: all
+	-$(MAKE) -C test recheck
 
 # libpng is required for our test programs
 if CAIRO_HAS_PNG_FUNCTIONS
@@ -46,7 +52,7 @@ ChangeLog: $(srcdir)/ChangeLog
 $(srcdir)/ChangeLog:
 	@if test -d "$(srcdir)/.git"; then \
 	  (cd "$(srcdir)" && \
-	  ./missing --run git-log) | fmt --split-only > $@.tmp \
+	  ./missing --run git-log --stat) | fmt --split-only > $@.tmp \
 	  && mv -f $@.tmp $@ \
 	  || ($(RM) $@.tmp; \
 	      echo Failed to generate ChangeLog, your ChangeLog may be outdated >&2; \
@@ -201,4 +207,4 @@ docs-publish: all
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
 	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && rm -f manual && ln -s $(MANUAL_DATED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
 
-.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish
+.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish test retest recheck

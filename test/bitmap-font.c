@@ -35,10 +35,13 @@
 #define FONT "6x13.pcf"
 #define TEXT_SIZE 13
 
+static cairo_test_draw_function_t draw;
+
 cairo_test_t test = {
     "bitmap-font",
     "Test drawing with a font consisting only of bitmaps",
-    246 + 1, TEXT_SIZE
+    246 + 1, TEXT_SIZE,
+    draw
 };
 
 static cairo_test_status_t
@@ -47,7 +50,7 @@ draw (cairo_t *cr, int width, int height)
     FcPattern *pattern;
     cairo_font_face_t *font_face;
     cairo_status_t status;
-    char *srcdir = getenv ("srcdir");
+    const char *srcdir = getenv ("srcdir");
     char *filename;
     struct stat stat_buf;
 
@@ -102,5 +105,5 @@ draw (cairo_t *cr, int width, int height)
 int
 main (void)
 {
-    return cairo_test (&test, draw);
+    return cairo_test (&test);
 }

@@ -1,9 +1,11 @@
 font_subset_sources =				\
-	cairo-font-subset.c			\
-	cairo-font-subset-private.h		\
-	cairo-type1-subset.c			\
+	cairo-truetype-subset.c			\
+	cairo-truetype-subset-private.h		\
 	cairo-scaled-font-subsets.c		\
 	cairo-scaled-font-subsets-private.h
+if CAIRO_HAS_FT_FONT
+font_subset_sources += cairo-type1-subset.c
+endif
 
 backend_pkgconfigs =
 
@@ -111,23 +113,6 @@ libcairo_atsui_sources = cairo-atsui-font.c
 backend_pkgconfigs += cairo-atsui.pc
 endif
 
-# Headers that declare the functions in the cairo DLL API on Windows
-cairo_win32_api_headers = \
-	$(srcdir)/cairo.h \
-	$(srcdir)/cairo-win32.h
-
-if CAIRO_HAS_GLITZ_SURFACE
-cairo_win32_api_headers += \
-	$(srcdir)/cairo-glitz.h
-endif
-
-if CAIRO_HAS_FT_FONT
-cairo_win32_api_headers += \
-	$(srcdir)/cairo-ft.h \
-	$(srcdir)/cairo-pdf.h \
-	$(srcdir)/cairo-ps.h
-endif
-
 # These names match automake style variable definition conventions so
 # without these lines, automake will complain during the handling of 
 # the libcairo_la_LIBADD below.  (The INCLUDES is an autoconf only
@@ -137,10 +122,8 @@ XRENDER_LIBS=@XRENDER_LIBS@
 
 BUILT_SOURCES = cairo-features.h
 
-cairoincludedir = $(includedir)/cairo
-cairoinclude_HEADERS =			\
+cairo_headers =				\
 	cairo.h				\
-	cairo-features.h		\
 	$(libcairo_atsui_headers)	\
 	$(libcairo_ft_headers)		\
 	$(libcairo_glitz_headers)	\
@@ -154,6 +137,11 @@ cairoinclude_HEADERS =			\
 	$(libcairo_xlib_headers)	\
 	$(libcairo_xlib_xrender_headers)	\
 	$(libcairo_directfb_headers)
+
+cairoincludedir = $(includedir)/cairo
+cairoinclude_HEADERS =			\
+	cairo-features.h		\
+	$(cairo_headers)
 
 lib_LTLIBRARIES = libcairo.la
 
@@ -244,7 +232,7 @@ pkgconfig_DATA = cairo.pc $(backend_pkgconfigs)
 DISTCLEANFILES = $(backend_pkgconfigs)
 EXTRA_DIST = cairo-backend.pc.in
 $(backend_pkgconfigs): $(top_srcdir)/configure
-	$(top_builddir)/config.status --recheck
+	cd $(top_builddir) && ./config.status --recheck
 
 $(top_builddir)/config.h: $(top_srcdir)/config.h.in
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) config.h
@@ -252,16 +240,18 @@ $(top_builddir)/config.h: $(top_srcdir)/config.h.in
 cairo-features.h:
 	cd $(top_builddir) && ./config.status src/cairo-features.h
 
-cairo.def: $(cairo_win32_api_headers)
-	(echo EXPORTS; \
-	cat $(cairo_win32_api_headers) | \
+cairo.def: $(cairoinclude_HEADERS)
+	@echo Generating $@
+	@(echo EXPORTS; \
+	(cd $(srcdir); cat $(cairo_headers) || echo 'cairo_ERROR ()' ) | \
 	grep -v -E '^# *include' | \
-	gcc -include cairo-features.h -E - |\
+	( gcc -include cairo-features.h -E - || echo 'cairo_ERROR ()' ) | \
 	grep -E '^cairo_.* \(' | \
-	sed -e 's/\([^ ]*\).*/\1/' | \
+	sed -e 's/[ 	].*//' | \
 	sort; \
 	echo LIBRARY libcairo-$(LT_CURRENT_MINUS_AGE).dll; \
 	) >$@
+	@ (! grep -q cairo_ERROR $@) || ($(RM) $@; false)
 
 install-data-local:
 	@if test -f "$(DESTDIR)$(includedir)/cairo.h" || test -f "$(DESTDIR)$(includedir)/cairo-features.h" ; then \

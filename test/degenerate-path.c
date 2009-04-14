@@ -28,10 +28,13 @@
 #define IMAGE_WIDTH 40
 #define IMAGE_HEIGHT 22
 
+static cairo_test_draw_function_t draw;
+
 cairo_test_t test = {
     "degenerate-path",
     "Tests the behaviour of degenerate paths with different cap types",
-    IMAGE_WIDTH, IMAGE_HEIGHT
+    IMAGE_WIDTH, IMAGE_HEIGHT,
+    draw
 };
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
@@ -40,7 +43,7 @@ static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
     const cairo_line_cap_t cap[] = { CAIRO_LINE_CAP_ROUND, CAIRO_LINE_CAP_SQUARE, CAIRO_LINE_CAP_BUTT };
-    int i;
+    size_t i;
 
     cairo_set_source_rgb (cr, 1, 0, 0);
 
@@ -64,5 +67,5 @@ draw (cairo_t *cr, int width, int height)
 int
 main (void)
 {
-    return cairo_test (&test, draw);
+    return cairo_test (&test);
 }

@@ -43,9 +43,9 @@
 #include "cairo-scaled-font-subsets-private.h"
 #include "cairo-paginated-surface-private.h"
 #include "cairo-meta-surface-private.h"
-#include "cairo-ft-private.h"
 #include "cairo-output-stream-private.h"
 
+#include <ctype.h>
 #include <time.h>
 #include <zlib.h>
 
@@ -385,6 +385,7 @@ _cairo_ps_surface_emit_header (cairo_ps_surface_t *surface)
     }
 }
 
+#if CAIRO_HAS_FT_FONT
 static cairo_status_t
 _cairo_ps_surface_emit_type1_font_subset (cairo_ps_surface_t		*surface,
 					  cairo_scaled_font_subset_t	*font_subset)
@@ -414,6 +415,7 @@ _cairo_ps_surface_emit_type1_font_subset (cairo_ps_surface_t		*surface,
 
     return CAIRO_STATUS_SUCCESS;
 }
+#endif
 
 static cairo_status_t
 _cairo_ps_surface_emit_truetype_font_subset (cairo_ps_surface_t		*surface,
@@ -423,7 +425,7 @@ _cairo_ps_surface_emit_truetype_font_subset (cairo_ps_surface_t		*surface,
 {
     cairo_truetype_subset_t subset;
     cairo_status_t status;
-    int i;
+    unsigned int i, begin, end;
 
     status = _cairo_truetype_subset_init (&subset, font_subset);
     if (status)
@@ -464,17 +466,27 @@ _cairo_ps_surface_emit_truetype_font_subset (cairo_ps_surface_t		*surface,
     _cairo_output_stream_printf (surface->final_stream,
 				 "end readonly def\n");
 
-    /* FIXME: We need to break up fonts bigger than 64k so we don't
-     * exceed string size limitation.  At glyph boundaries.  Stupid
-     * postscript. */
     _cairo_output_stream_printf (surface->final_stream,
-				 "/sfnts [<");
-
-    _cairo_output_stream_write_hex_string (surface->final_stream,
-					   subset.data, subset.data_length);
+				 "/sfnts [\n");
+    begin = 0;
+    end = 0;
+    for (i = 0; i < subset.num_string_offsets; i++) {
+        end = subset.string_offsets[i];
+        _cairo_output_stream_printf (surface->final_stream,"<");
+        _cairo_output_stream_write_hex_string (surface->final_stream,
+                                               subset.data + begin, end - begin);
+        _cairo_output_stream_printf (surface->final_stream,"00>\n");
+        begin = end;
+    } 
+    if (subset.data_length > end) {
+        _cairo_output_stream_printf (surface->final_stream,"<");
+        _cairo_output_stream_write_hex_string (surface->final_stream,
+                                               subset.data + end, subset.data_length - end);
+        _cairo_output_stream_printf (surface->final_stream,"00>\n");
+    }
 
     _cairo_output_stream_printf (surface->final_stream,
-				 ">] def\n"
+				 "] def\n"
 				 "FontName currentdict end definefont pop\n");
 
     _cairo_truetype_subset_fini (&subset);
@@ -615,7 +627,7 @@ _cairo_ps_surface_emit_type3_font_subset (cairo_ps_surface_t		*surface,
 
 {
     cairo_matrix_t matrix;
-    int i;
+    unsigned int i;
 
     _cairo_output_stream_printf (surface->final_stream,
 				 "%% _cairo_ps_surface_emit_type3_font_subset\n");
@@ -663,9 +675,11 @@ _cairo_ps_surface_emit_font_subset (cairo_scaled_font_subset_t	*font_subset,
     cairo_ps_surface_t *surface = closure;
     cairo_status_t status;
 
+#if CAIRO_HAS_FT_FONT
     status = _cairo_ps_surface_emit_type1_font_subset (surface, font_subset);
     if (status != CAIRO_INT_STATUS_UNSUPPORTED)
 	return;
+#endif
 
     status = _cairo_ps_surface_emit_truetype_font_subset (surface, font_subset);
     if (status != CAIRO_INT_STATUS_UNSUPPORTED)
@@ -1126,19 +1140,6 @@ cairo_ps_surface_dsc_begin_page_setup (cairo_surface_t *surface)
     }
 }
 
-static cairo_surface_t *
-_cairo_ps_surface_create_similar (void		       *abstract_src,
-				   cairo_content_t	content,
-				   int			width,
-				   int			height)
-{
-    cairo_format_t format = _cairo_format_from_content (content);
-
-    /* Just return an image for now, until PS surface can be used
-     * as source. */
-    return cairo_image_surface_create (format, width, height);
-}
-
 static cairo_status_t
 _cairo_ps_surface_finish (void *abstract_surface)
 {
@@ -1474,7 +1475,7 @@ static cairo_status_t
 emit_image (cairo_ps_surface_t    *surface,
 	    cairo_image_surface_t *image,
 	    cairo_matrix_t	  *matrix,
-	    char		  *name)
+	    const char		  *name)
 {
     cairo_status_t status;
     unsigned char *rgb, *compressed;
@@ -1788,6 +1789,7 @@ _cairo_ps_surface_get_font_options (void                  *abstract_surface,
 
     cairo_font_options_set_hint_style (options, CAIRO_HINT_STYLE_NONE);
     cairo_font_options_set_hint_metrics (options, CAIRO_HINT_METRICS_OFF);
+    cairo_font_options_set_antialias (options, CAIRO_ANTIALIAS_GRAY);
 }
 
 static cairo_int_status_t
@@ -2056,7 +2058,7 @@ _cairo_ps_surface_show_glyphs (void		     *abstract_surface,
 {
     cairo_ps_surface_t *surface = abstract_surface;
     cairo_output_stream_t *stream = surface->stream;
-    int current_subset_id = -1;
+    unsigned int current_subset_id = -1;
     unsigned int font_id, subset_id, subset_glyph_index;
     cairo_status_t status;
     int i;
@@ -2113,7 +2115,7 @@ _cairo_ps_surface_set_paginated_mode (void			*abstract_surface,
 
 static const cairo_surface_backend_t cairo_ps_surface_backend = {
     CAIRO_SURFACE_TYPE_PS,
-    _cairo_ps_surface_create_similar,
+    NULL, /* create_similar */
     _cairo_ps_surface_finish,
     NULL, /* acquire_source_image */
     NULL, /* release_source_image */

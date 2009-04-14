@@ -74,7 +74,7 @@ _cairo_scaled_glyph_destroy (void *abstract_glyph)
 static const cairo_scaled_font_t _cairo_scaled_font_nil = {
     { 0 },			/* hash_entry */
     CAIRO_STATUS_NO_MEMORY,	/* status */
-    -1,				/* ref_count */
+    CAIRO_REF_COUNT_INVALID,	/* ref_count */
     NULL,			/* font_face */
     { 1., 0., 0., 1., 0, 0},	/* font_matrix */
     { 1., 0., 0., 1., 0, 0},	/* ctm */
@@ -123,7 +123,10 @@ _cairo_scaled_font_set_error (cairo_scaled_font_t *scaled_font,
  * cairo_scaled_font_get_type:
  * @scaled_font: a #cairo_scaled_font_t
  *
- * Return value: The type of @scaled_font. See #cairo_font_type_t.
+ * This function returns the type of the backend used to create
+ * a scaled font. See #cairo_font_type_t for available types.
+ *
+ * Return value: The type of @scaled_font.
  *
  * Since: 1.2
  **/
@@ -510,7 +513,7 @@ cairo_scaled_font_reference (cairo_scaled_font_t *scaled_font)
     if (scaled_font == NULL)
 	return NULL;
 
-    if (scaled_font->ref_count == (unsigned int)-1)
+    if (scaled_font->ref_count == CAIRO_REF_COUNT_INVALID)
 	return scaled_font;
 
     /* We would normally assert (scaled_font->ref_count > 0) here, but
@@ -565,7 +568,7 @@ cairo_scaled_font_destroy (cairo_scaled_font_t *scaled_font)
     if (scaled_font == NULL)
 	return;
 
-    if (scaled_font->ref_count == (unsigned int)-1)
+    if (scaled_font->ref_count == CAIRO_REF_COUNT_INVALID)
 	return;
 
     /* cairo_scaled_font_t objects are cached and shared between
@@ -758,7 +761,7 @@ _cairo_scaled_font_text_to_glyphs (cairo_scaled_font_t *scaled_font,
 				   cairo_glyph_t      **glyphs,
 				   int 		       *num_glyphs)
 {
-    size_t i;
+    int i;
     uint32_t *ucs4 = NULL;
     cairo_status_t status = CAIRO_STATUS_SUCCESS;
     cairo_scaled_glyph_t *scaled_glyph;
@@ -1152,9 +1155,9 @@ _cairo_scaled_glyph_set_metrics (cairo_scaled_glyph_t *scaled_glyph,
 
     scaled_glyph->metrics.x_advance = fs_metrics->x_advance;
     scaled_glyph->metrics.y_advance = fs_metrics->y_advance;
-    cairo_matrix_transform_point (&scaled_font->font_matrix,
-				  &scaled_glyph->metrics.x_advance,
-				  &scaled_glyph->metrics.y_advance);
+    cairo_matrix_transform_distance (&scaled_font->font_matrix,
+				     &scaled_glyph->metrics.x_advance,
+				     &scaled_glyph->metrics.y_advance);
 
     scaled_glyph->bbox.p1.x = _cairo_fixed_from_double (min_device_x);
     scaled_glyph->bbox.p1.y = _cairo_fixed_from_double (min_device_y);
@@ -1298,6 +1301,8 @@ _cairo_scaled_glyph_lookup (cairo_scaled_font_t *scaled_font,
  * cairo_scaled_font_get_font_face:
  * @scaled_font: a #cairo_scaled_font_t
  *
+ * Gets the font face that this scaled font was created for.
+ *
  * Return value: The #cairo_font_face_t with which @scaled_font was
  * created.
  *
@@ -1361,7 +1366,7 @@ cairo_scaled_font_get_ctm (cairo_scaled_font_t	*scaled_font,
  * @options: return value for the font options
  *
  * Stores the font options with which @scaled_font was created into
- * @ctm.
+ * @options.
  *
  * Since: 1.2
  **/
