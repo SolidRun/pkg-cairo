@@ -121,10 +121,10 @@ am__EXEEXT_11 = a8-mask$(EXEEXT) big-trap$(EXEEXT) caps-joins$(EXEEXT) \
 	line-width-scale$(EXEEXT) line-width-zero$(EXEEXT) \
 	linear-gradient$(EXEEXT) linear-gradient-reflect$(EXEEXT) \
 	long-lines$(EXEEXT) mask$(EXEEXT) mask-ctm$(EXEEXT) \
-	mask-surface-ctm$(EXEEXT) move-to-show-surface$(EXEEXT) \
-	new-sub-path$(EXEEXT) nil-surface$(EXEEXT) \
-	operator-clear$(EXEEXT) operator-source$(EXEEXT) \
-	paint$(EXEEXT) paint-repeat$(EXEEXT) \
+	mask-surface-ctm$(EXEEXT) miter-precision$(EXEEXT) \
+	move-to-show-surface$(EXEEXT) new-sub-path$(EXEEXT) \
+	nil-surface$(EXEEXT) operator-clear$(EXEEXT) \
+	operator-source$(EXEEXT) paint$(EXEEXT) paint-repeat$(EXEEXT) \
 	paint-source-alpha$(EXEEXT) paint-with-alpha$(EXEEXT) \
 	pattern-get-type$(EXEEXT) pattern-getters$(EXEEXT) \
 	pixman-rotate$(EXEEXT) radial-gradient$(EXEEXT) \
@@ -505,6 +505,11 @@ mask_surface_ctm_OBJECTS = mask-surface-ctm.$(OBJEXT)
 mask_surface_ctm_LDADD = $(LDADD)
 mask_surface_ctm_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
 	$(am__DEPENDENCIES_1)
+miter_precision_SOURCES = miter-precision.c
+miter_precision_OBJECTS = miter-precision.$(OBJEXT)
+miter_precision_LDADD = $(LDADD)
+miter_precision_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 move_to_show_surface_SOURCES = move-to-show-surface.c
 move_to_show_surface_OBJECTS = move-to-show-surface.$(OBJEXT)
 move_to_show_surface_LDADD = $(LDADD)
@@ -878,24 +883,25 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	infinite-join.c invalid-matrix.c leaky-dash.c leaky-polygon.c \
 	line-width.c line-width-scale.c line-width-zero.c \
 	linear-gradient.c linear-gradient-reflect.c long-lines.c \
-	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
-	multi-page.c new-sub-path.c nil-surface.c operator-clear.c \
-	operator-source.c paint.c paint-repeat.c paint-source-alpha.c \
-	paint-with-alpha.c pattern-get-type.c pattern-getters.c \
-	pdf-features.c pdf2png.c pdf2svg.c pixman-rotate.c \
-	png-flatten.c ps-features.c pthread-show-text.c push-group.c \
-	radial-gradient.c random-intersections.c \
-	rectangle-rounding-error.c rectilinear-stroke.c rel-path.c \
-	rotate-image-surface-paint.c scale-down-source-surface-paint.c \
-	scale-source-surface-paint.c select-font-face.c \
-	select-font-no-show-text.c self-copy.c self-intersecting.c \
-	set-source.c show-glyphs-many.c show-text-current-point.c \
-	skew-extreme.c solid-pattern-cache-stress.c source-clip.c \
-	source-clip-scale.c source-surface-scale-paint.c \
-	surface-finish-twice.c surface-pattern.c \
-	surface-pattern-big-scale-down.c surface-pattern-scale-down.c \
-	surface-pattern-scale-up.c svg-clip.c svg-surface.c svg2pdf.c \
-	svg2png.c text-antialias-gray.c text-antialias-none.c \
+	mask.c mask-ctm.c mask-surface-ctm.c miter-precision.c \
+	move-to-show-surface.c multi-page.c new-sub-path.c \
+	nil-surface.c operator-clear.c operator-source.c paint.c \
+	paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
+	pattern-get-type.c pattern-getters.c pdf-features.c pdf2png.c \
+	pdf2svg.c pixman-rotate.c png-flatten.c ps-features.c \
+	pthread-show-text.c push-group.c radial-gradient.c \
+	random-intersections.c rectangle-rounding-error.c \
+	rectilinear-stroke.c rel-path.c rotate-image-surface-paint.c \
+	scale-down-source-surface-paint.c scale-source-surface-paint.c \
+	select-font-face.c select-font-no-show-text.c self-copy.c \
+	self-intersecting.c set-source.c show-glyphs-many.c \
+	show-text-current-point.c skew-extreme.c \
+	solid-pattern-cache-stress.c source-clip.c source-clip-scale.c \
+	source-surface-scale-paint.c surface-finish-twice.c \
+	surface-pattern.c surface-pattern-big-scale-down.c \
+	surface-pattern-scale-down.c surface-pattern-scale-up.c \
+	svg-clip.c svg-surface.c svg2pdf.c svg2png.c \
+	text-antialias-gray.c text-antialias-none.c \
 	text-antialias-subpixel.c text-cache-crash.c \
 	text-glyph-range.c text-pattern.c text-rotate.c \
 	text-zero-len.c transforms.c translate-show-surface.c \
@@ -924,24 +930,25 @@ DIST_SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	infinite-join.c invalid-matrix.c leaky-dash.c leaky-polygon.c \
 	line-width.c line-width-scale.c line-width-zero.c \
 	linear-gradient.c linear-gradient-reflect.c long-lines.c \
-	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
-	multi-page.c new-sub-path.c nil-surface.c operator-clear.c \
-	operator-source.c paint.c paint-repeat.c paint-source-alpha.c \
-	paint-with-alpha.c pattern-get-type.c pattern-getters.c \
-	pdf-features.c pdf2png.c pdf2svg.c pixman-rotate.c \
-	png-flatten.c ps-features.c pthread-show-text.c push-group.c \
-	radial-gradient.c random-intersections.c \
-	rectangle-rounding-error.c rectilinear-stroke.c rel-path.c \
-	rotate-image-surface-paint.c scale-down-source-surface-paint.c \
-	scale-source-surface-paint.c select-font-face.c \
-	select-font-no-show-text.c self-copy.c self-intersecting.c \
-	set-source.c show-glyphs-many.c show-text-current-point.c \
-	skew-extreme.c solid-pattern-cache-stress.c source-clip.c \
-	source-clip-scale.c source-surface-scale-paint.c \
-	surface-finish-twice.c surface-pattern.c \
-	surface-pattern-big-scale-down.c surface-pattern-scale-down.c \
-	surface-pattern-scale-up.c svg-clip.c svg-surface.c svg2pdf.c \
-	svg2png.c text-antialias-gray.c text-antialias-none.c \
+	mask.c mask-ctm.c mask-surface-ctm.c miter-precision.c \
+	move-to-show-surface.c multi-page.c new-sub-path.c \
+	nil-surface.c operator-clear.c operator-source.c paint.c \
+	paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
+	pattern-get-type.c pattern-getters.c pdf-features.c pdf2png.c \
+	pdf2svg.c pixman-rotate.c png-flatten.c ps-features.c \
+	pthread-show-text.c push-group.c radial-gradient.c \
+	random-intersections.c rectangle-rounding-error.c \
+	rectilinear-stroke.c rel-path.c rotate-image-surface-paint.c \
+	scale-down-source-surface-paint.c scale-source-surface-paint.c \
+	select-font-face.c select-font-no-show-text.c self-copy.c \
+	self-intersecting.c set-source.c show-glyphs-many.c \
+	show-text-current-point.c skew-extreme.c \
+	solid-pattern-cache-stress.c source-clip.c source-clip-scale.c \
+	source-surface-scale-paint.c surface-finish-twice.c \
+	surface-pattern.c surface-pattern-big-scale-down.c \
+	surface-pattern-scale-down.c surface-pattern-scale-up.c \
+	svg-clip.c svg-surface.c svg2pdf.c svg2png.c \
+	text-antialias-gray.c text-antialias-none.c \
 	text-antialias-subpixel.c text-cache-crash.c \
 	text-glyph-range.c text-pattern.c text-rotate.c \
 	text-zero-len.c transforms.c translate-show-surface.c \
@@ -1200,27 +1207,28 @@ TESTS = a8-mask big-trap caps-joins caps-joins-alpha caps-sub-paths \
 	infinite-join in-fill-empty-trapezoid invalid-matrix \
 	leaky-dash leaky-polygon line-width line-width-scale \
 	line-width-zero linear-gradient linear-gradient-reflect \
-	long-lines mask mask-ctm mask-surface-ctm move-to-show-surface \
-	new-sub-path nil-surface operator-clear operator-source paint \
-	paint-repeat paint-source-alpha paint-with-alpha \
-	pattern-get-type pattern-getters pixman-rotate radial-gradient \
-	random-intersections rectangle-rounding-error \
-	rectilinear-stroke rotate-image-surface-paint \
-	scale-down-source-surface-paint scale-source-surface-paint \
-	select-font-face select-font-no-show-text self-copy \
-	self-intersecting set-source show-text-current-point \
-	skew-extreme solid-pattern-cache-stress source-clip \
-	source-clip-scale source-surface-scale-paint \
-	surface-finish-twice surface-pattern \
-	surface-pattern-big-scale-down surface-pattern-scale-down \
-	surface-pattern-scale-up text-antialias-gray \
-	text-antialias-none text-antialias-subpixel text-cache-crash \
-	text-pattern text-rotate text-zero-len transforms \
-	translate-show-surface trap-clip truetype-tables \
-	unantialiased-shapes unbounded-operator user-data rel-path \
-	push-group zero-alpha $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8)
+	long-lines mask mask-ctm mask-surface-ctm miter-precision \
+	move-to-show-surface new-sub-path nil-surface operator-clear \
+	operator-source paint paint-repeat paint-source-alpha \
+	paint-with-alpha pattern-get-type pattern-getters \
+	pixman-rotate radial-gradient random-intersections \
+	rectangle-rounding-error rectilinear-stroke \
+	rotate-image-surface-paint scale-down-source-surface-paint \
+	scale-source-surface-paint select-font-face \
+	select-font-no-show-text self-copy self-intersecting \
+	set-source show-text-current-point skew-extreme \
+	solid-pattern-cache-stress source-clip source-clip-scale \
+	source-surface-scale-paint surface-finish-twice \
+	surface-pattern surface-pattern-big-scale-down \
+	surface-pattern-scale-down surface-pattern-scale-up \
+	text-antialias-gray text-antialias-none \
+	text-antialias-subpixel text-cache-crash text-pattern \
+	text-rotate text-zero-len transforms translate-show-surface \
+	trap-clip truetype-tables unantialiased-shapes \
+	unbounded-operator user-data rel-path push-group zero-alpha \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8)
 
 # XXX: Here are some existing tests that are currently disabled for
 # one reason or another. They can still be built and run (manually)
@@ -1385,6 +1393,7 @@ REFERENCE_IMAGES = \
 	mask-surface-ctm-rgb24-ref.png	\
 	mask-surface-ctm-svg-argb32-ref.png	\
 	mask-svg-argb32-ref.png	\
+	miter-precision-ref.png \
 	move-to-show-surface-ref.png	\
 	new-sub-path-ps-argb32-ref.png	\
 	new-sub-path-quartz-ref.png	\
@@ -1835,6 +1844,9 @@ mask-ctm$(EXEEXT): $(mask_ctm_OBJECTS) $(mask_ctm_DEPENDENCIES)
 mask-surface-ctm$(EXEEXT): $(mask_surface_ctm_OBJECTS) $(mask_surface_ctm_DEPENDENCIES) 
 	@rm -f mask-surface-ctm$(EXEEXT)
 	$(LINK) $(mask_surface_ctm_LDFLAGS) $(mask_surface_ctm_OBJECTS) $(mask_surface_ctm_LDADD) $(LIBS)
+miter-precision$(EXEEXT): $(miter_precision_OBJECTS) $(miter_precision_DEPENDENCIES) 
+	@rm -f miter-precision$(EXEEXT)
+	$(LINK) $(miter_precision_LDFLAGS) $(miter_precision_OBJECTS) $(miter_precision_LDADD) $(LIBS)
 move-to-show-surface$(EXEEXT): $(move_to_show_surface_OBJECTS) $(move_to_show_surface_DEPENDENCIES) 
 	@rm -f move-to-show-surface$(EXEEXT)
 	$(LINK) $(move_to_show_surface_LDFLAGS) $(move_to_show_surface_OBJECTS) $(move_to_show_surface_LDADD) $(LIBS)
@@ -2109,6 +2121,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mask-ctm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mask-surface-ctm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/miter-precision.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/move-to-show-surface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi-page.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/new-sub-path.Po@am__quote@

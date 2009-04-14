@@ -30,16 +30,16 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-Transformations.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2620270" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2598738" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id2640516" class="shortcut">Description</a></nobr></td></tr>
+                  <a href="#id2640513" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-Patterns"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id2620270"></a><span class="refentrytitle">Patterns</span>
+<a name="id2598738"></a><span class="refentrytitle">Patterns</span>
 </h2>
 <p>Patterns &#8212; Gradients and filtered sources</p>
 </td>
@@ -136,17 +136,17 @@ void*               <a class="link" href="cairo-Patterns.html#cairo-pattern-get-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2640516"></a><h2>Description</h2>
+<a name="id2640513"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2640530"></a><h2>Details</h2>
+<a name="id2640526"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2640539"></a><h3>
+<a name="id2640536"></a><h3>
 <a name="cairo-pattern-t"></a>cairo_pattern_t</h3>
-<a class="indexterm" name="id2640549"></a><pre class="programlisting">typedef struct _cairo_pattern cairo_pattern_t;
+<a class="indexterm" name="id2640546"></a><pre class="programlisting">typedef struct _cairo_pattern cairo_pattern_t;
 </pre>
 <p>
 A <a class="link" href="cairo-Patterns.html#cairo-pattern-t"><span class="type">cairo_pattern_t</span></a> represents a source when drawing onto a
@@ -173,9 +173,9 @@ Memory management of <a class="link" href="cairo-Patterns.html#cairo-pattern-t">
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2640648"></a><h3>
+<a name="id2640646"></a><h3>
 <a name="cairo-pattern-add-color-stop-rgb"></a>cairo_pattern_add_color_stop_rgb ()</h3>
-<a class="indexterm" name="id2640662"></a><pre class="programlisting">void                cairo_pattern_add_color_stop_rgb    (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2640659"></a><pre class="programlisting">void                cairo_pattern_add_color_stop_rgb    (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          double offset,
                                                          double red,
                                                          double green,
@@ -237,9 +237,9 @@ with a status of <a class="link" href="cairo-Error-Handling.html#CAIRO-STATUS-PA
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2640846"></a><h3>
+<a name="id2640844"></a><h3>
 <a name="cairo-pattern-add-color-stop-rgba"></a>cairo_pattern_add_color_stop_rgba ()</h3>
-<a class="indexterm" name="id2640860"></a><pre class="programlisting">void                cairo_pattern_add_color_stop_rgba   (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2640858"></a><pre class="programlisting">void                cairo_pattern_add_color_stop_rgba   (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          double offset,
                                                          double red,
                                                          double green,
@@ -307,9 +307,9 @@ with a status of <a class="link" href="cairo-Error-Handling.html#CAIRO-STATUS-PA
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2641038"></a><h3>
+<a name="id2641064"></a><h3>
 <a name="cairo-pattern-get-color-stop-count"></a>cairo_pattern_get_color_stop_count ()</h3>
-<a class="indexterm" name="id2641053"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_color_stop_count  (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2641080"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_color_stop_count  (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          int *count);</pre>
 <p>
 Gets the number of color stops specified in the given gradient
@@ -345,9 +345,9 @@ pattern.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2641173"></a><h3>
+<a name="id2641213"></a><h3>
 <a name="cairo-pattern-get-color-stop-rgba"></a>cairo_pattern_get_color_stop_rgba ()</h3>
-<a class="indexterm" name="id2641188"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_color_stop_rgba   (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2641229"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_color_stop_rgba   (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          int index,
                                                          double *offset,
                                                          double *red,
@@ -415,9 +415,9 @@ returned.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2641472"></a><h3>
+<a name="id2641509"></a><h3>
 <a name="cairo-pattern-create-rgb"></a>cairo_pattern_create_rgb ()</h3>
-<a class="indexterm" name="id2641482"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_rgb            (double red,
+<a class="indexterm" name="id2641520"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_rgb            (double red,
                                                          double green,
                                                          double blue);</pre>
 <p>
@@ -463,9 +463,9 @@ the status of a pattern use <a class="link" href="cairo-Patterns.html#cairo-patt
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2641607"></a><h3>
+<a name="id2641645"></a><h3>
 <a name="cairo-pattern-create-rgba"></a>cairo_pattern_create_rgba ()</h3>
-<a class="indexterm" name="id2641618"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_rgba           (double red,
+<a class="indexterm" name="id2641656"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_rgba           (double red,
                                                          double green,
                                                          double blue,
                                                          double alpha);</pre>
@@ -517,9 +517,9 @@ the status of a pattern use <a class="link" href="cairo-Patterns.html#cairo-patt
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2641763"></a><h3>
+<a name="id2641800"></a><h3>
 <a name="cairo-pattern-get-rgba"></a>cairo_pattern_get_rgba ()</h3>
-<a class="indexterm" name="id2641775"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_rgba              (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2641813"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_rgba              (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          double *red,
                                                          double *green,
                                                          double *blue,
@@ -572,9 +572,9 @@ color pattern.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2641974"></a><h3>
+<a name="id2642012"></a><h3>
 <a name="cairo-pattern-create-for-surface"></a>cairo_pattern_create_for_surface ()</h3>
-<a class="indexterm" name="id2641986"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_for_surface    (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
+<a class="indexterm" name="id2642024"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_for_surface    (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface);</pre>
 <p>
 Create a new cairo_pattern_t for the given surface.</p>
 <p>
@@ -605,9 +605,9 @@ the status of a pattern use <a class="link" href="cairo-Patterns.html#cairo-patt
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2642070"></a><h3>
+<a name="id2642107"></a><h3>
 <a name="cairo-pattern-get-surface"></a>cairo_pattern_get_surface ()</h3>
-<a class="indexterm" name="id2642083"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_surface           (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2642120"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_surface           (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> **surface);</pre>
 <p>
 Gets the surface of a surface pattern.  The reference returned in
@@ -644,9 +644,9 @@ pattern.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2642212"></a><h3>
+<a name="id2642249"></a><h3>
 <a name="cairo-pattern-create-linear"></a>cairo_pattern_create_linear ()</h3>
-<a class="indexterm" name="id2642223"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_linear         (double x0,
+<a class="indexterm" name="id2642260"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_linear         (double x0,
                                                          double y0,
                                                          double x1,
                                                          double y1);</pre>
@@ -704,9 +704,9 @@ the status of a pattern use <a class="link" href="cairo-Patterns.html#cairo-patt
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2642401"></a><h3>
+<a name="id2642438"></a><h3>
 <a name="cairo-pattern-get-linear-points"></a>cairo_pattern_get_linear_points ()</h3>
-<a class="indexterm" name="id2642415"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_linear_points     (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2642453"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_linear_points     (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          double *x0,
                                                          double *y0,
                                                          double *x1,
@@ -759,9 +759,9 @@ gradient pattern.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2642620"></a><h3>
+<a name="id2642658"></a><h3>
 <a name="cairo-pattern-create-radial"></a>cairo_pattern_create_radial ()</h3>
-<a class="indexterm" name="id2642631"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_radial         (double cx0,
+<a class="indexterm" name="id2642669"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_create_radial         (double cx0,
                                                          double cy0,
                                                          double radius0,
                                                          double cx1,
@@ -831,9 +831,9 @@ the status of a pattern use <a class="link" href="cairo-Patterns.html#cairo-patt
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2642849"></a><h3>
+<a name="id2642887"></a><h3>
 <a name="cairo-pattern-get-radial-circles"></a>cairo_pattern_get_radial_circles ()</h3>
-<a class="indexterm" name="id2642864"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_radial_circles    (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2642901"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_get_radial_circles    (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          double *x0,
                                                          double *y0,
                                                          double *r0,
@@ -899,9 +899,9 @@ gradient pattern.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643128"></a><h3>
+<a name="id2643165"></a><h3>
 <a name="cairo-pattern-reference"></a>cairo_pattern_reference ()</h3>
-<a class="indexterm" name="id2643138"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_reference             (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
+<a class="indexterm" name="id2643176"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a>*    cairo_pattern_reference             (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
 <p>
 Increases the reference count on <em class="parameter"><code>pattern</code></em> by one. This prevents
 <em class="parameter"><code>pattern</code></em> from being destroyed until a matching call to
@@ -931,9 +931,9 @@ The number of references to a <a class="link" href="cairo-Patterns.html#cairo-pa
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643244"></a><h3>
+<a name="id2643282"></a><h3>
 <a name="cairo-pattern-destroy"></a>cairo_pattern_destroy ()</h3>
-<a class="indexterm" name="id2643254"></a><pre class="programlisting">void                cairo_pattern_destroy               (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
+<a class="indexterm" name="id2643292"></a><pre class="programlisting">void                cairo_pattern_destroy               (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
 <p>
 Decreases the reference count on <em class="parameter"><code>pattern</code></em> by one. If the result is
 zero, then <em class="parameter"><code>pattern</code></em> and all associated resources are freed.  See
@@ -952,9 +952,9 @@ zero, then <em class="parameter"><code>pattern</code></em> and all associated re
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643326"></a><h3>
+<a name="id2643363"></a><h3>
 <a name="cairo-pattern-status"></a>cairo_pattern_status ()</h3>
-<a class="indexterm" name="id2643336"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_status                (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
+<a class="indexterm" name="id2643374"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_status                (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
 <p>
 Checks whether an error has previously occurred for this
 pattern.</p>
@@ -980,9 +980,9 @@ pattern.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643423"></a><h3>
+<a name="id2643461"></a><h3>
 <a name="cairo-extend-t"></a>enum cairo_extend_t</h3>
-<a class="indexterm" name="id2643434"></a><pre class="programlisting">typedef enum _cairo_extend {
+<a class="indexterm" name="id2643471"></a><pre class="programlisting">typedef enum _cairo_extend {
     CAIRO_EXTEND_NONE,
     CAIRO_EXTEND_REPEAT,
     CAIRO_EXTEND_REFLECT,
@@ -1030,9 +1030,9 @@ New entries may be added in future versions.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643550"></a><h3>
+<a name="id2643588"></a><h3>
 <a name="cairo-pattern-set-extend"></a>cairo_pattern_set_extend ()</h3>
-<a class="indexterm" name="id2643561"></a><pre class="programlisting">void                cairo_pattern_set_extend            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2643598"></a><pre class="programlisting">void                cairo_pattern_set_extend            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-Patterns.html#cairo-extend-t">cairo_extend_t</a> extend);</pre>
 <p>
 Sets the mode to be used for drawing outside the area of a pattern.
@@ -1060,9 +1060,9 @@ pattern will be drawn
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643646"></a><h3>
+<a name="id2643684"></a><h3>
 <a name="cairo-pattern-get-extend"></a>cairo_pattern_get_extend ()</h3>
-<a class="indexterm" name="id2643657"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-extend-t">cairo_extend_t</a>      cairo_pattern_get_extend            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
+<a class="indexterm" name="id2643694"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-extend-t">cairo_extend_t</a>      cairo_pattern_get_extend            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
 <p>
 Gets the current extend mode for a pattern.  See <a class="link" href="cairo-Patterns.html#cairo-extend-t"><span class="type">cairo_extend_t</span></a>
 for details on the semantics of each extend strategy.</p>
@@ -1088,9 +1088,9 @@ pattern.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643727"></a><h3>
+<a name="id2643763"></a><h3>
 <a name="cairo-filter-t"></a>enum cairo_filter_t</h3>
-<a class="indexterm" name="id2643740"></a><pre class="programlisting">typedef enum _cairo_filter {
+<a class="indexterm" name="id2643774"></a><pre class="programlisting">typedef enum _cairo_filter {
     CAIRO_FILTER_FAST,
     CAIRO_FILTER_GOOD,
     CAIRO_FILTER_BEST,
@@ -1105,9 +1105,9 @@ pattern.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643759"></a><h3>
+<a name="id2643790"></a><h3>
 <a name="cairo-pattern-set-filter"></a>cairo_pattern_set_filter ()</h3>
-<a class="indexterm" name="id2643773"></a><pre class="programlisting">void                cairo_pattern_set_filter            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2643801"></a><pre class="programlisting">void                cairo_pattern_set_filter            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-Patterns.html#cairo-filter-t">cairo_filter_t</a> filter);</pre>
 <p>
 Sets the filter to be used for resizing when using this pattern.
@@ -1134,9 +1134,9 @@ the pattern
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643869"></a><h3>
+<a name="id2643886"></a><h3>
 <a name="cairo-pattern-get-filter"></a>cairo_pattern_get_filter ()</h3>
-<a class="indexterm" name="id2643882"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-filter-t">cairo_filter_t</a>      cairo_pattern_get_filter            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
+<a class="indexterm" name="id2643896"></a><pre class="programlisting"><a class="link" href="cairo-Patterns.html#cairo-filter-t">cairo_filter_t</a>      cairo_pattern_get_filter            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern);</pre>
 <p>
 Gets the current filter for a pattern.  See <a class="link" href="cairo-Patterns.html#cairo-filter-t"><span class="type">cairo_filter_t</span></a>
 for details on each filter.</p>
@@ -1161,9 +1161,9 @@ for details on each filter.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2643960"></a><h3>
+<a name="id2643965"></a><h3>
 <a name="cairo-pattern-set-matrix"></a>cairo_pattern_set_matrix ()</h3>
-<a class="indexterm" name="id2643973"></a><pre class="programlisting">void                cairo_pattern_set_matrix            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2643975"></a><pre class="programlisting">void                cairo_pattern_set_matrix            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          const <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
 <p>
 Sets the pattern's transformation matrix to <em class="parameter"><code>matrix</code></em>. This matrix is
@@ -1221,7 +1221,7 @@ semantics of <a class="link" href="cairo-cairo-t.html#cairo-set-source"><code cl
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2644121"></a><h3>
+<a name="id2644120"></a><h3>
 <a name="cairo-pattern-get-matrix"></a>cairo_pattern_get_matrix ()</h3>
 <a class="indexterm" name="id2644134"></a><pre class="programlisting">void                cairo_pattern_get_matrix            (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
@@ -1248,7 +1248,7 @@ Stores the pattern's transformation matrix into <em class="parameter"><code>matr
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2644221"></a><h3>
+<a name="id2644220"></a><h3>
 <a name="cairo-pattern-type-t"></a>enum cairo_pattern_type_t</h3>
 <a class="indexterm" name="id2644236"></a><pre class="programlisting">typedef enum _cairo_pattern_type {
     CAIRO_PATTERN_TYPE_SOLID,
@@ -1377,7 +1377,7 @@ object is a nil object, 0 will be returned.
 <div class="refsect2" lang="en">
 <a name="id2644660"></a><h3>
 <a name="cairo-pattern-set-user-data"></a>cairo_pattern_set_user_data ()</h3>
-<a class="indexterm" name="id2644677"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_set_user_data         (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2644676"></a><pre class="programlisting"><a class="link" href="cairo-Error-Handling.html#cairo-status-t">cairo_status_t</a>      cairo_pattern_set_user_data         (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          const <a class="link" href="cairo-Types.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key,
                                                          void *user_data,
                                                          <a class="link" href="cairo-Types.html#cairo-destroy-func-t">cairo_destroy_func_t</a> destroy);</pre>
@@ -1429,7 +1429,7 @@ slot could not be allocated for the user data.
 <div class="refsect2" lang="en">
 <a name="id2644892"></a><h3>
 <a name="cairo-pattern-get-user-data"></a>cairo_pattern_get_user_data ()</h3>
-<a class="indexterm" name="id2644909"></a><pre class="programlisting">void*               cairo_pattern_get_user_data         (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
+<a class="indexterm" name="id2644908"></a><pre class="programlisting">void*               cairo_pattern_get_user_data         (<a class="link" href="cairo-Patterns.html#cairo-pattern-t">cairo_pattern_t</a> *pattern,
                                                          const <a class="link" href="cairo-Types.html#cairo-user-data-key-t">cairo_user_data_key_t</a> *key);</pre>
 <p>
 Return user data previously attached to <em class="parameter"><code>pattern</code></em> using the

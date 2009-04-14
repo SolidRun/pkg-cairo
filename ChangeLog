@@ -1,3 +1,255 @@
+commit d45c003519682e6a3115293da08aa331c8de2cc8
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Jan 14 15:43:33 2008 -0800
+
+    Update cairo version to 1.4.14 and library versioning to 13:7:11
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a6635fb5f5375b0ce2d5a1287654137f25dcc1bf
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Jan 14 15:41:43 2008 -0800
+
+    NEWS: Mention the mixed-format-glyphs fix and update the date.
+
+ NEWS |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit 549234a27f6b25cd0577874aa2d047515041fae3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Jan 14 16:14:02 2008 -0500
+
+    [scaled-font] Upgrade glyph mask as needed in case of mixed-format glyphs
+    
+    In ecb895803b9d2a3fd142f4a2c694ca08c5581f0e Carl made fallback show_glyphs
+    always use a A8 mask in case of mixed-format glyphs.  That's suboptimal if
+    there are ARGB32 glyphs.  Using masks smartly we can implement the desired
+    behavior.  Done now.
+    
+    Cherry picked from commit 22d7f311f7733a57ece5d91708b2b5da9b71de86
+
+ src/cairo-image-surface.c |   18 ++++++++++++++
+ src/cairo-scaled-font.c   |   55 +++++++++++++++++++++++++-------------------
+ src/cairoint.h            |    3 ++
+ 3 files changed, 52 insertions(+), 24 deletions(-)
+
+commit 35ed062a6269feeebae70c98000b60630a9ec3bd
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jan 11 12:28:49 2008 -0800
+
+    Migrate glyph mask to A8 in case of mixed-format glyphs.
+    
+    This fixes the remaining image-backend problems with bug 13479:
+    
+    	Ugly Courier New font with cairo 1.4.12
+    	https://bugs.freedesktop.org/show_bug.cgi?id=13479
+    
+    although the xlib-backend had been fixed previously.
+    
+    Specifically, if an A1 glyph is first encountered, then subsequent
+    glyphs will still be rendered with antialiasing, (previously they
+    would be rendered very poorly without antialiasing).
+    
+    Similarly, if the first glyph encountered has component-alpha
+    sub-pixel antialiasing and then an A1 or A8 glyph is encountered
+    then all glyphs will rendered in A8 (grayscale antialiasing).
+    Previously, the non-subpixel-antialiased glyphs would not appear
+    at all.
+    
+    Cherry picked from commit ecb895803b9d2a3fd142f4a2c694ca08c5581f0e
+
+ src/cairo-scaled-font.c |   51 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 48 insertions(+), 3 deletions(-)
+
+commit 69549125feb24118ad35403a4be647f8bb692e86
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Dec 17 01:14:27 2007 -0500
+
+    [cairo-xlib] Support scale fonts with glyphs of multiple formats (#13479)
+    
+    We maintain three Xrender glyphsets per scaled font, one for each of A1, A8,
+    and ARGB32.  This is required to correctly support fonts with bitmaps for
+    some glyphs but not all.
+    (cherry picked from commit 805b668260c47e6d3d854361fcc53f12bd2a57e1)
+
+ src/cairo-xlib-surface.c |  179 +++++++++++++++++++++++++++++++++++-----------
+ 1 files changed, 136 insertions(+), 43 deletions(-)
+
+commit 8776061068fba967dbafb43fac3af7df90464cb8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Dec 17 01:19:53 2007 -0500
+
+    [cairo-ft] Revert "Force non-AA text when using a bitmap strike with only scaling transform." (#13479)
+    
+    The reasoning for that commit was that fonts with bitmap strikes should be
+    rendered with antialiasing off for those (hopefully) few glyphs that don't
+    have a bitmap.
+    
+    However, it turns out, there are fonts that have some, but very few, bitmaps,
+    and this changed forces non-AA rendering on them.  We now support multiple
+    glyph formats per font in the Xlib backend, so backing this out to let every
+    glyph render as is.  Fontconfig rules can be used to force AA off on a per-font
+    basis.
+    
+    This reverts commit 06af5c2891b89da28581c30afcde06c5442884db.
+    (cherry picked from commit 83963d2a9ec445e23cfbe692b877177a9d9d135e)
+
+ src/cairo-ft-font.c |   24 ------------------------
+ 1 files changed, 0 insertions(+), 24 deletions(-)
+
+commit ca1cd4c28e4082e42b843a805e27d7d2b3dfeb04
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Jan 8 16:23:45 2008 -0800
+
+    NEWS: Add notes for 1.4.14
+
+ NEWS |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+
+commit 0a57aa8ac1839c386ef8329dba4fdbc9d479a5fa
+Author: Keith Packard <keithp@keithp.com>
+Date:   Thu Jan 3 18:37:53 2008 -0800
+
+    Directly check the miter corner to detect wild miters.
+    
+    The original test for wild miters would only work with a square transform
+    (and, in fact, the original code required an identity transform). Instead of
+    fixing that, I replaced it with a more obvious test which makes sure the
+    miter corner lies between the two faces and not out in space somewhere.
+    (cherry picked from commit 7cf9a6e4e39b18f4967afdb7c3c71eca5f4ba8c7)
+
+ src/cairo-path-stroke.c |  139 +++++++++++++++++++----------------------------
+ 1 files changed, 57 insertions(+), 82 deletions(-)
+
+commit 3fb0eaca42b00808d1c61031e385c95768195e7f
+Author: Keith Packard <keithp@keithp.com>
+Date:   Thu Jan 3 18:17:24 2008 -0800
+
+    Add new miter-precision test. Checks miter joins at many scales.
+    
+    This demonstrates an error in cairo where miter joins are replaced with
+    bevels at high scale factors due to a test added to eliminate wild miters
+    drawn when the line faces are nearly parallel.
+    
+    Cherry picked from commit 81e029edda8c0404c6f0bd1b618e77fb55777c64
+
+ test/.gitignore              |    1 +
+ test/Makefile.am             |    1 +
+ test/miter-precision-ref.png |  Bin 0 -> 931 bytes
+ test/miter-precision.c       |   80 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 82 insertions(+), 0 deletions(-)
+
+commit 1ea07fdb700c99f68e4131dfe69564b863b545bf
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Wed Dec 12 23:45:07 2007 +1030
+
+    PS: fix compiler warning introduced by previous commit
+
+ src/cairo-ps-surface.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit cd0ea998b6bb0fb2dc93df83ca7ce5fd7517212a
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Wed Dec 12 22:52:10 2007 +1030
+
+    PS: Use the correct bounding box in Type 3 fonts
+    
+    Previously this was a fixed size.
+
+ src/cairo-ps-surface.c |   43 ++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 36 insertions(+), 7 deletions(-)
+
+commit 5c3f22816f8324d2847b885e4c9c3e94837ce2bc
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Sun Dec 2 00:50:28 2007 +1030
+
+    Fix regression in Type1 Fallback
+    
+    As a result of the changes to improve the status checking,
+    _cairo_type2_charstrings_init() was failing due to the failure
+    status returned when the font->output stream is destroyed.
+    This is because _cairo_type2_charstrings_init() does not
+    create an output stream.
+    
+    Fix this by initializing font->output to NULL and only
+    destroy it if not NULL.
+    (cherry picked from commit 1441e165f2338bc6a8e2945baca77611ff417b2f)
+
+ src/cairo-type1-fallback.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit a94dc7499bd9bcff0e562bb81eba4e8c74e97163
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Thu Nov 29 23:18:45 2007 +1030
+
+    PS: Use correct glyphs widths for Type 3 fonts
+    
+    Previously the widths were set to 0.
+    (cherry picked from commit f4b93cceb7fb83de558ed058915f92d4f75c1a6a)
+
+ src/cairo-ps-surface.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+commit 42b0552f119b4d2a29d76647eec89eb913021338
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Thu Nov 29 22:54:54 2007 +1030
+
+    PS: Fix the bounding boxes of Type 3 glyphs
+    
+    When viewing with ghostscript the glyphs were clipped
+    (cherry picked from commit 78e8d3d9bd2d4652f636a668a3fa53ef9edfd9ae)
+
+ src/cairo-ps-surface.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 5d591b7649c3379a15e012ae160727853aca4b4d
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Wed Dec 12 22:27:13 2007 +1030
+
+    PS: Fix typecheck error with Type 3 and recent versions of gs
+    
+    Ghostscipt requires the encoding vector to be filled in.
+
+ src/cairo-ps-surface.c |   40 ++++++++++++++++++++++++----------------
+ 1 files changed, 24 insertions(+), 16 deletions(-)
+
+commit 9b4d39808875bb642de80ee61ab76ef83829ab3b
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Thu Nov 29 09:20:01 2007 +1030
+
+    PS: Ensure that xyshow operator has a pair of offsets for each glyph
+    
+    The last entry should have been "0 0" instead of "0".
+    (cherry picked from commit 5e8f60531a09f357db38c4b646b1bbd29b97a891)
+
+ src/cairo-ps-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 3551152005e38947cc4233e25744ec99eb4587cc
+Author: Bernardo Innocenti <bernie@codewiz.org>
+Date:   Wed Dec 5 07:04:09 2007 -0500
+
+    Fix version check for buggy_repeat on modular Xserver 1.x
+    
+    The versioning of the X server has restarted from 1.0 in the
+    modular build.  So we adjust the text to avoid considering
+    the new servers buggy.
+    
+    Cherry picked from commit d4138d1161c6b683fd0ef62a8d49ccf4ec4674bc
+
+ src/cairo-xlib-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 957056368b71ce72599a79fd1ea8f8d72cfaaaf5
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Nov 27 08:05:08 2007 -0800
+
+    Increment cairo version to 1.4.13 after the 1.4.12 release
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 442fa9a106b01f17699397dcc95298071a50fd6d
 Author: Carl Worth <cworth@cworth.org>
 Date:   Mon Nov 26 22:31:32 2007 -0800
