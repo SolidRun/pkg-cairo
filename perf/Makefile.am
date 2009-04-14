@@ -1,25 +1,27 @@
-# We're using _GNU_SOURCE to get the prototype for asprintf. This may
-# not be the most portable approach, but it is pragmatic and I'm
-# willing to do something cleaner as soon as it causes someone a
-# problem.
-INCLUDES =					\
-	-D_GNU_SOURCE				\
+include $(top_srcdir)/build/Makefile.am.common
+
+AM_CPPFLAGS =					\
 	-I$(srcdir)				\
 	-I$(top_srcdir)/boilerplate		\
 	-I$(top_srcdir)/src			\
 	-I$(top_builddir)/src			\
 	$(CAIRO_CFLAGS)
 
-EXTRA_PROGRAMS = cairo-perf cairo-perf-diff-files
-EXTRA_DIST = cairo-perf-diff
+EXTRA_PROGRAMS += cairo-perf cairo-perf-diff-files cairo-perf-graph-files
+EXTRA_DIST += cairo-perf-diff
+EXTRA_LTLIBRARIES += libcairoperf.la
+
+LDADD = $(top_builddir)/boilerplate/libcairoboilerplate.la \
+	$(top_builddir)/src/libcairo.la \
+	libcairoperf.la \
+	$(CAIROPERF_LIBS)
 
 cairo_perf_SOURCES =		\
 	cairo-perf.c		\
 	cairo-perf.h		\
 	cairo-perf-cover.c	\
-	cairo-stats.c		\
-	cairo-stats.h		\
 	box-outline.c		\
+	composite-checker.c	\
 	fill.c			\
 	long-lines.c		\
 	mosaic.c		\
@@ -28,11 +30,12 @@ cairo_perf_SOURCES =		\
 	paint-with-alpha.c	\
 	pattern_create_radial.c \
 	rectangles.c		\
+	rounded-rectangles.c	\
 	stroke.c		\
 	subimage_copy.c		\
 	tessellate.c		\
-	unaligned-clip.c	\
 	text.c			\
+	unaligned-clip.c	\
 	world-map.c		\
 	world-map.h		\
 	zrusin.c		\
@@ -49,14 +52,20 @@ cairo_perf_SOURCES += cairo-perf-posix.c
 endif
 endif
 
-cairo_perf_diff_files_SOURCES =	\
-	cairo-perf-diff-files.c \
+libcairoperf_la_SOURCES = \
+	cairo-perf-report.c	\
 	cairo-stats.c		\
 	cairo-stats.h
 
-LDADD = $(top_builddir)/boilerplate/libcairoboilerplate.la \
-	$(top_builddir)/src/libcairo.la \
-	$(CAIROPERF_LIBS)
+cairo_perf_diff_files_SOURCES =	\
+	cairo-perf-diff-files.c
+
+cairo_perf_graph_files_SOURCES = \
+	cairo-perf-graph.h \
+	cairo-perf-graph-files.c \
+	cairo-perf-graph-widget.c
+cairo_perf_graph_files_CFLAGS = @gtk_CFLAGS@
+cairo_perf_graph_files_LDADD = @gtk_LIBS@ $(LDADD)
 
 $(top_builddir)/boilerplate/libcairoboilerplate.la: $(top_builddir)/src/libcairo.la
 	cd $(top_builddir)/boilerplate && $(MAKE) $(AM_MAKEFLAGS) libcairoboilerplate.la
@@ -77,12 +86,12 @@ CAIRO_PERF_ENVIRONMENT = CAIRO_PERF_ITERATIONS="$(ITERS)" CAIRO_TEST_TARGET="$(T
 # Cap the maximum number of iterations during 'make check'
 TESTS_ENVIRONMENT = CAIRO_TEST_TARGET="$(TARGETS)" CAIRO_PERF_ITERATIONS="10"
 
-TESTS = cairo-perf$(EXEEXT)
+TESTS += cairo-perf$(EXEEXT)
 
 perf: cairo-perf$(EXEEXT)
 	$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf$(EXEEXT)
 
-html: index.html
+html-local: index.html
 
 index.html: cairo-perf$(EXEEXT)
 	$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf-diff -h HEAD > $@
@@ -95,8 +104,7 @@ VALGRIND_MEMCHECK_FLAGS = \
 	--leak-check=yes --show-reachable=yes
 VALGRIND_CALLGRIND_FLAGS = \
 	--tool=callgrind
-CLEANFILES = \
-	$(EXTRA_PROGRAMS) \
+CLEANFILES += \
 	valgrind-log \
 	callgrind.out.* \
 	index.html
@@ -114,6 +122,6 @@ perf-callgrind:
 	    $(top_builddir)/libtool --mode=execute \
 	    valgrind $(VALGRIND_CALLGRIND_FLAGS) $(EXTRA_VALGRIND_FLAGS)'
 
-.PHONY: perf html check-valgrind perf-valgrind perf-callgrind
+.PHONY: perf check-valgrind perf-valgrind perf-callgrind
 
 EXTRA_DIST += Makefile.win32

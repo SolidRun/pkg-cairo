@@ -40,13 +40,12 @@ static cairo_test_draw_function_t draw;
  * CAIRO_EXTEND_NONE and a non identity pattern matrix.
  */
 
-cairo_test_t test = {
+static const cairo_test_t test = {
     "meta-surface-pattern",
     "Paint meta surface pattern with non identity pattern matrix",
     WIDTH, HEIGHT,
     draw
 };
-
 
 static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
@@ -61,8 +60,8 @@ draw (cairo_t *cr, int width, int height)
     pat_surface = cairo_surface_create_similar (cairo_get_group_target (cr),
 						CAIRO_CONTENT_COLOR_ALPHA,
 						PAT_WIDTH, PAT_HEIGHT);
-
     cr2 = cairo_create (pat_surface);
+    cairo_surface_destroy (pat_surface);
 
     cairo_set_source_rgba (cr2, 1, 0, 1, 0.5);
     cairo_rectangle (cr2, PAT_WIDTH/6.0, PAT_HEIGHT/6.0, PAT_WIDTH/4.0, PAT_HEIGHT/4.0);
@@ -105,9 +104,8 @@ draw (cairo_t *cr, int width, int height)
     cairo_line_to (cr2, PAT_WIDTH/4.0, PAT_WIDTH);
     cairo_stroke (cr2);
 
+    pattern = cairo_pattern_create_for_surface (cairo_get_target (cr2));
     cairo_destroy (cr2);
-    pattern = cairo_pattern_create_for_surface (pat_surface);
-    cairo_surface_destroy (pat_surface);
 
     cairo_matrix_init_identity (&mat);
     cairo_matrix_scale (&mat, 2, 1.5);

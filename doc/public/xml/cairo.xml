@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-cairo-t">
+<refentry id="cairo-context">
 <refmeta>
-<refentrytitle role="top_of_page">cairo_t</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-context.top_of_page">cairo_t</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>CAIRO Library</refmiscinfo>
 </refmeta>
@@ -16,13 +16,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="cairo-context.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 typedef             <link linkend="cairo-t">cairo_t</link>;
 <link linkend="cairo-t">cairo_t</link>*            <link linkend="cairo-create">cairo_create</link>                        (<link linkend="cairo-surface-t">cairo_surface_t</link> *target);
 <link linkend="cairo-t">cairo_t</link>*            <link linkend="cairo-reference">cairo_reference</link>                     (<link linkend="cairo-t">cairo_t</link> *cr);
@@ -140,7 +137,6 @@ unsigned <link linkend="int">int</link>        <link linkend="cairo-get-referenc
                                                          <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);
 <link linkend="void">void</link>*               <link linkend="cairo-get-user-data">cairo_get_user_data</link>                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -152,7 +148,7 @@ unsigned <link linkend="int">int</link>        <link linkend="cairo-get-referenc
 
 
 
-<refsect1 role="desc">
+<refsect1 id="cairo-context.description" role="desc">
 <title role="desc.title">Description</title>
 
   <para>
@@ -169,11 +165,11 @@ unsigned <link linkend="int">int</link>        <link linkend="cairo-get-referenc
   </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="cairo-context.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="cairo-t" role="typedef"/>cairo_t</title>
-<indexterm><primary>cairo_t</primary></indexterm><programlisting>typedef struct _cairo cairo_t;
+<refsect2 id="cairo-t" role="typedef">
+<title>cairo_t</title>
+<indexterm zone="cairo-t"><primary>cairo_t</primary></indexterm><programlisting>typedef struct _cairo cairo_t;
 </programlisting>
 <para>
 A <link linkend="cairo-t"><type>cairo_t</type></link> contains the current state of the rendering device,
@@ -190,15 +186,15 @@ Memory management of <link linkend="cairo-t"><type>cairo_t</type></link> is done
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-create" role="function"/>cairo_create ()</title>
-<indexterm><primary>cairo_create</primary></indexterm><programlisting><link linkend="cairo-t">cairo_t</link>*            cairo_create                        (<link linkend="cairo-surface-t">cairo_surface_t</link> *target);</programlisting>
+<refsect2 id="cairo-create" role="function">
+<title>cairo_create ()</title>
+<indexterm zone="cairo-create"><primary>cairo_create</primary></indexterm><programlisting><link linkend="cairo-t">cairo_t</link>*            cairo_create                        (<link linkend="cairo-surface-t">cairo_surface_t</link> *target);</programlisting>
 <para>
 Creates a new <link linkend="cairo-t"><type>cairo_t</type></link> with all graphics state parameters set to
 default values and with <parameter>target</parameter> as a target surface. The target
 surface should be constructed with a backend-specific function such
 as <link linkend="cairo-image-surface-create"><function>cairo_image_surface_create()</function></link> (or any other
-cairo_<emphasis>backend</emphasis>_surface_create variant).
+cairo_<emphasis>backend</emphasis><link linkend="surface-create"><function>_surface_create()</function></link> variant).
 </para>
 <para>
 This function references <parameter>target</parameter>, so you can immediately
@@ -220,9 +216,9 @@ maintain a separate reference to it.</para>
  be done.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-reference" role="function"/>cairo_reference ()</title>
-<indexterm><primary>cairo_reference</primary></indexterm><programlisting><link linkend="cairo-t">cairo_t</link>*            cairo_reference                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-reference" role="function">
+<title>cairo_reference ()</title>
+<indexterm zone="cairo-reference"><primary>cairo_reference</primary></indexterm><programlisting><link linkend="cairo-t">cairo_t</link>*            cairo_reference                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Increases the reference count on <parameter>cr</parameter> by one. This prevents
 <parameter>cr</parameter> from being destroyed until a matching call to <link linkend="cairo-destroy"><function>cairo_destroy()</function></link>
@@ -240,9 +236,9 @@ The number of references to a <link linkend="cairo-t"><type>cairo_t</type></link
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the referenced <link linkend="cairo-t"><type>cairo_t</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-destroy" role="function"/>cairo_destroy ()</title>
-<indexterm><primary>cairo_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_destroy                       (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-destroy" role="function">
+<title>cairo_destroy ()</title>
+<indexterm zone="cairo-destroy"><primary>cairo_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_destroy                       (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Decreases the reference count on <parameter>cr</parameter> by one. If the result
 is zero, then <parameter>cr</parameter> and all associated resources are freed.
@@ -254,9 +250,9 @@ See <link linkend="cairo-reference"><function>cairo_reference()</function></link
 <listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-status" role="function"/>cairo_status ()</title>
-<indexterm><primary>cairo_status</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_status                        (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-status" role="function">
+<title>cairo_status ()</title>
+<indexterm zone="cairo-status"><primary>cairo_status</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_status                        (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Checks whether an error has previously occurred for this context.</para>
 <para>
@@ -268,9 +264,9 @@ Checks whether an error has previously occurred for this context.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current status of this context, see <link linkend="cairo-status-t"><type>cairo_status_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-save" role="function"/>cairo_save ()</title>
-<indexterm><primary>cairo_save</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_save                          (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-save" role="function">
+<title>cairo_save ()</title>
+<indexterm zone="cairo-save"><primary>cairo_save</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_save                          (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Makes a copy of the current state of <parameter>cr</parameter> and saves it
 on an internal stack of saved states for <parameter>cr</parameter>. When
@@ -291,9 +287,9 @@ any saved states will be freed along with the <link linkend="cairo-t"><type>cair
 <listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-restore" role="function"/>cairo_restore ()</title>
-<indexterm><primary>cairo_restore</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_restore                       (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-restore" role="function">
+<title>cairo_restore ()</title>
+<indexterm zone="cairo-restore"><primary>cairo_restore</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_restore                       (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Restores <parameter>cr</parameter> to the state saved by a preceding call to
 <link linkend="cairo-save"><function>cairo_save()</function></link> and removes that state from the stack of
@@ -305,9 +301,9 @@ saved states.</para>
 <listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-target" role="function"/>cairo_get_target ()</title>
-<indexterm><primary>cairo_get_target</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>*    cairo_get_target                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-target" role="function">
+<title>cairo_get_target ()</title>
+<indexterm zone="cairo-get-target"><primary>cairo_get_target</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>*    cairo_get_target                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the target surface for the cairo context as passed to
 <link linkend="cairo-create"><function>cairo_create()</function></link>.
@@ -328,9 +324,9 @@ A nil surface is indicated by <link linkend="cairo-surface-status"><function>cai
 keep a reference to it, you must call <link linkend="cairo-surface-reference"><function>cairo_surface_reference()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-push-group" role="function" condition="since:1.2"/>cairo_push_group ()</title>
-<indexterm role="1.2"><primary>cairo_push_group</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_push_group                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-push-group" role="function" condition="since:1.2">
+<title>cairo_push_group ()</title>
+<indexterm zone="cairo-push-group" role="1.2"><primary>cairo_push_group</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_push_group                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Temporarily redirects drawing to an intermediate surface known as a
 group. The redirection lasts until the group is completed by a call
@@ -357,7 +353,7 @@ group, (the pop_group functions call <link linkend="cairo-restore"><function>cai
 </para>
 <para>
 By default the intermediate group will have a content type of
-CAIRO_CONTENT_COLOR_ALPHA. Other content types can be chosen for
+<link linkend="CAIRO-CONTENT-COLOR-ALPHA:CAPS"><literal>CAIRO_CONTENT_COLOR_ALPHA</literal></link>. Other content types can be chosen for
 the group by using <link linkend="cairo-push-group-with-content"><function>cairo_push_group_with_content()</function></link> instead.
 </para>
 <para>
@@ -383,9 +379,9 @@ cairo_paint_with_alpha (cr, alpha);
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-push-group-with-content" role="function" condition="since:1.2"/>cairo_push_group_with_content ()</title>
-<indexterm role="1.2"><primary>cairo_push_group_with_content</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_push_group_with_content       (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-push-group-with-content" role="function" condition="since:1.2">
+<title>cairo_push_group_with_content ()</title>
+<indexterm zone="cairo-push-group-with-content" role="1.2"><primary>cairo_push_group_with_content</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_push_group_with_content       (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-content-t">cairo_content_t</link> content);</programlisting>
 <para>
 Temporarily redirects drawing to an intermediate surface known as a
@@ -411,9 +407,9 @@ detailed description of group rendering.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-pop-group" role="function" condition="since:1.2"/>cairo_pop_group ()</title>
-<indexterm role="1.2"><primary>cairo_pop_group</primary></indexterm><programlisting><link linkend="cairo-pattern-t">cairo_pattern_t</link>*    cairo_pop_group                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-pop-group" role="function" condition="since:1.2">
+<title>cairo_pop_group ()</title>
+<indexterm zone="cairo-pop-group" role="1.2"><primary>cairo_pop_group</primary></indexterm><programlisting><link linkend="cairo-pattern-t">cairo_pattern_t</link>*    cairo_pop_group                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Terminates the redirection begun by a call to <link linkend="cairo-push-group"><function>cairo_push_group()</function></link> or
 <link linkend="cairo-push-group-with-content"><function>cairo_push_group_with_content()</function></link> and returns a new pattern
@@ -439,9 +435,9 @@ caller owns the returned object and should call
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-pop-group-to-source" role="function" condition="since:1.2"/>cairo_pop_group_to_source ()</title>
-<indexterm role="1.2"><primary>cairo_pop_group_to_source</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_pop_group_to_source           (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-pop-group-to-source" role="function" condition="since:1.2">
+<title>cairo_pop_group_to_source ()</title>
+<indexterm zone="cairo-pop-group-to-source" role="1.2"><primary>cairo_pop_group_to_source</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_pop_group_to_source           (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Terminates the redirection begun by a call to <link linkend="cairo-push-group"><function>cairo_push_group()</function></link> or
 <link linkend="cairo-push-group-with-content"><function>cairo_push_group_with_content()</function></link> and installs the resulting pattern
@@ -475,9 +471,9 @@ group.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-group-target" role="function" condition="since:1.2"/>cairo_get_group_target ()</title>
-<indexterm role="1.2"><primary>cairo_get_group_target</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>*    cairo_get_group_target              (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-group-target" role="function" condition="since:1.2">
+<title>cairo_get_group_target ()</title>
+<indexterm zone="cairo-get-group-target" role="1.2"><primary>cairo_get_group_target</primary></indexterm><programlisting><link linkend="cairo-surface-t">cairo_surface_t</link>*    cairo_get_group_target              (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current destination surface for the context. This is either
 the original target surface as passed to <link linkend="cairo-create"><function>cairo_create()</function></link> or the target
@@ -502,9 +498,9 @@ keep a reference to it, you must call <link linkend="cairo-surface-reference"><f
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-source-rgb" role="function"/>cairo_set_source_rgb ()</title>
-<indexterm><primary>cairo_set_source_rgb</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source_rgb                (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-source-rgb" role="function">
+<title>cairo_set_source_rgb ()</title>
+<indexterm zone="cairo-set-source-rgb"><primary>cairo_set_source_rgb</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source_rgb                (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> red,
                                                          <link linkend="double">double</link> green,
                                                          <link linkend="double">double</link> blue);</programlisting>
@@ -520,7 +516,7 @@ clamped.
 </para>
 <para>
 The default source pattern is opaque black, (that is, it is
-equivalent to cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)).</para>
+equivalent to cairo_set_source_rgb(cr, 0.0, 0.0, 0.0)).</para>
 <para>
 
 </para><variablelist role="params">
@@ -537,9 +533,9 @@ equivalent to cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)).</para>
 <listitem><simpara> blue component of color
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-source-rgba" role="function"/>cairo_set_source_rgba ()</title>
-<indexterm><primary>cairo_set_source_rgba</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source_rgba               (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-source-rgba" role="function">
+<title>cairo_set_source_rgba ()</title>
+<indexterm zone="cairo-set-source-rgba"><primary>cairo_set_source_rgba</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source_rgba               (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> red,
                                                          <link linkend="double">double</link> green,
                                                          <link linkend="double">double</link> blue,
@@ -556,7 +552,7 @@ will be clamped.
 </para>
 <para>
 The default source pattern is opaque black, (that is, it is
-equivalent to cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)).</para>
+equivalent to cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0)).</para>
 <para>
 
 </para><variablelist role="params">
@@ -576,9 +572,9 @@ equivalent to cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)).</para>
 <listitem><simpara> alpha component of color
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-source" role="function"/>cairo_set_source ()</title>
-<indexterm><primary>cairo_set_source</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source                    (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-source" role="function">
+<title>cairo_set_source ()</title>
+<indexterm zone="cairo-set-source"><primary>cairo_set_source</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source                    (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-pattern-t">cairo_pattern_t</link> *source);</programlisting>
 <para>
 Sets the source pattern within <parameter>cr</parameter> to <parameter>source</parameter>. This pattern
@@ -593,7 +589,7 @@ will not affect the source pattern. See <link linkend="cairo-pattern-set-matrix"
 </para>
 <para>
 The default source pattern is a solid pattern that is opaque black,
-(that is, it is equivalent to cairo_set_source_rgb (cr, 0.0, 0.0,
+(that is, it is equivalent to cairo_set_source_rgb(cr, 0.0, 0.0,
 0.0)).</para>
 <para>
 
@@ -606,9 +602,9 @@ The default source pattern is a solid pattern that is opaque black,
 subsequent drawing operations.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-source-surface" role="function"/>cairo_set_source_surface ()</title>
-<indexterm><primary>cairo_set_source_surface</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source_surface            (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-source-surface" role="function">
+<title>cairo_set_source_surface ()</title>
+<indexterm zone="cairo-set-source-surface"><primary>cairo_set_source_surface</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_source_surface            (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
                                                          <link linkend="double">double</link> x,
                                                          <link linkend="double">double</link> y);</programlisting>
@@ -646,9 +642,9 @@ repeating pattern with <link linkend="cairo-pattern-set-extend"><function>cairo_
 <listitem><simpara> User-space Y coordinate for surface origin
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-source" role="function"/>cairo_get_source ()</title>
-<indexterm><primary>cairo_get_source</primary></indexterm><programlisting><link linkend="cairo-pattern-t">cairo_pattern_t</link>*    cairo_get_source                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-source" role="function">
+<title>cairo_get_source ()</title>
+<indexterm zone="cairo-get-source"><primary>cairo_get_source</primary></indexterm><programlisting><link linkend="cairo-pattern-t">cairo_pattern_t</link>*    cairo_get_source                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current source pattern for <parameter>cr</parameter>.</para>
 <para>
@@ -662,9 +658,9 @@ cairo. To keep a reference to it, you must call
 <link linkend="cairo-pattern-reference"><function>cairo_pattern_reference()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-antialias-t" role="enum"/>enum cairo_antialias_t</title>
-<indexterm><primary>cairo_antialias_t</primary></indexterm><programlisting>typedef enum _cairo_antialias {
+<refsect2 id="cairo-antialias-t" role="enum">
+<title>enum cairo_antialias_t</title>
+<indexterm zone="cairo-antialias-t"><primary>cairo_antialias_t</primary></indexterm><programlisting>typedef enum _cairo_antialias {
     CAIRO_ANTIALIAS_DEFAULT,
     CAIRO_ANTIALIAS_NONE,
     CAIRO_ANTIALIAS_GRAY,
@@ -676,34 +672,34 @@ Specifies the type of antialiasing to do when rendering text or shapes.</para>
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-ANTIALIAS-DEFAULT:CAPS" role="constant"/><literal>CAIRO_ANTIALIAS_DEFAULT</literal></term>
+<varlistentry id="CAIRO-ANTIALIAS-DEFAULT:CAPS" role="constant">
+<term><literal>CAIRO_ANTIALIAS_DEFAULT</literal></term>
 <listitem><simpara> Use the default antialiasing for
   the subsystem and target device
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-ANTIALIAS-NONE:CAPS" role="constant"/><literal>CAIRO_ANTIALIAS_NONE</literal></term>
+<varlistentry id="CAIRO-ANTIALIAS-NONE:CAPS" role="constant">
+<term><literal>CAIRO_ANTIALIAS_NONE</literal></term>
 <listitem><simpara> Use a bilevel alpha mask
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-ANTIALIAS-GRAY:CAPS" role="constant"/><literal>CAIRO_ANTIALIAS_GRAY</literal></term>
+<varlistentry id="CAIRO-ANTIALIAS-GRAY:CAPS" role="constant">
+<term><literal>CAIRO_ANTIALIAS_GRAY</literal></term>
 <listitem><simpara> Perform single-color antialiasing (using
  shades of gray for black text on a white background, for example).
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-ANTIALIAS-SUBPIXEL:CAPS" role="constant"/><literal>CAIRO_ANTIALIAS_SUBPIXEL</literal></term>
+<varlistentry id="CAIRO-ANTIALIAS-SUBPIXEL:CAPS" role="constant">
+<term><literal>CAIRO_ANTIALIAS_SUBPIXEL</literal></term>
 <listitem><simpara> Perform antialiasing by taking
  advantage of the order of subpixel elements on devices
  such as LCD panels
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-antialias" role="function"/>cairo_set_antialias ()</title>
-<indexterm><primary>cairo_set_antialias</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_antialias                 (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-antialias" role="function">
+<title>cairo_set_antialias ()</title>
+<indexterm zone="cairo-set-antialias"><primary>cairo_set_antialias</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_antialias                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-antialias-t">cairo_antialias_t</link> antialias);</programlisting>
 <para>
 Set the antialiasing mode of the rasterizer used for drawing shapes.
@@ -724,9 +720,9 @@ Note that this option does not affect text rendering, instead see
 <listitem><simpara> the new antialiasing mode
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-antialias" role="function"/>cairo_get_antialias ()</title>
-<indexterm><primary>cairo_get_antialias</primary></indexterm><programlisting><link linkend="cairo-antialias-t">cairo_antialias_t</link>   cairo_get_antialias                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-antialias" role="function">
+<title>cairo_get_antialias ()</title>
+<indexterm zone="cairo-get-antialias"><primary>cairo_get_antialias</primary></indexterm><programlisting><link linkend="cairo-antialias-t">cairo_antialias_t</link>   cairo_get_antialias                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current shape antialiasing mode, as set by <link linkend="cairo-set-shape-antialias"><function>cairo_set_shape_antialias()</function></link>.</para>
 <para>
@@ -738,9 +734,9 @@ Gets the current shape antialiasing mode, as set by <link linkend="cairo-set-sha
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current shape antialiasing mode.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-dash" role="function"/>cairo_set_dash ()</title>
-<indexterm><primary>cairo_set_dash</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_dash                      (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-dash" role="function">
+<title>cairo_set_dash ()</title>
+<indexterm zone="cairo-set-dash"><primary>cairo_set_dash</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_dash                      (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          const <link linkend="double">double</link> *dashes,
                                                          <link linkend="int">int</link> num_dashes,
                                                          <link linkend="double">double</link> offset);</programlisting>
@@ -790,9 +786,9 @@ If any value in <parameter>dashes</parameter> is negative, or if all values are 
 <listitem><simpara> an offset into the dash pattern at which the stroke should start
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-dash-count" role="function" condition="since:1.4"/>cairo_get_dash_count ()</title>
-<indexterm role="1.4"><primary>cairo_get_dash_count</primary></indexterm><programlisting><link linkend="int">int</link>                 cairo_get_dash_count                (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-dash-count" role="function" condition="since:1.4">
+<title>cairo_get_dash_count ()</title>
+<indexterm zone="cairo-get-dash-count" role="1.4"><primary>cairo_get_dash_count</primary></indexterm><programlisting><link linkend="int">int</link>                 cairo_get_dash_count                (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 This function returns the length of the dash array in <parameter>cr</parameter> (0 if dashing
 is not currently in effect).
@@ -810,9 +806,9 @@ See also <link linkend="cairo-set-dash"><function>cairo_set_dash()</function></l
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-dash" role="function" condition="since:1.4"/>cairo_get_dash ()</title>
-<indexterm role="1.4"><primary>cairo_get_dash</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_get_dash                      (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-get-dash" role="function" condition="since:1.4">
+<title>cairo_get_dash ()</title>
+<indexterm zone="cairo-get-dash" role="1.4"><primary>cairo_get_dash</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_get_dash                      (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> *dashes,
                                                          <link linkend="double">double</link> *offset);</programlisting>
 <para>
@@ -833,9 +829,9 @@ enough to hold at least the number of values returned by
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-fill-rule-t" role="enum"/>enum cairo_fill_rule_t</title>
-<indexterm><primary>cairo_fill_rule_t</primary></indexterm><programlisting>typedef enum _cairo_fill_rule {
+<refsect2 id="cairo-fill-rule-t" role="enum">
+<title>enum cairo_fill_rule_t</title>
+<indexterm zone="cairo-fill-rule-t"><primary>cairo_fill_rule_t</primary></indexterm><programlisting>typedef enum _cairo_fill_rule {
     CAIRO_FILL_RULE_WINDING,
     CAIRO_FILL_RULE_EVEN_ODD
 } cairo_fill_rule_t;
@@ -858,8 +854,8 @@ New entries may be added in future versions.</para>
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-FILL-RULE-WINDING:CAPS" role="constant"/><literal>CAIRO_FILL_RULE_WINDING</literal></term>
+<varlistentry id="CAIRO-FILL-RULE-WINDING:CAPS" role="constant">
+<term><literal>CAIRO_FILL_RULE_WINDING</literal></term>
 <listitem><simpara> If the path crosses the ray from
 left-to-right, counts +1. If the path crosses the ray
 from right to left, counts -1. (Left and right are determined
@@ -867,8 +863,8 @@ from the perspective of looking along the ray from the starting
 point.) If the total count is non-zero, the point will be filled.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-FILL-RULE-EVEN-ODD:CAPS" role="constant"/><literal>CAIRO_FILL_RULE_EVEN_ODD</literal></term>
+<varlistentry id="CAIRO-FILL-RULE-EVEN-ODD:CAPS" role="constant">
+<term><literal>CAIRO_FILL_RULE_EVEN_ODD</literal></term>
 <listitem><simpara> Counts the total number of
 intersections, without regard to the orientation of the contour. If
 the total number of intersections is odd, the point will be
@@ -876,9 +872,9 @@ filled.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-fill-rule" role="function"/>cairo_set_fill_rule ()</title>
-<indexterm><primary>cairo_set_fill_rule</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_fill_rule                 (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-fill-rule" role="function">
+<title>cairo_set_fill_rule ()</title>
+<indexterm zone="cairo-set-fill-rule"><primary>cairo_set_fill_rule</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_fill_rule                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-fill-rule-t">cairo_fill_rule_t</link> fill_rule);</programlisting>
 <para>
 Set the current fill rule within the cairo context. The fill rule
@@ -899,9 +895,9 @@ The default fill rule is <link linkend="CAIRO-FILL-RULE-WINDING:CAPS"><literal>C
 <listitem><simpara> a fill rule, specified as a <link linkend="cairo-fill-rule-t"><type>cairo_fill_rule_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-fill-rule" role="function"/>cairo_get_fill_rule ()</title>
-<indexterm><primary>cairo_get_fill_rule</primary></indexterm><programlisting><link linkend="cairo-fill-rule-t">cairo_fill_rule_t</link>   cairo_get_fill_rule                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-fill-rule" role="function">
+<title>cairo_get_fill_rule ()</title>
+<indexterm zone="cairo-get-fill-rule"><primary>cairo_get_fill_rule</primary></indexterm><programlisting><link linkend="cairo-fill-rule-t">cairo_fill_rule_t</link>   cairo_get_fill_rule                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current fill rule, as set by <link linkend="cairo-set-fill-rule"><function>cairo_set_fill_rule()</function></link>.</para>
 <para>
@@ -913,9 +909,9 @@ Gets the current fill rule, as set by <link linkend="cairo-set-fill-rule"><funct
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current fill rule.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-line-cap-t" role="enum"/>enum cairo_line_cap_t</title>
-<indexterm><primary>cairo_line_cap_t</primary></indexterm><programlisting>typedef enum _cairo_line_cap {
+<refsect2 id="cairo-line-cap-t" role="enum">
+<title>enum cairo_line_cap_t</title>
+<indexterm zone="cairo-line-cap-t"><primary>cairo_line_cap_t</primary></indexterm><programlisting>typedef enum _cairo_line_cap {
     CAIRO_LINE_CAP_BUTT,
     CAIRO_LINE_CAP_ROUND,
     CAIRO_LINE_CAP_SQUARE
@@ -929,25 +925,25 @@ The default line cap style is <link linkend="CAIRO-LINE-CAP-BUTT:CAPS"><literal>
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-LINE-CAP-BUTT:CAPS" role="constant"/><literal>CAIRO_LINE_CAP_BUTT</literal></term>
+<varlistentry id="CAIRO-LINE-CAP-BUTT:CAPS" role="constant">
+<term><literal>CAIRO_LINE_CAP_BUTT</literal></term>
 <listitem><simpara> start(stop) the line exactly at the start(end) point
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-LINE-CAP-ROUND:CAPS" role="constant"/><literal>CAIRO_LINE_CAP_ROUND</literal></term>
+<varlistentry id="CAIRO-LINE-CAP-ROUND:CAPS" role="constant">
+<term><literal>CAIRO_LINE_CAP_ROUND</literal></term>
 <listitem><simpara> use a round ending, the center of the circle is the end point
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-LINE-CAP-SQUARE:CAPS" role="constant"/><literal>CAIRO_LINE_CAP_SQUARE</literal></term>
+<varlistentry id="CAIRO-LINE-CAP-SQUARE:CAPS" role="constant">
+<term><literal>CAIRO_LINE_CAP_SQUARE</literal></term>
 <listitem><simpara> use squared ending, the center of the square is the end point
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-line-cap" role="function"/>cairo_set_line_cap ()</title>
-<indexterm><primary>cairo_set_line_cap</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_line_cap                  (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-line-cap" role="function">
+<title>cairo_set_line_cap ()</title>
+<indexterm zone="cairo-set-line-cap"><primary>cairo_set_line_cap</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_line_cap                  (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-line-cap-t">cairo_line_cap_t</link> line_cap);</programlisting>
 <para>
 Sets the current line cap style within the cairo context. See
@@ -972,9 +968,9 @@ The default line cap style is <link linkend="CAIRO-LINE-CAP-BUTT:CAPS"><literal>
 <listitem><simpara> a line cap style
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-line-cap" role="function"/>cairo_get_line_cap ()</title>
-<indexterm><primary>cairo_get_line_cap</primary></indexterm><programlisting><link linkend="cairo-line-cap-t">cairo_line_cap_t</link>    cairo_get_line_cap                  (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-line-cap" role="function">
+<title>cairo_get_line_cap ()</title>
+<indexterm zone="cairo-get-line-cap"><primary>cairo_get_line_cap</primary></indexterm><programlisting><link linkend="cairo-line-cap-t">cairo_line_cap_t</link>    cairo_get_line_cap                  (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current line cap style, as set by <link linkend="cairo-set-line-cap"><function>cairo_set_line_cap()</function></link>.</para>
 <para>
@@ -986,9 +982,9 @@ Gets the current line cap style, as set by <link linkend="cairo-set-line-cap"><f
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current line cap style.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-line-join-t" role="enum"/>enum cairo_line_join_t</title>
-<indexterm><primary>cairo_line_join_t</primary></indexterm><programlisting>typedef enum _cairo_line_join {
+<refsect2 id="cairo-line-join-t" role="enum">
+<title>enum cairo_line_join_t</title>
+<indexterm zone="cairo-line-join-t"><primary>cairo_line_join_t</primary></indexterm><programlisting>typedef enum _cairo_line_join {
     CAIRO_LINE_JOIN_MITER,
     CAIRO_LINE_JOIN_ROUND,
     CAIRO_LINE_JOIN_BEVEL
@@ -1002,28 +998,28 @@ The default line join style is <link linkend="CAIRO-LINE-JOIN-MITER:CAPS"><liter
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-LINE-JOIN-MITER:CAPS" role="constant"/><literal>CAIRO_LINE_JOIN_MITER</literal></term>
+<varlistentry id="CAIRO-LINE-JOIN-MITER:CAPS" role="constant">
+<term><literal>CAIRO_LINE_JOIN_MITER</literal></term>
 <listitem><simpara> use a sharp (angled) corner, see
 <link linkend="cairo-set-miter-limit"><function>cairo_set_miter_limit()</function></link>
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-LINE-JOIN-ROUND:CAPS" role="constant"/><literal>CAIRO_LINE_JOIN_ROUND</literal></term>
+<varlistentry id="CAIRO-LINE-JOIN-ROUND:CAPS" role="constant">
+<term><literal>CAIRO_LINE_JOIN_ROUND</literal></term>
 <listitem><simpara> use a rounded join, the center of the circle is the
 joint point
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-LINE-JOIN-BEVEL:CAPS" role="constant"/><literal>CAIRO_LINE_JOIN_BEVEL</literal></term>
+<varlistentry id="CAIRO-LINE-JOIN-BEVEL:CAPS" role="constant">
+<term><literal>CAIRO_LINE_JOIN_BEVEL</literal></term>
 <listitem><simpara> use a cut-off join, the join is cut off at half
 the line width from the joint point
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-line-join" role="function"/>cairo_set_line_join ()</title>
-<indexterm><primary>cairo_set_line_join</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_line_join                 (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-line-join" role="function">
+<title>cairo_set_line_join ()</title>
+<indexterm zone="cairo-set-line-join"><primary>cairo_set_line_join</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_line_join                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-line-join-t">cairo_line_join_t</link> line_join);</programlisting>
 <para>
 Sets the current line join style within the cairo context. See
@@ -1048,9 +1044,9 @@ The default line join style is <link linkend="CAIRO-LINE-JOIN-MITER:CAPS"><liter
 <listitem><simpara> a line join style
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-line-join" role="function"/>cairo_get_line_join ()</title>
-<indexterm><primary>cairo_get_line_join</primary></indexterm><programlisting><link linkend="cairo-line-join-t">cairo_line_join_t</link>   cairo_get_line_join                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-line-join" role="function">
+<title>cairo_get_line_join ()</title>
+<indexterm zone="cairo-get-line-join"><primary>cairo_get_line_join</primary></indexterm><programlisting><link linkend="cairo-line-join-t">cairo_line_join_t</link>   cairo_get_line_join                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current line join style, as set by <link linkend="cairo-set-line-join"><function>cairo_set_line_join()</function></link>.</para>
 <para>
@@ -1062,9 +1058,9 @@ Gets the current line join style, as set by <link linkend="cairo-set-line-join">
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current line join style.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-line-width" role="function"/>cairo_set_line_width ()</title>
-<indexterm><primary>cairo_set_line_width</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_line_width                (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-line-width" role="function">
+<title>cairo_set_line_width ()</title>
+<indexterm zone="cairo-set-line-width"><primary>cairo_set_line_width</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_line_width                (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> width);</programlisting>
 <para>
 Sets the current line width within the cairo context. The line
@@ -1100,9 +1096,9 @@ The default line width value is 2.0.</para>
 <listitem><simpara> a line width
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-line-width" role="function"/>cairo_get_line_width ()</title>
-<indexterm><primary>cairo_get_line_width</primary></indexterm><programlisting><link linkend="double">double</link>              cairo_get_line_width                (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-line-width" role="function">
+<title>cairo_get_line_width ()</title>
+<indexterm zone="cairo-get-line-width"><primary>cairo_get_line_width</primary></indexterm><programlisting><link linkend="double">double</link>              cairo_get_line_width                (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 This function returns the current line width value exactly as set by
 <link linkend="cairo-set-line-width"><function>cairo_set_line_width()</function></link>. Note that the value is unchanged even if
@@ -1117,9 +1113,9 @@ the CTM has changed between the calls to <link linkend="cairo-set-line-width"><f
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current line width.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-miter-limit" role="function"/>cairo_set_miter_limit ()</title>
-<indexterm><primary>cairo_set_miter_limit</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_miter_limit               (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-miter-limit" role="function">
+<title>cairo_set_miter_limit ()</title>
+<indexterm zone="cairo-set-miter-limit"><primary>cairo_set_miter_limit</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_miter_limit               (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> limit);</programlisting>
 <para>
 Sets the current miter limit within the cairo context.
@@ -1158,9 +1154,9 @@ A miter limit for a desired angle can be computed as: miter limit =
 <listitem><simpara> miter limit to set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-miter-limit" role="function"/>cairo_get_miter_limit ()</title>
-<indexterm><primary>cairo_get_miter_limit</primary></indexterm><programlisting><link linkend="double">double</link>              cairo_get_miter_limit               (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-miter-limit" role="function">
+<title>cairo_get_miter_limit ()</title>
+<indexterm zone="cairo-get-miter-limit"><primary>cairo_get_miter_limit</primary></indexterm><programlisting><link linkend="double">double</link>              cairo_get_miter_limit               (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current miter limit, as set by <link linkend="cairo-set-miter-limit"><function>cairo_set_miter_limit()</function></link>.</para>
 <para>
@@ -1172,9 +1168,9 @@ Gets the current miter limit, as set by <link linkend="cairo-set-miter-limit"><f
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current miter limit.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-operator-t" role="enum"/>enum cairo_operator_t</title>
-<indexterm><primary>cairo_operator_t</primary></indexterm><programlisting>typedef enum _cairo_operator {
+<refsect2 id="cairo-operator-t" role="enum">
+<title>enum cairo_operator_t</title>
+<indexterm zone="cairo-operator-t"><primary>cairo_operator_t</primary></indexterm><programlisting>typedef enum _cairo_operator {
     CAIRO_OPERATOR_CLEAR,
 
     CAIRO_OPERATOR_SOURCE,
@@ -1218,89 +1214,89 @@ the mathematical definitions, see
 <para>
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-CLEAR:CAPS" role="constant"/><literal>CAIRO_OPERATOR_CLEAR</literal></term>
+<varlistentry id="CAIRO-OPERATOR-CLEAR:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_CLEAR</literal></term>
 <listitem><simpara> clear destination layer (bounded)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-SOURCE:CAPS" role="constant"/><literal>CAIRO_OPERATOR_SOURCE</literal></term>
+<varlistentry id="CAIRO-OPERATOR-SOURCE:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_SOURCE</literal></term>
 <listitem><simpara> replace destination layer (bounded)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-OVER:CAPS" role="constant"/><literal>CAIRO_OPERATOR_OVER</literal></term>
+<varlistentry id="CAIRO-OPERATOR-OVER:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_OVER</literal></term>
 <listitem><simpara> draw source layer on top of destination layer
 (bounded)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-IN:CAPS" role="constant"/><literal>CAIRO_OPERATOR_IN</literal></term>
+<varlistentry id="CAIRO-OPERATOR-IN:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_IN</literal></term>
 <listitem><simpara> draw source where there was destination content
 (unbounded)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-OUT:CAPS" role="constant"/><literal>CAIRO_OPERATOR_OUT</literal></term>
+<varlistentry id="CAIRO-OPERATOR-OUT:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_OUT</literal></term>
 <listitem><simpara> draw source where there was no destination
 content (unbounded)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-ATOP:CAPS" role="constant"/><literal>CAIRO_OPERATOR_ATOP</literal></term>
+<varlistentry id="CAIRO-OPERATOR-ATOP:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_ATOP</literal></term>
 <listitem><simpara> draw source on top of destination content and
 only there
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-DEST:CAPS" role="constant"/><literal>CAIRO_OPERATOR_DEST</literal></term>
+<varlistentry id="CAIRO-OPERATOR-DEST:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_DEST</literal></term>
 <listitem><simpara> ignore the source
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-DEST-OVER:CAPS" role="constant"/><literal>CAIRO_OPERATOR_DEST_OVER</literal></term>
+<varlistentry id="CAIRO-OPERATOR-DEST-OVER:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_DEST_OVER</literal></term>
 <listitem><simpara> draw destination on top of source
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-DEST-IN:CAPS" role="constant"/><literal>CAIRO_OPERATOR_DEST_IN</literal></term>
+<varlistentry id="CAIRO-OPERATOR-DEST-IN:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_DEST_IN</literal></term>
 <listitem><simpara> leave destination only where there was
 source content (unbounded)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-DEST-OUT:CAPS" role="constant"/><literal>CAIRO_OPERATOR_DEST_OUT</literal></term>
+<varlistentry id="CAIRO-OPERATOR-DEST-OUT:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_DEST_OUT</literal></term>
 <listitem><simpara> leave destination only where there was no
 source content
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-DEST-ATOP:CAPS" role="constant"/><literal>CAIRO_OPERATOR_DEST_ATOP</literal></term>
+<varlistentry id="CAIRO-OPERATOR-DEST-ATOP:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_DEST_ATOP</literal></term>
 <listitem><simpara> leave destination on top of source content
 and only there (unbounded)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-XOR:CAPS" role="constant"/><literal>CAIRO_OPERATOR_XOR</literal></term>
+<varlistentry id="CAIRO-OPERATOR-XOR:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_XOR</literal></term>
 <listitem><simpara> source and destination are shown where there is only
 one of them
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-ADD:CAPS" role="constant"/><literal>CAIRO_OPERATOR_ADD</literal></term>
+<varlistentry id="CAIRO-OPERATOR-ADD:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_ADD</literal></term>
 <listitem><simpara> source and destination layers are accumulated
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="CAIRO-OPERATOR-SATURATE:CAPS" role="constant"/><literal>CAIRO_OPERATOR_SATURATE</literal></term>
+<varlistentry id="CAIRO-OPERATOR-SATURATE:CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_SATURATE</literal></term>
 <listitem><simpara> like over, but assuming source and dest are
 disjoint geometries
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-operator" role="function"/>cairo_set_operator ()</title>
-<indexterm><primary>cairo_set_operator</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_operator                  (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-operator" role="function">
+<title>cairo_set_operator ()</title>
+<indexterm zone="cairo-set-operator"><primary>cairo_set_operator</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_operator                  (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-operator-t">cairo_operator_t</link> op);</programlisting>
 <para>
 Sets the compositing operator to be used for all drawing
@@ -1319,9 +1315,9 @@ The default operator is <link linkend="CAIRO-OPERATOR-OVER:CAPS"><literal>CAIRO_
 <listitem><simpara> a compositing operator, specified as a <link linkend="cairo-operator-t"><type>cairo_operator_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-operator" role="function"/>cairo_get_operator ()</title>
-<indexterm><primary>cairo_get_operator</primary></indexterm><programlisting><link linkend="cairo-operator-t">cairo_operator_t</link>    cairo_get_operator                  (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-operator" role="function">
+<title>cairo_get_operator ()</title>
+<indexterm zone="cairo-get-operator"><primary>cairo_get_operator</primary></indexterm><programlisting><link linkend="cairo-operator-t">cairo_operator_t</link>    cairo_get_operator                  (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current compositing operator for a cairo context.</para>
 <para>
@@ -1333,9 +1329,9 @@ Gets the current compositing operator for a cairo context.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current compositing operator.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-tolerance" role="function"/>cairo_set_tolerance ()</title>
-<indexterm><primary>cairo_set_tolerance</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_tolerance                 (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-tolerance" role="function">
+<title>cairo_set_tolerance ()</title>
+<indexterm zone="cairo-set-tolerance"><primary>cairo_set_tolerance</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_set_tolerance                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> tolerance);</programlisting>
 <para>
 Sets the tolerance used when converting paths into trapezoids.
@@ -1355,9 +1351,9 @@ is unlikely to improve appearance significantly.)</para>
 <listitem><simpara> the tolerance, in device units (typically pixels)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-tolerance" role="function"/>cairo_get_tolerance ()</title>
-<indexterm><primary>cairo_get_tolerance</primary></indexterm><programlisting><link linkend="double">double</link>              cairo_get_tolerance                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-tolerance" role="function">
+<title>cairo_get_tolerance ()</title>
+<indexterm zone="cairo-get-tolerance"><primary>cairo_get_tolerance</primary></indexterm><programlisting><link linkend="double">double</link>              cairo_get_tolerance                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current tolerance value, as set by <link linkend="cairo-set-tolerance"><function>cairo_set_tolerance()</function></link>.</para>
 <para>
@@ -1369,9 +1365,9 @@ Gets the current tolerance value, as set by <link linkend="cairo-set-tolerance">
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current tolerance value.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-clip" role="function"/>cairo_clip ()</title>
-<indexterm><primary>cairo_clip</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_clip                          (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-clip" role="function">
+<title>cairo_clip ()</title>
+<indexterm zone="cairo-clip"><primary>cairo_clip</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_clip                          (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Establishes a new clip region by intersecting the current clip
 region with the current path as it would be filled by <link linkend="cairo-fill"><function>cairo_fill()</function></link>
@@ -1400,9 +1396,9 @@ region is <link linkend="cairo-reset-clip"><function>cairo_reset_clip()</functio
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-clip-preserve" role="function"/>cairo_clip_preserve ()</title>
-<indexterm><primary>cairo_clip_preserve</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_clip_preserve                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-clip-preserve" role="function">
+<title>cairo_clip_preserve ()</title>
+<indexterm zone="cairo-clip-preserve"><primary>cairo_clip_preserve</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_clip_preserve                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Establishes a new clip region by intersecting the current clip
 region with the current path as it would be filled by <link linkend="cairo-fill"><function>cairo_fill()</function></link>
@@ -1431,9 +1427,9 @@ region is <link linkend="cairo-reset-clip"><function>cairo_reset_clip()</functio
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-clip-extents" role="function" condition="since:1.4"/>cairo_clip_extents ()</title>
-<indexterm role="1.4"><primary>cairo_clip_extents</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_clip_extents                  (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-clip-extents" role="function" condition="since:1.4">
+<title>cairo_clip_extents ()</title>
+<indexterm zone="cairo-clip-extents" role="1.4"><primary>cairo_clip_extents</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_clip_extents                  (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> *x1,
                                                          <link linkend="double">double</link> *y1,
                                                          <link linkend="double">double</link> *x2,
@@ -1461,9 +1457,9 @@ current clip.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-reset-clip" role="function"/>cairo_reset_clip ()</title>
-<indexterm><primary>cairo_reset_clip</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_reset_clip                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-reset-clip" role="function">
+<title>cairo_reset_clip ()</title>
+<indexterm zone="cairo-reset-clip"><primary>cairo_reset_clip</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_reset_clip                    (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Reset the current clip region to its original, unrestricted
 state. That is, set the clip region to an infinitely large shape
@@ -1484,9 +1480,9 @@ robust means of temporarily restricting the clip region.</para>
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-rectangle-t" role="struct" condition="since:1.4"/>cairo_rectangle_t</title>
-<indexterm role="1.4"><primary>cairo_rectangle_t</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="cairo-rectangle-t" role="struct" condition="since:1.4">
+<title>cairo_rectangle_t</title>
+<indexterm zone="cairo-rectangle-t" role="1.4"><primary>cairo_rectangle_t</primary></indexterm><programlisting>typedef struct {
     double x, y, width, height;
 } cairo_rectangle_t;
 </programlisting>
@@ -1517,9 +1513,9 @@ A data structure for holding a rectangle.</para>
 </varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-rectangle-list-t" role="struct" condition="since:1.4"/>cairo_rectangle_list_t</title>
-<indexterm role="1.4"><primary>cairo_rectangle_list_t</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="cairo-rectangle-list-t" role="struct" condition="since:1.4">
+<title>cairo_rectangle_list_t</title>
+<indexterm zone="cairo-rectangle-list-t" role="1.4"><primary>cairo_rectangle_list_t</primary></indexterm><programlisting>typedef struct {
     cairo_status_t     status;
     cairo_rectangle_t *rectangles;
     int                num_rectangles;
@@ -1548,9 +1544,9 @@ array of rectangles.</para>
 </varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-rectangle-list-destroy" role="function" condition="since:1.4"/>cairo_rectangle_list_destroy ()</title>
-<indexterm role="1.4"><primary>cairo_rectangle_list_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_rectangle_list_destroy        (<link linkend="cairo-rectangle-list-t">cairo_rectangle_list_t</link> *rectangle_list);</programlisting>
+<refsect2 id="cairo-rectangle-list-destroy" role="function" condition="since:1.4">
+<title>cairo_rectangle_list_destroy ()</title>
+<indexterm zone="cairo-rectangle-list-destroy" role="1.4"><primary>cairo_rectangle_list_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_rectangle_list_destroy        (<link linkend="cairo-rectangle-list-t">cairo_rectangle_list_t</link> *rectangle_list);</programlisting>
 <para>
 Unconditionally frees <parameter>rectangle_list</parameter> and all associated
 references. After this call, the <parameter>rectangle_list</parameter> pointer must not
@@ -1563,9 +1559,9 @@ be dereferenced.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-copy-clip-rectangle-list" role="function" condition="since:1.4"/>cairo_copy_clip_rectangle_list ()</title>
-<indexterm role="1.4"><primary>cairo_copy_clip_rectangle_list</primary></indexterm><programlisting><link linkend="cairo-rectangle-list-t">cairo_rectangle_list_t</link>* cairo_copy_clip_rectangle_list  (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-copy-clip-rectangle-list" role="function" condition="since:1.4">
+<title>cairo_copy_clip_rectangle_list ()</title>
+<indexterm zone="cairo-copy-clip-rectangle-list" role="1.4"><primary>cairo_copy_clip_rectangle_list</primary></indexterm><programlisting><link linkend="cairo-rectangle-list-t">cairo_rectangle_list_t</link>* cairo_copy_clip_rectangle_list  (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Gets the current clip region as a list of rectangles in user coordinates.
 Never returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
@@ -1587,9 +1583,9 @@ which should be destroyed using <link linkend="cairo-rectangle-list-destroy"><fu
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-fill" role="function"/>cairo_fill ()</title>
-<indexterm><primary>cairo_fill</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_fill                          (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-fill" role="function">
+<title>cairo_fill ()</title>
+<indexterm zone="cairo-fill"><primary>cairo_fill</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_fill                          (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 A drawing operator that fills the current path according to the
 current fill rule, (each sub-path is implicitly closed before being
@@ -1603,9 +1599,9 @@ the cairo context. See <link linkend="cairo-set-fill-rule"><function>cairo_set_f
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-fill-preserve" role="function"/>cairo_fill_preserve ()</title>
-<indexterm><primary>cairo_fill_preserve</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_fill_preserve                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-fill-preserve" role="function">
+<title>cairo_fill_preserve ()</title>
+<indexterm zone="cairo-fill-preserve"><primary>cairo_fill_preserve</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_fill_preserve                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 A drawing operator that fills the current path according to the
 current fill rule, (each sub-path is implicitly closed before being
@@ -1621,9 +1617,9 @@ See <link linkend="cairo-set-fill-rule"><function>cairo_set_fill_rule()</functio
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-fill-extents" role="function"/>cairo_fill_extents ()</title>
-<indexterm><primary>cairo_fill_extents</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_fill_extents                  (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-fill-extents" role="function">
+<title>cairo_fill_extents ()</title>
+<indexterm zone="cairo-fill-extents"><primary>cairo_fill_extents</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_fill_extents                  (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> *x1,
                                                          <link linkend="double">double</link> *y1,
                                                          <link linkend="double">double</link> *x2,
@@ -1667,9 +1663,9 @@ See <link linkend="cairo-fill"><function>cairo_fill()</function></link>, <link l
 <listitem><simpara> bottom of the resulting extents
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-in-fill" role="function"/>cairo_in_fill ()</title>
-<indexterm><primary>cairo_in_fill</primary></indexterm><programlisting><link linkend="cairo-bool-t">cairo_bool_t</link>        cairo_in_fill                       (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-in-fill" role="function">
+<title>cairo_in_fill ()</title>
+<indexterm zone="cairo-in-fill"><primary>cairo_in_fill</primary></indexterm><programlisting><link linkend="cairo-bool-t">cairo_bool_t</link>        cairo_in_fill                       (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> x,
                                                          <link linkend="double">double</link> y);</programlisting>
 <para>
@@ -1696,9 +1692,9 @@ See <link linkend="cairo-fill"><function>cairo_fill()</function></link>, <link l
 outside.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-mask" role="function"/>cairo_mask ()</title>
-<indexterm><primary>cairo_mask</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_mask                          (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-mask" role="function">
+<title>cairo_mask ()</title>
+<indexterm zone="cairo-mask"><primary>cairo_mask</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_mask                          (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-pattern-t">cairo_pattern_t</link> *pattern);</programlisting>
 <para>
 A drawing operator that paints the current source
@@ -1715,9 +1711,9 @@ areas are not painted.)</para>
 <listitem><simpara> a <link linkend="cairo-pattern-t"><type>cairo_pattern_t</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-mask-surface" role="function"/>cairo_mask_surface ()</title>
-<indexterm><primary>cairo_mask_surface</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_mask_surface                  (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-mask-surface" role="function">
+<title>cairo_mask_surface ()</title>
+<indexterm zone="cairo-mask-surface"><primary>cairo_mask_surface</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_mask_surface                  (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
                                                          <link linkend="double">double</link> surface_x,
                                                          <link linkend="double">double</link> surface_y);</programlisting>
@@ -1742,9 +1738,9 @@ areas are not painted.)</para>
 <listitem><simpara> Y coordinate at which to place the origin of <parameter>surface</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-paint" role="function"/>cairo_paint ()</title>
-<indexterm><primary>cairo_paint</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_paint                         (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-paint" role="function">
+<title>cairo_paint ()</title>
+<indexterm zone="cairo-paint"><primary>cairo_paint</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_paint                         (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 A drawing operator that paints the current source everywhere within
 the current clip region.</para>
@@ -1755,9 +1751,9 @@ the current clip region.</para>
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-paint-with-alpha" role="function"/>cairo_paint_with_alpha ()</title>
-<indexterm><primary>cairo_paint_with_alpha</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_paint_with_alpha              (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-paint-with-alpha" role="function">
+<title>cairo_paint_with_alpha ()</title>
+<indexterm zone="cairo-paint-with-alpha"><primary>cairo_paint_with_alpha</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_paint_with_alpha              (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> alpha);</programlisting>
 <para>
 A drawing operator that paints the current source everywhere within
@@ -1774,13 +1770,13 @@ is faded out using the alpha value.</para>
 <listitem><simpara> alpha value, between 0 (transparent) and 1 (opaque)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-stroke" role="function"/>cairo_stroke ()</title>
-<indexterm><primary>cairo_stroke</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_stroke                        (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-stroke" role="function">
+<title>cairo_stroke ()</title>
+<indexterm zone="cairo-stroke"><primary>cairo_stroke</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_stroke                        (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 A drawing operator that strokes the current path according to the
 current line width, line join, line cap, and dash settings. After
-cairo_stroke, the current path will be cleared from the cairo
+<link linkend="cairo-stroke"><function>cairo_stroke()</function></link>, the current path will be cleared from the cairo
 context. See <link linkend="cairo-set-line-width"><function>cairo_set_line_width()</function></link>, <link linkend="cairo-set-line-join"><function>cairo_set_line_join()</function></link>,
 <link linkend="cairo-set-line-cap"><function>cairo_set_line_cap()</function></link>, <link linkend="cairo-set-dash"><function>cairo_set_dash()</function></link>, and
 <link linkend="cairo-stroke-preserve"><function>cairo_stroke_preserve()</function></link>.
@@ -1801,7 +1797,7 @@ is determined by the direction of the underlying path.
 2. A sub-path created by <link linkend="cairo-move-to"><function>cairo_move_to()</function></link> followed by either a
 <link linkend="cairo-close-path"><function>cairo_close_path()</function></link> or one or more calls to <link linkend="cairo-line-to"><function>cairo_line_to()</function></link> to the
 same coordinate as the <link linkend="cairo-move-to"><function>cairo_move_to()</function></link>. If the cap style is
-CAIRO_LINE_CAP_ROUND then these sub-paths will be drawn as circular
+<link linkend="CAIRO-LINE-CAP-ROUND:CAPS"><literal>CAIRO_LINE_CAP_ROUND</literal></link> then these sub-paths will be drawn as circular
 dots. Note that in the case of <link linkend="CAIRO-LINE-CAP-SQUARE:CAPS"><literal>CAIRO_LINE_CAP_SQUARE</literal></link> a degenerate
 sub-path will not be drawn at all, (since the correct orientation
 is indeterminate).
@@ -1816,9 +1812,9 @@ to be drawn in the case of either degenerate segments or sub-paths.</para>
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-stroke-preserve" role="function"/>cairo_stroke_preserve ()</title>
-<indexterm><primary>cairo_stroke_preserve</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_stroke_preserve               (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-stroke-preserve" role="function">
+<title>cairo_stroke_preserve ()</title>
+<indexterm zone="cairo-stroke-preserve"><primary>cairo_stroke_preserve</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_stroke_preserve               (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 A drawing operator that strokes the current path according to the
 current line width, line join, line cap, and dash settings. Unlike
@@ -1836,9 +1832,9 @@ See <link linkend="cairo-set-line-width"><function>cairo_set_line_width()</funct
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-stroke-extents" role="function"/>cairo_stroke_extents ()</title>
-<indexterm><primary>cairo_stroke_extents</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_stroke_extents                (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-stroke-extents" role="function">
+<title>cairo_stroke_extents ()</title>
+<indexterm zone="cairo-stroke-extents"><primary>cairo_stroke_extents</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_stroke_extents                (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> *x1,
                                                          <link linkend="double">double</link> *y1,
                                                          <link linkend="double">double</link> *x2,
@@ -1886,9 +1882,9 @@ See <link linkend="cairo-stroke"><function>cairo_stroke()</function></link>, <li
 <listitem><simpara> bottom of the resulting extents
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-in-stroke" role="function"/>cairo_in_stroke ()</title>
-<indexterm><primary>cairo_in_stroke</primary></indexterm><programlisting><link linkend="cairo-bool-t">cairo_bool_t</link>        cairo_in_stroke                     (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-in-stroke" role="function">
+<title>cairo_in_stroke ()</title>
+<indexterm zone="cairo-in-stroke"><primary>cairo_in_stroke</primary></indexterm><programlisting><link linkend="cairo-bool-t">cairo_bool_t</link>        cairo_in_stroke                     (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          <link linkend="double">double</link> x,
                                                          <link linkend="double">double</link> y);</programlisting>
 <para>
@@ -1917,9 +1913,9 @@ See <link linkend="cairo-stroke"><function>cairo_stroke()</function></link>, <li
 outside.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-copy-page" role="function"/>cairo_copy_page ()</title>
-<indexterm><primary>cairo_copy_page</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_copy_page                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-copy-page" role="function">
+<title>cairo_copy_page ()</title>
+<indexterm zone="cairo-copy-page"><primary>cairo_copy_page</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_copy_page                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Emits the current page for backends that support multiple pages, but
 doesn't clear it, so, the contents of the current page will be retained
@@ -1936,9 +1932,9 @@ This is a convenience function that simply calls
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-show-page" role="function"/>cairo_show_page ()</title>
-<indexterm><primary>cairo_show_page</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_show_page                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-show-page" role="function">
+<title>cairo_show_page ()</title>
+<indexterm zone="cairo-show-page"><primary>cairo_show_page</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_show_page                     (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Emits and clears the current page for backends that support multiple
 pages.  Use <link linkend="cairo-copy-page"><function>cairo_copy_page()</function></link> if you don't want to clear the page.
@@ -1953,9 +1949,9 @@ This is a convenience function that simply calls
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-reference-count" role="function" condition="since:1.4"/>cairo_get_reference_count ()</title>
-<indexterm role="1.4"><primary>cairo_get_reference_count</primary></indexterm><programlisting>unsigned <link linkend="int">int</link>        cairo_get_reference_count           (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<refsect2 id="cairo-get-reference-count" role="function" condition="since:1.4">
+<title>cairo_get_reference_count ()</title>
+<indexterm zone="cairo-get-reference-count" role="1.4"><primary>cairo_get_reference_count</primary></indexterm><programlisting>unsigned <link linkend="int">int</link>        cairo_get_reference_count           (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Returns the current reference count of <parameter>cr</parameter>.</para>
 <para>
@@ -1970,9 +1966,9 @@ object is a nil object, 0 will be returned.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-set-user-data" role="function" condition="since:1.4"/>cairo_set_user_data ()</title>
-<indexterm role="1.4"><primary>cairo_set_user_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_set_user_data                 (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-set-user-data" role="function" condition="since:1.4">
+<title>cairo_set_user_data ()</title>
+<indexterm zone="cairo-set-user-data" role="1.4"><primary>cairo_set_user_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_set_user_data                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key,
                                                          <link linkend="void">void</link> *user_data,
                                                          <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy);</programlisting>
@@ -2003,9 +1999,9 @@ slot could not be allocated for the user data.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  1.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="cairo-get-user-data" role="function" condition="since:1.4"/>cairo_get_user_data ()</title>
-<indexterm role="1.4"><primary>cairo_get_user_data</primary></indexterm><programlisting><link linkend="void">void</link>*               cairo_get_user_data                 (<link linkend="cairo-t">cairo_t</link> *cr,
+<refsect2 id="cairo-get-user-data" role="function" condition="since:1.4">
+<title>cairo_get_user_data ()</title>
+<indexterm zone="cairo-get-user-data" role="1.4"><primary>cairo_get_user_data</primary></indexterm><programlisting><link linkend="void">void</link>*               cairo_get_user_data                 (<link linkend="cairo-t">cairo_t</link> *cr,
                                                          const <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link> *key);</programlisting>
 <para>
 Return user data previously attached to <parameter>cr</parameter> using the specified
@@ -2031,7 +2027,7 @@ attached to
 
 
 
-<refsect1>
+<refsect1 id="cairo-context.see-also">
 <title>See Also</title>
 <para>
 <itemizedlist>
@@ -2040,6 +2036,4 @@ attached to
 </para>
 </refsect1>
 
-
-<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>

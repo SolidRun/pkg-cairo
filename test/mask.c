@@ -32,22 +32,22 @@
 #define HEIGHT 16
 #define PAD 2
 
-const char	png_filename[]	= "romedalen.png";
+static const char	png_filename[]	= "romedalen.png";
 
 static void
-set_solid_pattern (cairo_t *cr, int x, int y)
+set_solid_pattern (const cairo_test_context_t *ctx, cairo_t *cr, int x, int y)
 {
     cairo_set_source_rgb (cr, 0, 0, 0.6);
 }
 
 static void
-set_translucent_pattern (cairo_t *cr, int x, int y)
+set_translucent_pattern (const cairo_test_context_t *ctx, cairo_t *cr, int x, int y)
 {
     cairo_set_source_rgba (cr, 0, 0, 0.6, 0.5);
 }
 
 static void
-set_gradient_pattern (cairo_t *cr, int x, int y)
+set_gradient_pattern (const cairo_test_context_t *ctx, cairo_t *cr, int x, int y)
 {
     cairo_pattern_t *pattern;
 
@@ -60,11 +60,11 @@ set_gradient_pattern (cairo_t *cr, int x, int y)
 }
 
 static void
-set_image_pattern (cairo_t *cr, int x, int y)
+set_image_pattern (const cairo_test_context_t *ctx, cairo_t *cr, int x, int y)
 {
     cairo_pattern_t *pattern;
 
-    pattern = cairo_test_create_pattern_from_png (png_filename);
+    pattern = cairo_test_create_pattern_from_png (ctx, png_filename);
     cairo_set_source (cr, pattern);
     cairo_pattern_destroy (pattern);
 }
@@ -79,6 +79,7 @@ mask_polygon (cairo_t *cr, int x, int y)
 						 CAIRO_CONTENT_ALPHA,
 						 WIDTH, HEIGHT);
     cr2 = cairo_create (mask_surface);
+    cairo_surface_destroy (mask_surface);
 
     cairo_save (cr2);
     cairo_set_operator (cr2, CAIRO_OPERATOR_CLEAR);
@@ -97,11 +98,8 @@ mask_polygon (cairo_t *cr, int x, int y)
     cairo_close_path (cr2);
     cairo_fill (cr2);
 
+    cairo_mask_surface (cr, cairo_get_target (cr2), x, y);
     cairo_destroy (cr2);
-
-    cairo_mask_surface (cr, mask_surface, x, y);
-
-    cairo_surface_destroy (mask_surface);
 }
 
 static void
@@ -156,20 +154,20 @@ clip_circle (cairo_t *cr, int x, int y)
     cairo_new_path (cr);
 }
 
-static void (*pattern_funcs[])(cairo_t *cr, int x, int y) = {
+static void (* const pattern_funcs[])(const cairo_test_context_t *ctx, cairo_t *cr, int x, int y) = {
     set_solid_pattern,
     set_translucent_pattern,
     set_gradient_pattern,
     set_image_pattern,
 };
 
-static void (*mask_funcs[])(cairo_t *cr, int x, int y) = {
+static void (* const mask_funcs[])(cairo_t *cr, int x, int y) = {
     mask_alpha,
     mask_gradient,
     mask_polygon,
 };
 
-static void (*clip_funcs[])(cairo_t *cr, int x, int y) = {
+static void (* const clip_funcs[])(cairo_t *cr, int x, int y) = {
     clip_none,
     clip_rects,
     clip_circle,
@@ -181,7 +179,7 @@ static void (*clip_funcs[])(cairo_t *cr, int x, int y) = {
 
 static cairo_test_draw_function_t draw;
 
-cairo_test_t test = {
+static const cairo_test_t test = {
     "mask",
     "Tests of cairo_mask",
     IMAGE_WIDTH, IMAGE_HEIGHT,
@@ -191,8 +189,8 @@ cairo_test_t test = {
 static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
+    const cairo_test_context_t *ctx = cairo_test_get_context (cr);
     cairo_surface_t *tmp_surface;
-    cairo_pattern_t *tmp_pattern;
     size_t i, j, k;
     cairo_t *cr2;
 
@@ -203,10 +201,6 @@ draw (cairo_t *cr, int width, int height)
 						CAIRO_CONTENT_COLOR_ALPHA,
 						IMAGE_WIDTH, IMAGE_HEIGHT);
     cr2 = cairo_create (tmp_surface);
-
-    tmp_pattern = cairo_pattern_create_for_surface (tmp_surface);
-    cairo_set_source (cr, tmp_pattern);
-    cairo_pattern_destroy (tmp_pattern);
     cairo_surface_destroy (tmp_surface);
 
     for (k = 0; k < ARRAY_SIZE (clip_funcs); k++) {
@@ -225,12 +219,13 @@ draw (cairo_t *cr, int width, int height)
 		cairo_save (cr2);
 
 		clip_funcs[k] (cr2, x, y);
-		pattern_funcs[i] (cr2, x, y);
+		pattern_funcs[i] (ctx, cr2, x, y);
 		mask_funcs[j] (cr2, x, y);
 
 		cairo_restore (cr2);
 
 		/* Copy back to the main pixmap */
+		cairo_set_source_surface (cr, cairo_get_target (cr2), 0, 0);
 		cairo_rectangle (cr, x, y, WIDTH, HEIGHT);
 		cairo_fill (cr);
 	    }

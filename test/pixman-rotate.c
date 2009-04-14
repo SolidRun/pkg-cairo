@@ -41,7 +41,7 @@
 
 static cairo_test_draw_function_t draw;
 
-cairo_test_t test = {
+static const cairo_test_t test = {
     "pixman-rotate",
     "Exposes pixman off-by-one error when rotating",
     IMAGE_WIDTH, IMAGE_HEIGHT,
@@ -54,23 +54,6 @@ draw (cairo_t *cr, int width, int height)
 {
     cairo_surface_t *stamp;
     cairo_t *cr2;
-
-    stamp = cairo_surface_create_similar (cairo_get_group_target (cr),
-					  CAIRO_CONTENT_COLOR_ALPHA,
-					  WIDTH, HEIGHT);
-    cr2 = cairo_create (stamp);
-    {
-	cairo_new_path (cr2);
-	cairo_rectangle (cr2, WIDTH / 4, HEIGHT / 4, WIDTH / 2, HEIGHT / 2);
-	cairo_set_source_rgba (cr2, 1, 0, 0, 0.8);
-	cairo_fill (cr2);
-
-	cairo_rectangle (cr2, 0, 0, WIDTH, HEIGHT);
-	cairo_set_line_width (cr2, 2);
-	cairo_set_source_rgb (cr2, 0, 0, 0);
-	cairo_stroke (cr2);
-    }
-    cairo_destroy (cr2);
 
     /* Draw a translucent rectangle for reference where the rotated
      * image should be. */
@@ -86,10 +69,26 @@ draw (cairo_t *cr, int width, int height)
     cairo_translate (cr, WIDTH, HEIGHT);
 #endif
 
-    cairo_set_source_surface (cr, stamp, 0, 0);
-    cairo_paint (cr);
-
+    stamp = cairo_surface_create_similar (cairo_get_group_target (cr),
+					  CAIRO_CONTENT_COLOR_ALPHA,
+					  WIDTH, HEIGHT);
+    cr2 = cairo_create (stamp);
     cairo_surface_destroy (stamp);
+    {
+	cairo_new_path (cr2);
+	cairo_rectangle (cr2, WIDTH / 4, HEIGHT / 4, WIDTH / 2, HEIGHT / 2);
+	cairo_set_source_rgba (cr2, 1, 0, 0, 0.8);
+	cairo_fill (cr2);
+
+	cairo_rectangle (cr2, 0, 0, WIDTH, HEIGHT);
+	cairo_set_line_width (cr2, 2);
+	cairo_set_source_rgb (cr2, 0, 0, 0);
+	cairo_stroke (cr2);
+    }
+    cairo_set_source_surface (cr, cairo_get_target (cr2), 0, 0);
+    cairo_destroy (cr2);
+
+    cairo_paint (cr);
 
     return CAIRO_TEST_SUCCESS;
 }

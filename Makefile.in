@@ -20,6 +20,15 @@
 # multiple others for changes between major releases (other than the last such
 # segment that we put in 'ChangeLog'.  The old ones are named
 # ChangeLog.pre-X.Y where X.Y is the version number of the major release.
+
+# Some custom targets to make it easier to release things.
+#
+# To make real stable releases or devel snapshots, use either:
+#		make release-check
+# or		make release-publish
+#
+# To make a quick properly named (date and git hash stamped) tarball:
+#		make snapshot
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -38,24 +47,53 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/build/Makefile.am.analysis \
+	$(srcdir)/build/Makefile.am.changelog \
+	$(srcdir)/build/Makefile.am.releasing $(srcdir)/config.h.in \
+	$(top_srcdir)/build/Makefile.am.common $(top_srcdir)/configure \
+	$(top_srcdir)/src/cairo-features-uninstalled.pc.in \
+	$(top_srcdir)/src/cairo-uninstalled.pc.in AUTHORS COPYING \
+	ChangeLog INSTALL NEWS build/compile build/config.guess \
+	build/config.sub build/depcomp build/install-sh \
+	build/ltmain.sh build/missing
+EXTRA_PROGRAMS =
+TESTS =
+check_PROGRAMS =
 # libpng is required for our test programs
 @CAIRO_HAS_PNG_FUNCTIONS_TRUE@am__append_1 = boilerplate test perf
-DIST_COMMON = README $(am__configure_deps) $(srcdir)/ChangeLog.mk \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/config.h.in $(top_srcdir)/configure AUTHORS COPYING \
-	ChangeLog INSTALL NEWS compile config.guess config.sub depcomp \
-	install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
+	$(top_srcdir)/build/aclocal.dolt.m4 \
+	$(top_srcdir)/build/aclocal.enable.m4 \
+	$(top_srcdir)/build/aclocal.float.m4 \
+	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
+	$(top_srcdir)/build/aclocal.makefile.m4 \
+	$(top_srcdir)/build/aclocal.pkg.m4 $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/cairo-version.h \
+	$(top_srcdir)/build/configure.ac.version \
+	$(top_srcdir)/build/configure.ac.tools \
+	$(top_srcdir)/build/configure.ac.system \
+	$(top_srcdir)/build/configure.ac.features \
+	$(top_srcdir)/build/configure.ac.warnings \
+	$(top_srcdir)/build/configure.ac.analysis \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = cairo-uninstalled.pc cairo-xlib-uninstalled.pc \
+	cairo-xlib-xrender-uninstalled.pc cairo-xcb-uninstalled.pc \
+	cairo-quartz-uninstalled.pc cairo-quartz-font-uninstalled.pc \
+	cairo-quartz-image-uninstalled.pc cairo-win32-uninstalled.pc \
+	cairo-win32-font-uninstalled.pc cairo-os2-uninstalled.pc \
+	cairo-beos-uninstalled.pc cairo-png-uninstalled.pc \
+	cairo-glitz-uninstalled.pc cairo-directfb-uninstalled.pc \
+	cairo-ft-uninstalled.pc cairo-ps-uninstalled.pc \
+	cairo-pdf-uninstalled.pc cairo-svg-uninstalled.pc
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -90,14 +128,17 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CAIROPERF_LIBS = @CAIROPERF_LIBS@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
-CAIRO_LDADD = @CAIRO_LDADD@
 CAIRO_LIBS = @CAIRO_LIBS@
+CAIRO_LIBTOOL_VERSION_INFO = @CAIRO_LIBTOOL_VERSION_INFO@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
+CAIRO_RELEASE_STATUS = @CAIRO_RELEASE_STATUS@
 CAIRO_REQUIRES = @CAIRO_REQUIRES@
+CAIRO_TEST_UNDEFINED_LDFLAGS = @CAIRO_TEST_UNDEFINED_LDFLAGS@
 CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
 CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
 CAIRO_VERSION_MINOR = @CAIRO_VERSION_MINOR@
+CAIRO_VERSION_SONUM = @CAIRO_VERSION_SONUM@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -111,6 +152,8 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
+DOLT_BASH = @DOLT_BASH@
+DSYMUTIL = @DSYMUTIL@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -135,6 +178,7 @@ GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
 GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
 GREP = @GREP@
 GS = @GS@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -146,14 +190,18 @@ LIBOBJS = @LIBOBJS@
 LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
 LIBRSVG_LIBS = @LIBRSVG_LIBS@
 LIBS = @LIBS@
+LIBSPECTRE_CFLAGS = @LIBSPECTRE_CFLAGS@
+LIBSPECTRE_LIBS = @LIBSPECTRE_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTCOMPILE = @LTCOMPILE@
+LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
-LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -173,8 +221,9 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
+VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
+VALGRIND_LIBS = @VALGRIND_LIBS@
 VERSION = @VERSION@
-VERSION_INFO = @VERSION_INFO@
 XARGS = @XARGS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
@@ -209,6 +258,8 @@ dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 glitz_CFLAGS = @glitz_CFLAGS@
 glitz_LIBS = @glitz_LIBS@
+gtk_CFLAGS = @gtk_CFLAGS@
+gtk_LIBS = @gtk_LIBS@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -247,21 +298,36 @@ xlib_CFLAGS = @xlib_CFLAGS@
 xlib_LIBS = @xlib_LIBS@
 xlib_xrender_CFLAGS = @xlib_xrender_CFLAGS@
 xlib_xrender_LIBS = @xlib_xrender_LIBS@
-DIST_SUBDIRS = src boilerplate test perf doc util
-SUBDIRS = src doc $(am__append_1)
-EXTRA_DIST = AUTHORS BIBLIOGRAPHY BUGS CODING_STYLE COPYING \
-	COPYING-LGPL-2.1 COPYING-MPL-1.1 INSTALL NEWS PORTING_GUIDE \
-	README RELEASING Makefile.win32
-DISTCLEANFILES = config.cache $(srcdir)/ChangeLog.cache-* \
-	ChangeLog.cache-*
-MAINTAINERCLEANFILES = $(srcdir)/aclocal.m4 $(srcdir)/autoscan.log \
-	$(srcdir)/compile $(srcdir)/config.guess $(srcdir)/config.h.in \
-	$(srcdir)/config.sub $(srcdir)/configure.scan \
-	$(srcdir)/depcomp $(srcdir)/install-sh $(srcdir)/ltmain.sh \
-	$(srcdir)/missing $(srcdir)/mkinstalldirs `find "$(srcdir)" \
-	-type f -name Makefile.in -print` $(srcdir)/ChangeLog \
-	$(srcdir)/ChangeLog.pre-*
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-test-surfaces
+BUILT_SOURCES = 
+CLEANFILES = *.i *.s *.gch $(EXTRA_LTLIBRARIES) $(EXTRA_PROGRAMS) \
+	$(check_PROGRAMS)
+DISTCLEANFILES = $(BUILT_SOURCES) config.cache doltlibtool doltcompile \
+	$(srcdir)/ChangeLog.cache-* ChangeLog.cache-*
+EXTRA_DIST = README.win32 Makefile.win32 build/Makefile.win32.common \
+	build/Makefile.win32.features build/Makefile.win32.features-h \
+	$(NULL) AUTHORS BIBLIOGRAPHY BUGS CODING_STYLE COPYING \
+	COPYING-LGPL-2.1 COPYING-MPL-1.1 HACKING INSTALL NEWS \
+	PORTING_GUIDE README RELEASING autogen.sh cairo-version.h \
+	$(NULL)
+EXTRA_LTLIBRARIES = 
+MAINTAINERCLEANFILES = Makefile.in \
+	$(srcdir)/build/Makefile.win32.features \
+	$(srcdir)/build/Makefile.win32.features-h $(NULL) \
+	$(srcdir)/aclocal.m4 $(srcdir)/autoscan.log \
+	$(srcdir)/build/compile $(srcdir)/build/config.guess \
+	$(srcdir)/build/config.sub $(srcdir)/build/depcomp \
+	$(srcdir)/build/install-sh $(srcdir)/build/ltmain.sh \
+	$(srcdir)/build/missing $(srcdir)/build/mkinstalldirs \
+	$(srcdir)/config.h.in $(srcdir)/configure.scan $(NULL) \
+	$(srcdir)/ChangeLog $(srcdir)/ChangeLog.pre-*
+ACLOCAL_AMFLAGS = -I build
+DIST_SUBDIRS = src doc util boilerplate test perf
+SUBDIRS = src doc util $(am__append_1)
+DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-gtk-doc \
+	--enable-test-surfaces \
+	$(NULL)
+
 CURR_CHANGELOG_VERSION = $(CAIRO_VERSION_MAJOR).$$(echo "($(CAIRO_VERSION_MINOR)+1)/2*2" | bc)
 # examines $version
 PREV_CHANGELOG_VERSION = $$(if test "x$$(echo "($$version-0.1)*2/2"|bc)" = "x$$(echo "$$version*2/2"|bc)"; \
@@ -277,6 +343,7 @@ CHANGELOGS = ChangeLog \
 		version=$(PREV_CHANGELOG_VERSION); \
 	done`
 
+TAR_OPTIONS = --owner=0 --group=0
 RELEASE_OR_SNAPSHOT = $$(if test "x$(CAIRO_VERSION_MINOR)" = "x$$(echo "$(CAIRO_VERSION_MINOR)/2*2" | bc)" ; then echo release; else echo snapshot; fi)
 RELEASE_UPLOAD_HOST = cairographics.org
 RELEASE_UPLOAD_BASE = /srv/cairo.freedesktop.org/www
@@ -285,33 +352,35 @@ RELEASE_URL_BASE = http://cairographics.org/$(RELEASE_OR_SNAPSHOT)s
 RELEASE_ANNOUNCE_LIST = cairo-announce@cairographics.org (and CC gnome-announce-list@gnome.org)
 MANUAL_DATED = cairo-manual-`date +%Y%m%d`
 MANUAL_TAR_FILE = $(MANUAL_DATED).tar.gz
+MANUAL_VERSIONED = manual-$(VERSION)
+MANUAL_VERSIONED_TAR_FILE = $(MANUAL_VERSIONED).tar.gz
 MANUAL_UPLOAD_DIR = $(RELEASE_UPLOAD_BASE)
 tar_file = $(PACKAGE)-$(VERSION).tar.gz
 sha1_file = $(tar_file).sha1
 gpg_file = $(sha1_file).asc
 
 # Win32 package zipfiles
-runtime_zip_file = /tmp/$(PACKAGE)-$(VERSION).zip
-developer_zip_file = /tmp/$(PACKAGE)-dev-$(VERSION).zip
-all: config.h
+@OS_WIN32_TRUE@runtime_zip_file = $(PACKAGE)-$(VERSION).zip
+@OS_WIN32_TRUE@developer_zip_file = $(PACKAGE)-dev-$(VERSION).zip
+all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
 am--refresh:
 	@:
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/ChangeLog.mk $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/build/Makefile.am.common $(srcdir)/build/Makefile.am.changelog $(srcdir)/build/Makefile.am.releasing $(srcdir)/build/Makefile.am.analysis $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
-	      echo ' cd $(srcdir) && $(AUTOMAKE) --foreign '; \
-	      cd $(srcdir) && $(AUTOMAKE) --foreign  \
+	      echo ' cd $(srcdir) && $(AUTOMAKE) --gnu '; \
+	      cd $(srcdir) && $(AUTOMAKE) --gnu  \
 		&& exit 0; \
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  Makefile
+	  $(AUTOMAKE) --gnu  Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -347,6 +416,49 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+cairo-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-xlib-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-xlib-xrender-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-xcb-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-quartz-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-quartz-font-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-quartz-image-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-win32-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-win32-font-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-os2-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-beos-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-png-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-glitz-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-directfb-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-ft-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-ps-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-pdf-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-svg-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
+	done
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -486,6 +598,79 @@ GTAGS:
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
+
+check-TESTS: $(TESTS)
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; ws='[	 ]'; \
+	srcdir=$(srcdir); export srcdir; \
+	list=' $(TESTS) '; \
+	if test -n "$$list"; then \
+	  for tst in $$list; do \
+	    if test -f ./$$tst; then dir=./; \
+	    elif test -f $$tst; then dir=; \
+	    else dir="$(srcdir)/"; fi; \
+	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *$$ws$$tst$$ws*) \
+		xpass=`expr $$xpass + 1`; \
+		failed=`expr $$failed + 1`; \
+		echo "XPASS: $$tst"; \
+	      ;; \
+	      *) \
+		echo "PASS: $$tst"; \
+	      ;; \
+	      esac; \
+	    elif test $$? -ne 77; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *$$ws$$tst$$ws*) \
+		xfail=`expr $$xfail + 1`; \
+		echo "XFAIL: $$tst"; \
+	      ;; \
+	      *) \
+		failed=`expr $$failed + 1`; \
+		echo "FAIL: $$tst"; \
+	      ;; \
+	      esac; \
+	    else \
+	      skip=`expr $$skip + 1`; \
+	      echo "SKIP: $$tst"; \
+	    fi; \
+	  done; \
+	  if test "$$failed" -eq 0; then \
+	    if test "$$xfail" -eq 0; then \
+	      banner="All $$all tests passed"; \
+	    else \
+	      banner="All $$all tests behaved as expected ($$xfail expected failures)"; \
+	    fi; \
+	  else \
+	    if test "$$xpass" -eq 0; then \
+	      banner="$$failed of $$all tests failed"; \
+	    else \
+	      banner="$$failed of $$all tests did not behave as expected ($$xpass unexpected passes)"; \
+	    fi; \
+	  fi; \
+	  dashes="$$banner"; \
+	  skipped=""; \
+	  if test "$$skip" -ne 0; then \
+	    skipped="($$skip tests were not run)"; \
+	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$skipped"; \
+	  fi; \
+	  report=""; \
+	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
+	    report="Please report to $(PACKAGE_BUGREPORT)"; \
+	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$report"; \
+	  fi; \
+	  dashes=`echo "$$dashes" | sed s/./=/g`; \
+	  echo "$$dashes"; \
+	  echo "$$banner"; \
+	  test -z "$$skipped" || echo "$$skipped"; \
+	  test -z "$$report" || echo "$$report"; \
+	  echo "$$dashes"; \
+	  test "$$failed" -eq 0; \
+	else :; fi
 
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
@@ -639,11 +824,15 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-check: check-recursive
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-recursive
 all-am: Makefile config.h
 installdirs: installdirs-recursive
 installdirs-am:
-install: install-recursive
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -660,6 +849,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -668,10 +858,12 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
+	mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -731,67 +923,35 @@ uninstall-am:
 	install-strip
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am am--refresh check check-am clean clean-generic \
-	clean-libtool ctags ctags-recursive dist dist-all dist-bzip2 \
-	dist-gzip dist-hook dist-lzma dist-shar dist-tarZ dist-zip \
-	distcheck distclean distclean-generic distclean-hdr \
-	distclean-libtool distclean-local distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am
+	all all-am am--refresh check check-TESTS check-am clean \
+	clean-checkPROGRAMS clean-generic clean-libtool ctags \
+	ctags-recursive dist dist-all dist-bzip2 dist-gzip dist-hook \
+	dist-lzma dist-shar dist-tarZ dist-zip distcheck distclean \
+	distclean-generic distclean-hdr distclean-libtool \
+	distclean-local distclean-tags distcleancheck distdir \
+	distuninstallcheck dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags tags-recursive uninstall uninstall-am
 
 
-.PHONY: doc test retest recheck check-valgrind
-# We have some generated header files, so we really need to build the
-# library before we can build the docs
-doc: all
-	cd doc && $(MAKE) $(AM_MAKEFLAGS) doc
-test: all
-	cd test && $(MAKE) $(AM_MAKEFLAGS) test
-retest: all
-	cd test && $(MAKE) $(AM_MAKEFLAGS) retest
-recheck: all
-	cd test && $(MAKE) $(AM_MAKEFLAGS) recheck
+configure: cairo-version.h
+
+doc:
+	cd doc && $(MAKE) $(AM_MAKEFLAGS) $@
+test retest recheck: all
+	cd test && $(MAKE) $(AM_MAKEFLAGS) $@
+perf: all
+	cd perf && $(MAKE) $(AM_MAKEFLAGS) $@
 check-valgrind: all
 	cd test && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
 	cd perf && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
-perf: all
-	cd perf && $(MAKE) $(AM_MAKEFLAGS) perf
-
-# use recursive makes in order to ignore errors during check/perf
-@CAIRO_HAS_LCOV_TRUE@lcov:
-@CAIRO_HAS_LCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) check
-@CAIRO_HAS_LCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) genlcov
-@CAIRO_HAS_LCOV_TRUE@lcov-perf:
-@CAIRO_HAS_LCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) perf
-@CAIRO_HAS_LCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) genlcov
-
-# we have to massage the lcov.info file slightly to hide the effect of libtool
-# placing the objects files in the .libs/ directory separate from the *.c
-@CAIRO_HAS_LCOV_TRUE@genlcov:
-@CAIRO_HAS_LCOV_TRUE@	$(LTP) --directory $(top_builddir) --path $(top_builddir) --capture --output-file cairo-lcov.info --test-name CAIRO_TEST --no-checksum
-@CAIRO_HAS_LCOV_TRUE@	$(SED) -e 's#.libs/##' \
-@CAIRO_HAS_LCOV_TRUE@	       -e 's#boilerplate/src#src#' \
-@CAIRO_HAS_LCOV_TRUE@	       -e 's#$(shell pwd)#$(shell cd $(top_srcdir) && pwd)#' \
-@CAIRO_HAS_LCOV_TRUE@	       < cairo-lcov.info > cairo-lcov.info.tmp
-@CAIRO_HAS_LCOV_TRUE@	LANG=C $(LTP_GENHTML) --prefix $(top_builddir) --output-directory cairo-lcov --title "Cairo Code Coverage" --show-details cairo-lcov.info.tmp
-@CAIRO_HAS_LCOV_TRUE@	$(RM) cairo-lcov.info.tmp
-@CAIRO_HAS_LCOV_FALSE@lcov lcov-perf genlcov:
-@CAIRO_HAS_LCOV_FALSE@	@echo You need to configure Cairo with support for gcov enabled.
-@CAIRO_HAS_LCOV_FALSE@	@echo e.g, ./configure --enable-gcov
-
-lcov-clean:
-@CAIRO_HAS_LCOV_TRUE@	-$(LTP) --directory $(top_builddir) -z
-	-$(RM) -r cairo-lcov.info cairo-lcov
-	-$(FIND) -name '*.gcda' -print | $(XARGS) $(RM)
-distclean-local: lcov-clean
+.PHONY: doc test retest recheck perf check-valgrind
 
 changelogs:
 	@$(MAKE) $(AM_MAKEFLAGS) $(CHANGELOGS)
@@ -812,14 +972,15 @@ $(srcdir)/ChangeLog:
 		after=$(srcdir)/ChangeLog.cache-$$nearest_tag..; \
 		$(MAKE) $(AM_MAKEFLAGS) $$before $$after && \
 		echo Creating $@ && \
-		{ cat $$after; echo; cat $$before; } > $@; \
+		{ echo '# Generated by configure.  Do not edit.'; echo; \
+		  cat $$after; echo; cat $$before; } > $@; \
 	else \
 		test -f $@ || \
 		(echo A git checkout is required to generate $@ >&2 && \
 		 echo A git checkout is required to generate this file >> $@); \
 	fi
 
-ChangeLog.cache-*..: .git/HEAD
+ChangeLog.cache-*..: .git
 
 ChangeLog%: $(srcdir)/ChangeLog%
 
@@ -838,7 +999,7 @@ $(srcdir)/ChangeLog.cache-% $(srcdir)/ChangeLog.pre-%:
 		test "x$$from" = xinitial || from=$$from.0; \
 		spec=$$from..$$to; \
 	  fi; \
-	  ./missing --run git-log --stat "$$spec") > $@.tmp \
+	  $(srcdir)/build/missing --run git-log --stat "$$spec") > $@.tmp \
 	  && mv -f $@.tmp $@ \
 	  || ($(RM) $@.tmp; \
 	      echo Failed to generate $@, your $@ may be outdated >&2); \
@@ -848,19 +1009,21 @@ $(srcdir)/ChangeLog.cache-% $(srcdir)/ChangeLog.pre-%:
 
 .PHONY: changelogs ChangeLog $(srcdir)/ChangeLog
 
-# Some custom targets to make it easier to release things.
-#
-# To make real stable releases or devel snapshots, use either:
-#		make release-check
-# or		make release-publish
-#
-# To make a quick properly named (date and git hash stamped) tarball:
-#		make snapshot
+dist-hook: dist-clear-sticky-bits
+
+# Clean up any sticky bits we may inherit from parent dir
+dist-clear-sticky-bits:
+	chmod -R a-s $(distdir)
 
 snapshot:
 	distdir="$(distdir)-`date '+%Y%m%d'`"; \
 	test -d "$(srcdir)/.git" && distdir=$$distdir-`cd "$(srcdir)" && git-rev-parse HEAD | cut -c 1-6`; \
-	$(MAKE) $(AM_MAKEFLAGS) distdir="$$distdir" dist
+	TAR_OPTIONS="$(TAR_OPTIONS)" $(MAKE) $(AM_MAKEFLAGS) distdir="$$distdir" snapshot-dist
+
+snapshot-dist: dist
+	@(echo "$(distdir) archives ready for distribution: "; \
+	  list='$(DIST_ARCHIVES)'; for i in $$list; do echo $$i; done) | \
+	  sed -e 1h -e 1s/./=/g -e 1p -e 1x -e '$$p' -e '$$x'
 
 $(sha1_file): $(tar_file)
 	sha1sum $^ > $@
@@ -868,18 +1031,6 @@ $(sha1_file): $(tar_file)
 $(gpg_file): $(sha1_file)
 	@echo "Please enter your GPG password to sign the checksum."
 	gpg --armor --sign $^ 
-
-$(runtime_zip_file): install
-	-$(RM) $@
-	cd $(prefix); \
-	zip $@ bin/libcairo-$(LT_CURRENT_MINUS_AGE).dll
-
-$(developer_zip_file): install
-	-$(RM) $@
-	cd $(prefix); \
-	zip -r $@ include/cairo lib/libcairo.dll.a lib/cairo.lib lib/pkgconfig/cairo.pc lib/pkgconfig/cairo-*.pc share/gtk-doc/html/cairo
-
-zips: $(runtime_zip_file) $(developer_zip_file)
 
 release-verify-sane-changelogs: changelogs
 	@echo -n "Checking that the ChangeLog files are sane..."
@@ -892,14 +1043,6 @@ release-verify-sane-changelogs: changelogs
 release-verify-sane-tests:
 	@echo "Checking that the test suite is sane..."
 	@cd test && $(MAKE) $(AM_MAKEFLAGS) release-verify-sane-tests
-
-release-verify-soname-major:
-	@echo -n "Checking that the cairo soname major number is 2..."
-	@test "$(LT_CURRENT_MINUS_AGE)" = "2" \
-		|| (echo "Ouch." && echo "The soname major number is $(LT_CURRENT_MINUS_AGE) instead of 2." \
-		&& echo "The libtool shared library version numbers in configure.in must be incremented properly." \
-		&& false)
-	@echo "Good."
 
 release-verify-even-micro:
 	@echo -n "Checking that $(VERSION) has an even micro component..."
@@ -921,16 +1064,17 @@ release-verify-newer:
 release-remove-old:
 	$(RM) $(tar_file) $(sha1_file) $(gpg_file)
 
-# Maybe it's just my system, but somehow group sticky bits keep
-# getting set and this causes failures in un-tarring on some systems.
-# Until I figure out where the sticky bit is coming from, just clean
-# these up before building a release.
-release-cleanup-group-sticky:
-	find . -type f | xargs chmod g-s
+# Strict ordering enforced for parallel make to work
+release-check: \
+	release-verify-even-micro \
+	release-verify-sane-changelogs \
+	release-verify-sane-tests \
+	release-verify-newer \
+	$(NULL)
+	$(MAKE) $(AM_MAKEFLAGS) release-remove-old
+	TAR_OPTIONS="$(TAR_OPTIONS)" $(MAKE) $(AM_MAKEFLAGS) distcheck
 
-release-check: release-verify-sane-changelogs release-verify-sane-tests release-verify-soname-major release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky distcheck
-
-release-upload: release-check $(tar_file) $(sha1_file) $(gpg_file)
+release-upload: $(tar_file) $(sha1_file) $(gpg_file)
 	mkdir -p releases
 	scp $(tar_file) $(sha1_file) $(gpg_file) $(RELEASE_UPLOAD_HOST):$(RELEASE_UPLOAD_DIR)
 	mv $(tar_file) $(sha1_file) $(gpg_file) releases
@@ -972,8 +1116,6 @@ release-publish-message: releases/$(sha1_file)
 	@echo ""
 	@echo "============================== CUT HERE =============================="
 
-release-publish: release-upload release-publish-message
-
 doc-publish: doc
 	rm -rf ./$(MANUAL_DATED)
 	cp -a doc/public/html $(MANUAL_DATED)
@@ -981,7 +1123,77 @@ doc-publish: doc
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
 	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && rm -f manual && ln -s $(MANUAL_DATED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
 
-.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish lcov lcov-perf lcov-clean genlcov
+doc-publish-versioned: doc
+	rm -rf ./$(MANUAL_VERSIONED)
+	cp -a doc/public/html $(MANUAL_VERSIONED)
+	tar czf $(MANUAL_VERSIONED_TAR_FILE) $(MANUAL_VERSIONED)
+	scp $(MANUAL_VERSIONED_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
+	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_VERSIONED_TAR_FILE)"
+
+# Strict ordering enforced for parallel make to work
+release-publish: release-check
+	$(MAKE) $(AM_MAKEFLAGS) release-upload
+	$(MAKE) $(AM_MAKEFLAGS) doc-publish-versioned
+	$(MAKE) $(AM_MAKEFLAGS) release-publish-message
+
+@OS_WIN32_TRUE@$(runtime_zip_file): install
+@OS_WIN32_TRUE@	-$(RM) $@
+@OS_WIN32_TRUE@	pwd=`pwd`; cd $(prefix); \
+@OS_WIN32_TRUE@	zip "$$pwd"/$@ bin/libcairo-$(CAIRO_VERSION_SONUM).dll
+
+@OS_WIN32_TRUE@$(developer_zip_file): install
+@OS_WIN32_TRUE@	-$(RM) $@
+@OS_WIN32_TRUE@	pwd=`pwd`; cd $(prefix); \
+@OS_WIN32_TRUE@	zip -r "$$pwd"/$@ include/cairo lib/libcairo.dll.a lib/cairo.lib lib/pkgconfig/cairo.pc lib/pkgconfig/cairo-*.pc share/gtk-doc/html/cairo
+
+@OS_WIN32_TRUE@zips: $(runtime_zip_file) $(developer_zip_file)
+
+.PHONY: \
+	dist-clear-sticky-bits \
+	doc-publish \
+	doc-publish-versioned \
+	release-check \
+	release-publish \
+	release-publish-message \
+	release-remove-old \
+	release-upload \
+	release-verify-even-micro \
+	release-verify-newer \
+	release-verify-sane-changelogs \
+	release-verify-sane-tests \
+	snapshot \
+	snapshot-dist \
+	$(NULL)
+# use recursive makes in order to ignore errors during check/perf
+@CAIRO_HAS_LCOV_TRUE@lcov:
+@CAIRO_HAS_LCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) check
+@CAIRO_HAS_LCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) genlcov
+@CAIRO_HAS_LCOV_TRUE@lcov-perf:
+@CAIRO_HAS_LCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) perf
+@CAIRO_HAS_LCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) genlcov
+
+# we have to massage the lcov.info file slightly to hide the effect of libtool
+# placing the objects files in the .libs/ directory separate from the *.c
+@CAIRO_HAS_LCOV_TRUE@genlcov:
+@CAIRO_HAS_LCOV_TRUE@	$(LTP) --directory $(top_builddir) --path $(top_builddir) --capture --output-file cairo-lcov.info --test-name CAIRO_TEST --no-checksum
+@CAIRO_HAS_LCOV_TRUE@	$(SED) -e 's#.libs/##' \
+@CAIRO_HAS_LCOV_TRUE@	       -e 's#boilerplate/src#src#' \
+@CAIRO_HAS_LCOV_TRUE@	       -e 's#$(shell pwd)#$(shell cd $(top_srcdir) && pwd)#' \
+@CAIRO_HAS_LCOV_TRUE@	       < cairo-lcov.info > cairo-lcov.info.tmp
+@CAIRO_HAS_LCOV_TRUE@	LANG=C $(LTP_GENHTML) --prefix $(top_builddir) --output-directory cairo-lcov --title "Cairo Code Coverage" --show-details cairo-lcov.info.tmp
+@CAIRO_HAS_LCOV_TRUE@	$(RM) cairo-lcov.info.tmp
+@CAIRO_HAS_LCOV_FALSE@lcov lcov-perf genlcov:
+@CAIRO_HAS_LCOV_FALSE@	@echo You need to configure Cairo with support for gcov enabled.
+@CAIRO_HAS_LCOV_FALSE@	@echo e.g, ./configure --enable-gcov
+
+lcov-clean:
+@CAIRO_HAS_LCOV_TRUE@	-$(LTP) --directory $(top_builddir) -z
+	-$(RM) -r cairo-lcov.info cairo-lcov
+	-$(FIND) -name '*.gcda' -print | $(XARGS) $(RM)
+
+distclean-local: lcov-clean
+
+.PHONY: lcov lcov-perf genlcov lcov-clean
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -48,7 +48,9 @@
 #include "cairoint.h"
 
 #include "cairo-clip-private.h"
+#include "cairo-paginated-private.h"
 #include "cairo-win32-private.h"
+#include "cairo-scaled-font-subsets-private.h"
 
 #include <windows.h>
 
@@ -85,7 +87,7 @@ _cairo_win32_print_gdi_error (const char *context)
     void *lpMsgBuf;
     DWORD last_error = GetLastError ();
 
-    if (!FormatMessageA (FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    if (!FormatMessageW (FORMAT_MESSAGE_ALLOCATE_BUFFER |
 			 FORMAT_MESSAGE_FROM_SYSTEM,
 			 NULL,
 			 last_error,
@@ -94,7 +96,7 @@ _cairo_win32_print_gdi_error (const char *context)
 			 0, NULL)) {
 	fprintf (stderr, "%s: Unknown GDI error", context);
     } else {
-	fprintf (stderr, "%s: %s", context, (char *)lpMsgBuf);
+	fwprintf (stderr, "%S: %s", context, (char *)lpMsgBuf);
 
 	LocalFree (lpMsgBuf);
     }
@@ -358,6 +360,7 @@ _cairo_win32_surface_create_for_dc (HDC             original_dc,
     surface->had_simple_clip = FALSE;
 
     surface->extents = surface->clip_rect;
+    surface->font_subsets = NULL;
 
     _cairo_surface_init (&surface->base, &cairo_win32_surface_backend,
 			 _cairo_content_from_format (format));
@@ -384,12 +387,15 @@ _cairo_win32_surface_create_similar_internal (void	    *abstract_src,
 {
     cairo_win32_surface_t *src = abstract_src;
     cairo_format_t format = _cairo_format_from_content (content);
-    cairo_win32_surface_t *new_surf;
+    cairo_surface_t *new_surf = NULL;
 
     /* We force a DIB always if:
      * - we need alpha; or
      * - the parent is a DIB; or
      * - the parent is for printing (because we don't care about the bit depth at that point)
+     *
+     * We also might end up with a DIB even if a DDB is requested if DDB creation failed
+     * due to out of memory.
      */
     if (src->is_dib ||
 	(content & CAIRO_CONTENT_ALPHA) ||
@@ -398,30 +404,19 @@ _cairo_win32_surface_create_similar_internal (void	    *abstract_src,
 	force_dib = TRUE;
     }
 
-    if (force_dib) {
-	new_surf = (cairo_win32_surface_t*)
-	    _cairo_win32_surface_create_for_dc (src->dc, format, width, height);
-    } else {
-	/* otherwise, create a ddb */
-	HBITMAP ddb = CreateCompatibleBitmap (src->dc, width, height);
-	HDC ddb_dc = CreateCompatibleDC (src->dc);
-	HBITMAP saved_dc_bitmap;
+    if (!force_dib) {
+	/* try to create a ddb */
+	new_surf = cairo_win32_surface_create_with_ddb (src->dc, CAIRO_FORMAT_RGB24, width, height);
 
-	saved_dc_bitmap = SelectObject (ddb_dc, ddb);
-
-	new_surf = (cairo_win32_surface_t*) cairo_win32_surface_create (ddb_dc);
-	if (new_surf->base.status == CAIRO_STATUS_SUCCESS) {
-	    new_surf->bitmap = ddb;
-	    new_surf->saved_dc_bitmap = saved_dc_bitmap;
-	    new_surf->is_dib = FALSE;
-	} else {
-	    SelectObject (ddb_dc, saved_dc_bitmap);
-	    DeleteDC (ddb_dc);
-	    DeleteObject (ddb);
-	}
+	if (new_surf->status != CAIRO_STATUS_SUCCESS)
+	    new_surf = NULL;
     }
 
-    return (cairo_surface_t*) new_surf;
+    if (new_surf == NULL) {
+	new_surf = _cairo_win32_surface_create_for_dc (src->dc, format, width, height);
+    }
+
+    return new_surf;
 }
 
 cairo_surface_t *
@@ -440,21 +435,29 @@ _cairo_win32_surface_clone_similar (void *abstract_surface,
 				    int src_y,
 				    int width,
 				    int height,
+				    int *clone_offset_x,
+				    int *clone_offset_y,
 				    cairo_surface_t **clone_out)
 {
     cairo_content_t src_content;
     cairo_surface_t *new_surface;
     cairo_status_t status;
-    cairo_pattern_union_t pattern;
+    cairo_surface_pattern_t pattern;
 
     src_content = cairo_surface_get_content(src);
     new_surface =
-	_cairo_win32_surface_create_similar_internal (abstract_surface, src_content, width, height, FALSE);
+	_cairo_win32_surface_create_similar_internal (abstract_surface,
+						      src_content,
+						      width, height,
+						      FALSE);
+    if (new_surface == NULL)
+	return CAIRO_INT_STATUS_UNSUPPORTED;
 
-    if (cairo_surface_status(new_surface))
-	return cairo_surface_status(new_surface);
+    status = new_surface->status;
+    if (status)
+	return status;
 
-    _cairo_pattern_init_for_surface (&pattern.surface, src);
+    _cairo_pattern_init_for_surface (&pattern, src);
 
     status = _cairo_surface_composite (CAIRO_OPERATOR_SOURCE,
 				       &pattern.base,
@@ -467,9 +470,11 @@ _cairo_win32_surface_clone_similar (void *abstract_surface,
 
     _cairo_pattern_fini (&pattern.base);
 
-    if (status == CAIRO_STATUS_SUCCESS)
+    if (status == CAIRO_STATUS_SUCCESS) {
+	*clone_offset_x = src_x;
+	*clone_offset_y = src_y;
 	*clone_out = new_surface;
-    else
+    } else
 	cairo_surface_destroy (new_surface);
 
     return status;
@@ -496,6 +501,9 @@ _cairo_win32_surface_finish (void *abstract_surface)
     if (surface->initial_clip_rgn)
 	DeleteObject (surface->initial_clip_rgn);
 
+    if (surface->font_subsets != NULL)
+	_cairo_scaled_font_subsets_destroy (surface->font_subsets);
+
     return CAIRO_STATUS_SUCCESS;
 }
 
@@ -514,8 +522,10 @@ _cairo_win32_surface_get_subimage (cairo_win32_surface_t  *surface,
     local =
 	(cairo_win32_surface_t *) _cairo_win32_surface_create_similar_internal
 	(surface, content, width, height, TRUE);
+    if (local == NULL)
+	return CAIRO_INT_STATUS_UNSUPPORTED;
     if (local->base.status)
-	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return local->base.status;
 
     status = CAIRO_INT_STATUS_UNSUPPORTED;
 
@@ -628,9 +638,9 @@ _cairo_win32_surface_acquire_dest_image (void                    *abstract_surfa
 	x1 = interest_rect->x;
     if (interest_rect->y > y1)
 	y1 = interest_rect->y;
-    if (interest_rect->x + interest_rect->width < x2)
+    if ((int) (interest_rect->x + interest_rect->width) < x2)
 	x2 = interest_rect->x + interest_rect->width;
-    if (interest_rect->y + interest_rect->height < y2)
+    if ((int) (interest_rect->y + interest_rect->height) < y2)
 	y2 = interest_rect->y + interest_rect->height;
 
     if (x1 >= x2 || y1 >= y2) {
@@ -742,7 +752,7 @@ _composite_alpha_blend (cairo_win32_surface_t *dst,
 	if (VER_PLATFORM_WIN32_WINDOWS != os.dwPlatformId ||
 	    os.dwMajorVersion != 4 || os.dwMinorVersion != 10)
 	{
-	    HMODULE msimg32_dll = LoadLibraryA ("msimg32");
+	    HMODULE msimg32_dll = LoadLibraryW (L"msimg32");
 
 	    if (msimg32_dll != NULL)
 		alpha_blend = (cairo_alpha_blend_func_t)GetProcAddress (msimg32_dll,
@@ -1555,7 +1565,8 @@ _cairo_win32_surface_show_glyphs (void			*surface,
 				  cairo_pattern_t	*source,
 				  cairo_glyph_t		*glyphs,
 				  int			 num_glyphs,
-				  cairo_scaled_font_t	*scaled_font)
+				  cairo_scaled_font_t	*scaled_font,
+				  int			*remaining_glyphs)
 {
 #if CAIRO_HAS_WIN32_FONT
     cairo_win32_surface_t *dst = surface;
@@ -1576,6 +1587,7 @@ _cairo_win32_surface_show_glyphs (void			*surface,
     int start_x, start_y;
     double user_x, user_y;
     int logical_x, logical_y;
+    unsigned int glyph_index_option;
 
     /* We can only handle win32 fonts */
     if (cairo_scaled_font_get_type (scaled_font) != CAIRO_FONT_TYPE_WIN32)
@@ -1661,10 +1673,24 @@ _cairo_win32_surface_show_glyphs (void			*surface,
         }
     }
 
+    /* Using glyph indices for a Type 1 font does not work on a
+     * printer DC. The win32 printing surface will convert the the
+     * glyph indices of Type 1 fonts to the unicode values.
+     */
+    if ((dst->flags & CAIRO_WIN32_SURFACE_FOR_PRINTING) &&
+	_cairo_win32_scaled_font_is_type1 (scaled_font))
+    {
+	glyph_index_option = 0;
+    }
+    else
+    {
+	glyph_index_option = ETO_GLYPH_INDEX;
+    }
+
     win_result = ExtTextOutW(dst->dc,
                              start_x,
                              start_y,
-                             ETO_GLYPH_INDEX | ETO_PDY,
+                             glyph_index_option | ETO_PDY,
                              NULL,
                              glyph_buf,
                              num_glyphs,
@@ -1705,7 +1731,6 @@ cairo_win32_surface_create (HDC hdc)
 {
     cairo_win32_surface_t *surface;
 
-    int depth;
     cairo_format_t format;
     RECT rect;
 
@@ -1730,6 +1755,7 @@ cairo_win32_surface_create (HDC hdc)
     surface->saved_dc_bitmap = NULL;
     surface->brush = NULL;
     surface->old_brush = NULL;
+    surface->font_subsets = NULL;
 
     GetClipBox(hdc, &rect);
     surface->extents.x = rect.left;
@@ -1809,7 +1835,6 @@ cairo_win32_surface_create_with_ddb (HDC hdc,
 
     ddb_dc = CreateCompatibleDC (hdc);
     if (ddb_dc == NULL) {
-	_cairo_win32_print_gdi_error("CreateCompatibleDC");
 	new_surf = (cairo_win32_surface_t*) _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 	goto FINISH;
     }
@@ -1820,9 +1845,9 @@ cairo_win32_surface_create_with_ddb (HDC hdc,
 
 	/* Note that if an app actually does hit this out of memory
 	 * condition, it's going to have lots of other issues, as
-	 * video memory is probably exhausted.
+	 * video memory is probably exhausted.  However, it can often
+	 * continue using DIBs instead of DDBs.
 	 */
-	_cairo_win32_print_gdi_error("CreateCompatibleBitmap");
 	new_surf = (cairo_win32_surface_t*) _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 	goto FINISH;
     }
@@ -1873,13 +1898,25 @@ cairo_win32_surface_get_dc (cairo_surface_t *surface)
 {
     cairo_win32_surface_t *winsurf;
 
-    if (!_cairo_surface_is_win32(surface) &&
-	!_cairo_surface_is_win32_printing(surface))
-	return NULL;
+    if (_cairo_surface_is_win32 (surface)){
+	winsurf = (cairo_win32_surface_t *) surface;
 
-    winsurf = (cairo_win32_surface_t *) surface;
+	return winsurf->dc;
+    }
 
-    return winsurf->dc;
+    if (_cairo_surface_is_paginated (surface)) {
+	cairo_surface_t *target;
+
+	target = _cairo_paginated_surface_get_target (surface);
+
+	if (_cairo_surface_is_win32_printing (target)) {
+	    winsurf = (cairo_win32_surface_t *) target;
+
+	    return winsurf->dc;
+	}
+    }
+
+    return NULL;
 }
 
 /**
@@ -1978,34 +2015,6 @@ static const cairo_surface_backend_t cairo_win32_surface_backend = {
  *              multiplied by all the src components.
  */
 
-
-#if !defined(CAIRO_WIN32_STATIC_BUILD)
-
-/* declare to avoid "no previous prototype for 'DllMain'" warning */
-BOOL WINAPI
-DllMain (HINSTANCE hinstDLL,
-         DWORD     fdwReason,
-         LPVOID    lpvReserved);
-
-BOOL WINAPI
-DllMain (HINSTANCE hinstDLL,
-         DWORD     fdwReason,
-         LPVOID    lpvReserved)
-{
-    switch (fdwReason) {
-        case DLL_PROCESS_ATTACH:
-            CAIRO_MUTEX_INITIALIZE ();
-            break;
-
-        case DLL_PROCESS_DETACH:
-            CAIRO_MUTEX_FINALIZE ();
-            break;
-    }
-
-    return TRUE;
-}
-
-#endif
 
 cairo_int_status_t
 _cairo_win32_save_initial_clip (HDC hdc, cairo_win32_surface_t *surface)
