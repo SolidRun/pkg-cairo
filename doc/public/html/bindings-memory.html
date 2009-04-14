@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Memory management</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
 <link rel="prev" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
 <link rel="next" href="bindings-return-values.html" title="Multiple return values">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.9 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="pt01.html" title="Part&#160;I.&#160;Tutorial">
 <link rel="part" href="pt02.html" title="Part&#160;II.&#160;Reference">
@@ -35,12 +35,12 @@
 <p>
       The objects in cairo can roughly be divided into two types:
       reference-counted, opaque types like
-      <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
+      <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a>
       and plain structures like
-      <a href="cairo-Text.html#cairo-glyph-t"><span class="type">cairo_glyph_t</span></a>.
-      <a href="cairo-Paths.html#cairo-path-t"><span class="type">cairo_path_t</span></a>
+      <a class="link" href="cairo-Text.html#cairo-glyph-t"><span class="type">cairo_glyph_t</span></a>.
+      <a class="link" href="cairo-Paths.html#cairo-path-t"><span class="type">cairo_path_t</span></a>
       and 
-      <a href="cairo-Paths.html#cairo-path-data-t"><span class="type">cairo_path_data_t</span></a>
+      <a class="link" href="cairo-Paths.html#cairo-path-data-t"><span class="type">cairo_path_data_t</span></a>
       are special cases and are treated separately in this appendix.
     </p>
 <p>
@@ -68,7 +68,7 @@
 	  uniquifying via a <em class="firstterm">pin table</em> (a hash
 	  table that goes from cairo object to language object).
 	  For <span class="type">cairo_surface_t</span> you can use also 
-	  <a href="cairo-cairo-surface-t.html#cairo-surface-set-user-data"><code class="function">cairo_surface_set_user_data()</code></a>
+	  <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-set-user-data"><code class="function">cairo_surface_set_user_data()</code></a>
 	  instead of a separate pin table.
 	</p></li>
 <li>

@@ -139,8 +139,7 @@ _cairo_array_grow_by (cairo_array_t *array, int additional)
 
     array->size = new_size;
     new_elements = _cairo_realloc_ab (*array->elements,
-             array->size, array->element_size);
-
+			              array->size, array->element_size);
 
     if (new_elements == NULL) {
 	array->size = old_size;

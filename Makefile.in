@@ -47,8 +47,8 @@ host_triplet = @host@
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/ChangeLog.mk \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/config.h.in $(top_srcdir)/configure AUTHORS COPYING \
-	ChangeLog INSTALL NEWS TODO compile config.guess config.sub \
-	depcomp install-sh ltmain.sh missing
+	INSTALL NEWS TODO compile config.guess config.sub depcomp \
+	install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -228,6 +228,7 @@ PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
@@ -856,7 +857,7 @@ $(srcdir)/ChangeLog:
 		 echo A git checkout is required to generate this file >> $@); \
 	fi
 
-ChangeLog.cache-*..: .git
+ChangeLog.cache-*..: .git/HEAD
 
 ChangeLog%: $(srcdir)/ChangeLog%
 
@@ -871,7 +872,7 @@ $(srcdir)/ChangeLog.cache-% $(srcdir)/ChangeLog.pre-%:
 		to=$$version; \
 		test "x$$version" = x && version=$(CURR_CHANGELOG_VERSION); \
 		from=$(PREV_CHANGELOG_VERSION); \
-		test "x$$to" = x || version=$$version.0; \
+		test "x$$to" = x || to=$$to.0; \
 		test "x$$from" = xinitial || from=$$from.0; \
 		spec=$$from..$$to; \
 	  fi; \

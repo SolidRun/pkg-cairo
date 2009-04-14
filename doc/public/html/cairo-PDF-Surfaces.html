@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>PDF Surfaces</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="Surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-Image-Surfaces.html" title="Image Surfaces">
 <link rel="next" href="cairo-PNG-Support.html" title="PNG Support">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.9 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="pt01.html" title="Part&#160;I.&#160;Tutorial">
 <link rel="part" href="pt02.html" title="Part&#160;II.&#160;Reference">
@@ -30,16 +30,16 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-PNG-Support.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2595338" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2606267" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id2610726" class="shortcut">Description</a></nobr></td></tr>
+                  <a href="#id2596592" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-PDF-Surfaces"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id2595338"></a><span class="refentrytitle">PDF Surfaces</span>
+<a name="id2606267"></a><span class="refentrytitle">PDF Surfaces</span>
 </h2>
 <p>PDF Surfaces &#8212; Rendering PDF documents</p>
 </td>
@@ -51,30 +51,30 @@
 
 
 
-<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    <a href="cairo-PDF-Surfaces.html#cairo-pdf-surface-create">cairo_pdf_surface_create</a>            (const char *filename,
+<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    <a class="link" href="cairo-PDF-Surfaces.html#cairo-pdf-surface-create">cairo_pdf_surface_create</a>            (const char *filename,
                                                          double width_in_points,
                                                          double height_in_points);
-<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    <a href="cairo-PDF-Surfaces.html#cairo-pdf-surface-create-for-stream">cairo_pdf_surface_create_for_stream</a> (<a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    <a class="link" href="cairo-PDF-Surfaces.html#cairo-pdf-surface-create-for-stream">cairo_pdf_surface_create_for_stream</a> (<a class="link" href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
                                                          void *closure,
                                                          double width_in_points,
                                                          double height_in_points);
-void                <a href="cairo-PDF-Surfaces.html#cairo-pdf-surface-set-size">cairo_pdf_surface_set_size</a>          (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+void                <a class="link" href="cairo-PDF-Surfaces.html#cairo-pdf-surface-set-size">cairo_pdf_surface_set_size</a>          (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                                          double width_in_points,
                                                          double height_in_points);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610726"></a><h2>Description</h2>
+<a name="id2596592"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2640167"></a><h2>Details</h2>
+<a name="id2596607"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2640178"></a><h3>
+<a name="id2596618"></a><h3>
 <a name="cairo-pdf-surface-create"></a>cairo_pdf_surface_create ()</h3>
-<a class="indexterm" name="id2640191"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_pdf_surface_create            (const char *filename,
+<a class="indexterm" name="id2596631"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_pdf_surface_create            (const char *filename,
                                                          double width_in_points,
                                                          double height_in_points);</pre>
 <p>
@@ -87,29 +87,29 @@ to <em class="parameter"><code>filename</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></p></td>
 <td> a filename for the PDF output (must be writable)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width_in_points</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width_in_points</code></em>&#160;:</span></p></td>
 <td> width of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height_in_points</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height_in_points</code></em>&#160;:</span></p></td>
 <td> height of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></p></td>
 <td> a pointer to the newly created surface. The caller
 owns the surface and should call cairo_surface_destroy when done
 with it.
 
 This function always returns a valid pointer, but it will return a
 pointer to a "nil" surface if an error such as out of memory
-occurs. You can use <a href="cairo-cairo-surface-t.html#cairo-surface-status"><code class="function">cairo_surface_status()</code></a> to check for this.
+occurs. You can use <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-status"><code class="function">cairo_surface_status()</code></a> to check for this.
 
 </td>
 </tr>
@@ -120,9 +120,9 @@ occurs. You can use <a href="cairo-cairo-surface-t.html#cairo-surface-status"><c
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2638626"></a><h3>
+<a name="id2657687"></a><h3>
 <a name="cairo-pdf-surface-create-for-stream"></a>cairo_pdf_surface_create_for_stream ()</h3>
-<a class="indexterm" name="id2638639"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_pdf_surface_create_for_stream (<a href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
+<a class="indexterm" name="id2657700"></a><pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>*    cairo_pdf_surface_create_for_stream (<a class="link" href="cairo-PNG-Support.html#cairo-write-func-t">cairo_write_func_t</a> write_func,
                                                          void *closure,
                                                          double width_in_points,
                                                          double height_in_points);</pre>
@@ -136,34 +136,34 @@ incrementally to the stream represented by <em class="parameter"><code>write_fun
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>write_func</code></em>&#160;:</span></td>
-<td> a <a href="cairo-PNG-Support.html#cairo-write-func-t"><span class="type">cairo_write_func_t</span></a> to accept the output data
+<td><p><span class="term"><em class="parameter"><code>write_func</code></em>&#160;:</span></p></td>
+<td> a <a class="link" href="cairo-PNG-Support.html#cairo-write-func-t"><span class="type">cairo_write_func_t</span></a> to accept the output data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>closure</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em>&#160;:</span></p></td>
 <td> the closure argument for <em class="parameter"><code>write_func</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width_in_points</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width_in_points</code></em>&#160;:</span></p></td>
 <td> width of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height_in_points</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height_in_points</code></em>&#160;:</span></p></td>
 <td> height of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></p></td>
 <td> a pointer to the newly created surface. The caller
 owns the surface and should call cairo_surface_destroy when done
 with it.
 
 This function always returns a valid pointer, but it will return a
 pointer to a "nil" surface if an error such as out of memory
-occurs. You can use <a href="cairo-cairo-surface-t.html#cairo-surface-status"><code class="function">cairo_surface_status()</code></a> to check for this.
+occurs. You can use <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-status"><code class="function">cairo_surface_status()</code></a> to check for this.
 
 </td>
 </tr>
@@ -174,9 +174,9 @@ occurs. You can use <a href="cairo-cairo-surface-t.html#cairo-surface-status"><c
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2639157"></a><h3>
+<a name="id2656183"></a><h3>
 <a name="cairo-pdf-surface-set-size"></a>cairo_pdf_surface_set_size ()</h3>
-<a class="indexterm" name="id2639171"></a><pre class="programlisting">void                cairo_pdf_surface_set_size          (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2656196"></a><pre class="programlisting">void                cairo_pdf_surface_set_size          (<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                                          double width_in_points,
                                                          double height_in_points);</pre>
 <p>
@@ -188,7 +188,7 @@ This function should only be called before any drawing operations
 have been performed on the current page. The simplest way to do
 this is to call this function immediately after creating the
 surface or immediately after completing a page with either
-<a href="cairo-cairo-t.html#cairo-show-page"><code class="function">cairo_show_page()</code></a> or <a href="cairo-cairo-t.html#cairo-copy-page"><code class="function">cairo_copy_page()</code></a>.</p>
+<a class="link" href="cairo-cairo-t.html#cairo-show-page"><code class="function">cairo_show_page()</code></a> or <a class="link" href="cairo-cairo-t.html#cairo-copy-page"><code class="function">cairo_copy_page()</code></a>.</p>
 <p>
 
 </p>
@@ -196,17 +196,17 @@ surface or immediately after completing a page with either
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></p></td>
 <td> a PDF cairo_surface_t
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width_in_points</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width_in_points</code></em>&#160;:</span></p></td>
 <td> new surface width, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height_in_points</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height_in_points</code></em>&#160;:</span></p></td>
 <td> new surface height, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
@@ -215,6 +215,11 @@ surface or immediately after completing a page with either
 <p class="since">Since  1.2
 </p>
 </div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2656675"></a><div class="refsect2" lang="en"><a name="id2656676"></a></div>
+<hr>
+<div class="refsect2" lang="en"><a name="id2656677"></a></div>
 </div>
 </div>
 </body>

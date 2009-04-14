@@ -49,7 +49,7 @@
  *
  * Return value: A pointer to the newly allocated memory, or %NULL in
  * case of malloc() failure or size is 0.
-*/
+ */
 
 #define _cairo_malloc(size) \
    ((size) ? malloc((unsigned) (size)) : NULL)
@@ -74,7 +74,6 @@
 #define _cairo_malloc_ab(a, size) \
   ((size) && (unsigned) (a) >= INT32_MAX / (unsigned) (size) ? NULL : \
    _cairo_malloc((unsigned) (a) * (unsigned) (size)))
-
 
 /**
  * _cairo_realloc_ab:
@@ -119,6 +118,7 @@
   ((b) && (unsigned) (a) >= INT32_MAX / (unsigned) (b) ? NULL : \
    (size) && (unsigned) ((a)*(b)) >= INT32_MAX / (unsigned) (size) ? NULL : \
    _cairo_malloc((unsigned) (a) * (unsigned) (b) * (unsigned) (size)))
+
 /**
  * _cairo_malloc_ab_plus_c:
  * @n: number of elements to allocate
@@ -134,8 +134,8 @@
  */
 
 #define _cairo_malloc_ab_plus_c(n, size, k) \
-   ((size) && (unsigned) (n) >= INT32_MAX / (unsigned) (size) ? NULL : \
+  ((size) && (unsigned) (n) >= INT32_MAX / (unsigned) (size) ? NULL : \
    (unsigned) (k) >= INT32_MAX - (unsigned) (n) * (unsigned) (size) ? NULL : \
-    _cairo_malloc((unsigned) (n) * (unsigned) (size) + (unsigned) (k)))
+   _cairo_malloc((unsigned) (n) * (unsigned) (size) + (unsigned) (k)))
 
 #endif /* CAIRO_MALLOC_PRIVATE_H */

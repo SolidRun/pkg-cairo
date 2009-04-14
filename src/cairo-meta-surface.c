@@ -184,9 +184,9 @@ _cairo_meta_surface_acquire_source_image (void			 *abstract_surface,
     cairo_meta_surface_t *surface = abstract_surface;
     cairo_surface_t *image;
 
-    image = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
-					surface->width_pixels,
-					surface->height_pixels);
+    image = _cairo_image_surface_create_with_content (surface->content,
+						      surface->width_pixels,
+						      surface->height_pixels);
 
     status = _cairo_meta_surface_replay (&surface->base, image);
     if (status) {
@@ -243,12 +243,6 @@ _cairo_meta_surface_paint (void			*abstract_surface,
     cairo_meta_surface_t *meta = abstract_surface;
     cairo_command_paint_t *command;
 
-    /* An optimisation that takes care to not replay what was done
-     * before surface is cleared. We don't erase recorded commands
-     * since we may have earlier snapshots of this surface. */
-    if (op == CAIRO_OPERATOR_CLEAR && !meta->is_clipped)
-	meta->replay_start_idx = meta->commands.num_elements;
-
     command = malloc (sizeof (cairo_command_paint_t));
     if (command == NULL)
 	return CAIRO_STATUS_NO_MEMORY;
@@ -263,6 +257,12 @@ _cairo_meta_surface_paint (void			*abstract_surface,
     status = _cairo_array_append (&meta->commands, &command);
     if (status)
 	goto CLEANUP_SOURCE;
+
+    /* An optimisation that takes care to not replay what was done
+     * before surface is cleared. We don't erase recorded commands
+     * since we may have earlier snapshots of this surface. */
+    if (op == CAIRO_OPERATOR_CLEAR && !meta->is_clipped)
+	meta->replay_start_idx = meta->commands.num_elements;
 
     return CAIRO_STATUS_SUCCESS;
 

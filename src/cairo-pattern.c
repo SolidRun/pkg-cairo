@@ -185,7 +185,9 @@ _cairo_pattern_init_copy (cairo_pattern_t	*pattern,
     } break;
     }
 
+    /* The reference count and user_data array are unique to the copy. */
     pattern->ref_count = 1;
+    _cairo_user_data_array_init (&pattern->user_data);
 
     return CAIRO_STATUS_SUCCESS;
 }
@@ -761,8 +763,9 @@ _cairo_pattern_gradient_grow (cairo_gradient_pattern_t *pattern)
 	if (new_stops)
 	    memcpy (new_stops, pattern->stops, old_size * sizeof (pixman_gradient_stop_t));
     } else {
-		new_stops = _cairo_realloc_ab (pattern->stops, new_size,
-				sizeof (pixman_gradient_stop_t));
+	new_stops = _cairo_realloc_ab (pattern->stops,
+				       new_size,
+				       sizeof (pixman_gradient_stop_t));
     }
 
     if (new_stops == NULL) {
@@ -1633,38 +1636,6 @@ _cairo_pattern_acquire_surface_for_surface (cairo_surface_pattern_t   *pattern,
 
 	status = _cairo_surface_clone_similar (dst, pattern->surface,
 					       x, y, width, height, out);
-
-	if (status == CAIRO_INT_STATUS_UNSUPPORTED) {
-
-	    cairo_t *cr;
-
-	    *out = cairo_surface_create_similar (dst, dst->content,
-						 width, height);
-	    status = cairo_surface_status (*out);
-	    if (status) {
-		cairo_surface_destroy (*out);
-		*out = NULL;
-		return status;
-	    }
-
-	    (*out)->device_transform = pattern->surface->device_transform;
-	    (*out)->device_transform_inverse = pattern->surface->device_transform_inverse;
-
-	    /* XXX Use _cairo_surface_composite directly */
-	    cr = cairo_create (*out);
-
-	    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	    cairo_set_source_surface (cr, pattern->surface, -x, -y);
-	    cairo_paint (cr);
-
-	    status = cairo_status (cr);
-	    cairo_destroy (cr);
-
-	    if (status) {
-		cairo_surface_destroy (*out);
-		*out = NULL;
-	    }
-	}
     }
 
     return status;

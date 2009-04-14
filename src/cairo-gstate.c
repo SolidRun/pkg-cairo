@@ -170,7 +170,7 @@ _cairo_gstate_fini (cairo_gstate_t *gstate)
     gstate->parent_target = NULL;
 
     cairo_surface_destroy (gstate->original_target);
-    gstate->target = NULL;
+    gstate->original_target = NULL;
 
     cairo_pattern_destroy (gstate->source);
     gstate->source = NULL;
@@ -1622,9 +1622,11 @@ _cairo_gstate_glyph_path (cairo_gstate_t      *gstate,
     _cairo_gstate_transform_glyphs_to_backend (gstate, glyphs, num_glyphs,
                                                transformed_glyphs);
 
+    CAIRO_MUTEX_LOCK (gstate->scaled_font->mutex);
     status = _cairo_scaled_font_glyph_path (gstate->scaled_font,
 					    transformed_glyphs, num_glyphs,
 					    path);
+    CAIRO_MUTEX_UNLOCK (gstate->scaled_font->mutex);
 
     if (transformed_glyphs != stack_transformed_glyphs)
       free (transformed_glyphs);

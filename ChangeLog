@@ -1,3 +1,928 @@
+commit 442fa9a106b01f17699397dcc95298071a50fd6d
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Nov 26 22:31:32 2007 -0800
+
+    Increment version to 1.4.12 and 13:6:11
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b28c7a90fce099cc6e8879ba05358f6389948975
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Nov 26 21:52:41 2007 -0800
+
+    NEWS: Add notes for cairo 1.4.12
+
+ NEWS |   55 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 55 insertions(+), 0 deletions(-)
+
+commit 617d3f5738a8e9e6fccbbaa9a314f04383fbfc39
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Nov 20 20:48:47 2007 -0800
+
+    Mark bitmap-font as XFAIL
+    
+    I don't know where the PDF failure is coming from, (it appears
+    to be using a too-small font in the rotate cairo_show_text
+    case), but I'm seeing the same behavior in 1.4.10 so this
+    is not a regression compared to that for the purpose of the
+    1.4.12 release.
+
+ test/Makefile.am   |    1 +
+ test/bitmap-font.c |    3 ++-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+commit bc67e2a37b480e038e8215ae9093561f91090c76
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Nov 20 20:45:42 2007 -0800
+
+    Update two PS reference images for mysterious single-pixel change
+    
+    It seems ft-vertical-layout-type1 and ft-vertical-layout-type3
+    change rasterization slightly from time to time, (may be due
+    to changes in the system installation of ghostscript).
+
+ ...ft-text-vertical-layout-type1-ps-argb32-ref.png |  Bin 1877 -> 1879 bytes
+ ...ft-text-vertical-layout-type3-ps-argb32-ref.png |  Bin 1879 -> 1882 bytes
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 476f888f4e38c63b535a06be77c49c2f4bdad010
+Author: Richard Hult <richard@imendio.com>
+Date:   Mon Nov 5 10:05:07 2007 +0000
+
+    [atsui] Use ascent+descent+leading to get the distance between baselines
+    
+    The height is currently mapped to the atsui metrics property capHeight, which
+    is documented as "The height of a capital letter in the font from the baseline
+    to the top of the letter".
+    
+    That doesn't match what height is in cairo, it should be the disctance between
+    baselines. This patch that fixes that (and makes webkit on GTK+ OS X
+    layout nicely).
+    (cherry picked from commit 4270cd3358fabf0d3e6ac4e866099b172082b592)
+
+ src/cairo-atsui-font.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5c2ad5f69db5c685a3d5d9feeefb911df560bca3
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Mon Nov 5 10:05:04 2007 +0000
+
+    [configure.in] fix atsui experimental warning
+    
+    The 'experimental' warning for atsui was appearing
+    for --enable-quartz not --enable-atsui as it should.
+    (cherry picked from commit 3141b21c0c581dabc09a6ec9cdf0a071701b0e42)
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit e9de14eb4d841071c15e8aea7bc5d463ceb59622
+Author: Keith Packard <keithp@koto.keithp.com>
+Date:   Tue Oct 30 22:00:59 2007 -0700
+
+    Force non-AA text when using a bitmap strike with only scaling transform.
+    
+    When the current font size matches one of the available fixed sizes, and
+    the overall transform has only scaling components, FreeType will use the
+    fixed size bitmaps by default. For glyphs which do not have bitmaps,
+    force them to be rendered in monochrome instead of anti-aliased so
+    that they all match nicely.
+    (cherry picked from commit 06af5c2891b89da28581c30afcde06c5442884db)
+
+ src/cairo-ft-font.c |   24 ++++++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
+
+commit 19e29dfb80ee06b4a4a187ba40e2e0c6ecf0dab2
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Oct 30 17:09:56 2007 -0700
+
+    Fix degenerate-pen test case by removing the triggering assertion
+    
+    Instead we choose either the first or last pen vertex as
+    appropriate.
+    
+    This makes the degenerate-pen pass stop failing on an
+    assertion, and passes for most backends. It's still failing
+    for the PDF backend, but that looks like a new, PDF-specific
+    bug.
+    (cherry picked from commit 448c9314252bba779194d2b01950b8738b26fd13)
+
+ src/cairo-pen.c |   16 +++++++++++++++-
+ 1 files changed, 15 insertions(+), 1 deletions(-)
+
+commit efcaee8f838177c1d1766e48aaa5dbf8cb9cf1d8
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Oct 29 17:55:28 2007 -0700
+
+    Limit miters for small angles
+    
+    This fixes the current failure get-path-extents, which is a
+    demonstration of the following bug:
+    
+    	cairo_stroke_extents() gives wrong result for arcs in some cases
+    	https://bugs.freedesktop.org/show_bug.cgi?id=7245
+    
+    Many thanks to Michael Urman whose review of early versions of
+    this work found a fatal mistake in my algebra.
+    (cherry picked from commit 00d701ff7de68609aa8cec7871d93b27a108fd14)
+
+ src/cairo-path-stroke.c |   76 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 75 insertions(+), 1 deletions(-)
+
+commit b7baef143316566fee1478bfeb109141c805e79f
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Tue Oct 30 11:13:44 2007 +0000
+
+    [cairo-surface] Fix typo in doc.
+    
+    s/INVALUE_FORMAT/INVALID_FORMAT/
+    (cherry picked from commit 0d42af2427d1de27845cb8a6b3d290a562c28fc6)
+
+ src/cairo-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7c70113149a25e2b0278a5e7ca9bbc330dc66e8a
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Oct 26 22:58:57 2007 -0700
+
+    Fix typo in _cairo_gstate_fini
+    
+    Obrigado a Luiz Americo Pereira Camara <luizmed@oi.com.br>
+    (cherry picked from commit a69d4731300b430b802222d317698c313c75a31a)
+
+ src/cairo-gstate.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0ec9e1b4fa06ea456fe596f423aad12be5ec5e1a
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sat Oct 20 23:41:46 2007 +0100
+
+    [quartz] return status instead of CGPatternRef
+    
+    Returning status improves error handling, since
+    returning NULL doesn't let us distinguish different
+    types of error.
+    (cherry picked from commit 8f6abdbc26ee15451b5a386610f7d5a7a9114d63)
+
+ src/cairo-quartz-surface.c |   20 +++++++++++---------
+ 1 files changed, 11 insertions(+), 9 deletions(-)
+
+commit a83e5462533f54d0c0105300b1e8687d120b8686
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sat Oct 20 23:41:32 2007 +0100
+
+    [quartz] return status instead of cairo_quartz_surface_t
+    
+    Returning status improves error handling, since
+    returning NULL doesn't let us distinguish different
+    types of error.
+    (cherry picked from commit cfb26fdf0f490b4902106b50d02628cffd53a0eb)
+
+ src/cairo-quartz-surface.c |   26 ++++++++++++++------------
+ 1 files changed, 14 insertions(+), 12 deletions(-)
+
+commit 0951d2a9ab22f7fe7839629a8a02057536c75c45
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sat Oct 20 22:45:30 2007 +0100
+
+    [quartz] return status instead of CGShadingRef
+    
+    Returning status improves error handling, since
+    returning NULL doesn't let us distinguish different
+    types of error. Suggested by Chris Wilson.
+    (cherry picked from commit dec3099585eeb184ed51b5c720eb891314d7ea51)
+
+ src/cairo-quartz-surface.c |   30 ++++++++++++++++--------------
+ 1 files changed, 16 insertions(+), 14 deletions(-)
+
+commit 044de7fa7aa0da19ead348094697b2227e882417
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sun Jun 24 23:53:47 2007 +0100
+
+    fix dash-zero-length test
+    
+    Quartz was failing the dash-zero-length test for odd numbers
+    of dashes; it seems cairo wants 3 dashes to be on-off-on,
+    off-on-off, wheras quartz uses on-off-on, on-off-on. Fixed
+    by doubling the number of dashes used.
+    (cherry picked from commit b9c065df74027b06e15e105fee5e4a4d350e0abf)
+
+ src/cairo-quartz-surface.c |   16 +++++++++++-----
+ 1 files changed, 11 insertions(+), 5 deletions(-)
+
+commit 5a3aa313d4a96944bd9feaea77b8457d7e4e9499
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sun Jun 24 01:17:58 2007 +0100
+
+    Implement EXTEND_NONE for gradients.
+    
+    Fixes linear and radial gradients, which were displaying with
+    extend_pad when extend_none was requested. Makes the
+    radial-gradient test pass.
+    (cherry picked from commit f334ee0397963e12c9efcb2690792aac83734661)
+
+ src/cairo-quartz-surface.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 977ba306f90618a20fda16b16229c664bad15112
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sat Jun 23 23:36:32 2007 +0100
+
+    call _cairo_error on failure
+    
+    Call _cairo_error to enable setting a breakpoint on quartz errors.
+    (cherry picked from commit 0eeec372c0e7849d81bde8c8c5bf491919f51a6e)
+
+ src/cairo-quartz-surface.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 4fdc3a69fdb17acf6a394d12351b19cd61e17516
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sat Jun 23 12:34:24 2007 +0100
+
+    do not return a cairo_status_t of UNSUPPORTED
+    
+    We had a bug which converted cairo_int_status_t to cairo_status_t,
+    causing an assertion; reported at http://developer.imendio.com/node/128.
+    Return the generic out of memory error instead.
+    (cherry picked from commit 8c8ec63903f8ad67a88394eff1359607bb93cf88)
+
+ src/cairo-quartz-surface.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
+
+commit 6e4ff01d0ba40576943c76da638fe0026baab62b
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Mon Jun 18 00:07:33 2007 +0100
+
+    do not ignore errors, return NULL instead (moz#874315)
+    
+    In the quartz backend there are occasional errors where returning NULL
+    can be used to signal that an error has occured.
+    
+    Mozilla bug #874315.
+    (cherry picked from commit 6fec51990e90901ebafbb872a9e618cb70d17911)
+
+ src/cairo-quartz-surface.c |   37 ++++++++++++++++++++++++++++---------
+ 1 files changed, 28 insertions(+), 9 deletions(-)
+
+commit ca132774c463f75b11b297c5b2b034ee669115ac
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Mon Jun 18 00:07:33 2007 +0100
+
+    do not ignore errors in setup_source
+    
+    In setup_source we were ignoring a return value, but we can't relay
+    it to the caller. This patch treats the error as an unsupported
+    operation.
+    (cherry picked from commit 07fd091e3e6b925c588b9a16f6f10efcd46615c2)
+
+ src/cairo-quartz-surface.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit f27164c89910430385d21fc8904cedd884f21894
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Tue Jun 19 21:13:39 2007 +0100
+
+    do not ignore errors when creating styles.
+    
+    This fixes statuses being ignored when calling
+    CreateSizedCopyOfStyle. As a side effect, it cleans up
+    two other bugs - the font object was sometimes not
+    freed, and a the scaled font mutex was aquired recursively,
+    causing a hang in the invalid-matrix test.
+    (cherry picked from commit b6b9cef7136453f97543173bcb2ade46b1c46b77)
+
+ src/cairo-atsui-font.c |   37 ++++++++++++++++++++++++++-----------
+ 1 files changed, 26 insertions(+), 11 deletions(-)
+
+commit c00bf48648e27b4bed66edb5054cc6a8545bb2f4
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Mon Jun 18 00:07:33 2007 +0100
+
+    do not ignore ATSUI errors.
+    
+    This fixes multiple instances where the return value of an ATSUI
+    call was ignored and converts them into CAIRO_STATUS_NO_MEMORY.
+    As a side effect it fixes a utf8 array not being freed.
+    (cherry picked from commit 4885a12c6863321a566e7103bf6dccdd5d13a986)
+
+ src/cairo-atsui-font.c |   83 +++++++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 76 insertions(+), 7 deletions(-)
+
+commit 23b6c2fe9d8223f6b389dff49f99b5ae86706032
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Mon Jun 18 00:07:33 2007 +0100
+
+    do not ignore errors in glyph paths
+    
+    When interpreting glyph paths in ATSUI callbacks we were ignoring
+    the cairo status. We need to return this to the caller. In order
+    to do this we introduce a custom OSStatus code in the range that
+    Apple reccommend.
+    (cherry picked from commit b498c928be73635614596243d17a922e9d5ff008)
+
+ src/cairo-atsui-font.c |   30 ++++++++++++++++++++++++------
+ 1 files changed, 24 insertions(+), 6 deletions(-)
+
+commit b7af909c8247642d2ec4dd0b96f20348be6e971a
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Fri Oct 19 22:45:15 2007 +0100
+
+    [cairo-xlib] Check source for XRender support.
+    
+    Do not rely on the assumption that if the destination has render support
+    then the source has it as well - breaks when the boilerplate disables
+    render support for a surface.
+    
+    Similarly do not set the XRender attributes on the source surface
+    unless it actually has a xrender_format.
+    (cherry picked from commit 3211d810d31a6607c8d78a50f577a8ca8eb705e6)
+
+ src/cairo-xlib-surface.c |   17 +++++++++--------
+ 1 files changed, 9 insertions(+), 8 deletions(-)
+
+commit a81ff21d53caa436732a479c2b91c4f3dfe35c93
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 19 15:02:03 2007 -0400
+
+    [cairo-xlib] Release glyph surfaces if we made them to be generated
+    
+    The reasoning is that right now, applications render glyphs to images,
+    upload it to the X server, and keep a local copy in the cache.  The X
+    server works hard to reuse glyph renderings, by hashing glyph images and
+    reusing them.  So we are wasting memory in cairo apps that don't use the
+    glyph surface after uploading to the server, which is the case if you
+    don't use the glyph in an image surface.  The patch does not release the
+    glyph surface if it already existed in the cache, so, worst case
+    scenario is that we render the glyph twice, if you first use it with
+    xlib, then with image surface.  That effect should be negligible.
+    (cherry picked from commit 76e3b3cdc3dda986d420637cfc2445aca481a863)
+
+ src/cairo-xlib-surface.c |   83 +++++++++++++++++++++++++++++++++++-----------
+ 1 files changed, 63 insertions(+), 20 deletions(-)
+
+commit c1464e04c4ae41cb8b353c5a0d18bd5e23ceef39
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Thu Oct 18 20:07:12 2007 +0100
+
+    [cairo-xlib-surface] Match content to xrender_format using the channel masks.
+    
+    _xrender_format_to_content() was using the channel offset to determine
+    whether the format supported a content type.
+    For example, the XRenderPictFormat for the A8 format looks like:
+        direct.alpha = 0; direct.alphaMask = 0xff;
+        direct.red   = 0; direct.redMask   = 0x00;
+        direct.green = 0; direct.greenMask = 0x00;
+        direct.blue  = 0; direct.blueMask  = 0x00;
+    which _xrender_format_to_content() matched as CAIRO_CONTENT_COLOR.
+    
+    Switch to using the channel masks for deducing content type.
+    (cherry picked from commit 8ae778273799ee9f6d3c13e9c41730daeda2c743)
+
+ src/cairo-xlib-surface.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 2e76f8b617dfad13e16a8bad70db9ff2f8e43db4
+Author: Chris Heath <chris@heathens.co.nz>
+Date:   Mon Oct 15 17:31:50 2007 -0400
+
+    [autogen.sh] Tolerate tput failure (#12757)
+    (cherry picked from commit 189feaf352f59b0a049202552024578715ef8cc7)
+
+ autogen.sh |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 198dc3573f2a80accd1ba0c188ea5378f5f99bc5
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Tue Oct 2 10:54:44 2007 -0700
+
+    [win32] return a nil surface, not NULL
+    
+    Missed an error return
+    (cherry picked from commit c99d33b10e84883ade1402c3c1d1efdb4b46f66e)
+
+ src/cairo-win32-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bf67f28746044b6d5a712921c617ba52d31d33e3
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Tue Oct 2 10:48:59 2007 -0700
+
+    [win32] report error correctly if CreateCompatibleBitmap fails
+    
+    These errors were being dropped on the floor, leading to
+    rendering errors in out of video memory conditions.
+    (cherry picked from commit 4dbf495515d6de933de7f567b935c5fdceed5f6f)
+
+ src/cairo-win32-surface.c |   20 +++++++++++++++++++-
+ 1 files changed, 19 insertions(+), 1 deletions(-)
+
+commit 0368f0d2081b58feea0489e0d29ad413dca6a007
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Oct 9 15:54:58 2007 -0400
+
+    [ChangeLog.mk] Fix changelog generation rules
+    
+    Previously it was trying to get logs of 1.2.0..1.4 while I really meant
+    was 1.2.0..1.4.0.  It was a simple typo.
+    (cherry picked from commit b12ed375cf7ad02a30324616e121a1e9ab8998cb)
+
+ ChangeLog.mk |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 03906e1d81b1adace7e5a4668fb449a487812d70
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Thu Oct 4 16:04:49 2007 +0100
+
+    [cairo-scaled-font] Acquire mutex around _cairo_scaled_font_glyph_path().
+    
+    All calls that manipulate the scaled_font->cache must hold its mutex.
+    (cherry picked from commit 6e93941a7605a3958269de195dc16f255dda7bfd)
+
+ src/cairo-gstate.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 886bd8ee9b594478522ebf315f5bc809d837509f
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Thu Oct 4 09:08:46 2007 +0100
+
+    [cairo-path] Check for an empty path in cairo_append_path().
+    
+    As we now generate empty paths, we must be able to handle empty paths
+    in the user facing API. cairo_append_path() has an explicit check, and
+    raises an error, for a NULL path->data, so we need to check the
+    path->num_data first for empty paths.
+    (cherry picked from commit ef5f460eb1f86a73e016c1150723ae1e70b3b037)
+
+ src/cairo.c      |    3 +++
+ test/copy-path.c |   15 +++++++++++++++
+ 2 files changed, 18 insertions(+), 0 deletions(-)
+
+commit 3454ef0984299d19e79ceb705a84c4a706704e29
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Wed Oct 3 23:25:10 2007 +0100
+
+    [malloc] Take advantage of calloc() argument checking.
+    
+    calloc() will check its arguments for integer overflows so it is safer
+    not to pre-multiply them.
+    (cherry picked from commit 66664596559c55913fb0b9c8784fe8ab862c217b)
+
+ src/cairo-ft-font.c       |    4 ++--
+ src/cairo-glitz-surface.c |    2 +-
+ src/cairo-image-surface.c |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+commit a5b74da68bcebaecaa4cbb252bc15b6bec32f847
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Wed Oct 3 23:19:10 2007 +0100
+
+    [malloc] Check for integer overflow when realloc'ing.
+    
+    Perform similar sanity checks to Vlad's _cairo_malloc_ab() but on the
+    arguments to realloc instead.
+    (cherry picked from commit e49bcde27f88e21d5b8037a0089a226096f6514b)
+
+ src/cairo-array.c          |    4 ++--
+ src/cairo-lzw.c            |    6 +++++-
+ src/cairo-malloc-private.h |   30 ++++++++++++++++++++++++++----
+ src/cairo-path-stroke.c    |    3 ++-
+ src/cairo-pattern.c        |    4 +++-
+ src/cairo-pen.c            |    3 ++-
+ src/cairo-polygon.c        |    3 ++-
+ src/cairo-spline.c         |    3 ++-
+ src/cairo-traps.c          |    3 ++-
+ 9 files changed, 46 insertions(+), 13 deletions(-)
+
+commit 96d0c44ac859727315fc31cadeafdf5bb1b770b8
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Mon Oct 1 17:59:57 2007 +0100
+
+    [cairo-path] Don't raise an error when attempting to create an empty path.
+    
+    Generate a real empty path structure instead of returning
+    _cairo_path_nil, if we have been asked to create an empty path.
+    
+    (Also add a couple of missing _cairo_error()s and an appropriate test
+    case.)
+    
+    Spotted by Fred Kiefer.
+    (cherry picked from commit b4f86638cc4b87bfaf10568ae9beb89626e26613)
+
+ src/cairo-path.c |   36 ++++++++++++++++++++++++------------
+ test/copy-path.c |   17 +++++++++++++++++
+ 2 files changed, 41 insertions(+), 12 deletions(-)
+
+commit fb62103c7bff66761780ecae6c501ceab3f64c38
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Sat Sep 29 07:55:48 2007 +0930
+
+    CFF Subetting: Fix for #10849
+    
+    This fixes the problem Apple Preview has with viewing PDFs with CFF
+    font subsets.
+    (cherry picked from commit 042c382c094d1ea6f9a5a162d4d1d9ac83413233)
+
+ src/cairo-cff-subset.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 9457131f8bf9ffe2a4a9178c049d02876f719671
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Sun Sep 23 11:37:02 2007 +0930
+
+    Truetype Subsetting: Avoid failing when fonts are missing optional tables
+    
+    Previously, the TrueType subsetting would fail if any of the "cvt",
+    "fpgm", or "prep" tables were missing from the source font. However
+    these tables are optional and not required in the subsetted font if
+    they do not appear in the source font.
+    
+    The "name" table has been removed from the subsetted font as the
+    Type42 specification does not require this table.
+    (cherry picked from commit b20e08999e2f6e7a72ee75a7c3fd865bf0368794)
+
+ src/cairo-truetype-subset.c |  153 +++++++++++++++++++++++++++++++------------
+ 1 files changed, 110 insertions(+), 43 deletions(-)
+
+commit 4e2a11e0f10702abd5c5144410530e10d1e20a5d
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sun Sep 23 02:52:01 2007 +0100
+
+    [type1-subset] only subset ft fonts
+    
+    If atsui and ft were both enabled, the code crashed trying to subset
+    type-1 fonts; fixed by checking if fonts really are ft before using
+    them as ft fonts. This is a temporary fix until we support subsetting
+    across all font backends.
+    (cherry picked from commit 8132b8b417c75388ce4c4671fffddaa44a5d1be0)
+
+ src/cairo-type1-subset.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit d672c26396f6bde7a771beb5d35b3b786c4574b4
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Fri Sep 21 11:02:42 2007 -0700
+
+    Avoid divide-by-zero when trying to allocate a 0-sized array
+    
+    Fix up the _cairo_malloc_* wrappers to avoid blindly dividing by zero;
+    any attempt to allocate a zero-sized chunk of memory will result in
+    NULL.
+    (cherry picked from commit 6020f67f1a49cfe3844c4938d4af24c63c8424cc)
+
+ src/cairo-malloc-private.h |   35 +++++++++++++++++++++++++----------
+ 1 files changed, 25 insertions(+), 10 deletions(-)
+
+commit d5bdb91809bd69e6ed3068d1dc79aac669780e0b
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Wed Aug 29 16:30:49 2007 -0700
+
+    Make NO_MUTEX really mean no mutexes
+    (cherry picked from commit e3c16e15e39d98f96e2ce20e397d88214f5a821e)
+
+ src/cairo-mutex-type-private.h |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 1ea1fadf7ec53fcd27b8ed8acd655d913e72e091
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 12 17:45:11 2007 -0400
+
+    [cairo-ft-font] Ignore FT_Load_Glyph errors other than out-of-memory
+    Same for FT_Render_Glyph.
+    
+    When the user asks us to render a glyph that is not available in the font,
+    it's mostly an unavoidable kind of error for them, as in, they can't
+    avoid such a call.  So it's not nice to put cairo_t in an error state and
+    refuse any further drawying.
+    
+    Many PDF files are created using buggy software and cause such glpyh-not-found
+    errors for CID 0 for example.
+    
+    Eventually we should propagate these kind of errors up and return it from
+    the function call causing it, but that needs API change to add return value
+    to all text functions, so for now we just ignore these errors.
+    (cherry picked from commit 79d975f84bcc32e91db517d71a7312e2e1d653d4)
+
+ src/cairo-ft-font.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
+
+commit 57bc62a61e6f2dd36c5680d3f486791a968f33ac
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 17 16:41:52 2007 -0400
+
+    =?utf-8?q?[ChangeLog.mk]=20Make=20make=20rule=20depend=20on=20.git/HEAD,=20not=20.git
+    
+    =20That=20is=20exactly=20what=20we=20want.=20=20Kristian=20H=C3=B8gsberg=20suggested=20it.
+    =20(cherry=20picked=20from=20commit=2021ab44f11d3d20eead5d988c7a6cf48eebff08c7)?=
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset=utf-8
+    Content-Transfer-Encoding: 8bit
+
+ ChangeLog.mk |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 709292419564ad14025b8b718324d79dd1b7255a
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Wed Sep 5 08:07:41 2007 +0100
+
+    [cairo-ft-font] Early detection of a zero sized bitmap.
+    
+    Under rare circumstances we may need to extract a surface that
+    represents a bitmap with width==0 and rows==0. Detect this case at the
+    start and simply return a zero-sized surface.
+    
+    Fixes https://bugs.freedesktop.org/show_bug.cgi?id=12284.
+    (cherry picked from commit d62f8861689d8b9a9a837043fb78813f0407abd4)
+
+ src/cairo-ft-font.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 9b0a093547aa4b51381baeafd7fcc3029fb140d2
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Wed Sep 5 22:53:43 2007 +0930
+
+    Create meta-surface source image with same content type as the
+    meta-surface
+    (cherry picked from commit 1e21220f0e2540e3befa66e4764f75589d0eef82)
+
+ src/cairo-meta-surface.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit fce1a3fdd412128bad9efa75f3565d73e9355e99
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Wed Sep 5 22:51:13 2007 +0930
+
+    Eliminate unclipped CLEAR from meta-surface playback
+    
+    The optimization that avoids replaying commands prior to an unclipped
+    CLEAR operation now starts playback from the first command after the
+    CLEAR. This avoids the need to handle the unclipped CLEAR in the PDF
+    surface.
+    (cherry picked from commit 875e32178e5d990a09f3c41262d890888035f04f)
+
+ src/cairo-meta-surface.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 11d83334ceb063d4b771f6ea47002985d844e244
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 5 00:26:56 2007 -0400
+
+    [configure.in] Fix non-pkgconfig Xrender detection path (#4724)
+    (cherry picked from commit b85032584b32af968dc8d8a0fcfc9f3e1d2770a0)
+
+ configure.in |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit c92dae41445303a4f109dc8a1f69e54b6ca958b7
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Tue Aug 28 23:40:18 2007 +0930
+
+    Fix PDF gradients bug
+    
+    The PDF surface was adding extra stops at the 0.0 and 1.0 offset when
+    there was not already stops at these offsets. This has been replaced
+    with code to move the coordinates of the linear gradient line in to
+    the position of the first and last offset.
+    (cherry picked from commit 3216275fd9a9cd8d51b1c3a8671393912d50d899)
+
+ src/cairo-pdf-surface.c |   63 ++++++++++++++++++++++++++++++----------------
+ 1 files changed, 41 insertions(+), 22 deletions(-)
+
+commit 66add99fb643b1d23642f3115e410c7570702dbb
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Wed Aug 29 12:52:00 2007 -0700
+
+    [win32] call scaled_font_fini in create before returning NULL
+    (cherry picked from commit bdc70d1fc2a31aa829571244c54f98210e97a2cf)
+
+ src/cairo-win32-font.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+commit 003dc9edabcf181884c3c2cf00c8f81ea9996f4b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 29 12:18:16 2007 -0400
+
+    [configure.in] Make PS backend require zlib too (#12210)
+    
+    The PS backend uses zlib these days.  Make it depend on zlib being available
+    like PDF has been doing.
+    (cherry picked from commit 114b07881e8b09f97394dd4fe8f2900ee9f4c348)
+
+ configure.in |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit e544c75f6acf64449d63c2e6bbff70556899317d
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Tue Aug 28 16:47:24 2007 -0700
+
+    Fix previous create_similar fallback patch
+    
+    We can't use composite, as some backends don't implement it.
+    Use paint() instead.
+    (cherry picked from commit 93aee43690c329f43be9e7b840851267ceb17956)
+
+ src/cairo-pattern.c          |   32 ------------------------
+ src/cairo-surface-fallback.c |   28 ++++++++++++---------
+ src/cairo-surface.c          |   55 ++++++++++++++++++++++-------------------
+ 3 files changed, 45 insertions(+), 70 deletions(-)
+
+commit 23278efcdb8ef9307fadccf876819b747d999958
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Tue Aug 28 10:47:52 2007 -0700
+
+    [win32] call free() and not scaled_font_destroy() if scaled init fails
+    
+    If scaled_font_destroy() is called, a deadlock can result; there's no
+    reason to call destroy since the initialization failed (and, indeed,
+    it might not be valid to do so anyway).
+    (cherry picked from commit 6525d4debb6df67126b04609bb04d23d9c9bd7a6)
+
+ src/cairo-win32-font.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1432c9232f5cf6906240fef07968b108bd0a3ef9
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Mon Aug 27 16:30:52 2007 -0700
+
+    Implement fallback for clone_similar
+    (cherry picked from commit 69dae7ee4ace8a92226140ce5ccb690e7f62e35c)
+
+ src/cairo-surface-fallback-private.h |   10 ++++++++
+ src/cairo-surface-fallback.c         |   41 ++++++++++++++++++++++++++++++++++
+ src/cairo-surface.c                  |    6 ++++-
+ 3 files changed, 56 insertions(+), 1 deletions(-)
+
+commit ce3744f79678f6949af736e40d0d4462da007908
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Mon Aug 27 14:26:19 2007 -0700
+
+    [win32] check correct surface for BitBlt support in get_subimage
+    (cherry picked from commit f4a8633fce5262c09b323eef212fd6efe57d8f10)
+
+ src/cairo-win32-surface.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit c8aff910c417e09d774780ca91877e8b9e409b71
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Aug 21 10:03:00 2007 -0700
+
+    Ensure the Render extension is initialized before calling XESetCloseDisplay
+    
+    This avoids a potential crash from the Render extension being cleaned
+    up during XCloseDisplay before the cairo CloseDisplay hook goes on to
+    call into XRenderFreePicture.
+    (cherry picked from commit 9f4e6436496fe561aa124bb2b89e1c6711684d98)
+
+ src/cairo-xlib-display.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 578e38eaa794130de1e57b80b60a9bf2e964e9c5
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Thu Aug 16 12:21:49 2007 +0100
+
+    [cairo-ft-font] Decrement lock count on error.
+    
+    As noted in http://bugs.freedesktop.org/show_bug.cgi?id=12026 the error
+    path of _cairo_ft_unscaled_font_lock_face() failed to reset the
+    unscaled->lock_count before releasing the mutex and returning NULL.
+    (cherry picked from commit bc635da45a32eb9b7aff6fa5f7f560ebf99092a8)
+
+ src/cairo-ft-font.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 849f402b85a2ee7750b8eb767d6722a2489a8b74
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Fri Aug 10 20:10:29 2007 +0930
+
+    PDF: Fix regression in pdf_surface_set_size()
+    (cherry picked from commit 8881265cca73790a49068b3bab5362cb73f8deb6)
+
+ src/cairo-pdf-surface.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit afda1179721b96e7786260e613a66ffea783ab9b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Aug 6 11:06:47 2007 -0700
+
+    Ensure that a copied pattern gets its own user_data array
+    
+    This fixes the bug reported here:
+    
+    	Segfault with cairo_pattern_set_user_data
+    	https://bugs.freedesktop.org/show_bug.cgi?id=11855
+    (cherry picked from commit 13cae8b5e6d3fc93c4eb1853b91ba356b572b551)
+
+ src/cairo-pattern.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit a76f8653d6877134a1d3acbb0fcb4f68ebfbcb8f
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Thu Aug 2 21:25:46 2007 +0930
+
+    CFF Subsetting: fix integer encoding bug
+    
+    Bug report at https://bugzilla.mozilla.org/show_bug.cgi?id=368668
+    (cherry picked from commit f52aa4c13e91339e575ca2c52c9e3a1f4d95b106)
+
+ src/cairo-cff-subset.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 553d8a9319cdb2f6d9378b5fb304f0e4c2e81f25
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Thu Oct 11 17:54:55 2007 +0100
+
+    [Makefile.am] Add missing headers and reference images.
+    
+    Andrew Jorgensen spotted that make dist was missing a few headers needed
+    for compilation and running make distcheck had spurious failures. Add
+    the missing files to the distribution and a silly one-liner to check for
+    missing reference images.
+    (cherry picked from commit e5b01e67975578797b4f7875a9ba02121ff935b5)
+    
+    [With some edits after cherry-picking to elide files that don't exist
+    in the 1.4 branch.]
+
+ src/Makefile.am  |    1 +
+ test/Makefile.am |    9 ++++++++-
+ 2 files changed, 9 insertions(+), 1 deletions(-)
+
+commit 33b1e9ad8bd560e8a0119b2fc0b38bc4d9b03f8f
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Nov 21 10:43:21 2007 -0800
+
+    Add missing definition of INT32_MAX
+    
+    Some win32 builds were broken without this.
+
+ pixman/src/pixman.h |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit 1786c05f6e4fb86ccf0360b6c5ed54ec0e2c1baa
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Tue Jun 19 13:15:21 2007 -0700
+
+    [fix] Avoid int overflow when allocating large buffers
+    
+    This patch introduces three macros: _cairo_malloc_ab,
+    _cairo_malloc_abc, _cairo_malloc_ab_plus_c and replaces various calls
+    to malloc(a*b), malloc(a*b*c), and malloc(a*b+c) with them.  The macros
+    return NULL if int overflow would occur during the allocation.  See
+    CODING_STYLE for more information.
+    (cherry picked from commit 5c7d2d14d78e4dfb1ef6d2c40f0910f177e07360)
+
+ CODING_STYLE                    |   25 +++++++++
+ pixman/src/fbcompose.c          |    4 +-
+ pixman/src/icimage.c            |    8 ++--
+ pixman/src/pixman.h             |    7 +++
+ pixman/src/pixmanint.h          |   17 ++++++
+ pixman/src/pixregion.c          |   59 ++++++++++++++++++----
+ pixman/src/pixregionint.h       |    1 -
+ src/cairo-atsui-font.c          |    2 +-
+ src/cairo-bentley-ottmann.c     |    6 +-
+ src/cairo-beos-surface.cpp      |    4 +-
+ src/cairo-clip.c                |   10 +++-
+ src/cairo-directfb-surface.c    |    2 +-
+ src/cairo-ft-font.c             |    4 +-
+ src/cairo-glitz-surface.c       |   34 +++++++++++--
+ src/cairo-gstate.c              |    6 +-
+ src/cairo-hull.c                |    2 +-
+ src/cairo-malloc-private.h      |  104 +++++++++++++++++++++++++++++++++++++++
+ src/cairo-meta-surface.c        |    4 +-
+ src/cairo-os2-surface.c         |    9 ++--
+ src/cairo-path.c                |    2 +-
+ src/cairo-pattern.c             |    6 +-
+ src/cairo-pdf-surface.c         |    6 +-
+ src/cairo-pen.c                 |    4 +-
+ src/cairo-png.c                 |    6 +-
+ src/cairo-polygon.c             |    2 +-
+ src/cairo-ps-surface.c          |    4 +-
+ src/cairo-quartz-surface.c      |    8 ++--
+ src/cairo-scaled-font-subsets.c |    4 +-
+ src/cairo-scaled-font.c         |    2 +-
+ src/cairo-spline.c              |    2 +-
+ src/cairo-stroke-style.c        |    2 +-
+ src/cairo-surface-fallback.c    |    4 +-
+ src/cairo-surface.c             |    2 +-
+ src/cairo-svg-surface.c         |    2 +-
+ src/cairo-traps.c               |    2 +-
+ src/cairo-unicode.c             |    4 +-
+ src/cairo-win32-font.c          |    6 +-
+ src/cairo-win32-surface.c       |    6 +-
+ src/cairo-xcb-surface.c         |    8 ++--
+ src/cairo-xlib-surface.c        |    6 +-
+ src/cairoint.h                  |    1 +
+ 41 files changed, 308 insertions(+), 89 deletions(-)
+
+commit cf0e1b8e8917224a5d546109685efacb9529e5b8
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Nov 20 19:41:31 2007 -0800
+
+    Update version to 1.4.11 after the 1.4.10 release
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 107a74885a25e585b467c7841c6929a12aa62565
 Author: Carl Worth <cworth@cworth.org>
 Date:   Wed Jun 27 14:05:56 2007 -0700
