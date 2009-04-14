@@ -273,30 +273,29 @@ _cairo_xlib_surface_finish (void *abstract_surface)
 				    NULL;
     cairo_status_t        status  = CAIRO_STATUS_SUCCESS;
 
-    if (surface->dst_picture != None) {
-	cairo_status_t status2;
-	status2 = _cairo_xlib_display_queue_resource (display,
-		                                      XRenderFreePicture,
-						      surface->dst_picture);
-	if (status2 == CAIRO_STATUS_SUCCESS)
-	    surface->dst_picture = None;
-	else if (status == CAIRO_STATUS_SUCCESS)
-	    status = status2;
-    }
-
-    if (surface->src_picture != None) {
-	cairo_status_t status2;
-	status2 = _cairo_xlib_display_queue_resource (display,
-		                                      XRenderFreePicture,
-						      surface->src_picture);
-	if (status2 == CAIRO_STATUS_SUCCESS)
-	    surface->src_picture = None;
-	else if (status == CAIRO_STATUS_SUCCESS)
-	    status = status2;
-    }
-
     if (surface->owns_pixmap) {
 	cairo_status_t status2;
+
+	if (surface->dst_picture != None) {
+	    status2 = _cairo_xlib_display_queue_resource (display,
+							  XRenderFreePicture,
+							  surface->dst_picture);
+	    if (status2 == CAIRO_STATUS_SUCCESS)
+		surface->dst_picture = None;
+	    else if (status == CAIRO_STATUS_SUCCESS)
+		status = status2;
+	}
+
+	if (surface->src_picture != None) {
+	    status2 = _cairo_xlib_display_queue_resource (display,
+							  XRenderFreePicture,
+							  surface->src_picture);
+	    if (status2 == CAIRO_STATUS_SUCCESS)
+		surface->src_picture = None;
+	    else if (status == CAIRO_STATUS_SUCCESS)
+		status = status2;
+	}
+
 	status2 = _cairo_xlib_display_queue_resource (display,
 		                           (cairo_xlib_notify_resource_func) XFreePixmap,
 					   surface->drawable);
@@ -305,6 +304,12 @@ _cairo_xlib_surface_finish (void *abstract_surface)
 	    surface->drawable = None;
 	} else if (status == CAIRO_STATUS_SUCCESS)
 	    status = status2;
+    } else {
+	if (surface->dst_picture != None)
+	    XRenderFreePicture (surface->dpy, surface->dst_picture);
+
+	if (surface->src_picture != None)
+	    XRenderFreePicture (surface->dpy, surface->src_picture);
     }
 
     if (surface->gc != NULL) {
@@ -683,10 +688,18 @@ static void
 _cairo_xlib_surface_ensure_src_picture (cairo_xlib_surface_t    *surface)
 {
     if (!surface->src_picture)
+    {
+	XRenderPictureAttributes pa;
+	int mask = 0;
+
+	pa.subwindow_mode = IncludeInferiors;
+	mask |= CPSubwindowMode;
+
 	surface->src_picture = XRenderCreatePicture (surface->dpy,
 						     surface->drawable,
 						     surface->xrender_format,
-						     0, NULL);
+						     mask, &pa);
+    }
 }
 
 static void
@@ -2073,6 +2086,11 @@ _cairo_xlib_screen_from_visual (Display *dpy, Visual *visual)
  * NOTE: If @drawable is a Window, then the function
  * cairo_xlib_surface_set_size must be called whenever the size of the
  * window changes.
+ *
+ * When @drawable is a Window containing child windows then drawing to
+ * the created surface will be clipped by those child windows.  When
+ * the created surface is used as a source, the contents of the
+ * children will be included.
  *
  * Return value: the newly created surface
  **/

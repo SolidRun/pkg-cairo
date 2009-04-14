@@ -50,12 +50,14 @@ host_triplet = @host@
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__append_6 = xlib-surface
 @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@am__append_7 = multi-page
 @CAIRO_HAS_PDF_SURFACE_TRUE@@CAIRO_HAS_PS_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_8 = fallback-resolution
+check_PROGRAMS = imagediff$(EXEEXT) png-flatten$(EXEEXT) \
+	$(am__EXEEXT_13) $(am__EXEEXT_14)
 EXTRA_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_11) \
-	$(am__EXEEXT_12) $(am__EXEEXT_15)
+	$(am__EXEEXT_12)
 @HAVE_PTHREAD_TRUE@am__append_9 = -lpthread
-@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__append_10 = pdf2png$(EXEEXT)
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__append_10 = pdf2png
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_11 = pdf2svg$(EXEEXT)
-@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__append_12 = svg2png$(EXEEXT)
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__append_12 = svg2png
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_13 = svg2pdf$(EXEEXT)
 subdir = test
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -154,8 +156,6 @@ am__EXEEXT_12 = extend-reflect$(EXEEXT) show-glyphs-many$(EXEEXT) \
 	text-glyph-range$(EXEEXT)
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__EXEEXT_13 = pdf2png$(EXEEXT)
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__EXEEXT_14 = svg2png$(EXEEXT)
-am__EXEEXT_15 = imagediff$(EXEEXT) png-flatten$(EXEEXT) \
-	$(am__EXEEXT_13) $(am__EXEEXT_14)
 a8_mask_SOURCES = a8-mask.c
 a8_mask_OBJECTS = a8-mask.$(OBJEXT)
 a8_mask_LDADD = $(LDADD)
@@ -967,6 +967,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+CAIROPERF_LIBS = @CAIROPERF_LIBS@
 CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_FALSE@
 CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE = @CAIRO_CAN_TEST_GLITZ_AGL_SURFACE_TRUE@
 CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_EGL_SURFACE_FALSE@
@@ -1523,8 +1524,6 @@ ps-features			\
 multi-page			\
 fallback-resolution
 
-SUPPORT_PROGS = imagediff$(EXEEXT) png-flatten$(EXEEXT) \
-	$(am__append_10) $(am__append_12)
 
 # We're using _GNU_SOURCE to get the prototype for asprintf. This may
 # not be the most portable approach, but it is pragmatic and I'm
@@ -1625,6 +1624,13 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 libcairotest.la: $(libcairotest_la_OBJECTS) $(libcairotest_la_DEPENDENCIES) 
 	$(LINK)  $(libcairotest_la_LDFLAGS) $(libcairotest_la_OBJECTS) $(libcairotest_la_LIBADD) $(LIBS)
+
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
+	done
 a8-mask$(EXEEXT): $(a8_mask_OBJECTS) $(a8_mask_DEPENDENCIES) 
 	@rm -f a8-mask$(EXEEXT)
 	$(LINK) $(a8_mask_LDFLAGS) $(a8_mask_OBJECTS) $(a8_mask_LDADD) $(LIBS)
@@ -2502,6 +2508,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-recursive
 all-am: Makefile
@@ -2534,7 +2541,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool clean-local mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
+	mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -2583,8 +2591,8 @@ uninstall-am: uninstall-info-am
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am check check-TESTS \
-	check-am clean clean-generic clean-libtool clean-local \
-	clean-recursive ctags ctags-recursive distclean \
+	check-am clean clean-checkPROGRAMS clean-generic clean-libtool \
+	clean-local clean-recursive ctags ctags-recursive distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
@@ -2650,9 +2658,7 @@ html:
 rehtml:
 	@$(MAKE) $(AM_MAKEFLAGS) TESTS="$(FAILED_TESTS)" html
 
-$(TESTS): $(SUPPORT_PROGS)
-
-%.log: %
+%.log: % $(check_PROGRAMS)
 	-./$<
 
 $(NOLOG_TESTS_LOG):

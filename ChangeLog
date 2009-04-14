@@ -1,3 +1,313 @@
+commit 107a74885a25e585b467c7841c6929a12aa62565
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Jun 27 14:05:56 2007 -0700
+
+    Increment cairo version to 1.4.10 (and libtool versioning to 13:5:11)
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f595ad2348dbd97b57d22471fdec7664f8ca7bf6
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Jun 27 14:04:27 2007 -0700
+
+    Add notes to NEWS for 1.4.10
+
+ NEWS |   45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 45 insertions(+), 0 deletions(-)
+
+commit 2bf3e31da99f34328973a0866346af40748097f6
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Jun 27 11:11:36 2007 -0700
+
+    Prefer local dpy variable instead of display->display
+    
+    This was a tiny piece of cleanup that had been erroneously included
+    with some earlier functional changes, (so it went through a cycle
+    of being applied and reverted). It's back now in its own commit.
+
+ src/cairo-xlib-display.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit eebb0df512da50f883a417bb5e8e368dc81e35a9
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Jun 27 11:08:53 2007 -0700
+
+    Revert "[cairo-xlib-display] Hide XErrors during processing of the work queue."
+    
+    This reverts commit 285b702ef6f73e7eb4ca0da235a287ad1e1f412f.
+    
+    The recent commit of 0791f342b93225849d9171aac8b738014b18bdf5 fixes
+    the same bug that 285b702e was fixing, but without introducing any
+    performance-killing calls to XSync. So we can drop those now.
+
+ src/cairo-xlib-display.c |   17 +++--------------
+ 1 files changed, 3 insertions(+), 14 deletions(-)
+
+commit b019cb8a7a910879c7af304edbd06fd105c9d89e
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Jun 27 11:07:07 2007 -0700
+
+    Revert "[cairo-xlib-surface] Check for errors before installing a NOOP error handler."
+    
+    This reverts commit 7016614dd90798247524f0c118f462aa2e7ef673.
+    
+    We want to avoid any negative performance impacts due to extra calls
+    to XSync. The fact that X errors can be missed with this appraoch is
+    undesirable of course---a proper fix will likely involve moving to
+    XCB which will hopefully allow us to do the error-checking the way
+    we want without any performance penalty.
+
+ src/cairo-xlib-surface.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 6d021eb4b6e319dd2bb3e5e126de07c6844d5c07
+Merge: 9109946... 0791f34...
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Jun 27 11:01:00 2007 -0700
+
+    Merge branch 'ooo-fix' into cairo
+
+commit 0791f342b93225849d9171aac8b738014b18bdf5
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Wed Jun 27 10:53:29 2007 -0700
+
+    Avoid deferring resource cleanup for application drawables
+    
+    This eliminates X errors propagated from cairo due to cleaning up
+    Render Pictures after the application had already destroyed the
+    Drawable they reference. (It would be nice if the X server wouldn't
+    complain that some cleanup work is already done, but there you
+    have it.)
+    
+    This fix has been verified to fix the bug causing OpenOffice.org to
+    crash as described here:
+    
+    	XError on right click menus in OOo.
+    	https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=243811
+    
+    And unlike other proposed fixes for this bug, this fix does not
+    introduce any new calls to XSync, (and thereby avoids performance
+    concerns from those).
+
+ src/cairo-xlib-surface.c |   47 +++++++++++++++++++++++++--------------------
+ 1 files changed, 26 insertions(+), 21 deletions(-)
+
+commit 9109946a1a7f9341e60da7358da6535c5fac52db
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Thu Jun 21 15:40:23 2007 +0100
+
+    [cairo-directfb] Correct minor typo.
+    
+    Correct the reference to _cairo_directfb_surface_is_similar.
+
+ src/cairo-directfb-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1e76aa66b23aa7b3fd7b9f7de2b563b4db814517
+Author: Nis Martensen <nis.martensen@web.de>
+Date:   Tue Jun 19 17:04:48 2007 +0200
+
+    Update INSTALL about status of backends
+
+ INSTALL |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 02f753c23ad0db7d677ae41f8d69dc566c8aaa0b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Jun 18 18:23:06 2007 -0700
+
+    Fix cairo-perf-diff to compile cairo-perf explicitly
+
+ perf/cairo-perf-diff |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2477e57de532fb3ebd1f6113cf51619b84b303d9
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Mon Jun 18 13:58:15 2007 -0700
+
+    [perf] Add pixman_region_init_rects and use in extract_region
+    
+    Avoid O(N*N) loop in traps_extract_region by letting us hand pixman
+    an array of rects all at once.
+
+ perf/Makefile.am          |    3 +-
+ perf/cairo-perf.c         |    1 +
+ perf/cairo-perf.h         |    1 +
+ perf/long-dashed-lines.c  |   67 +++++++++++++++++++++++++++++++++++++++++++++
+ pixman/src/pixman-remap.h |    1 +
+ pixman/src/pixman.h       |    2 +
+ pixman/src/pixregion.c    |   29 +++++++++++++++++++
+ src/cairo-traps.c         |   58 +++++++++++++++++++++++++++-----------
+ 8 files changed, 144 insertions(+), 18 deletions(-)
+
+commit 285b702ef6f73e7eb4ca0da235a287ad1e1f412f
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Fri Jun 15 20:38:01 2007 +0100
+
+    [cairo-xlib-display] Hide XErrors during processing of the work queue.
+    
+    It is possible for the resources that we defer freeing to be already
+    destroyed and trigger an XError whilst processing the work queue. For
+    example, the application renders to a Window and then destroys the
+    Drawable before proceeding with more rendering. This will trigger an
+    invalid Picture from RenderFreePicture whilst attempting to free the
+    resources.
+    
+    By ignoring the possibility that the application could allocate a fresh
+    resource with the same ID, we can simply hide the XErrors...
+    
+    Fixes: https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=243811
+
+ src/cairo-xlib-display.c |   17 ++++++++++++++---
+ 1 files changed, 14 insertions(+), 3 deletions(-)
+
+commit 7016614dd90798247524f0c118f462aa2e7ef673
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Fri Jun 15 20:45:53 2007 +0100
+
+    [cairo-xlib-surface] Check for errors before installing a NOOP error handler.
+    
+    Call XSync before ignoring errors from XGetImage to avoid hiding
+    unassociated errors. Similarly, call XSync before reinstalling the old
+    error handler to ensure no errors creep out of the ignored section.
+
+ src/cairo-xlib-surface.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 0c5d28a4e5ce5e4dd72c0f416ce5e960e92b808b
+Author: Ryan Lortie <desrt@desrt.ca>
+Date:   Wed Jun 13 18:59:22 2007 -0400
+
+    [xlib] Create source xrender Picture with IncludeInferiors
+    
+    When an xlib surface is used as the source of a draw operation this
+    will cause the contents of child windows to be included in the source
+    data.  The semantics of drawing to xlib surfaces are unchanged (ie:
+    draws are still clipped by child windows overlapping the destination
+    window).
+
+ src/cairo-xlib-surface.c |   15 ++++++++++++++-
+ 1 files changed, 14 insertions(+), 1 deletions(-)
+
+commit 817d4b0c9a354526389290c6d5a7662713d67cd8
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Sat Jun 9 19:14:05 2007 +0100
+
+    [atsui] Document ATSUI
+    
+    Add cairo_atsui_font_face_create_for_atsu_font_id
+    and ATSUI to the documentation. Don't enable it yet,
+    since this is still unsupported.
+
+ doc/public/tmpl/cairo-atsui.sgml |    2 +-
+ src/cairo-atsui-font.c           |   13 +++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletions(-)
+
+commit fd1edaa5d386f15edacfd5596b550593ed45d627
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Wed Jun 13 01:27:36 2007 +0100
+
+    [quartz] remove unused code
+    
+    clean up warnings about unused code: removing
+    _cairo_quartz_cairo_path_to_quartz_path and the functions
+    it calls.
+
+ src/cairo-quartz-surface.c |   47 --------------------------------------------
+ 1 files changed, 0 insertions(+), 47 deletions(-)
+
+commit d7a0816ec3d750939dd935f34b217980ee27af3f
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Wed Jun 13 01:27:36 2007 +0100
+
+    [quartz] move glyph array declarations
+    
+    Move declarations causing a warning. A separate patch from
+    the other warning cleanups because it moves where the allocation
+    happens.
+
+ src/cairo-quartz-surface.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+commit bf39b28b77a83160e5aa037031d82f8c0843f387
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Wed Jun 13 01:04:54 2007 +0100
+
+    commit 75be87b4093aaa7f477d587d5a68308cade1b29c
+    
+        [quartz] move glyph array declarations
+    
+        Move declarations causing a warning. A separate patch from
+        the other warning cleanups because it moves where the allocation
+        happens.
+
+ src/cairo-quartz-surface.c |   27 +++++++++++++++------------
+ 1 files changed, 15 insertions(+), 12 deletions(-)
+
+commit 2034d1dbd5888c393c57f0feeb707b0411fa4480
+Author: Brian Ewins <Brian.Ewins@gmail.com>
+Date:   Wed Jun 13 01:27:36 2007 +0100
+
+    [quartz] pass quartz_stroke_t not CGContextRef
+    
+    Fix a typo where an incompatible pointer was being passed.
+
+ src/cairo-quartz-surface.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 54bbe44b08b37041c8982634837dbc79b19e6c18
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Jun 11 17:51:37 2007 -0400
+
+    [TODO] Add link to Adrian's finer-grain fallback thread
+
+ TODO |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit ef3c64fd13d66648f4e00affb304e8b404249f92
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Mon Jun 11 09:27:11 2007 -0700
+
+    [misc] Blow away last remaining $Id$ directives in sources
+
+ pixman/src/fbtrap.c                  |    2 --
+ src/cairo-analysis-surface-private.h |    3 +--
+ test/rel-path.c                      |    2 --
+ 3 files changed, 1 insertions(+), 6 deletions(-)
+
+commit 853f23e18c28548bce4647d4e54a5cfb317ac3dc
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Jun 11 02:42:04 2007 -0400
+
+    [test] Use check_PROGRAMS instead of custom made SUPPORT_PROGS
+    
+    It better handles $(EXEEXT) and is exactly made for this purpose.
+
+ test/Makefile.am |   14 ++++++--------
+ 1 files changed, 6 insertions(+), 8 deletions(-)
+
+commit 1d86c7fa888918c32eb13adb084de78883e17c84
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Jun 9 13:48:13 2007 -0400
+
+    [perf] Link to librt if available
+    
+    This is needed on Solaris, but also works on Linux.
+
+ configure.in     |    4 ++++
+ perf/Makefile.am |    3 ++-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+commit 85d045f2675cf191ea1d1af66ad4cd9e57d58e67
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Jun 8 16:08:44 2007 -0700
+
+    Update version to 1.4.9 after the 1.4.8 release.
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit fea4f344c46cf5f85c6af3102333008768c55063
 Author: Carl Worth <cworth@cworth.org>
 Date:   Fri Jun 8 15:49:12 2007 -0700

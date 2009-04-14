@@ -106,40 +106,6 @@ typedef struct _quartz_stroke {
     cairo_matrix_t *ctm_inverse;
 } quartz_stroke_t;
 
-/* cairo path -> mutable path */
-static cairo_status_t
-_cairo_path_to_quartz_path_move_to (void *closure, cairo_point_t *point)
-{
-    CGPathMoveToPoint ((CGMutablePathRef) closure, NULL,
-		       _cairo_fixed_to_double(point->x), _cairo_fixed_to_double(point->y));
-    return CAIRO_STATUS_SUCCESS;
-}
-
-static cairo_status_t
-_cairo_path_to_quartz_path_line_to (void *closure, cairo_point_t *point)
-{
-    CGPathAddLineToPoint ((CGMutablePathRef) closure, NULL,
-			  _cairo_fixed_to_double(point->x), _cairo_fixed_to_double(point->y));
-    return CAIRO_STATUS_SUCCESS;
-}
-
-static cairo_status_t
-_cairo_path_to_quartz_path_curve_to (void *closure, cairo_point_t *p0, cairo_point_t *p1, cairo_point_t *p2)
-{
-    CGPathAddCurveToPoint ((CGMutablePathRef) closure, NULL,
-			   _cairo_fixed_to_double(p0->x), _cairo_fixed_to_double(p0->y),
-			   _cairo_fixed_to_double(p1->x), _cairo_fixed_to_double(p1->y),
-			   _cairo_fixed_to_double(p2->x), _cairo_fixed_to_double(p2->y));
-    return CAIRO_STATUS_SUCCESS;
-}
-
-static cairo_status_t
-_cairo_path_to_quartz_path_close_path (void *closure)
-{
-    CGPathCloseSubpath ((CGMutablePathRef) closure);
-    return CAIRO_STATUS_SUCCESS;
-}
-
 /* cairo path -> execute in context */
 static cairo_status_t
 _cairo_path_to_quartz_context_move_to (void *closure, cairo_point_t *point)
@@ -210,21 +176,8 @@ _cairo_path_to_quartz_context_close_path (void *closure)
 }
 
 static cairo_status_t
-_cairo_quartz_cairo_path_to_quartz_path (cairo_path_fixed_t *path,
-					  CGMutablePathRef cgPath)
-{
-    return _cairo_path_fixed_interpret (path,
-					CAIRO_DIRECTION_FORWARD,
-					_cairo_path_to_quartz_path_move_to,
-					_cairo_path_to_quartz_path_line_to,
-					_cairo_path_to_quartz_path_curve_to,
-					_cairo_path_to_quartz_path_close_path,
-					cgPath);
-}
-
-static cairo_status_t
 _cairo_quartz_cairo_path_to_quartz_context (cairo_path_fixed_t *path,
-					     CGContextRef cgc)
+					    quartz_stroke_t *stroke)
 {
     return _cairo_path_fixed_interpret (path,
 					CAIRO_DIRECTION_FORWARD,
@@ -232,7 +185,7 @@ _cairo_quartz_cairo_path_to_quartz_context (cairo_path_fixed_t *path,
 					_cairo_path_to_quartz_context_line_to,
 					_cairo_path_to_quartz_context_curve_to,
 					_cairo_path_to_quartz_context_close_path,
-					cgc);
+					stroke);
 }
 
 /*
@@ -482,10 +435,10 @@ _cairo_quartz_surface_to_quartz (cairo_surface_t *target, cairo_surface_t *pat_s
 	 */
 
 	cairo_surface_t *ref_type = target;
-	if (ref_type == NULL)
-	    ref_type = cairo_quartz_surface_create (CAIRO_FORMAT_ARGB32, 1, 1);
 	cairo_surface_t *new_surf = NULL;
 	cairo_rectangle_int16_t rect;
+	if (ref_type == NULL)
+	    ref_type = cairo_quartz_surface_create (CAIRO_FORMAT_ARGB32, 1, 1);
 
 	_cairo_surface_get_extents (pat_surf, &rect);
 
@@ -517,6 +470,7 @@ SurfacePatternDrawFunc (void *info, CGContextRef context)
 
     cairo_quartz_surface_t *quartz_surf = _cairo_quartz_surface_to_quartz (NULL, pat_surf);
     CGImageRef img = CGBitmapContextCreateImage (quartz_surf->cgContext);
+    CGRect imageBounds;
 
     if (!img) {
 	// ... give up.
@@ -535,7 +489,6 @@ SurfacePatternDrawFunc (void *info, CGContextRef context)
 	CGContextScaleCTM (context, 1, -1);
     }
 
-    CGRect imageBounds;
     imageBounds.size = CGSizeMake (CGImageGetWidth(img), CGImageGetHeight(img));
     imageBounds.origin.x = 0;
     imageBounds.origin.y = 0;
@@ -719,7 +672,7 @@ _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
     {
 	    cairo_surface_pattern_t *spat = (cairo_surface_pattern_t *) source;
 	    cairo_surface_t *pat_surf = spat->surface;
-	    cairo_quartz_surface_t *quartz_surf = _cairo_quartz_surface_to_quartz (surface, pat_surf);
+	    cairo_quartz_surface_t *quartz_surf = _cairo_quartz_surface_to_quartz ((cairo_surface_t *) surface, pat_surf);
 	    CGImageRef img = CGBitmapContextCreateImage (quartz_surf->cgContext);
 	    cairo_matrix_t m = spat->base.matrix;
 	    cairo_rectangle_int16_t extents;
@@ -739,18 +692,18 @@ _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
 
 	    return DO_IMAGE;
     } else if (source->type == CAIRO_PATTERN_TYPE_SURFACE) {
+	float patternAlpha = 1.0f;
+	CGColorSpaceRef patternSpace;
+
 	CGPatternRef pattern = _cairo_quartz_cairo_repeating_surface_pattern_to_quartz (surface, source);
 	if (!pattern)
 	    return DO_UNSUPPORTED;
-
-	float patternAlpha = 1.0f;
 
 	// Save before we change the pattern, colorspace, etc. so that
 	// we can restore and make sure that quartz releases our
 	// pattern (which may be stack allocated)
 	CGContextSaveGState(surface->cgContext);
 
-	CGColorSpaceRef patternSpace;
 	patternSpace = CGColorSpaceCreatePattern(NULL);
 	CGContextSetFillColorSpace (surface->cgContext, patternSpace);
 	CGContextSetFillPattern (surface->cgContext, pattern, &patternAlpha);
@@ -1041,7 +994,6 @@ _cairo_quartz_surface_clone_similar (void *abstract_surface,
 				      int              height,
 				      cairo_surface_t **clone_out)
 {
-    cairo_quartz_surface_t *surface = (cairo_quartz_surface_t *) abstract_surface;
     cairo_quartz_surface_t *new_surface = NULL;
     cairo_format_t new_format;
 
@@ -1367,9 +1319,21 @@ _cairo_quartz_surface_show_glyphs (void *abstract_surface,
 				    int num_glyphs,
 				    cairo_scaled_font_t *scaled_font)
 {
+    ATSUFontID fid;
+    ATSFontRef atsfref;
+    CGFontRef cgfref;
+    CGAffineTransform cairoTextTransform, textTransform, ctm;
+    // XXXtodo/perf: stack storage for glyphs/sizes
+#define STATIC_BUF_SIZE 64
+    CGGlyph glyphs_static[STATIC_BUF_SIZE];
+    CGSize cg_advances_static[STATIC_BUF_SIZE];
+    CGGlyph *cg_glyphs = &glyphs_static[0];
+    CGSize *cg_advances = &cg_advances_static[0];
+
     cairo_quartz_surface_t *surface = (cairo_quartz_surface_t *) abstract_surface;
     cairo_int_status_t rv = CAIRO_STATUS_SUCCESS;
     cairo_quartz_action_t action;
+    float xprev, yprev;
     int i;
 
     if (num_glyphs <= 0)
@@ -1396,9 +1360,9 @@ _cairo_quartz_surface_show_glyphs (void *abstract_surface,
 
     CGContextSetCompositeOperation (surface->cgContext, _cairo_quartz_cairo_operator_to_quartz (op));
 
-    ATSUFontID fid = _cairo_atsui_scaled_font_get_atsu_font_id (scaled_font);
-    ATSFontRef atsfref = FMGetATSFontRefFromFont (fid);
-    CGFontRef cgfref = CGFontCreateWithPlatformFont (&atsfref);
+    fid = _cairo_atsui_scaled_font_get_atsu_font_id (scaled_font);
+    atsfref = FMGetATSFontRefFromFont (fid);
+    cgfref = CGFontCreateWithPlatformFont (&atsfref);
 
     CGContextSetFont (surface->cgContext, cgfref);
     CGFontRelease (cgfref);
@@ -1409,7 +1373,6 @@ _cairo_quartz_surface_show_glyphs (void *abstract_surface,
      * text matrix?
      */
     //ND((stderr, "show_glyphs: glyph 0 at: %f, %f\n", glyphs[0].x, glyphs[0].y));
-    CGAffineTransform cairoTextTransform, textTransform, ctm;
     cairoTextTransform = CGAffineTransformMake (scaled_font->font_matrix.xx, 
 						scaled_font->font_matrix.yx,
 						scaled_font->font_matrix.xy, 
@@ -1430,29 +1393,22 @@ _cairo_quartz_surface_show_glyphs (void *abstract_surface,
     CGContextSetTextMatrix (surface->cgContext, textTransform);
     CGContextSetFontSize (surface->cgContext, 1.0);
 
-    // XXXtodo/perf: stack storage for glyphs/sizes
-#define STATIC_BUF_SIZE 64
-    CGGlyph glyphs_static[STATIC_BUF_SIZE];
-    CGSize cg_advances_static[STATIC_BUF_SIZE];
-    CGGlyph *cg_glyphs = &glyphs_static[0];
-    CGSize *cg_advances = &cg_advances_static[0];
-
     if (num_glyphs > STATIC_BUF_SIZE) {
 	cg_glyphs = (CGGlyph*) malloc(sizeof(CGGlyph) * num_glyphs);
 	cg_advances = (CGSize*) malloc(sizeof(CGSize) * num_glyphs);
     }
 
-    float xprev = glyphs[0].x;
-    float yprev = glyphs[0].y;
+    xprev = glyphs[0].x;
+    yprev = glyphs[0].y;
 
     cg_glyphs[0] = glyphs[0].index;
     cg_advances[0].width = 0;
     cg_advances[0].height = 0;
 
     for (i = 1; i < num_glyphs; i++) {
-	cg_glyphs[i] = glyphs[i].index;
 	float xf = glyphs[i].x;
 	float yf = glyphs[i].y;
+	cg_glyphs[i] = glyphs[i].index;
 	cg_advances[i-1].width = xf - xprev;
 	cg_advances[i-1].height = yf - yprev;
 	xprev = xf;

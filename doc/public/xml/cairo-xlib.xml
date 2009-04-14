@@ -83,7 +83,13 @@ by the provided visual.
 <para>
 NOTE: If <parameter>drawable</parameter> is a Window, then the function
 cairo_xlib_surface_set_size must be called whenever the size of the
-window changes.</para>
+window changes.
+</para>
+<para>
+When <parameter>drawable</parameter> is a Window containing child windows then drawing to
+the created surface will be clipped by those child windows.  When
+the created surface is used as a source, the contents of the
+children will be included.</para>
 <para>
 
 </para><variablelist role="params">
