@@ -158,7 +158,7 @@ encode_integer (unsigned char *p, int i)
         i = -i - 108;
         *p++ = (i >> 8)+ 251;
         *p++ = i & 0xff;
-    } else if (i >= -1131 && i <= -108) {
+    } else if (i >= -32768 && i <= 32767) {
         *p++ = 28;
         *p++ = (i >> 8)  & 0xff;
         *p++ = i & 0xff;
@@ -1521,8 +1521,8 @@ static const font_write_t font_write_funcs[] = {
     cairo_cff_font_write_top_dict,
     cairo_cff_font_write_strings,
     cairo_cff_font_write_global_subrs,
-    cairo_cff_font_write_fdselect,
     cairo_cff_font_write_charset,
+    cairo_cff_font_write_fdselect,
     cairo_cff_font_write_charstrings,
     cairo_cff_font_write_cid_fontdict,
     cairo_cff_font_write_cid_private_dict_and_local_sub,

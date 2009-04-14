@@ -286,16 +286,21 @@ _win32_scaled_font_create (LOGFONTW                   *logfont,
     status = _cairo_scaled_font_init (&f->base, font_face,
 				      font_matrix, ctm, options,
 				      &cairo_win32_scaled_font_backend);
+    if (status)
+	goto FAIL;
 
-    if (status == CAIRO_STATUS_SUCCESS)
-	status = _cairo_win32_scaled_font_set_metrics (f);
+    status = _cairo_win32_scaled_font_set_metrics (f);
 
     if (status) {
-	cairo_scaled_font_destroy (&f->base);
-	return NULL;
+	_cairo_scaled_font_fini (&f->base);
+	goto FAIL;
     }
 
     return &f->base;
+
+ FAIL:
+    free (f);
+    return NULL;
 }
 
 static cairo_status_t
@@ -613,8 +618,8 @@ _cairo_win32_scaled_font_text_to_glyphs (void		*abstract_font,
 	    dx = NULL;
 	}
 
-	glyph_indices = malloc (sizeof (WCHAR) * buffer_size);
-	dx = malloc (sizeof (int) * buffer_size);
+	glyph_indices = _cairo_malloc_ab (buffer_size, sizeof (WCHAR));
+	dx = _cairo_malloc_ab (buffer_size, sizeof (int));
 	if (!glyph_indices || !dx) {
 	    status = CAIRO_STATUS_NO_MEMORY;
 	    goto FAIL2;
@@ -645,7 +650,7 @@ _cairo_win32_scaled_font_text_to_glyphs (void		*abstract_font,
     }
 
     *num_glyphs = gcp_results.nGlyphs;
-    *glyphs = malloc (sizeof (cairo_glyph_t) * gcp_results.nGlyphs);
+    *glyphs = _cairo_malloc_ab (gcp_results.nGlyphs, sizeof (cairo_glyph_t));
     if (!*glyphs) {
 	status = CAIRO_STATUS_NO_MEMORY;
 	goto FAIL2;

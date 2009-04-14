@@ -336,22 +336,23 @@ CreateGradientFunction (cairo_gradient_pattern_t *gpat)
 			     &callbacks);
 }
 
-static CGShadingRef
-_cairo_quartz_cairo_gradient_pattern_to_quartz (cairo_pattern_t *abspat)
+static cairo_int_status_t
+_cairo_quartz_cairo_gradient_pattern_to_quartz (cairo_pattern_t *abspat,
+						CGShadingRef *shading)
 {
     cairo_matrix_t mat;
     double x0, y0;
 
     if (abspat->type != CAIRO_PATTERN_TYPE_LINEAR &&
 	abspat->type != CAIRO_PATTERN_TYPE_RADIAL)
-	return NULL;
+	return CAIRO_INT_STATUS_UNSUPPORTED;
 
     /* bandaid for mozilla bug 379321, also visible in the
      * linear-gradient-reflect test. 
      */
     if (abspat->extend == CAIRO_EXTEND_REFLECT ||
 	abspat->extend == CAIRO_EXTEND_REPEAT)
-	return NULL;
+	return CAIRO_INT_STATUS_UNSUPPORTED;
 	
     /* We can only do this if we have an identity pattern matrix;
      * otherwise fall back through to the generic pattern case.
@@ -362,17 +363,17 @@ _cairo_quartz_cairo_gradient_pattern_to_quartz (cairo_pattern_t *abspat)
      */
     cairo_pattern_get_matrix (abspat, &mat);
     if (mat.xx != 1.0 || mat.yy != 1.0 || mat.xy != 0.0 || mat.yx != 0.0)
-	return NULL;
+	return CAIRO_INT_STATUS_UNSUPPORTED;
 
     x0 = mat.x0;
     y0 = mat.y0;
 
     if (abspat->type == CAIRO_PATTERN_TYPE_LINEAR) {
 	cairo_linear_pattern_t *lpat = (cairo_linear_pattern_t*) abspat;
-	CGShadingRef shading;
 	CGPoint start, end;
 	CGFunctionRef gradFunc;
 	CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+	bool extend = abspat->extend == CAIRO_EXTEND_PAD;
 
 	start = CGPointMake (_cairo_fixed_to_double (lpat->gradient.p1.x) - x0,
 			     _cairo_fixed_to_double (lpat->gradient.p1.y) - y0);
@@ -381,22 +382,22 @@ _cairo_quartz_cairo_gradient_pattern_to_quartz (cairo_pattern_t *abspat)
 
 	cairo_pattern_reference (abspat);
 	gradFunc = CreateGradientFunction ((cairo_gradient_pattern_t*) lpat);
-	shading = CGShadingCreateAxial (rgb,
+	*shading = CGShadingCreateAxial (rgb,
 					start, end,
 					gradFunc,
-					true, true);
+					extend, extend);
 	CGColorSpaceRelease(rgb);
 	CGFunctionRelease(gradFunc);
 
-	return shading;
+	return CAIRO_STATUS_SUCCESS;
     }
 
     if (abspat->type == CAIRO_PATTERN_TYPE_RADIAL) {
 	cairo_radial_pattern_t *rpat = (cairo_radial_pattern_t*) abspat;
-	CGShadingRef shading;
 	CGPoint start, end;
 	CGFunctionRef gradFunc;
 	CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+	bool extend = abspat->extend == CAIRO_EXTEND_PAD;
 
 	start = CGPointMake (_cairo_fixed_to_double (rpat->gradient.c1.x) - x0,
 			     _cairo_fixed_to_double (rpat->gradient.c1.y) - y0);
@@ -405,29 +406,30 @@ _cairo_quartz_cairo_gradient_pattern_to_quartz (cairo_pattern_t *abspat)
 
 	cairo_pattern_reference (abspat);
 	gradFunc = CreateGradientFunction ((cairo_gradient_pattern_t*) rpat);
-	shading = CGShadingCreateRadial (rgb,
+	*shading = CGShadingCreateRadial (rgb,
 					 start,
 					 _cairo_fixed_to_double (rpat->gradient.c1.radius),
 					 end,
 					 _cairo_fixed_to_double (rpat->gradient.c2.radius),
 					 gradFunc,
-					 true, true);
+					 extend, extend);
 	CGColorSpaceRelease(rgb);
 	CGFunctionRelease(gradFunc);
 
-	return shading;
+	return CAIRO_STATUS_SUCCESS;
     }
 
     /* Shouldn't be reached */
     ASSERT_NOT_REACHED;
-    return NULL;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 /* generic cairo surface -> cairo_quartz_surface_t function */
-static cairo_quartz_surface_t *
-_cairo_quartz_surface_to_quartz (cairo_surface_t *target, cairo_surface_t *pat_surf)
+static cairo_int_status_t
+_cairo_quartz_surface_to_quartz (cairo_surface_t *target,
+				 cairo_surface_t *pat_surf,
+				 cairo_quartz_surface_t **quartz_surf)
 {
-    cairo_quartz_surface_t *quartz_surf = NULL;
 
     if (cairo_surface_get_type(pat_surf) != CAIRO_SURFACE_TYPE_QUARTZ) {
 	/* XXXtodo/perf don't use clone if the source surface is an image surface!  Instead,
@@ -437,28 +439,33 @@ _cairo_quartz_surface_to_quartz (cairo_surface_t *target, cairo_surface_t *pat_s
 	cairo_surface_t *ref_type = target;
 	cairo_surface_t *new_surf = NULL;
 	cairo_rectangle_int16_t rect;
+	cairo_status_t status;
+
 	if (ref_type == NULL)
 	    ref_type = cairo_quartz_surface_create (CAIRO_FORMAT_ARGB32, 1, 1);
 
-	_cairo_surface_get_extents (pat_surf, &rect);
+	status = _cairo_surface_get_extents (pat_surf, &rect);
+	if (status)
+	    return status;
 
-	_cairo_surface_clone_similar (ref_type, pat_surf, rect.x, rect.y,
+	status = _cairo_surface_clone_similar (ref_type, pat_surf, rect.x, rect.y,
 				      rect.width, rect.height, &new_surf);
-
 	if (target == NULL)
 	    cairo_surface_destroy(ref_type);
 
-	quartz_surf = (cairo_quartz_surface_t *) new_surf;
+        if (status)
+	    return status;
+
+	*quartz_surf = (cairo_quartz_surface_t *) new_surf;
     } else {
 	/* If it's a quartz surface, we can try to see if it's a CGBitmapContext;
 	 * we do this when we call CGBitmapContextCreateImage below.
 	 */
 	cairo_surface_reference (pat_surf);
-	quartz_surf = (cairo_quartz_surface_t*) pat_surf;
-
+	*quartz_surf = (cairo_quartz_surface_t*) pat_surf;
     }
 
-    return quartz_surf;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 /* Generic cairo_pattern -> CGPattern function */
@@ -467,14 +474,21 @@ SurfacePatternDrawFunc (void *info, CGContextRef context)
 {
     cairo_surface_pattern_t *spat = (cairo_surface_pattern_t *) info;
     cairo_surface_t *pat_surf = spat->surface;
+    cairo_int_status_t status;
 
-    cairo_quartz_surface_t *quartz_surf = _cairo_quartz_surface_to_quartz (NULL, pat_surf);
-    CGImageRef img = CGBitmapContextCreateImage (quartz_surf->cgContext);
+    cairo_quartz_surface_t *quartz_surf;
+    CGImageRef img;
     CGRect imageBounds;
 
+    status = _cairo_quartz_surface_to_quartz (NULL, pat_surf, &quartz_surf);
+    if (status)
+	return;
+
+    img = CGBitmapContextCreateImage (quartz_surf->cgContext);
     if (!img) {
 	// ... give up.
 	ND((stderr, "CGBitmapContextCreateImage failed\n"));
+	_cairo_error (CAIRO_STATUS_NO_MEMORY);
 	cairo_surface_destroy ((cairo_surface_t*)quartz_surf);
 	return;
     }
@@ -539,9 +553,10 @@ _init_pattern_with_snapshot (cairo_pattern_t *pattern,
     return CAIRO_STATUS_SUCCESS;
 }
 
-static CGPatternRef
+static cairo_int_status_t
 _cairo_quartz_cairo_repeating_surface_pattern_to_quartz (cairo_quartz_surface_t *dest,
-							  cairo_pattern_t *abspat)
+							 cairo_pattern_t *abspat,
+							 CGPatternRef *cgpat)
 {
     cairo_surface_pattern_t *spat;
     cairo_surface_t *pat_surf;
@@ -552,8 +567,8 @@ _cairo_quartz_cairo_repeating_surface_pattern_to_quartz (cairo_quartz_surface_t 
     CGPatternCallbacks cb = { 0,
 			      SurfacePatternDrawFunc,
 			      (CGFunctionReleaseInfoCallback) cairo_pattern_destroy };
-    CGPatternRef cgpat;
     float rw, rh;
+    cairo_status_t status;
 
     cairo_pattern_union_t *snap_pattern = NULL;
     cairo_pattern_t *target_pattern = abspat;
@@ -561,12 +576,15 @@ _cairo_quartz_cairo_repeating_surface_pattern_to_quartz (cairo_quartz_surface_t 
     cairo_matrix_t m;
     /* SURFACE is the only type we'll handle here */
     if (abspat->type != CAIRO_PATTERN_TYPE_SURFACE)
-	return NULL;
+	return CAIRO_INT_STATUS_UNSUPPORTED;
 
     spat = (cairo_surface_pattern_t *) abspat;
     pat_surf = spat->surface;
 
-    _cairo_surface_get_extents (pat_surf, &extents);
+    status = _cairo_surface_get_extents (pat_surf, &extents);
+    if (status)
+	return status;
+
     pbounds.origin.x = 0;
     pbounds.origin.y = 0;
 
@@ -618,14 +636,14 @@ _cairo_quartz_cairo_repeating_surface_pattern_to_quartz (cairo_quartz_surface_t 
 	target_pattern = abspat;
     }
 
-    cgpat = CGPatternCreate (target_pattern,
+    *cgpat = CGPatternCreate (target_pattern,
 			     pbounds,
 			     ptransform,
 			     rw, rh,
 			     kCGPatternTilingConstantSpacing, /* kCGPatternTilingNoDistortion, */
 			     TRUE,
 			     &cb);
-    return cgpat;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 typedef enum {
@@ -660,8 +678,11 @@ _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
     } else if (source->type == CAIRO_PATTERN_TYPE_LINEAR ||
 	       source->type == CAIRO_PATTERN_TYPE_RADIAL)
     {
-	CGShadingRef shading = _cairo_quartz_cairo_gradient_pattern_to_quartz (source);
-	if (!shading)
+	CGShadingRef shading = NULL;
+	cairo_int_status_t status;
+
+	status = _cairo_quartz_cairo_gradient_pattern_to_quartz (source, &shading);
+	if (status)
 	    return DO_UNSUPPORTED;
 
 	surface->sourceShading = shading;
@@ -672,11 +693,17 @@ _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
     {
 	    cairo_surface_pattern_t *spat = (cairo_surface_pattern_t *) source;
 	    cairo_surface_t *pat_surf = spat->surface;
-	    cairo_quartz_surface_t *quartz_surf = _cairo_quartz_surface_to_quartz ((cairo_surface_t *) surface, pat_surf);
-	    CGImageRef img = CGBitmapContextCreateImage (quartz_surf->cgContext);
+	    cairo_quartz_surface_t *quartz_surf;
+	    CGImageRef img;
 	    cairo_matrix_t m = spat->base.matrix;
 	    cairo_rectangle_int16_t extents;
+	    cairo_status_t status;
 
+	    status = _cairo_quartz_surface_to_quartz ((cairo_surface_t *) surface, pat_surf, &quartz_surf);
+	    if (status)
+		return DO_UNSUPPORTED;
+
+	    img = CGBitmapContextCreateImage (quartz_surf->cgContext);
 	    if (!img)
 		return DO_UNSUPPORTED;
 
@@ -685,7 +712,10 @@ _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
 	    cairo_matrix_invert(&m);
 	    _cairo_quartz_cairo_matrix_to_quartz (&m, &surface->sourceImageTransform);
 
-	    _cairo_surface_get_extents (pat_surf, &extents);
+	    status = _cairo_surface_get_extents (pat_surf, &extents);
+	    if (status)
+		return DO_UNSUPPORTED;
+
 	    surface->sourceImageRect = CGRectMake (0, 0, extents.width, extents.height);
 
 	    surface->sourceImageSurface = (cairo_surface_t *)quartz_surf;
@@ -694,9 +724,11 @@ _cairo_quartz_setup_source (cairo_quartz_surface_t *surface,
     } else if (source->type == CAIRO_PATTERN_TYPE_SURFACE) {
 	float patternAlpha = 1.0f;
 	CGColorSpaceRef patternSpace;
+	CGPatternRef pattern;
+	cairo_int_status_t status;
 
-	CGPatternRef pattern = _cairo_quartz_cairo_repeating_surface_pattern_to_quartz (surface, source);
-	if (!pattern)
+	status = _cairo_quartz_cairo_repeating_surface_pattern_to_quartz (surface, source, &pattern);
+	if (status)
 	    return DO_UNSUPPORTED;
 
 	// Save before we change the pattern, colorspace, etc. so that
@@ -876,13 +908,20 @@ _cairo_quartz_surface_acquire_source_image (void *abstract_surface,
 					     cairo_image_surface_t **image_out,
 					     void **image_extra)
 {
+    cairo_int_status_t status;
     cairo_quartz_surface_t *surface = (cairo_quartz_surface_t *) abstract_surface;
 
     //ND((stderr, "%p _cairo_quartz_surface_acquire_source_image\n", surface));
 
     *image_extra = NULL;
 
-    return _cairo_quartz_get_image (surface, image_out, NULL);
+    status = _cairo_quartz_get_image (surface, image_out, NULL);
+    if (status) {
+	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return CAIRO_STATUS_NO_MEMORY;
+    }
+
+    return CAIRO_STATUS_SUCCESS;
 }
 
 static void
@@ -910,8 +949,10 @@ _cairo_quartz_surface_acquire_dest_image (void *abstract_surface,
     *image_rect = surface->extents;
 
     status = _cairo_quartz_get_image (surface, image_out, &data);
-    if (status)
-	return status;
+    if (status) {
+	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return CAIRO_STATUS_NO_MEMORY;
+    }
 
     *image_extra = data;
 
@@ -1253,15 +1294,21 @@ _cairo_quartz_surface_stroke (void *abstract_surface,
 #define STATIC_DASH 32
 	float sdash[STATIC_DASH];
 	float *fdash = sdash;
+	unsigned int max_dashes = style->num_dashes;
 	unsigned int k;
-	if (style->num_dashes > STATIC_DASH)
-	    fdash = malloc (sizeof(float)*style->num_dashes);
 
-	for (k = 0; k < style->num_dashes; k++)
-	    fdash[k] = (float) style->dash[k];
+	if (style->num_dashes%2)
+	    max_dashes *= 2;
+	if (max_dashes > STATIC_DASH)
+	    fdash = _cairo_malloc_ab (style->num_dashes, sizeof (float));
+
+	if (max_dashes > STATIC_DASH)
+	    fdash = malloc (sizeof(float)*max_dashes);
+
+	for (k = 0; k < max_dashes; k++)
+	    fdash[k] = (float) style->dash[k % style->num_dashes];
 	
-	CGContextSetLineDash (surface->cgContext, style->dash_offset, fdash, style->num_dashes);
-
+	CGContextSetLineDash (surface->cgContext, style->dash_offset, fdash, max_dashes);
 	if (fdash != sdash)
 	    free (fdash);
     }
@@ -1394,8 +1441,8 @@ _cairo_quartz_surface_show_glyphs (void *abstract_surface,
     CGContextSetFontSize (surface->cgContext, 1.0);
 
     if (num_glyphs > STATIC_BUF_SIZE) {
-	cg_glyphs = (CGGlyph*) malloc(sizeof(CGGlyph) * num_glyphs);
-	cg_advances = (CGSize*) malloc(sizeof(CGSize) * num_glyphs);
+	cg_glyphs = (CGGlyph*) _cairo_malloc_ab (num_glyphs, sizeof(CGGlyph));
+	cg_advances = (CGSize*) _cairo_malloc_ab (num_glyphs, sizeof(CGSize));
     }
 
     xprev = glyphs[0].x;
@@ -1711,7 +1758,7 @@ cairo_quartz_surface_create (cairo_format_t format,
 	return (cairo_surface_t*) &_cairo_surface_nil;
     }
 
-    imageData = malloc (height * stride);
+    imageData = _cairo_malloc_ab (height, stride);
     if (!imageData) {
 	CGColorSpaceRelease (cgColorspace);
 	_cairo_error (CAIRO_STATUS_NO_MEMORY);

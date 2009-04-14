@@ -186,7 +186,7 @@ _create_dc_and_bitmap (cairo_win32_surface_t *surface,
     }
 
     if (num_palette > 2) {
-	bitmap_info = malloc (sizeof (BITMAPINFOHEADER) + num_palette * sizeof (RGBQUAD));
+	bitmap_info = _cairo_malloc_ab_plus_c (num_palette, sizeof(RGBQUAD), sizeof(BITMAPINFOHEADER));
 	if (!bitmap_info)
 	    return CAIRO_STATUS_NO_MEMORY;
     } else {
@@ -476,7 +476,10 @@ _cairo_win32_surface_get_subimage (cairo_win32_surface_t  *surface,
 
     status = CAIRO_INT_STATUS_UNSUPPORTED;
 
-    if ((local->flags & CAIRO_WIN32_SURFACE_CAN_BITBLT) &&
+    /* We are blitting -from- surface, so we need to check if it
+     * supports BitBlt.  I believe any surface can be used as a
+     * BitBlt destination. */
+    if ((surface->flags & CAIRO_WIN32_SURFACE_CAN_BITBLT) &&
 	BitBlt (local->dc,
 		0, 0,
 		width, height,
@@ -1546,8 +1549,8 @@ _cairo_win32_surface_show_glyphs (void			*surface,
     SetBkMode(dst->dc, TRANSPARENT);
 
     if (num_glyphs > STACK_GLYPH_SIZE) {
-	glyph_buf = (WORD *)malloc(num_glyphs * sizeof(WORD));
-        dxy_buf = (int *)malloc(num_glyphs * 2 * sizeof(int));
+	glyph_buf = (WORD *) _cairo_malloc_ab (num_glyphs, sizeof(WORD));
+        dxy_buf = (int *) _cairo_malloc_abc (num_glyphs, sizeof(int), 2);
     }
 
     /* It is vital that dx values for dxy_buf are calculated from the delta of
@@ -1759,7 +1762,7 @@ cairo_win32_surface_create_with_ddb (HDC hdc,
     HBITMAP saved_dc_bitmap;
 
     if (format != CAIRO_FORMAT_RGB24)
-	return NULL;
+	return NIL_SURFACE;
 /* XXX handle these eventually
 	format != CAIRO_FORMAT_A8 ||
 	format != CAIRO_FORMAT_A1)
@@ -1772,8 +1775,25 @@ cairo_win32_surface_create_with_ddb (HDC hdc,
 	screen_dc = NULL;
     }
 
-    ddb = CreateCompatibleBitmap (hdc, width, height);
     ddb_dc = CreateCompatibleDC (hdc);
+    if (ddb_dc == NULL) {
+	_cairo_win32_print_gdi_error("CreateCompatibleDC");
+	new_surf = NIL_SURFACE;
+	goto FINISH;
+    }
+
+    ddb = CreateCompatibleBitmap (hdc, width, height);
+    if (ddb == NULL) {
+	DeleteDC (ddb_dc);
+
+	/* Note that if an app actually does hit this out of memory
+	 * condition, it's going to have lots of other issues, as
+	 * video memory is probably exhausted.
+	 */
+	_cairo_win32_print_gdi_error("CreateCompatibleBitmap");
+	new_surf = NIL_SURFACE;
+	goto FINISH;
+    }
 
     saved_dc_bitmap = SelectObject (ddb_dc, ddb);
 
@@ -1786,6 +1806,7 @@ cairo_win32_surface_create_with_ddb (HDC hdc,
     new_surf->saved_dc_bitmap = saved_dc_bitmap;
     new_surf->is_dib = FALSE;
 
+FINISH:
     if (screen_dc)
 	ReleaseDC (NULL, screen_dc);
 

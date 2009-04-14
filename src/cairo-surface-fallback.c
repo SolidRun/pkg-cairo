@@ -1,3 +1,4 @@
+/* -*- Mode: c; tab-width: 8; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* cairo - a vector graphics library with display and print output
  *
  * Copyright © 2002 University of Southern California
@@ -1166,7 +1167,7 @@ _cairo_surface_fallback_fill_rectangles (cairo_surface_t         *surface,
     /* If the fetched image isn't at 0,0, we need to offset the rectangles */
 
     if (state.image_rect.x != 0 || state.image_rect.y != 0) {
-	offset_rects = malloc (sizeof (cairo_rectangle_int16_t) * num_rects);
+      offset_rects = _cairo_malloc_ab (num_rects, sizeof (cairo_rectangle_int16_t));
 	if (offset_rects == NULL) {
 	    status = CAIRO_STATUS_NO_MEMORY;
 	    goto DONE;
@@ -1222,7 +1223,7 @@ _cairo_surface_fallback_composite_trapezoids (cairo_operator_t		op,
     /* If the destination image isn't at 0,0, we need to offset the trapezoids */
 
     if (state.image_rect.x != 0 || state.image_rect.y != 0) {
-	offset_traps = malloc (sizeof (cairo_trapezoid_t) * num_traps);
+	offset_traps = _cairo_malloc_ab (num_traps, sizeof (cairo_trapezoid_t));
 	if (!offset_traps) {
 	    status = CAIRO_STATUS_NO_MEMORY;
 	    goto DONE;
@@ -1247,6 +1248,50 @@ _cairo_surface_fallback_composite_trapezoids (cairo_operator_t		op,
 
  DONE:
     _fallback_fini (&state);
+
+    return status;
+}
+
+cairo_status_t
+_cairo_surface_fallback_clone_similar (cairo_surface_t	*surface,
+				       cairo_surface_t	*src,
+				       int		 src_x,
+				       int		 src_y,
+				       int		 width,
+				       int		 height,
+				       cairo_surface_t **clone_out)
+{
+    cairo_status_t status;
+    cairo_surface_t *new_surface = NULL;
+    cairo_t *cr;
+
+    new_surface = _cairo_surface_create_similar_scratch (surface,
+							 cairo_surface_get_content (src),
+							 width, height);
+    if (new_surface->status)
+	return new_surface->status;
+
+    /* We have to copy these here, so that the coordinate spaces are correct */
+    new_surface->device_transform = src->device_transform;
+    new_surface->device_transform_inverse = src->device_transform_inverse;
+
+    /* We can't use _cairo_composite directly, because backends that
+     * implement the "high-level" API may not have it implemented.
+     * (For example, SVG.)  We can fix this by either checking if the
+     * destination supports composite first, or we can make clone a
+     * required "high-level" operation.
+     */
+    cr = cairo_create (new_surface);
+    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+    cairo_set_source_surface (cr, src, -src_x, -src_y);
+    cairo_paint (cr);
+    status = cairo_status (cr);
+    cairo_destroy (cr);
+
+    if (status == CAIRO_STATUS_SUCCESS)
+	*clone_out = new_surface;
+    else
+	cairo_surface_destroy (new_surface);
 
     return status;
 }

@@ -552,6 +552,7 @@ _cairo_ft_unscaled_font_lock_face (cairo_ft_unscaled_font_t *unscaled)
 		     unscaled->id,
 		     &face) != FT_Err_Ok)
     {
+	unscaled->lock_count--;
 	CAIRO_MUTEX_UNLOCK (unscaled->mutex);
 	_cairo_error (CAIRO_STATUS_NO_MEMORY);
 	return NULL;
@@ -735,6 +736,12 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
     width = bitmap->width;
     height = bitmap->rows;
 
+    if (width == 0 || height == 0) {
+	*surface = (cairo_image_surface_t *)
+	    cairo_image_surface_create_for_data (NULL, format, 0, 0, 0);
+	return (*surface)->base.status;
+    }
+
     switch (bitmap->pixel_mode) {
     case FT_PIXEL_MODE_MONO:
 	stride = (((width + 31) & ~31) >> 3);
@@ -742,7 +749,7 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
 	    data = bitmap->buffer;
 	    assert (stride == bitmap->pitch);
 	} else {
-	    data = malloc (stride * height);
+	    data = _cairo_malloc_ab (height, stride);
 	    if (!data) {
 		_cairo_error (CAIRO_STATUS_NO_MEMORY);
 		return CAIRO_STATUS_NO_MEMORY;
@@ -792,7 +799,7 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
 	    if (own_buffer) {
 		data = bitmap->buffer;
 	    } else {
-		data = malloc (stride * height);
+		data = _cairo_malloc_ab (height, stride);
 		if (!data) {
 		    _cairo_error (CAIRO_STATUS_NO_MEMORY);
 		    return CAIRO_STATUS_NO_MEMORY;
@@ -834,7 +841,7 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
 	    width_rgba = width;
 	    stride = bitmap->pitch;
 	    stride_rgba = (width_rgba * 4 + 3) & ~3;
-	    data_rgba = calloc (1, stride_rgba * height);
+	    data_rgba = calloc (stride_rgba, height);
 	    if (data_rgba == NULL) {
 		if (own_buffer)
 		    free (bitmap->buffer);
@@ -1035,7 +1042,7 @@ _render_glyph_outline (FT_Face                    face,
 	bitmap.pitch = stride;
 	bitmap.width = width * hmul;
 	bitmap.rows = height * vmul;
-	bitmap.buffer = calloc (1, stride * bitmap.rows);
+	bitmap.buffer = calloc (stride, bitmap.rows);
 
 	if (bitmap.buffer == NULL) {
 	    _cairo_error (CAIRO_STATUS_NO_MEMORY);
@@ -1084,7 +1091,9 @@ _render_glyph_bitmap (FT_Face		      face,
      * we avoid the FT_LOAD_NO_RECURSE flag.
      */
     error = FT_Render_Glyph (glyphslot, FT_RENDER_MODE_NORMAL);
-    if (error) {
+    /* XXX ignoring all other errors for now.  They are not fatal, typically
+     * just a glyph-not-found. */
+    if (error == FT_Err_Out_Of_Memory) {
 	_cairo_error (CAIRO_STATUS_NO_MEMORY);
 	return CAIRO_STATUS_NO_MEMORY;
     }
@@ -1503,6 +1512,30 @@ _cairo_ft_scaled_font_create (cairo_ft_unscaled_font_t	 *unscaled,
 	return NULL;
     }
 
+    /*
+     * Force non-AA drawing when using a bitmap strike that
+     * won't be resampled due to non-scaling transform
+     */
+    if (!unscaled->have_shape &&
+	(scaled_font->ft_options.load_flags & FT_LOAD_NO_BITMAP) == 0 &&
+	scaled_font->ft_options.base.antialias != CAIRO_ANTIALIAS_NONE &&
+	(face->face_flags & FT_FACE_FLAG_FIXED_SIZES))
+    {
+	int		i;
+	FT_Size_Metrics	*size_metrics = &face->size->metrics;
+
+	for (i = 0; i < face->num_fixed_sizes; i++)
+	{
+	    FT_Bitmap_Size  *bitmap_size = &face->available_sizes[i];
+
+	    if (bitmap_size->x_ppem == size_metrics->x_ppem * 64 &&
+		bitmap_size->y_ppem == size_metrics->y_ppem * 64)
+	    {
+		scaled_font->ft_options.base.antialias = CAIRO_ANTIALIAS_NONE;
+		break;
+	    }
+	}
+    }
 
     metrics = &face->size->metrics;
 
@@ -1878,8 +1911,9 @@ _cairo_ft_scaled_glyph_init (void			*abstract_font,
     error = FT_Load_Glyph (scaled_font->unscaled->face,
 			   _cairo_scaled_glyph_index(scaled_glyph),
 			   load_flags);
-
-    if (error) {
+    /* XXX ignoring all other errors for now.  They are not fatal, typically
+     * just a glyph-not-found. */
+    if (error == FT_Err_Out_Of_Memory) {
 	status = CAIRO_STATUS_NO_MEMORY;
 	goto FAIL;
     }
@@ -2029,8 +2063,9 @@ _cairo_ft_scaled_glyph_init (void			*abstract_font,
 	    error = FT_Load_Glyph (face,
 				   _cairo_scaled_glyph_index(scaled_glyph),
 				   load_flags | FT_LOAD_NO_BITMAP);
-
-	    if (error) {
+	    /* XXX ignoring all other errors for now.  They are not fatal, typically
+	     * just a glyph-not-found. */
+	    if (error == FT_Err_Out_Of_Memory) {
 		_cairo_ft_unscaled_font_unlock_face (unscaled);
 		_cairo_error (CAIRO_STATUS_NO_MEMORY);
 		return CAIRO_STATUS_NO_MEMORY;
