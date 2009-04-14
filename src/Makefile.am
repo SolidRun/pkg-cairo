@@ -91,7 +91,7 @@ endif
 
 if CAIRO_HAS_GLITZ_SURFACE
 libcairo_glitz_headers = cairo-glitz.h
-libcairo_glitz_sources = cairo-glitz-surface.c
+libcairo_glitz_sources = cairo-glitz-surface.c cairo-glitz-private.h
 backend_pkgconfigs += cairo-glitz.pc
 endif
 
@@ -251,7 +251,7 @@ cairo.def: $(cairoinclude_HEADERS)
 	sort; \
 	echo LIBRARY libcairo-$(LT_CURRENT_MINUS_AGE).dll; \
 	) >$@
-	@ (! grep -q cairo_ERROR $@) || ($(RM) $@; false)
+	@ ! grep -q cairo_ERROR $@ || ($(RM) $@; false)
 
 install-data-local:
 	@if test -f "$(DESTDIR)$(includedir)/cairo.h" || test -f "$(DESTDIR)$(includedir)/cairo-features.h" ; then \
@@ -262,5 +262,9 @@ install-data-local:
 	  echo "****************************************************************" ;	\
 	  false ;									\
         fi
+
+TESTS_ENVIRONMENT = srcdir="$(srcdir)"
+TESTS = check-def.sh check-plt.sh check-headers.sh
+EXTRA_DIST += $(TESTS)
 
 CLEANFILES = cairo.def cairo-features.h

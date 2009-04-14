@@ -72,14 +72,14 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 libcairotest_la_LIBADD =
 am__libcairotest_la_SOURCES_DIST = buffer-diff.c buffer-diff.h \
-	cairo-test.c cairo-test.h read-png.c read-png.h write-png.c \
-	write-png.h xmalloc.c xmalloc.h cairo-test-beos.cpp \
-	cairo-test-beos.h cairo-test-directfb.c cairo-test-directfb.h
+	cairo-test.c cairo-test.h xmalloc.c xmalloc.h \
+	cairo-test-beos.cpp cairo-test-beos.h cairo-test-directfb.c \
+	cairo-test-directfb.h
 @CAIRO_HAS_BEOS_SURFACE_TRUE@am__objects_1 = libcairotest_la-cairo-test-beos.lo
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__objects_2 =  \
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@	cairo-test-directfb.lo
-am_libcairotest_la_OBJECTS = buffer-diff.lo cairo-test.lo read-png.lo \
-	write-png.lo xmalloc.lo $(am__objects_1) $(am__objects_2)
+am_libcairotest_la_OBJECTS = buffer-diff.lo cairo-test.lo xmalloc.lo \
+	$(am__objects_1) $(am__objects_2)
 libcairotest_la_OBJECTS = $(am_libcairotest_la_OBJECTS)
 @HAVE_PTHREAD_TRUE@am__EXEEXT_1 = pthread-show-text$(EXEEXT)
 @CAIRO_HAS_FT_FONT_TRUE@am__EXEEXT_2 = bitmap-font$(EXEEXT) \
@@ -103,28 +103,28 @@ am__EXEEXT_9 = a8-mask$(EXEEXT) caps-joins$(EXEEXT) \
 	composite-integer-translate-source$(EXEEXT) \
 	composite-integer-translate-over$(EXEEXT) \
 	composite-integer-translate-over-repeat$(EXEEXT) \
-	create-for-stream$(EXEEXT) create-from-png$(EXEEXT) \
-	create-from-png-stream$(EXEEXT) dash-caps-joins$(EXEEXT) \
-	dash-no-dash$(EXEEXT) dash-offset-negative$(EXEEXT) \
-	dash-scale$(EXEEXT) dash-zero-length$(EXEEXT) \
-	degenerate-path$(EXEEXT) device-offset$(EXEEXT) \
-	device-offset-positive$(EXEEXT) extend-reflect$(EXEEXT) \
-	fill-and-stroke$(EXEEXT) fill-and-stroke-alpha$(EXEEXT) \
+	copy-path$(EXEEXT) create-for-stream$(EXEEXT) \
+	create-from-png$(EXEEXT) create-from-png-stream$(EXEEXT) \
+	dash-caps-joins$(EXEEXT) dash-no-dash$(EXEEXT) \
+	dash-offset-negative$(EXEEXT) dash-scale$(EXEEXT) \
+	dash-zero-length$(EXEEXT) degenerate-path$(EXEEXT) \
+	device-offset$(EXEEXT) device-offset-positive$(EXEEXT) \
+	extend-reflect$(EXEEXT) fill-and-stroke$(EXEEXT) \
+	fill-and-stroke-alpha$(EXEEXT) \
 	fill-and-stroke-alpha-add$(EXEEXT) fill-rule$(EXEEXT) \
 	filter-nearest-offset$(EXEEXT) font-face-get-type$(EXEEXT) \
 	font-matrix-translation$(EXEEXT) glyph-cache-pressure$(EXEEXT) \
 	get-and-set$(EXEEXT) get-group-target$(EXEEXT) \
-	gradient-alpha$(EXEEXT) leaky-dash$(EXEEXT) \
-	leaky-polygon$(EXEEXT) line-width$(EXEEXT) \
+	gradient-alpha$(EXEEXT) infinite-join$(EXEEXT) \
+	leaky-dash$(EXEEXT) leaky-polygon$(EXEEXT) line-width$(EXEEXT) \
 	line-width-scale$(EXEEXT) linear-gradient$(EXEEXT) \
 	long-lines$(EXEEXT) mask$(EXEEXT) mask-ctm$(EXEEXT) \
 	mask-surface-ctm$(EXEEXT) move-to-show-surface$(EXEEXT) \
 	new-sub-path$(EXEEXT) nil-surface$(EXEEXT) \
 	operator-clear$(EXEEXT) operator-source$(EXEEXT) \
 	paint$(EXEEXT) paint-source-alpha$(EXEEXT) \
-	paint-with-alpha$(EXEEXT) path-data$(EXEEXT) \
-	pattern-get-type$(EXEEXT) pixman-rotate$(EXEEXT) \
-	rectangle-rounding-error$(EXEEXT) \
+	paint-with-alpha$(EXEEXT) pattern-get-type$(EXEEXT) \
+	pixman-rotate$(EXEEXT) rectangle-rounding-error$(EXEEXT) \
 	scale-source-surface-paint$(EXEEXT) select-font-face$(EXEEXT) \
 	select-font-no-show-text$(EXEEXT) self-copy$(EXEEXT) \
 	self-intersecting$(EXEEXT) set-source$(EXEEXT) \
@@ -264,6 +264,13 @@ composite_integer_translate_source_OBJECTS =  \
 	composite-integer-translate-source.$(OBJEXT)
 composite_integer_translate_source_LDADD = $(LDADD)
 composite_integer_translate_source_DEPENDENCIES = libcairotest.la \
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
+copy_path_SOURCES = copy-path.c
+copy_path_OBJECTS = copy-path.$(OBJEXT)
+copy_path_LDADD = $(LDADD)
+copy_path_DEPENDENCIES = libcairotest.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
@@ -476,6 +483,13 @@ imagediff_DEPENDENCIES = libcairotest.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
+infinite_join_SOURCES = infinite-join.c
+infinite_join_OBJECTS = infinite-join.$(OBJEXT)
+infinite_join_LDADD = $(LDADD)
+infinite_join_DEPENDENCIES = libcairotest.la \
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
 leaky_dash_SOURCES = leaky-dash.c
 leaky_dash_OBJECTS = leaky-dash.$(OBJEXT)
 leaky_dash_LDADD = $(LDADD)
@@ -599,13 +613,6 @@ paint_with_alpha_SOURCES = paint-with-alpha.c
 paint_with_alpha_OBJECTS = paint-with-alpha.$(OBJEXT)
 paint_with_alpha_LDADD = $(LDADD)
 paint_with_alpha_DEPENDENCIES = libcairotest.la \
-	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
-path_data_SOURCES = path-data.c
-path_data_OBJECTS = path-data.$(OBJEXT)
-path_data_LDADD = $(LDADD)
-path_data_DEPENDENCIES = libcairotest.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1)
@@ -916,11 +923,11 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c bitmap-font.c \
 	clip-operator.c clip-twice.c close-path.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c \
-	composite-integer-translate-source.c create-for-stream.c \
-	create-from-png.c create-from-png-stream.c dash-caps-joins.c \
-	dash-no-dash.c dash-offset-negative.c dash-scale.c \
-	dash-zero-length.c degenerate-path.c device-offset.c \
-	device-offset-positive.c extend-reflect.c \
+	composite-integer-translate-source.c copy-path.c \
+	create-for-stream.c create-from-png.c create-from-png-stream.c \
+	dash-caps-joins.c dash-no-dash.c dash-offset-negative.c \
+	dash-scale.c dash-zero-length.c degenerate-path.c \
+	device-offset.c device-offset-positive.c extend-reflect.c \
 	fallback-resolution.c fill-and-stroke.c \
 	fill-and-stroke-alpha.c fill-and-stroke-alpha-add.c \
 	fill-rule.c filter-nearest-offset.c font-face-get-type.c \
@@ -928,16 +935,15 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c bitmap-font.c \
 	ft-text-antialias-none.c ft-text-vertical-layout-type1.c \
 	ft-text-vertical-layout-type3.c get-and-set.c \
 	get-group-target.c glyph-cache-pressure.c gradient-alpha.c \
-	imagediff.c leaky-dash.c leaky-polygon.c line-width.c \
-	line-width-scale.c linear-gradient.c long-lines.c mask.c \
-	mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
+	imagediff.c infinite-join.c leaky-dash.c leaky-polygon.c \
+	line-width.c line-width-scale.c linear-gradient.c long-lines.c \
+	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
 	multi-page.c new-sub-path.c nil-surface.c operator-clear.c \
 	operator-source.c paint.c paint-source-alpha.c \
-	paint-with-alpha.c path-data.c pattern-get-type.c \
-	pdf-features.c pdf2png.c pixman-rotate.c png-flatten.c \
-	ps-features.c pthread-show-text.c push-group.c \
-	rectangle-rounding-error.c rel-path.c \
-	scale-source-surface-paint.c select-font-face.c \
+	paint-with-alpha.c pattern-get-type.c pdf-features.c pdf2png.c \
+	pixman-rotate.c png-flatten.c ps-features.c \
+	pthread-show-text.c push-group.c rectangle-rounding-error.c \
+	rel-path.c scale-source-surface-paint.c select-font-face.c \
 	select-font-no-show-text.c self-copy.c self-intersecting.c \
 	set-source.c show-text-current-point.c source-clip.c \
 	source-clip-scale.c source-surface-scale-paint.c \
@@ -954,11 +960,11 @@ DIST_SOURCES = $(am__libcairotest_la_SOURCES_DIST) a8-mask.c \
 	clip-nesting.c clip-operator.c clip-twice.c close-path.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c \
-	composite-integer-translate-source.c create-for-stream.c \
-	create-from-png.c create-from-png-stream.c dash-caps-joins.c \
-	dash-no-dash.c dash-offset-negative.c dash-scale.c \
-	dash-zero-length.c degenerate-path.c device-offset.c \
-	device-offset-positive.c extend-reflect.c \
+	composite-integer-translate-source.c copy-path.c \
+	create-for-stream.c create-from-png.c create-from-png-stream.c \
+	dash-caps-joins.c dash-no-dash.c dash-offset-negative.c \
+	dash-scale.c dash-zero-length.c degenerate-path.c \
+	device-offset.c device-offset-positive.c extend-reflect.c \
 	fallback-resolution.c fill-and-stroke.c \
 	fill-and-stroke-alpha.c fill-and-stroke-alpha-add.c \
 	fill-rule.c filter-nearest-offset.c font-face-get-type.c \
@@ -966,16 +972,15 @@ DIST_SOURCES = $(am__libcairotest_la_SOURCES_DIST) a8-mask.c \
 	ft-text-antialias-none.c ft-text-vertical-layout-type1.c \
 	ft-text-vertical-layout-type3.c get-and-set.c \
 	get-group-target.c glyph-cache-pressure.c gradient-alpha.c \
-	imagediff.c leaky-dash.c leaky-polygon.c line-width.c \
-	line-width-scale.c linear-gradient.c long-lines.c mask.c \
-	mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
+	imagediff.c infinite-join.c leaky-dash.c leaky-polygon.c \
+	line-width.c line-width-scale.c linear-gradient.c long-lines.c \
+	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
 	multi-page.c new-sub-path.c nil-surface.c operator-clear.c \
 	operator-source.c paint.c paint-source-alpha.c \
-	paint-with-alpha.c path-data.c pattern-get-type.c \
-	pdf-features.c pdf2png.c pixman-rotate.c png-flatten.c \
-	ps-features.c pthread-show-text.c push-group.c \
-	rectangle-rounding-error.c rel-path.c \
-	scale-source-surface-paint.c select-font-face.c \
+	paint-with-alpha.c pattern-get-type.c pdf-features.c pdf2png.c \
+	pixman-rotate.c png-flatten.c ps-features.c \
+	pthread-show-text.c push-group.c rectangle-rounding-error.c \
+	rel-path.c scale-source-surface-paint.c select-font-face.c \
 	select-font-no-show-text.c self-copy.c self-intersecting.c \
 	set-source.c show-text-current-point.c source-clip.c \
 	source-clip-scale.c source-surface-scale-paint.c \
@@ -1087,7 +1092,6 @@ GLITZ_GLX_CFLAGS = @GLITZ_GLX_CFLAGS@
 GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
 GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
 GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
-GREP = @GREP@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_PTHREAD_FALSE = @HAVE_PTHREAD_FALSE@
@@ -1134,14 +1138,17 @@ USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 WARN_CFLAGS = @WARN_CFLAGS@
-XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
+ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -1158,11 +1165,8 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
 directfb_CFLAGS = @directfb_CFLAGS@
 directfb_LIBS = @directfb_LIBS@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 glitz_CFLAGS = @glitz_CFLAGS@
 glitz_LIBS = @glitz_LIBS@
@@ -1171,24 +1175,20 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 png_CFLAGS = @png_CFLAGS@
 png_LIBS = @png_LIBS@
 png_REQUIRES = @png_REQUIRES@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -1206,23 +1206,24 @@ TESTS = a8-mask caps-joins caps-joins-alpha caps-sub-paths clip-all \
 	clip-operator clip-twice close-path \
 	composite-integer-translate-source \
 	composite-integer-translate-over \
-	composite-integer-translate-over-repeat create-for-stream \
-	create-from-png create-from-png-stream dash-caps-joins \
-	dash-no-dash dash-offset-negative dash-scale dash-zero-length \
-	degenerate-path device-offset device-offset-positive \
-	extend-reflect fill-and-stroke fill-and-stroke-alpha \
-	fill-and-stroke-alpha-add fill-rule filter-nearest-offset \
-	font-face-get-type font-matrix-translation \
-	glyph-cache-pressure get-and-set get-group-target \
-	gradient-alpha leaky-dash leaky-polygon line-width \
-	line-width-scale linear-gradient long-lines mask mask-ctm \
-	mask-surface-ctm move-to-show-surface new-sub-path nil-surface \
-	operator-clear operator-source paint paint-source-alpha \
-	paint-with-alpha path-data pattern-get-type pixman-rotate \
-	rectangle-rounding-error scale-source-surface-paint \
-	select-font-face select-font-no-show-text self-copy \
-	self-intersecting set-source show-text-current-point \
-	source-clip source-clip-scale source-surface-scale-paint \
+	composite-integer-translate-over-repeat copy-path \
+	create-for-stream create-from-png create-from-png-stream \
+	dash-caps-joins dash-no-dash dash-offset-negative dash-scale \
+	dash-zero-length degenerate-path device-offset \
+	device-offset-positive extend-reflect fill-and-stroke \
+	fill-and-stroke-alpha fill-and-stroke-alpha-add fill-rule \
+	filter-nearest-offset font-face-get-type \
+	font-matrix-translation glyph-cache-pressure get-and-set \
+	get-group-target gradient-alpha infinite-join leaky-dash \
+	leaky-polygon line-width line-width-scale linear-gradient \
+	long-lines mask mask-ctm mask-surface-ctm move-to-show-surface \
+	new-sub-path nil-surface operator-clear operator-source paint \
+	paint-source-alpha paint-with-alpha pattern-get-type \
+	pixman-rotate rectangle-rounding-error \
+	scale-source-surface-paint select-font-face \
+	select-font-no-show-text self-copy self-intersecting \
+	set-source show-text-current-point source-clip \
+	source-clip-scale source-surface-scale-paint \
 	surface-finish-twice surface-pattern text-antialias-gray \
 	text-antialias-none text-antialias-subpixel text-cache-crash \
 	text-pattern text-rotate transforms translate-show-surface \
@@ -1286,6 +1287,8 @@ composite-integer-translate-over-pdf-argb32-ref.png	\
 composite-integer-translate-over-svg-ref.png		\
 composite-integer-translate-over-repeat-ref.png		\
 composite-integer-translate-source-ref.png		\
+copy-path-ref.png					\
+copy-path-ps-argb32-ref.png				\
 create-from-png-ref.png					\
 create-from-png-stream-ref.png				\
 dash-caps-joins-ref.png					\
@@ -1330,6 +1333,8 @@ glyph-cache-pressure-ps-argb32-ref.png			\
 glyph-cache-pressure-svg-ref.png			\
 gradient-alpha-ref.png					\
 gradient-alpha-rgb24-ref.png				\
+infinite-join-ref.png					\
+infinite-join-ps-argb32-ref.png				\
 leaky-dash-ref.png					\
 leaky-polygon-ref.png					\
 leaky-polygon-ps-argb32-ref.png				\
@@ -1371,8 +1376,6 @@ paint-source-alpha-pdf-argb32-ref.png			\
 paint-source-alpha-svg-ref.png				\
 paint-with-alpha-ref.png				\
 paint-with-alpha-svg-ref.png				\
-path-data-ref.png					\
-path-data-ps-argb32-ref.png				\
 pixman-rotate-ref.png					\
 pixman-rotate-rgb24-ref.png				\
 push-group-ref.png					\
@@ -1487,8 +1490,8 @@ INCLUDES = \
 
 EXTRA_LTLIBRARIES = libcairotest.la
 libcairotest_la_SOURCES = buffer-diff.c buffer-diff.h cairo-test.c \
-	cairo-test.h read-png.c read-png.h write-png.c write-png.h \
-	xmalloc.c xmalloc.h $(am__append_9) $(am__append_10)
+	cairo-test.h xmalloc.c xmalloc.h $(am__append_9) \
+	$(am__append_10)
 # BeOS system headers trigger this warning
 @CAIRO_HAS_BEOS_SURFACE_TRUE@libcairotest_la_CXXFLAGS = -Wno-multichar
 LDADD = libcairotest.la $(top_builddir)/src/libcairo.la \
@@ -1505,7 +1508,7 @@ LDADD = libcairotest.la $(top_builddir)/src/libcairo.la \
 TARGETS = $(CAIRO_TEST_TARGET)
 TESTS_ENVIRONMENT = CAIRO_XFAIL_TESTS="$(XFAIL_TESTS)" CAIRO_TEST_TARGET="$(TARGETS)"
 VALGRIND_FLAGS = \
-	--tool=memcheck --suppressions=./.valgrind-suppressions \
+	--tool=memcheck --suppressions=$(srcdir)/.valgrind-suppressions \
 	--leak-check=yes --show-reachable=yes
 
 CLEANFILES = \
@@ -1607,6 +1610,9 @@ composite-integer-translate-over-repeat$(EXEEXT): $(composite_integer_translate_
 composite-integer-translate-source$(EXEEXT): $(composite_integer_translate_source_OBJECTS) $(composite_integer_translate_source_DEPENDENCIES) 
 	@rm -f composite-integer-translate-source$(EXEEXT)
 	$(LINK) $(composite_integer_translate_source_LDFLAGS) $(composite_integer_translate_source_OBJECTS) $(composite_integer_translate_source_LDADD) $(LIBS)
+copy-path$(EXEEXT): $(copy_path_OBJECTS) $(copy_path_DEPENDENCIES) 
+	@rm -f copy-path$(EXEEXT)
+	$(LINK) $(copy_path_LDFLAGS) $(copy_path_OBJECTS) $(copy_path_LDADD) $(LIBS)
 create-for-stream$(EXEEXT): $(create_for_stream_OBJECTS) $(create_for_stream_DEPENDENCIES) 
 	@rm -f create-for-stream$(EXEEXT)
 	$(LINK) $(create_for_stream_LDFLAGS) $(create_for_stream_OBJECTS) $(create_for_stream_LDADD) $(LIBS)
@@ -1694,6 +1700,9 @@ gradient-alpha$(EXEEXT): $(gradient_alpha_OBJECTS) $(gradient_alpha_DEPENDENCIES
 imagediff$(EXEEXT): $(imagediff_OBJECTS) $(imagediff_DEPENDENCIES) 
 	@rm -f imagediff$(EXEEXT)
 	$(LINK) $(imagediff_LDFLAGS) $(imagediff_OBJECTS) $(imagediff_LDADD) $(LIBS)
+infinite-join$(EXEEXT): $(infinite_join_OBJECTS) $(infinite_join_DEPENDENCIES) 
+	@rm -f infinite-join$(EXEEXT)
+	$(LINK) $(infinite_join_LDFLAGS) $(infinite_join_OBJECTS) $(infinite_join_LDADD) $(LIBS)
 leaky-dash$(EXEEXT): $(leaky_dash_OBJECTS) $(leaky_dash_DEPENDENCIES) 
 	@rm -f leaky-dash$(EXEEXT)
 	$(LINK) $(leaky_dash_LDFLAGS) $(leaky_dash_OBJECTS) $(leaky_dash_LDADD) $(LIBS)
@@ -1748,9 +1757,6 @@ paint-source-alpha$(EXEEXT): $(paint_source_alpha_OBJECTS) $(paint_source_alpha_
 paint-with-alpha$(EXEEXT): $(paint_with_alpha_OBJECTS) $(paint_with_alpha_DEPENDENCIES) 
 	@rm -f paint-with-alpha$(EXEEXT)
 	$(LINK) $(paint_with_alpha_LDFLAGS) $(paint_with_alpha_OBJECTS) $(paint_with_alpha_LDADD) $(LIBS)
-path-data$(EXEEXT): $(path_data_OBJECTS) $(path_data_DEPENDENCIES) 
-	@rm -f path-data$(EXEEXT)
-	$(LINK) $(path_data_LDFLAGS) $(path_data_OBJECTS) $(path_data_LDADD) $(LIBS)
 pattern-get-type$(EXEEXT): $(pattern_get_type_OBJECTS) $(pattern_get_type_DEPENDENCIES) 
 	@rm -f pattern-get-type$(EXEEXT)
 	$(LINK) $(pattern_get_type_LDFLAGS) $(pattern_get_type_OBJECTS) $(pattern_get_type_LDADD) $(LIBS)
@@ -1896,6 +1902,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite-integer-translate-over-repeat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite-integer-translate-over.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite-integer-translate-source.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/copy-path.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/create-for-stream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/create-from-png-stream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/create-from-png.Po@am__quote@
@@ -1925,6 +1932,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glyph-cache-pressure.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gradient-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imagediff.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/infinite-join.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/leaky-dash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/leaky-polygon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcairotest_la-cairo-test-beos.Plo@am__quote@
@@ -1944,7 +1952,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint-source-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint-with-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/path-data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pattern-get-type.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pdf-features.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pdf2png-pdf2png.Po@am__quote@
@@ -1953,7 +1960,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ps-features.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pthread-show-text.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/push-group.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/read-png.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rectangle-rounding-error.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rel-path.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scale-source-surface-paint.Po@am__quote@
@@ -1984,7 +1990,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unantialiased-shapes.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unbounded-operator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/user-data.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/write-png.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xlib-surface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmalloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zero-alpha.Po@am__quote@

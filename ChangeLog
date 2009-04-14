@@ -1,3 +1,1205 @@
+commit 8878bbc549a01868853ff6270b986e57c6474d88
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Nov 2 19:59:50 2006 -0500
+
+    Released cairo-1.2.6.
+    Update version to 1.2.6 and libtool version to 11:3:9
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f9f5db06188db527d485f3a9b2589ddb84a7d7bc
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Nov 2 19:59:27 2006 -0500
+
+    [doc] Update templates prior to release
+
+ doc/public/tmpl/cairo-text.sgml |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 79d4d97658c71fb18c5973153b301f9010e04a6e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Nov 2 19:58:40 2006 -0500
+
+    Makefile.am: Remove boilerplate out of DIST_SUBDIRS
+    
+    Bad bad different changes in the same commit.
+
+ Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit dbdb28252b497a84933b74ae8ce124a7528931fa
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Nov 2 19:52:03 2006 -0500
+
+    Add notes for the 1.2.6 release.
+
+ NEWS |   60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 60 insertions(+), 0 deletions(-)
+
+commit 76cc6af100ca5588a36a42eaddeacbdfc288bb82
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Oct 26 15:52:21 2006 -0700
+
+    Make xlib and xcb backends tolerant of single-bit errors in the test suite output.
+    
+    Manually "cherry picked" from 61bf9b009b47312c20d54198790542cd20fc5576
+    (the cherry-pick command cannot handle the file renames and
+    indentation changes involved here).
+
+ test/cairo-test.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+commit ad4f0ba2d59cb417498408606ec1466dae723715
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Sep 5 22:25:21 2006 -0700
+
+    Move target tolerance to cairo_test_target structure (should let single-pixel SVG errors pass)
+    
+    Previously we were setting the target tolerance based on the surface
+    type. But that doesn't work as multiple backends will provide a surface
+    of type meta. So instead we put the tolerance as a value in the
+    cairo_test_target data structure.
+    
+    With this change, some single-pixel errors of 1 in the SVG backend
+    should now be ignored.
+    
+    Manually "cherry picked" from bcb7863f00b4cfdf0985993067fc32d07b81540b
+    (the regular cherry-pick command cannot handle the file renames and
+     indentation changes involved here).
+
+ test/cairo-test.c |  109 +++++++++++++++++++----------------------------------
+ 1 files changed, 40 insertions(+), 69 deletions(-)
+
+commit 02497b39c86e451cd12cf21f860fbdacc59afe38
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Aug 31 04:01:10 2006 -0700
+
+    test: Ignore single-bit errors for SVG backend.
+    
+    The interface of the various buffer/image_diff functions is improved to
+    provide the maximum pixel difference in addition to the number of pixels
+    that differ. This value can then be used to compare against a per-backend
+    tolerance.
+    
+    Currently I've set the SVG backend's tolerance to 1 to handle some issues
+    we're currently seeing of single-bit differences on different systems, (but
+    we're not exactly sure why yet).
+    
+    Also I improved the image_diff routines to properly report a status value
+    on failure rather than the bogus value of -1 for pixels_changed.
+    
+    Cherry-picked from d1834cca192fe6f8e429be0461fab6914e04024d
+    (and fixed ever so slightly to actually compile).
+
+ Makefile.am         |    2 -
+ test/buffer-diff.c  |   96 ++++++++++++++++++++++++++++----------------
+ test/buffer-diff.h  |   63 ++++++++++++++++++++++-------
+ test/cairo-test.c   |  111 +++++++++++++++++++++++++++++++++++++--------------
+ test/imagediff.c    |   19 ++++++---
+ test/xlib-surface.c |   75 +++++++++++++++++++---------------
+ 6 files changed, 244 insertions(+), 122 deletions(-)
+
+commit 11127fc21009cfa55312fcab8aed43470f7e4cc0
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Aug 30 23:41:48 2006 -0700
+
+    test: Remove custom read/write-png code in favor of using cairo surfaces
+    
+    Also combine image_diff and image_diff_flattened into a single function
+    
+    This was manually taken from 95475218858792ccb20ac6ad28db22e233c783d7
+    (It would have been a cherry-pick, but that doesn't yet handle file
+    renames.)
+
+ test/Makefile.am   |    4 -
+ test/buffer-diff.c |  260 ++++++++++++++++++++++------------------------------
+ test/cairo-test.c  |    4 -
+ test/cairo-test.h  |    7 +
+ test/imagediff.c   |    2 
+ test/read-png.c    |  196 ---------------------------------------
+ test/read-png.h    |   45 ---------
+ test/write-png.c   |   99 --------------------
+ test/write-png.h   |   35 -------
+ 9 files changed, 117 insertions(+), 535 deletions(-)
+
+commit 37dcbe61cf8881aa4b3101d96235ad9abe7ef1bb
+Author: Tor Lillqvist <tml@iki.fi>
+Date:   Thu Nov 2 17:17:44 2006 -0500
+
+    [win32] Use CAIRO_FORMAT_RGB24 for BITSPIXEL==32 surfaces too
+    
+    From:
+    
+      http://lists.freedesktop.org/archives/cairo/2006-October/008122.html
+
+ src/cairo-win32-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 892a050007eafddced21c03d9f10397dacabfd2b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Nov 2 12:19:10 2006 -0500
+
+    [win32] Remove _cairo_win32_surface_show_glyphs()
+    The one copied from master didn't compile, needed a lot more code to be
+    backported.  Lets just use the fallback paths.
+
+ src/cairo-win32-surface.c |  107 ---------------------------------------------
+ 1 files changed, 1 insertions(+), 106 deletions(-)
+
+commit 48d54e8a323adbbc725d9639ddbef2d99c495b0d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Nov 1 19:00:26 2006 -0500
+
+    [slim] hide cairo_pattern_status() #8551
+    (cherry picked from a13d58ff3af5ed85313b5af651c1d69f5e38fa06 commit)
+
+ src/cairo-pattern.c |    1 +
+ src/cairoint.h      |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 76026c89c24c97abfa455854e1c045c64af0b87c
+Author: Jamey Sharp <jamey@minilop.net>
+Date:   Wed Nov 1 18:59:24 2006 -0500
+
+    [slim] hide cairo_version_string()
+    
+    Adrian's recent commits broke PLT hiding by calling cairo_version_string
+    from inside cairo. Add slim_hidden_def and slim_hidden_proto for it.
+    (cherry picked from 445251cc79d87b73a2ccd7891f9a5a33b89927a4 commit)
+
+ src/cairo.c    |    1 +
+ src/cairoint.h |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 510aae20005acf4ed1d91edcb07df688f6ce1fed
+Author: Miklós Erdélyi <erdelyim@gmail.com>
+Date:   Wed Nov 1 16:08:30 2006 -0500
+
+    Pass correct surface to create_similar in _cairo_clip_init_deep_copy()
+    
+    This is already done in master as part of other changes.
+    Submitted here:
+    http://lists.freedesktop.org/archives/cairo/2006-August/007698.html
+
+ src/cairo-clip.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b20171cf303cd4404fee31da77128a57c3ad4a8d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Oct 25 21:40:08 2006 -0400
+
+    [PDF] Set CTM before path construction
+    
+    The previous order is undefined according to the PDF spec.  The resulting PDF
+    was being misrendered using OS X Preview viewer.  This was reported in this
+    thread:
+    
+      http://lists.freedesktop.org/archives/cairo/2006-October/008271.html
+    (cherry picked from e1ded5b1e042c8cefa7f136228d5a63a7bdf84b5 commit)
+
+ src/cairo-pdf-surface.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit cc8dd91ac2bdbd5d366ab29872f71a9a3a7a25a0
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Oct 23 11:57:16 2006 -0700
+
+    test: Update reference images due to previous change to _cairo_color_compute_shorts
+    
+    The previous change was in b62710d4f8602203d848daf2d444865b611fff09
+    We just forgot to update the reference images at the time so there
+    have been false failure results in the test suite until now.
+    (cherry picked from 670b3ce2432154cc0611a31c5b5e37c8a3ddf1f5 commit)
+
+ test/caps-joins-alpha-ref.png              |  Bin
+ test/fill-and-stroke-alpha-add-ref.png     |  Bin
+ test/fill-and-stroke-alpha-ref.png         |  Bin
+ test/linear-gradient-ref.png               |  Bin
+ test/mask-ref.png                          |  Bin
+ test/mask-rgb24-ref.png                    |  Bin
+ test/operator-source-ref.png               |  Bin
+ test/operator-source-rgb24-ref.png         |  Bin
+ test/paint-source-alpha-pdf-argb32-ref.png |  Bin
+ test/paint-source-alpha-ref.png            |  Bin
+ test/paint-with-alpha-ref.png              |  Bin
+ test/push-group-ref.png                    |  Bin
+ test/push-group-rgb24-ref.png              |  Bin
+ test/set-source-ref.png                    |  Bin
+ test/set-source.c                          |    4 +---
+ test/trap-clip-ref.png                     |  Bin
+ 16 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 28fec29345e6e115d14fbdabe91f82100191c3d7
+Author: Christian Biesinger <cbiesinger@web.de>
+Date:   Sun Oct 22 12:47:43 2006 +0200
+
+    Add missing ) in comment
+    (cherry picked from d6ebe07be214461b6d456ebdbdc5acfd432e0178 commit)
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 60d65de1593d349d545516e360c5fb04cbdbbc71
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Oct 18 15:18:11 2006 -0700
+
+    Add neglected reference images for infinite-join test
+    (cherry picked from 40e1c0246da1e79b70d4b89b7735e6fec329c56e commit)
+
+ test/.gitignore                      |    1 +
+ test/Makefile.am                     |    2 ++
+ test/infinite-join-ps-argb32-ref.png |  Bin
+ test/infinite-join-ref.png           |  Bin
+ 4 files changed, 3 insertions(+), 0 deletions(-)
+
+commit d0bca72499c7fc54ab2beff57b7985b56633f50b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Sep 21 15:17:59 2006 -0700
+
+    Fix infinite-join test case (bug #8379)
+    
+    The trick for this was to carefully ensure that the pen always has
+    at least 4 vertices. There was a previous attempt at this in the
+    code already but the test case had a combination of matrix and radius
+    that resulted in a value that was just able to sneak past the previous
+    check.
+    (cherry picked from 10cd23d51fbfc99d6e3e401440eebb56df3b3327 commit)
+
+ src/cairo-pen.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 137ced1dd7a8d6a161be8f3b7e186cf60ce59d91
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Oct 18 15:01:58 2006 -0700
+
+    test/infinite-join: Modify to draw something visible, and make the output a more reasonable size.
+    
+    The modification was performed with care to ensure that the bug
+    is still exercised. Also, reference images are added.
+    (cherry picked from 5b7a7f39ad8b726e9ee582bcd10500a1e5b16554 commit)
+
+ test/infinite-join.c |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
+
+commit 75b6d21ed5af7bb25d760423f6de2610bbbc24f0
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Sep 21 15:15:02 2006 -0700
+
+    Add assert statement so the infinite-join test simply exits rather than looping infinitely.
+    (cherry picked from 5492a7c7618a747130b844a509fb79b886f1bc54 commit)
+
+ src/cairo-pen.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 16a08ff1b03a7fc110dc3359f030ea6ff8af03a7
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Sep 21 15:13:47 2006 -0700
+
+    Add test case from bug #8379 demonstrating infinite loop during round join
+    (cherry picked from 8744929030ed8d42c271d9abb202975f62de166c commit)
+
+ test/Makefile.am     |    1 +
+ test/infinite-join.c |   73 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 74 insertions(+), 0 deletions(-)
+
+commit 459223945e0e974e4de7ae158d0a218c67434add
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Oct 18 10:59:10 2006 -0400
+
+    [configure.in] Require pkg-config 0.19. (#8686)
+    (cherry picked from 157663e1fdf120a71c6cc8222b88d2915a5a73eb commit)
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit d2ab45fed7bd38cde000a158294784bd2292ca26
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Aug 30 14:43:21 2006 -0700
+
+    Bug #7497: Change _cairo_color_compute_shorts to not rely on any particular floating-point epsilon value.
+    (cherry picked from b62710d4f8602203d848daf2d444865b611fff09 commit)
+
+ src/cairo-color.c |   24 ++++++++++++++++--------
+ 1 files changed, 16 insertions(+), 8 deletions(-)
+
+commit 97a712ce4e8a237c0dd55a1ba7ed8fce1f7e78d9
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Sun Oct 15 23:11:30 2006 +0930
+
+    PDF: Add cairo version to document info dictionary
+    (cherry picked from 830804c7aec0334953bdc6f4704da6d404fc030a commit)
+
+ src/cairo-pdf-surface.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 916ccab198546c3d32daa3f79071ded83bd5809a
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Sun Oct 15 23:11:01 2006 +0930
+
+    PS: Add cairo version to PS header
+    (cherry picked from 5aaa1988c7e27ed7acd002ee0fb8d344444b46dd commit)
+
+ src/cairo-ps-surface.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit d883217773913f3f6fc67e8ce97737ddd53b0d28
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Sun Oct 15 23:09:35 2006 +0930
+
+    Type1 subsetting: Don't put .notdef in Encoding when there are 256 glyphs
+    
+    Type1 subsetting adds the .notdef glyph to the subset because the Type 1
+    spec requires that it be defined. However if the subset already has
+    256 glyphs, this will cause the Encoding vector to have 257 entries
+    which ghostscript does not like.
+    (cherry picked from 753763ff258760688ef5a594a204fa8f2be7e4a4 commit)
+
+ src/cairo-type1-subset.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit df7faeff4e4bbb66c0651a066b694581c4165ad3
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Sun Oct 15 23:02:20 2006 +0930
+
+    Correct an unsigned to signed conversion problem in truetype subsetting bbox
+    (cherry picked from d1fb02b5b93c9a456411e9eb56f3ee136b33d9e7 commit)
+
+ src/cairo-truetype-subset.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 3f519f672a22626f97118d96051bc793a2c4cd6b
+Author: Christian Biesinger <cbiesinger@web.de>
+Date:   Tue Oct 10 12:38:33 2006 -0700
+
+    fix comment: pixman_private needs to be before the type of a variable
+    
+    Makes the documentation match the code.
+    Compare also commit 34d11aa3c45ba672b34d0a17f672f907305f3893
+    (cherry picked from 38dcddd79ef95b04bf8d6ff8336cb997875df41b commit)
+
+ pixman/src/slim_internal.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 07009ab72f1205680a5661dbea1681c9ad8f68c4
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Oct 8 17:07:17 2006 -0400
+
+    [slim] hide cairo_glitz_surface_create() (#8551)
+    (cherry picked from f6a2811c87def7b1bc70a2014d93df8feab2e2f4 commit)
+
+ src/Makefile.am           |    2 +-
+ src/cairo-glitz-private.h |   41 +++++++++++++++++++++++++++++++++++++++++
+ src/cairo-glitz-surface.c |    2 ++
+ 3 files changed, 44 insertions(+), 1 deletions(-)
+
+commit 2734968e2999eb7693f2bf6fb62446e593db749c
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Oct 4 18:34:09 2006 -0700
+
+    Fix typo that was resulting in device glyph_extents of INT16_MAX in some cases.
+    (cherry picked from f1db0135476a039ea43dfd67c56763b05aea2ec4 commit)
+
+ src/cairo-scaled-font.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c6beeda701b24e5056615a261f21da12a42636ab
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Oct 5 11:51:25 2006 -0400
+
+    [Makefile.am] Pass srcdir down to the tests
+    (cherry picked from 2041db91968c7c06cdb2e454f572c50d75144d29 commit)
+
+ src/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 405d5b7dcabb33c94b648460c7196bd188690cea
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Oct 4 14:58:06 2006 -0700
+
+    Add new _cairo_pattern_create_for_status so that patterns properly propagate errors.
+    
+    In particular, many possible error values on a surface provided
+    to cairo_pattern_create_for_surface were previously being swallowed
+    and a nil pattern was returned that erroneously reported
+    CAIRO_STATUS_NO_MEMORY.
+    (cherry picked from 01502471e31aa28a910039a918ff2aec3810d3c1 commit)
+
+ src/cairo-pattern.c |   52 ++++++++++++++++-----------------------------------
+ 1 files changed, 16 insertions(+), 36 deletions(-)
+
+commit 20d7a556cef03405f57d1380370682a3579eb729
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Oct 4 14:56:33 2006 -0700
+
+    Fix cairo_image_surface_create to report INVALID_FORMAT errors.
+    
+    This adds a new nil cairo_image_surface to hold CAIRO_STATUS_INVALID_FORMAT.
+    Previously the detected error was being lost and a nil surface was
+    returned that erroneously reported CAIRO_STATUS_NO_MEMORY.
+    (cherry picked from 4d2b54a271f722de9802ca68246ce6afba89f830 commit)
+
+ src/cairo-image-surface.c |   52 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 50 insertions(+), 2 deletions(-)
+
+commit e4ff87ea596ce6316b1cad8008cb5436eef9a86b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 2 14:35:35 2006 -0400
+
+    [check-headers.sh] Don't use '\>' regexp syntax
+    (cherry picked from 1e0e2075090c181dcd9f431833a8a9c2665d763e commit)
+
+ src/check-headers.sh |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 372e631a833c3d61b03804c3184359002b1861f3
+Author: Alfred Peng <alfred.peng@sun.com>
+Date:   Fri Sep 29 17:17:27 2006 -0700
+
+    Use pixman_private consistently as prefix not suffix
+    (cherry picked from 34d11aa3c45ba672b34d0a17f672f907305f3893 commit)
+
+ pixman/src/icint.h |    2 +-
+ pixman/src/icrop.h |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit a3ac198b0ab380225f8998f20e5423036f0dadcb
+Author: Alfred Peng <alfred.peng@sun.com>
+Date:   Fri Sep 29 17:16:47 2006 -0700
+
+    Add Sun Pro C definition of pixman_private
+    (cherry picked from c1495742f76ce380aaa48389bc331723b7a3a141 commit)
+
+ pixman/src/slim_internal.h |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit ba8b0c0268e7f2cfcc32b7918730d0b10eadcf61
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Sep 29 17:08:53 2006 -0700
+
+    Fix dependency of 'make doc' so that necessary header files are built first.
+    (cherry picked from 28cc64aa20cd15f78109f4481bd1c08627c87e46 commit)
+
+ Makefile.am |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 4c838dddd1912562042db3fe1b9f078ec583d63a
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Sep 29 16:59:27 2006 -0700
+
+    Rename docs-publish target to doc-publish in order to be consistent with the doc target.
+    (cherry picked from deef1a667536ec67ff1d7b42a1f8179e1eac4715 commit)
+
+ Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit d65a8fd422effc4a943bae8d82e5531e7924f12b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Sep 29 16:58:51 2006 -0700
+
+    Fix Makefile bug preventing 'make doc' from succeeding
+    (cherry picked from e6575fb3c76ec2cda742e05c24958a7000d488dd commit)
+
+ doc/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0a59ab7d553a3307bf1fb86487ef9cc0823fe625
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Sep 29 16:46:39 2006 -0700
+
+    Fix typo in documentation of cairo_in_fill (thanks to Jonathan Watt) and clarify a bit.
+    (cherry picked from b99d41a0b075ec405d14ea8b6bbcaa50aa35e890 commit)
+
+ src/cairo.c |   24 +++++++++++++++---------
+ 1 files changed, 15 insertions(+), 9 deletions(-)
+
+commit 57bca39e08f003ee4685d1cfb9fc88901dd1b520
+Author: Robert O'Callahan <rocallahan@novell.com>
+Date:   Mon Sep 25 16:24:33 2006 -0700
+
+    Remove redundant call to _cairo_surface_get_extents
+    
+    We called it just above with the same parameters.
+    (cherry picked from 17eeacfba844ea5f9592dff4621e6f721c27d6c5 commit)
+
+ src/cairo-surface-fallback.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit b586c0456ee8ea96bcf91b24a5d0b80aed91db44
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Sep 25 16:16:35 2006 -0700
+
+    Rename test from stale path-data name to copy-path
+    (cherry picked from e4dc73ab1cafeb8dd77d3ee3dc92d9a92be69542 commit)
+
+ test/Makefile.am                 |    6 -
+ test/copy-path-ps-argb32-ref.png |  Bin
+ test/copy-path-ref.png           |  Bin
+ test/copy-path.c                 |  234 ++++++++++++++++++++++++++++++++++++++
+ test/path-data-ps-argb32-ref.png |  Bin
+ test/path-data-ref.png           |  Bin
+ test/path-data.c                 |  234 --------------------------------------
+ 7 files changed, 237 insertions(+), 237 deletions(-)
+
+commit cfffc5022e4d40f0e7a4d179bcd5daf7107b18c8
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Sep 25 16:03:02 2006 -0700
+
+    Fix cairo_copy_path and cairo_copy_path_flat to propagate errors.
+    
+    One of these functions was already documented to be doing this, and
+    the other one should have been. Now the documentation and behavior
+    for both are consistent, (and the path-data test case verifies this).
+    (cherry picked from 5f833c134bd002853b9d1458b58350cfb1d40a94 commit)
+
+ src/cairo-path-data-private.h |    3 +++
+ src/cairo-path-data.c         |   16 ++++++++++++++++
+ src/cairo.c                   |   16 ++++++++++------
+ test/path-data.c              |   28 +++++++++++++++++++++++++++-
+ 4 files changed, 56 insertions(+), 7 deletions(-)
+
+commit b74b14ad45bf78679bf480e3080d088c15371533
+Author: Kristian Høgsberg <krh@redhat.com>
+Date:   Tue Sep 26 17:33:29 2006 -0400
+
+    Compute right index when looking up left side bearing.
+    
+    When looking up the short entries in the second part of
+    the hmtx table, compute the size of the first part correctly.
+    
+    Fix from Adrian, see:
+    
+      https://bugs.freedesktop.org/show_bug.cgi?id=8180#c12
+    (cherry picked from f9165638bf485591abae52b759fba82caf048dc5 commit)
+
+ src/cairo-truetype-subset.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+commit bdff62a4b61dac260d815ae0cdaa5b34d909c814
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 26 13:54:03 2006 -0400
+
+    [configure] Print out whether SVG and PDF surfaces can be tested
+    (cherry picked from 7c3062240ac036c8091ee9f0acce0aa3ea9df8ea commit)
+
+ configure.in     |    8 ++++++--
+ src/check-def.sh |    2 +-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+commit 4085afc75d0b2e85011e05b8d79f8d2a3ebef6ce
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Sep 19 10:13:36 2006 -0700
+
+    Add missing pixman_private to _FbOnes when a function.
+    
+    This was thanks to a report from crucible (run #2113) since it tested
+    with older versions of gcc (3.3.6) than most of the cairo developers
+    use, (so we had been getting the _FbOnes macro not the function).
+    (cherry picked from 82b710ebc214c46df6666ede486c0174b335bfdb commit)
+
+ pixman/src/icint.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6e7610cc1f7f2431aa4b2455d4327d9de8b3a5dc
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 19 13:05:29 2006 -0400
+
+    check-def.sh: Only allow _cairo_.*_test_.* symbols, not all _cairo.* ones
+    (cherry picked from 42a0c6bd59e41c22a88386b389af36f37418de82 commit)
+
+ src/check-def.sh |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 73e7dff756df30ef064a4a9f36119ba72c4f3728
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 18 13:32:19 2006 -0400
+
+    cairo-directfb.h: Add missing cairo_public decorators
+    (cherry picked from 6c01b2ffb3c7a023f3932328b8067f4f5b83936c commit)
+
+ src/cairo-directfb.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit ba76564270339ad9b3fca7ebd680aa94ed79b215
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 18 13:32:00 2006 -0400
+
+    cairo-pdf.h: Add missing cairo_public decorators
+    (cherry picked from 7bb72f645325960e0bef4595ed7e9f1bb391796c commit)
+
+ src/cairo-pdf.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 8a1d9ca2ddb3da8338d2d9f9f1c7cc29718cc78c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 18 13:28:29 2006 -0400
+
+    check-headers.sh:  Add a test for cairo_public decorators in public headers
+    Test fails currently because of bug 8313 and similar issues.
+    (cherry picked from 01f10fb27a675ff26bb0c0ca6748479215e6d6bd commit)
+
+ src/Makefile.am      |    2 +-
+ src/check-headers.sh |   21 +++++++++++++++++++++
+ 2 files changed, 22 insertions(+), 1 deletions(-)
+
+commit cb46125b5f6676f15fef9091c7912d6ec369b626
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Sep 13 15:25:07 2006 -0700
+
+    Fix typo in error message (enhacement -> enhancement)
+    (cherry picked from edfceea853dd6ae189843f138478c7d43fb98367 commit)
+
+ src/cairo-image-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 87569840412698599e324482f6117522f9ae58f4
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Sat Sep 9 19:52:48 2006 -0700
+
+    Correctly acquire/release mutex in _cairo_scaled_font_map_destroy
+    
+    _cairo_scaled_font_map_destroy needs to both lock/unlock the mutex,
+    not just unlock it.
+    (cherry picked from 5ab72579ef2a9fce1aedf3068825ccba683b6e79 commit)
+
+ src/cairo-scaled-font.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+commit 48e0509f932dde5c847dfc0e9f5ef92d69abe2fc
+Author: Carl Worth <cworth@cworth.org>
+Date:   Sat Sep 9 16:04:19 2006 -0700
+
+    test/bitmap-font: Fix arguments to FcFreeTypeQuery to avoid warnings.
+    (cherry picked from 416e94532b1584b2ff23dd270c70ab900d55c326 commit)
+
+ test/bitmap-font.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit baca4a50ac3485c190baf909c31465cdcfc20c03
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Sat Sep 9 17:06:21 2006 -0700
+
+    [win32] Misc win32 compilation fixes
+    
+    Fix win32/MSVC defines for snprintf, inline, and M_PI
+    (cherry picked from 3c5a02c3edf300494cebfe746292b1eeeea08595 commit)
+
+ src/cairoint.h    |    5 +++++
+ test/cairo-test.h |    7 ++++++-
+ 2 files changed, 11 insertions(+), 1 deletions(-)
+
+commit 387499c650430b389d0af81e4c0e14a347f8266d
+Author: Vladimir Vukicevic <vladimir@pobox.com>
+Date:   Sat Sep 9 17:05:00 2006 -0700
+
+    [win32] Make cairo as a win32 static library possible
+    
+    This adds a win32 initialization function that is called from all
+    surface creation and font creation functions to ensure that the win32
+    mutexes are initialized.
+    (cherry picked from dbd0fa193c77a6cb112b4862c72c3a18209a755e commit)
+
+ src/cairo-win32-font.c    |   10 ++++++++++
+ src/cairo-win32-private.h |    3 +++
+ src/cairo-win32-surface.c |   29 ++++++++++++++++++++++++-----
+ 3 files changed, 37 insertions(+), 5 deletions(-)
+
+commit 2be2b112310ec1dff8e0adae25ec84812e807d9b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Sep 7 16:10:40 2006 -0700
+
+    Use new return value from _cairo_output_stream_destroy
+    
+    This is a little simpler than the old idiom of calling
+    _cairo_output_stream_get_status just before calling
+    _cairo_output_stream_destroy.
+    
+    I had hoped this technique would apply in more cases, but
+    many cases want to separate the two actions anyway to do
+    conditional assignment of the status value, (in order to
+    not overwrite an earlier error value).
+    (cherry picked from 179f7defdffb254936592a02208c338c13466253 commit)
+
+ src/cairo-pdf-surface.c |    3 +--
+ src/cairo-svg-surface.c |    3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+commit d0657f65dd03415a83d0b56585d6f4116e806b9c
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Sep 7 16:01:07 2006 -0700
+
+    Make _cairo_output_stream_destroy return the stream's status as a last gasp.
+    (cherry picked from 89e7d5d4208bd943c884d4261dc7484ac654132c commit)
+
+ src/cairo-output-stream-private.h |   12 +++++++++---
+ src/cairo-output-stream.c         |   26 ++++++++++++++++----------
+ 2 files changed, 25 insertions(+), 13 deletions(-)
+
+commit 13612ac7a876e4969304713a346a0ef3bf7eaece
+Author: Nicholas Miell <nmiell@gmail.com>
+Date:   Wed Sep 6 14:43:44 2006 -0700
+
+    Make the SLIM macros robust in the face of macro-renamed symbols
+    
+    This doesn't actually fix the AMD64 link failure, but it does make the
+    foo/EXT_foo/INT_foo symbol names generated by the slim_hidden_proto()
+    and slim_hidden_def() macros consistent in the face of the meddling of
+    pixman-remap.h.
+    
+    Signed-off-by: Nicholas Miell <nmiell@gmail.com>
+    (cherry picked from 203d70a562ce3ffca51069aecda01a9f2bb61ff5 commit)
+
+ pixman/src/slim_internal.h |    5 +++--
+ src/cairoint.h             |    5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+commit d4793cb997865789f90692a53e2bf3a77e8d5aee
+Author: Nicholas Miell <nmiell@gmail.com>
+Date:   Wed Sep 6 15:45:00 2006 -0700
+
+    Fix the AMD64 final link by removing SLIM from pixman
+    
+    In order for SLIM's PLT indirection avoidance to work, everything in
+    the library that makes internal function calls needs to see the
+    relevant slim_hidden_proto() macro in addition to the function's
+    prototype. However, external headers used by clients of the shared
+    library should not use the SLIM macros at all.
+    
+    Pixman is a rather odd case -- it's mostly independent from cairo, so
+    it has it's own public interface, but it's built as a part of cairo
+    instead of its own shared library. This means that cairo would need to
+    see all of pixman's slim_hidden_proto() macros in order to function
+    and it doesn't currently, which results in a link failure on AMD64
+    systems and on i386 systems (I think, I haven't actually verified
+    this) it produces a shared object that isn't actally sharable.
+    
+    I have no idea why exactly the link failure only showed up as a result
+    of commit e06246b9b1015eb89112f628d5820fcb350a7335. I think it has
+    something to do with the pixman functions no longer having PLT entries
+    at all, but the exact interaction isn't clear to me.
+    
+    However, all of these pixman functions aren't part of the cairo ABI
+    (which is why they were marked pixman_private in the first place),
+    which means that the SLIMification of pixman is largely pointless --
+    they aren't externally visible, so they don't need PLT entries at
+    all. Furthermore, while pixman may eventually be shared among cairo
+    and X, I'm told that this sharing will be source-level only, which
+    means it won't ever be an actual shared library and thus won't ever
+    need SLIM at all.
+    
+    So, I just removed all use of SLIM in pixman (leaving behind
+    slim_internal.h for the future edification of anyone who cares).This
+    fixes the AMD64 link failure and passes the check-plt & check-def
+    parts of make check.
+    
+    Signed-off-by: Nicholas Miell <nmiell@gmail.com>
+    (cherry picked from d598cd8d61863ff91f505241a773595aec7e8445 commit)
+
+ pixman/src/fbpict.c    |    1 -
+ pixman/src/iccolor.c   |    1 -
+ pixman/src/icformat.c  |    1 -
+ pixman/src/icimage.c   |    4 ----
+ pixman/src/icint.h     |   13 -------------
+ pixman/src/icrect.c    |    1 -
+ pixman/src/pixregion.c |    8 --------
+ 7 files changed, 0 insertions(+), 29 deletions(-)
+
+commit bd8790bbc502df2d446d68ca1cad523220b1c0d3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 6 16:39:18 2006 -0400
+
+    [x86-64] check-plt.sh: match on JU?MP_SLO as on x86-64 "SLOT" is truncated
+    (cherry picked from b5a64138bb9be97b96e6bf248c559e8d3c6d4ac1 commit)
+
+ src/check-plt.sh |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit e46d73951d81fbc18baaf6649c0442637724b19a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 6 13:54:12 2006 -0400
+
+    Add scripts to sanity check the shared object for exported and PLT symbols
+    
+    src/check-def.sh checks that the list of symbols exported is the same as the
+    list of symbols in cairo.def, ie. symbols in public header files. (except for
+    symbols starting with _cairo)
+    
+    src/check-plt.sh checks that no PLT entries exist for local function calls.
+    This makes sure we keep the 'slim' annotations uptodate.
+    
+    These two are defined as tests in src/ and will be run during "make distcheck".
+    However, they are skipped if the commands 'nm' and 'readelf' are not found.
+    (We don't really rely on any functionality of eu-readelf, so using readelf
+    proper which should be more commonlly installed.)
+    (cherry picked from cd1b6650648b5a688b4b6c2d696d9434c824a13f commit)
+
+ RELEASING        |   36 +++++++-----------------------------
+ src/Makefile.am  |    3 +++
+ src/check-def.sh |   31 +++++++++++++++++++++++++++++++
+ src/check-plt.sh |   17 +++++++++++++++++
+ 4 files changed, 58 insertions(+), 29 deletions(-)
+
+commit b0c18ef2e8695a22ed3a1d0db8d91198b535bb9e
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Sep 5 17:12:43 2006 -0700
+
+    RELEASING: Add note on checking for local symbol PLT entries.
+    (cherry picked from 4620b929ae84dfa08c1c9a4072e114f6b38e1bd9 commit)
+
+ RELEASING |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+commit e14a7b0786ff778b813899bcc91b4f76c2287d36
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Sep 5 16:52:34 2006 -0700
+
+    slim_hidden_proto: Move smeicolon from definition to use for consistency and legibility
+    (cherry picked from 60c4add26abe6b624d7569f35fa846d529ccea18 commit)
+
+ src/cairo-ft-private.h      |    6 +-
+ src/cairo-xlib-private.h    |    2 -
+ src/cairoint.h              |  166 ++++++++++++++++++++++---------------------
+ src/test-fallback-surface.c |    2 -
+ 4 files changed, 88 insertions(+), 88 deletions(-)
+
+commit 94ef526d4b1ad2b421971dcb95420b0d21a5a8fe
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Sep 5 16:48:49 2006 -0700
+
+    Add many missing slim_hidden calls to bypass PLT entries for local use of public functions
+    (cherry picked from d7f08794ef194d0b86a749381472bfeb0a32d993 commit)
+
+ src/cairo-font-options.c    |    9 +++++
+ src/cairo-font.c            |    2 +
+ src/cairo-ft-font.c         |    3 ++
+ src/cairo-ft-private.h      |    7 +++-
+ src/cairo-image-surface.c   |    4 ++
+ src/cairo-matrix.c          |    1 +
+ src/cairo-pattern.c         |    8 ++++
+ src/cairo-png.c             |    1 +
+ src/cairo-scaled-font.c     |    9 +++++
+ src/cairo-surface.c         |   10 +++++
+ src/cairo-xlib-private.h    |    7 ++++
+ src/cairo-xlib-surface.c    |    1 +
+ src/cairo.c                 |   12 ++++++
+ src/cairoint.h              |   84 ++++++++++++++++++++++++++++++++++++-------
+ src/test-fallback-surface.c |    3 ++
+ 15 files changed, 145 insertions(+), 16 deletions(-)
+
+commit bbc0f3f87d281e19c6038a7b51c8247f5861658f
+Author: Carl Worth <cworth@cworth.org>
+Date:   Tue Sep 5 16:45:01 2006 -0700
+
+    pixman: Add pixman_private decorations to hide pixman symbols from public interface
+    (cherry picked from e06246b9b1015eb89112f628d5820fcb350a7335 commit)
+
+ pixman/src/fbmmx.h      |   21 +++++++++
+ pixman/src/icimage.h    |    2 -
+ pixman/src/pixman.h     |  108 +++++++++++++++++++++++++----------------------
+ pixman/src/renderedge.h |   10 ++--
+ 4 files changed, 85 insertions(+), 56 deletions(-)
+
+commit 63b28849c622fe36b65100a5bc61832d3dd66481
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Tue Sep 5 14:53:33 2006 -0400
+
+    Improve error checking in TrueType subsetting
+    
+    TrueType subsetting will SEGV when using OpenType fonts with CFF outlines.
+    (cherry picked from ad78eb7692f6d080430bceb7b358403f6e91a637 commit)
+
+ src/cairo-truetype-subset.c |   36 ++++++++++++++++++++++++------------
+ 1 files changed, 24 insertions(+), 12 deletions(-)
+
+commit e194c9cdbe692f4e0b1b95fcdc41fd6e8dc8f07d
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Tue Sep 5 14:19:48 2006 -0400
+
+    Correct the value of /LastChar in the PDF Type 1 font dictionary.
+    (cherry picked from 49fa8d353b2926760fa92684546b2fc79985c782 commit)
+
+ src/cairo-pdf-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 25e46ac93539fac9916bb537b5bb1a0f9fea9950
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Tue Sep 5 14:19:26 2006 -0400
+
+    Fix Type 1 embedding in PDF
+    
+    PDF Files with Type 1 fonts fail to open in any version of
+    ghostscript prior to 8.54. The problem is the hex encoding of the
+    encrypted portion of the font. The PDF reference says this should
+    only be in binary.
+    (cherry picked from d81de15804f210afe9905a4163a5e34ff2be5b5b commit)
+
+ src/cairo-pdf-surface.c                 |    2 +-
+ src/cairo-ps-surface.c                  |    2 +-
+ src/cairo-scaled-font-subsets-private.h |    4 +++-
+ src/cairo-type1-subset.c                |   11 ++++++-----
+ 4 files changed, 11 insertions(+), 8 deletions(-)
+
+commit ab1c334c7ea6c93cb9f998c499c2e160346c042f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 2 19:51:54 2006 -0400
+
+    [configure] Invalidate cached warning flags if list of flags changes
+    
+    such that one doesn't need to remove config.cache when when we add
+    new warning flags to be checked.
+    (cherry picked from e5a9c2330867ae11befa8a966aa0a50c31c82a32 commit)
+
+ configure.in |   34 ++++++++++++++++++++++++----------
+ 1 files changed, 24 insertions(+), 10 deletions(-)
+
+commit 80d8e695ff6f6ae0a282d720009d1ec6a982865b
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Sep 1 16:10:25 2006 -0700
+
+    bug 8104: Eliminate unused variables. Replicate assert statement to identify branch of interest.
+    (cherry picked from 7c97a787ebce4880d6b9fe47a13ad018ff2ecd31 commit)
+
+ src/cairo-ft-font.c |    9 ++-------
+ 1 files changed, 2 insertions(+), 7 deletions(-)
+
+commit 4d7b341a7eb9d0f8ddd9f025867dcea7178c1a56
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 31 14:21:51 2006 -0400
+
+    [test] Use FcFreeTypeQuery
+    (cherry picked from 7ad6e941017e070bf7d93afba4de5c49cd1ff533 commit)
+
+ test/bitmap-font.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit eb388ca4cbd508cf329b96c5be58d7695832ba9f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 31 13:18:37 2006 -0400
+
+    [test] Use $(srcdir) to find valgrind supressions
+    (cherry picked from 851dd63719d51f9b839784ba2761a1e2b2ecfbe5 commit)
+
+ test/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1ae5dc7e78bbd926378d9d47714f885b60d7ca63
+Author: Carl Worth <cworth@cworth.org>
+Date:   Thu Aug 31 08:35:39 2006 -0700
+
+    Require librsvg >= 2.14.0 to test SVG backend
+    (cherry picked from 8d834c3a34a17de0e03841501ea107dee7b373d0 commit)
+
+ configure.in |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+commit c55f71bdab977010cab1366f2ee2258999d8b7d5
+Author: Carl Worth <cworth@cworth.org>
+Date:   Wed Aug 30 15:38:15 2006 -0700
+
+    test: Add link to test log file in HTML output
+    (cherry picked from 5ef4c991f6ad00a37fc0645a38ba2cb9f832d9f1 commit)
+
+ test/make-html.pl |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit a08c0b43e2c2fd1a5070911edef448940fcab35a
+Author: Christian Biesinger <cbiesinger@web.de>
+Date:   Thu Oct 26 21:40:35 2006 +0200
+
+    [beos] Fix build error
+    
+    Rename cairo_rectangle_fixed_t to cairo_rectangle_int16_t
+    as needed per commit 746f66c3fce6de39ac9afa7be8bcf8f74c750e85.
+    (cherry picked from 05a259d49368fb128b99d99f3776f8783df9d4ed commit)
+
+ src/cairo-beos-surface.cpp |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+commit a5f068e10d72c20a55d20ca9f79508361d13fb80
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 30 13:17:08 2006 -0400
+
+    [test] Add 128 to any diff component such that differences are visible
+
+ test/buffer-diff.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 3252ad5ca630fe292babc061c01b8759ef49cde4
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 28 22:44:15 2006 -0400
+
+    [PNG] Mark status volatile to fix gcc warning
+
+ src/cairo-png.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b6e5f2b0fef00352930dfcc47a13f330a13b1d68
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 28 22:30:38 2006 -0400
+
+    [xlib] Bug 7593: rewrite loop to be more readable, and fix warnings
+    
+    Basically, it's evil to write a loop like:
+    
+        while ((c -= 4) > 0) {
+            ...
+        }
+    
+    for one reason that doesn't work if c is unsigned.  And when c is signed, if
+    for some reason c is about -MAXINT, then it will overflow and not work as
+    expected.
+    
+    It's much safer (and more gcc warning friendly) to rewrite it as:
+    
+        unsigned int c;
+    
+        while (c >= 4) {
+            ...
+            c -= 4;
+        }
+
+ src/cairo-xlib-surface.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 06a962886806be5e68061e24223c617980ac8248
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Aug 28 19:00:48 2006 -0700
+
+    Eliminate conditions checking for unsigned or enum values less than 0.
+
+ src/cairo-array.c       |    2 +-
+ src/cairo-svg-surface.c |    4 ++--
+ src/cairoint.h          |    3 +--
+ 3 files changed, 4 insertions(+), 5 deletions(-)
+
+commit 7d1399a4bb0d8d74a4294700e6040accccefff2a
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Aug 28 18:58:27 2006 -0700
+
+    Put static first to avoid compiler warning.
+
+ src/cairo-type1-subset.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1b7ced6614d809262cca08e7c5141b7ce740bfca
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 28 18:47:37 2006 -0700
+
+    Bug #7593: Avoid unsigned loop control variable to eliminate infinite, memory-scribbling loop.
+    
+    Behdad chased this bug down when looking into bug #7593. This
+    bug is what finally motivated us to figure out how to get -Wextra
+    (for the "always true" comparisons of unsigned variables against
+    negative values).
+
+ src/cairo-xlib-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 50003615f28862f68b609aa290ebffee24d5d643
+Author: Carl Worth <cworth@cworth.org>
+Date:   Mon Aug 28 18:54:35 2006 -0700
+
+    Add -Wextra (as well as -Wno-missing-field-initializers -Wno-unused-parameter)
+    
+    We'd been wanting some of the warnings in -Wextra for a long time,
+    but we had failed in tryingto squelch some of the undesired warnings.
+    We finally figured out how to do this correctly by simply ordering
+    the warnings correctly.
+
+ configure.in |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 5492946b0ced9b3e97f94ef097ee745c8a59df42
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 23 12:29:49 2006 -0400
+
+    [image] Print out cairo version in the unsupported-format message
+
+ src/cairo-image-surface.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 96c8f92883322a785fa9fa55de93b8eb56afab64
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 22 22:00:58 2006 -0400
+
+    [test] bufferdiff: take abs of the pixel diffs.  Oops!
+
+ test/buffer-diff.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 988b5dcb7e50d9e08ff94cb98f6d9c91915bb9b4
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 21 23:27:17 2006 -0400
+
+    [ROADMAP] Remove 1.2.4 stuff out of the way
+
+ ROADMAP |   13 +------------
+ 1 files changed, 1 insertions(+), 12 deletions(-)
+
+commit edf6f24e1b9673655f2b1c6e2060f9f2e46833e9
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 21 23:25:40 2006 -0400
+
+    [TODO] Add cairo_get_scaled_font
+
+ TODO |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 3d6aec7334881168277877e7d69514568d08c322
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 21 23:24:49 2006 -0400
+
+    [ROADMAP] Add glyph cache inspection to 1.4 roadmap
+
+ ROADMAP |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 782e3eb65b143a6e658eda69ba15da3ac432c711
+Author: Adrian Johnson <ajohnson@redneon.com>
+Date:   Mon Aug 21 12:52:56 2006 -0400
+
+    Get correct unhinted outlines on win32.
+    
+    The documentation for GetGlyphOutline() states that outline returned is grid
+    fitted and if an application requires an unmodified outline it can request an
+    outline for a font whose size is equal to the font's em unit.
+    
+    This seems to suggest that the solution to this bug would be to obtain the
+    unmodified outline data and scale it to the required size.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=7603
+
+ src/cairo-win32-font.c |   86 ++++++++++++++++++++++++++++++++++--------------
+ 1 files changed, 61 insertions(+), 25 deletions(-)
+
+commit 6de226be0e879709c4068cb7836d485e75928287
+Author: Yevgen Muntyan <muntyan@tamu.edu>
+Date:   Mon Aug 21 03:52:40 2006 -0400
+
+    Define WINVER if it's not defined. (bug 6456)
+
+ src/cairoint.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 6ed1613b5175ea9c431fff2df2cd1cf2e2edbf93
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Aug 20 13:44:56 2006 -0400
+
+    [Makefile.am] Remove unnecessary parantheses that were causing trouble with old bash
+    Reported by Tor Lillqvist
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 047251db4337583075f6888fceecfb0c383d658a
+Author: Carl Worth <cworth@cworth.org>
+Date:   Fri Aug 18 18:30:31 2006 -0700
+
+    Increment version to 1.2.5 after making the 1.2.4 release
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 54755b2d9891981d813384bccde84998def96abf
 Author: Carl Worth <cworth@cworth.org>
 Date:   Fri Aug 18 18:19:10 2006 -0700
@@ -997,44 +2199,6 @@ Date:   Tue Aug 8 16:23:07 2006 -0700
 
  configure.in |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
-
-commit fbb1758ba8384650157b2bbbc93d161b0c2a05f0
-Author: Jeff Muizelaar <jeff@infidigm.net>
-Date:   Sun Jun 25 16:12:38 2006 +0200
-
-    Fix degenerate-path stroking with dashed lines.
-    
-    This draws dashed degenerate-paths if the dash is on at the point of the
-    path and otherwise draws nothing.
-
- src/cairo-path-stroke.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
-
-commit fdebc369d28f70ceba228d3131753225b2dbf844
-Author: Jeff Muizelaar <jeff@infidigm.net>
-Date:   Sun Jun 25 15:48:48 2006 +0200
-
-    Modify degenerate-path test case to test dashed degenerate paths.
-
- test/degenerate-path-ps-argb32-ref.png |  Bin
- test/degenerate-path-ref.png           |  Bin
- test/degenerate-path-rgb24-ref.png     |  Bin
- test/degenerate-path.c                 |   54 ++++++++++++++++++++++++++------
- 4 files changed, 44 insertions(+), 10 deletions(-)
-
-commit b607cdff98e621a6650bccef20f9877a0e7aa1d9
-Author: Jeff Muizelaar <jeff@freiheit.infidigm.net>
-Date:   Sat Jul 15 14:39:26 2006 -0400
-
-    Test closed dashed paths where the first and last sub-path do not join.
-    
-    This tests the situation reported by Keith Wells where the start point of a
-    closed dashed path was not being properly capped.
-
- test/dash-caps-joins-ps-argb32-ref.png |  Bin
- test/dash-caps-joins-ref.png           |  Bin
- test/dash-caps-joins.c                 |   45 +++++++++++++++++++-------------
- 3 files changed, 27 insertions(+), 18 deletions(-)
 
 commit ac1c748868bdf4ca6fd195b184ec90827f6e8c94
 Author: Carl Worth <cworth@cworth.org>
@@ -2270,6 +3434,44 @@ Date:   Mon Jul 17 11:33:47 2006 -0700
 
  src/cairo-xlib-surface.c |   10 +---------
  1 files changed, 1 insertions(+), 9 deletions(-)
+
+commit fbb1758ba8384650157b2bbbc93d161b0c2a05f0
+Author: Jeff Muizelaar <jeff@infidigm.net>
+Date:   Sun Jun 25 16:12:38 2006 +0200
+
+    Fix degenerate-path stroking with dashed lines.
+    
+    This draws dashed degenerate-paths if the dash is on at the point of the
+    path and otherwise draws nothing.
+
+ src/cairo-path-stroke.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit fdebc369d28f70ceba228d3131753225b2dbf844
+Author: Jeff Muizelaar <jeff@infidigm.net>
+Date:   Sun Jun 25 15:48:48 2006 +0200
+
+    Modify degenerate-path test case to test dashed degenerate paths.
+
+ test/degenerate-path-ps-argb32-ref.png |  Bin
+ test/degenerate-path-ref.png           |  Bin
+ test/degenerate-path-rgb24-ref.png     |  Bin
+ test/degenerate-path.c                 |   54 ++++++++++++++++++++++++++------
+ 4 files changed, 44 insertions(+), 10 deletions(-)
+
+commit b607cdff98e621a6650bccef20f9877a0e7aa1d9
+Author: Jeff Muizelaar <jeff@freiheit.infidigm.net>
+Date:   Sat Jul 15 14:39:26 2006 -0400
+
+    Test closed dashed paths where the first and last sub-path do not join.
+    
+    This tests the situation reported by Keith Wells where the start point of a
+    closed dashed path was not being properly capped.
+
+ test/dash-caps-joins-ps-argb32-ref.png |  Bin
+ test/dash-caps-joins-ref.png           |  Bin
+ test/dash-caps-joins.c                 |   45 +++++++++++++++++++-------------
+ 3 files changed, 27 insertions(+), 18 deletions(-)
 
 commit 84840e6bba6e72aa88fad7a0ee929e8955ba9051
 Author: Behdad Esfahbod <behdad@behdad.org>

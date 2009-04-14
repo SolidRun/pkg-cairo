@@ -7,6 +7,9 @@ Here are the steps to follow to create a new cairo release:
 
 2) Verify that the code passes "make distcheck"
 
+	First, make sure you have 'nm' and 'readelf' commands in PATH.
+	this should be Ok with any Linux distro.
+
 	Running "make distcheck" should result in no warnings or
 	errors and end with a message of the form:
 
@@ -17,6 +20,11 @@ Here are the steps to follow to create a new cairo release:
 
 	(But the tar file isn't actually ready yet, as we still have
 	some more steps to follow).
+
+	If you get errors about local PLT entries, you get the list of
+	cairo and pixman entries with the error.  For each of these, a
+	call to slim_hidden_def and slim_hidden_proto is needed in the
+	cairo or pixman implementation in the style of other similar calls.
 
 3) Fill out an entry in the NEWS file
 

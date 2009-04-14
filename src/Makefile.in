@@ -112,8 +112,8 @@ am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
 	cairo-xlib-surface.c cairo-xlib-screen.c cairo-xlib-private.h \
 	cairo-xlib-test.h cairo-quartz-surface.c \
 	cairo-quartz-private.h cairo-xcb-surface.c \
-	cairo-glitz-surface.c cairo-win32-surface.c \
-	cairo-win32-private.h cairo-win32-font.c \
+	cairo-glitz-surface.c cairo-glitz-private.h \
+	cairo-win32-surface.c cairo-win32-private.h cairo-win32-font.c \
 	cairo-directfb-surface.c cairoint.h
 @CAIRO_HAS_ATSUI_FONT_TRUE@am__objects_1 = cairo-atsui-font.lo
 @CAIRO_HAS_FT_FONT_TRUE@am__objects_2 = cairo-ft-font.lo
@@ -307,7 +307,6 @@ GLITZ_GLX_CFLAGS = @GLITZ_GLX_CFLAGS@
 GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
 GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
 GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
-GREP = @GREP@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_PTHREAD_FALSE = @HAVE_PTHREAD_FALSE@
@@ -354,14 +353,17 @@ USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 WARN_CFLAGS = @WARN_CFLAGS@
-XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
+ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -378,11 +380,8 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
 directfb_CFLAGS = @directfb_CFLAGS@
 directfb_LIBS = @directfb_LIBS@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 glitz_CFLAGS = @glitz_CFLAGS@
 glitz_LIBS = @glitz_LIBS@
@@ -391,24 +390,20 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 png_CFLAGS = @png_CFLAGS@
 png_LIBS = @png_LIBS@
 png_REQUIRES = @png_REQUIRES@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -459,7 +454,7 @@ libcairo_beos_sources = $(am__append_13)
 # BeOS system headers trigger this warning
 @CAIRO_HAS_BEOS_SURFACE_TRUE@libcairo_beos_la_CXXFLAGS = -Wno-multichar
 @CAIRO_HAS_GLITZ_SURFACE_TRUE@libcairo_glitz_headers = cairo-glitz.h
-@CAIRO_HAS_GLITZ_SURFACE_TRUE@libcairo_glitz_sources = cairo-glitz-surface.c
+@CAIRO_HAS_GLITZ_SURFACE_TRUE@libcairo_glitz_sources = cairo-glitz-surface.c cairo-glitz-private.h
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@libcairo_directfb_headers = cairo-directfb.h
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@libcairo_directfb_sources = cairo-directfb-surface.c
 @CAIRO_HAS_FT_FONT_TRUE@libcairo_ft_headers = cairo-ft.h
@@ -571,7 +566,9 @@ libcairo_la_DEPENDENCIES = $(cairo_def_dependency) $(top_builddir)/pixman/src/li
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = cairo.pc $(backend_pkgconfigs)
 DISTCLEANFILES = $(backend_pkgconfigs)
-EXTRA_DIST = cairo-backend.pc.in
+EXTRA_DIST = cairo-backend.pc.in $(TESTS)
+TESTS_ENVIRONMENT = srcdir="$(srcdir)"
+TESTS = check-def.sh check-plt.sh check-headers.sh
 CLEANFILES = cairo.def cairo-features.h
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -860,6 +857,79 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
+check-TESTS: $(TESTS)
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
+	srcdir=$(srcdir); export srcdir; \
+	list='$(TESTS)'; \
+	if test -n "$$list"; then \
+	  for tst in $$list; do \
+	    if test -f ./$$tst; then dir=./; \
+	    elif test -f $$tst; then dir=; \
+	    else dir="$(srcdir)/"; fi; \
+	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xpass=`expr $$xpass + 1`; \
+		failed=`expr $$failed + 1`; \
+		echo "XPASS: $$tst"; \
+	      ;; \
+	      *) \
+		echo "PASS: $$tst"; \
+	      ;; \
+	      esac; \
+	    elif test $$? -ne 77; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xfail=`expr $$xfail + 1`; \
+		echo "XFAIL: $$tst"; \
+	      ;; \
+	      *) \
+		failed=`expr $$failed + 1`; \
+		echo "FAIL: $$tst"; \
+	      ;; \
+	      esac; \
+	    else \
+	      skip=`expr $$skip + 1`; \
+	      echo "SKIP: $$tst"; \
+	    fi; \
+	  done; \
+	  if test "$$failed" -eq 0; then \
+	    if test "$$xfail" -eq 0; then \
+	      banner="All $$all tests passed"; \
+	    else \
+	      banner="All $$all tests behaved as expected ($$xfail expected failures)"; \
+	    fi; \
+	  else \
+	    if test "$$xpass" -eq 0; then \
+	      banner="$$failed of $$all tests failed"; \
+	    else \
+	      banner="$$failed of $$all tests did not behave as expected ($$xpass unexpected passes)"; \
+	    fi; \
+	  fi; \
+	  dashes="$$banner"; \
+	  skipped=""; \
+	  if test "$$skip" -ne 0; then \
+	    skipped="($$skip tests were not run)"; \
+	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$skipped"; \
+	  fi; \
+	  report=""; \
+	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
+	    report="Please report to $(PACKAGE_BUGREPORT)"; \
+	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$report"; \
+	  fi; \
+	  dashes=`echo "$$dashes" | sed s/./=/g`; \
+	  echo "$$dashes"; \
+	  echo "$$banner"; \
+	  test -z "$$skipped" || echo "$$skipped"; \
+	  test -z "$$report" || echo "$$report"; \
+	  echo "$$dashes"; \
+	  test "$$failed" -eq 0; \
+	else :; fi
+
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
@@ -888,6 +958,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
@@ -976,11 +1047,11 @@ ps-am:
 uninstall-am: uninstall-cairoincludeHEADERS uninstall-info-am \
 	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstLTLIBRARIES \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am \
+.PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
+	clean-generic clean-libLTLIBRARIES clean-libtool \
+	clean-noinstLTLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
 	install-cairoincludeHEADERS install-data install-data-am \
 	install-data-local install-exec install-exec-am install-info \
 	install-info-am install-libLTLIBRARIES install-man \
@@ -1012,7 +1083,7 @@ cairo.def: $(cairoinclude_HEADERS)
 	sort; \
 	echo LIBRARY libcairo-$(LT_CURRENT_MINUS_AGE).dll; \
 	) >$@
-	@ (! grep -q cairo_ERROR $@) || ($(RM) $@; false)
+	@ ! grep -q cairo_ERROR $@ || ($(RM) $@; false)
 
 install-data-local:
 	@if test -f "$(DESTDIR)$(includedir)/cairo.h" || test -f "$(DESTDIR)$(includedir)/cairo-features.h" ; then \

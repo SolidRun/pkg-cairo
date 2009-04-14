@@ -180,7 +180,6 @@ GLITZ_GLX_CFLAGS = @GLITZ_GLX_CFLAGS@
 GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
 GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
 GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
-GREP = @GREP@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_PTHREAD_FALSE = @HAVE_PTHREAD_FALSE@
@@ -227,14 +226,17 @@ USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 WARN_CFLAGS = @WARN_CFLAGS@
-XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
+ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -251,11 +253,8 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
 directfb_CFLAGS = @directfb_CFLAGS@
 directfb_LIBS = @directfb_LIBS@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 glitz_CFLAGS = @glitz_CFLAGS@
 glitz_LIBS = @glitz_LIBS@
@@ -264,24 +263,20 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 png_CFLAGS = @png_CFLAGS@
 png_LIBS = @png_LIBS@
 png_REQUIRES = @png_REQUIRES@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -792,7 +787,9 @@ uninstall-info: uninstall-info-recursive
 
 
 .PHONY: doc test retest recheck check-valgrind
-doc:
+# We have some generated header files, so we really need to build the
+# library before we can build the docs
+doc: all
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) doc
 test: all
 	cd test && $(MAKE) $(AM_MAKEFLAGS) test
@@ -971,9 +968,7 @@ release-publish-message: releases/$(sha1_file)
 
 release-publish: release-upload release-publish-message
 
-# XXX: Depending on all here is rather overkill. We don't really need
-# the library built in order to create the documentation.
-docs-publish: all
+doc-publish: doc
 	cp -a doc/public/html $(MANUAL_DATED)
 	tar czf $(MANUAL_TAR_FILE) $(MANUAL_DATED)
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
