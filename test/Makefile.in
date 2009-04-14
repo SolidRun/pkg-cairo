@@ -137,6 +137,7 @@ am__EXEEXT_11 = a8-mask$(EXEEXT) big-trap$(EXEEXT) caps-joins$(EXEEXT) \
 	solid-pattern-cache-stress$(EXEEXT) source-clip$(EXEEXT) \
 	source-clip-scale$(EXEEXT) source-surface-scale-paint$(EXEEXT) \
 	surface-finish-twice$(EXEEXT) surface-pattern$(EXEEXT) \
+	surface-pattern-big-scale-down$(EXEEXT) \
 	surface-pattern-scale-down$(EXEEXT) \
 	surface-pattern-scale-up$(EXEEXT) text-antialias-gray$(EXEEXT) \
 	text-antialias-none$(EXEEXT) text-antialias-subpixel$(EXEEXT) \
@@ -721,6 +722,13 @@ surface_pattern_OBJECTS = surface-pattern.$(OBJEXT)
 surface_pattern_LDADD = $(LDADD)
 surface_pattern_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
 	$(am__DEPENDENCIES_1)
+surface_pattern_big_scale_down_SOURCES =  \
+	surface-pattern-big-scale-down.c
+surface_pattern_big_scale_down_OBJECTS =  \
+	surface-pattern-big-scale-down.$(OBJEXT)
+surface_pattern_big_scale_down_LDADD = $(LDADD)
+surface_pattern_big_scale_down_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 surface_pattern_scale_down_SOURCES = surface-pattern-scale-down.c
 surface_pattern_scale_down_OBJECTS =  \
 	surface-pattern-scale-down.$(OBJEXT)
@@ -885,9 +893,9 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	skew-extreme.c solid-pattern-cache-stress.c source-clip.c \
 	source-clip-scale.c source-surface-scale-paint.c \
 	surface-finish-twice.c surface-pattern.c \
-	surface-pattern-scale-down.c surface-pattern-scale-up.c \
-	svg-clip.c svg-surface.c svg2pdf.c svg2png.c \
-	text-antialias-gray.c text-antialias-none.c \
+	surface-pattern-big-scale-down.c surface-pattern-scale-down.c \
+	surface-pattern-scale-up.c svg-clip.c svg-surface.c svg2pdf.c \
+	svg2png.c text-antialias-gray.c text-antialias-none.c \
 	text-antialias-subpixel.c text-cache-crash.c \
 	text-glyph-range.c text-pattern.c text-rotate.c \
 	text-zero-len.c transforms.c translate-show-surface.c \
@@ -931,9 +939,9 @@ DIST_SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	skew-extreme.c solid-pattern-cache-stress.c source-clip.c \
 	source-clip-scale.c source-surface-scale-paint.c \
 	surface-finish-twice.c surface-pattern.c \
-	surface-pattern-scale-down.c surface-pattern-scale-up.c \
-	svg-clip.c svg-surface.c svg2pdf.c svg2png.c \
-	text-antialias-gray.c text-antialias-none.c \
+	surface-pattern-big-scale-down.c surface-pattern-scale-down.c \
+	surface-pattern-scale-up.c svg-clip.c svg-surface.c svg2pdf.c \
+	svg2png.c text-antialias-gray.c text-antialias-none.c \
 	text-antialias-subpixel.c text-cache-crash.c \
 	text-glyph-range.c text-pattern.c text-rotate.c \
 	text-zero-len.c transforms.c translate-show-surface.c \
@@ -1202,15 +1210,15 @@ TESTS = a8-mask big-trap caps-joins caps-joins-alpha caps-sub-paths \
 	skew-extreme solid-pattern-cache-stress source-clip \
 	source-clip-scale source-surface-scale-paint \
 	surface-finish-twice surface-pattern \
-	surface-pattern-scale-down surface-pattern-scale-up \
-	text-antialias-gray text-antialias-none \
-	text-antialias-subpixel text-cache-crash text-pattern \
-	text-rotate text-zero-len transforms translate-show-surface \
-	trap-clip truetype-tables unantialiased-shapes \
-	unbounded-operator user-data rel-path push-group zero-alpha \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8)
+	surface-pattern-big-scale-down surface-pattern-scale-down \
+	surface-pattern-scale-up text-antialias-gray \
+	text-antialias-none text-antialias-subpixel text-cache-crash \
+	text-pattern text-rotate text-zero-len transforms \
+	translate-show-surface trap-clip truetype-tables \
+	unantialiased-shapes unbounded-operator user-data rel-path \
+	push-group zero-alpha $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5) \
+	$(am__append_6) $(am__append_7) $(am__append_8)
 
 # XXX: Here are some existing tests that are currently disabled for
 # one reason or another. They can still be built and run (manually)
@@ -1499,6 +1507,7 @@ filter-nearest-offset		\
 long-lines			\
 self-intersecting		\
 surface-pattern			\
+surface-pattern-big-scale-down  \
 surface-pattern-scale-down	\
 surface-pattern-scale-up
 
@@ -1943,6 +1952,9 @@ surface-finish-twice$(EXEEXT): $(surface_finish_twice_OBJECTS) $(surface_finish_
 surface-pattern$(EXEEXT): $(surface_pattern_OBJECTS) $(surface_pattern_DEPENDENCIES) 
 	@rm -f surface-pattern$(EXEEXT)
 	$(LINK) $(surface_pattern_LDFLAGS) $(surface_pattern_OBJECTS) $(surface_pattern_LDADD) $(LIBS)
+surface-pattern-big-scale-down$(EXEEXT): $(surface_pattern_big_scale_down_OBJECTS) $(surface_pattern_big_scale_down_DEPENDENCIES) 
+	@rm -f surface-pattern-big-scale-down$(EXEEXT)
+	$(LINK) $(surface_pattern_big_scale_down_LDFLAGS) $(surface_pattern_big_scale_down_OBJECTS) $(surface_pattern_big_scale_down_LDADD) $(LIBS)
 surface-pattern-scale-down$(EXEEXT): $(surface_pattern_scale_down_OBJECTS) $(surface_pattern_scale_down_DEPENDENCIES) 
 	@rm -f surface-pattern-scale-down$(EXEEXT)
 	$(LINK) $(surface_pattern_scale_down_LDFLAGS) $(surface_pattern_scale_down_OBJECTS) $(surface_pattern_scale_down_LDADD) $(LIBS)
@@ -2129,6 +2141,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source-clip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source-surface-scale-paint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/surface-finish-twice.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/surface-pattern-big-scale-down.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/surface-pattern-scale-down.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/surface-pattern-scale-up.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/surface-pattern.Po@am__quote@
