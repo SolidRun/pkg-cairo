@@ -163,6 +163,8 @@ install: build
 
 	sed -i "/dependency_libs/ s/'.*'/''/" $(MAIN_DIST_DIR)/usr/lib/*.la
 
+	sed -i "/dependency_libs/ s/'.*'/''/" $(UDEB_DIST_DIR)/usr/lib/*.la
+
 # Build architecture-independent files here.
 binary-indep: build install
 	dh_testdir
