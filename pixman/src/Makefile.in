@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(libpixman_la_SOURCES)
+SOURCES = $(libpixman_mmx_la_SOURCES) $(libpixman_la_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -38,6 +38,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@USE_MMX_TRUE@am__append_1 = libpixman-mmx.la
 subdir = pixman/src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -49,8 +50,13 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libpixman_la_LIBADD =
-am_libpixman_la_OBJECTS = pixregion.lo ic.lo icblt.lo icbltone.lo \
+libpixman_mmx_la_LIBADD =
+am__libpixman_mmx_la_SOURCES_DIST = fbmmx.c fbmmx.h
+@USE_MMX_TRUE@am_libpixman_mmx_la_OBJECTS = libpixman_mmx_la-fbmmx.lo
+libpixman_mmx_la_OBJECTS = $(am_libpixman_mmx_la_OBJECTS)
+@USE_MMX_TRUE@am_libpixman_mmx_la_rpath =
+@USE_MMX_TRUE@libpixman_la_DEPENDENCIES = libpixman-mmx.la
+am_libpixman_la_OBJECTS = pixregion.lo fbpict.lo icblt.lo icbltone.lo \
 	iccolor.lo icformat.lo icimage.lo icpixels.lo icrect.lo \
 	icstipple.lo ictrap.lo ictransform.lo ictri.lo icutil.lo \
 	fbedge.lo fbtrap.lo fbcompose.lo renderedge.lo
@@ -66,8 +72,9 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libpixman_la_SOURCES)
-DIST_SOURCES = $(libpixman_la_SOURCES)
+SOURCES = $(libpixman_mmx_la_SOURCES) $(libpixman_la_SOURCES)
+DIST_SOURCES = $(am__libpixman_mmx_la_SOURCES_DIST) \
+	$(libpixman_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -135,6 +142,8 @@ FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
+FREETYPE_CONFIG_CFLAGS = @FREETYPE_CONFIG_CFLAGS@
+FREETYPE_CONFIG_LIBS = @FREETYPE_CONFIG_LIBS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FREETYPE_REQUIRES = @FREETYPE_REQUIRES@
 FT_FONT_FEATURE = @FT_FONT_FEATURE@
@@ -157,10 +166,12 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
+MMX_CFLAGS = @MMX_CFLAGS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -184,6 +195,8 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+USE_MMX_FALSE = @USE_MMX_FALSE@
+USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 WIN32_FONT_FEATURE = @WIN32_FONT_FEATURE@
@@ -242,7 +255,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-noinst_LTLIBRARIES = libpixman.la
+noinst_LTLIBRARIES = libpixman.la $(am__append_1)
 libpixman_la_SOURCES = \
 	pixman.h \
 	pixman-remap.h \
@@ -250,7 +263,7 @@ libpixman_la_SOURCES = \
 	pixregion.c \
 	pixregionint.h \
 	fbpict.h \
-	ic.c \
+	fbpict.c \
 	icblt.c \
 	icbltone.c \
 	iccolor.c \
@@ -274,6 +287,12 @@ libpixman_la_SOURCES = \
 	renderedge.h \
 	slim_internal.h
 
+@USE_MMX_TRUE@libpixman_mmx_la_SOURCES = \
+@USE_MMX_TRUE@	fbmmx.c		\
+@USE_MMX_TRUE@	fbmmx.h
+
+@USE_MMX_TRUE@libpixman_mmx_la_CFLAGS = @MMX_CFLAGS@
+@USE_MMX_TRUE@libpixman_la_LIBADD = libpixman-mmx.la
 INCLUDES = -I$(top_srcdir) -I$(srcdir) $(WARN_CFLAGS)
 all: all-am
 
@@ -317,6 +336,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
+libpixman-mmx.la: $(libpixman_mmx_la_OBJECTS) $(libpixman_mmx_la_DEPENDENCIES) 
+	$(LINK) $(am_libpixman_mmx_la_rpath) $(libpixman_mmx_la_LDFLAGS) $(libpixman_mmx_la_OBJECTS) $(libpixman_mmx_la_LIBADD) $(LIBS)
 libpixman.la: $(libpixman_la_OBJECTS) $(libpixman_la_DEPENDENCIES) 
 	$(LINK)  $(libpixman_la_LDFLAGS) $(libpixman_la_OBJECTS) $(libpixman_la_LIBADD) $(LIBS)
 
@@ -328,8 +349,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbcompose.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbedge.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbpict.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbtrap.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icblt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icbltone.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iccolor.Plo@am__quote@
@@ -342,6 +363,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ictrap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ictri.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icutil.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpixman_mmx_la-fbmmx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pixregion.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/renderedge.Plo@am__quote@
 
@@ -365,6 +387,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+libpixman_mmx_la-fbmmx.lo: fbmmx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_mmx_la_CFLAGS) $(CFLAGS) -MT libpixman_mmx_la-fbmmx.lo -MD -MP -MF "$(DEPDIR)/libpixman_mmx_la-fbmmx.Tpo" -c -o libpixman_mmx_la-fbmmx.lo `test -f 'fbmmx.c' || echo '$(srcdir)/'`fbmmx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpixman_mmx_la-fbmmx.Tpo" "$(DEPDIR)/libpixman_mmx_la-fbmmx.Plo"; else rm -f "$(DEPDIR)/libpixman_mmx_la-fbmmx.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fbmmx.c' object='libpixman_mmx_la-fbmmx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpixman_mmx_la_CFLAGS) $(CFLAGS) -c -o libpixman_mmx_la-fbmmx.lo `test -f 'fbmmx.c' || echo '$(srcdir)/'`fbmmx.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

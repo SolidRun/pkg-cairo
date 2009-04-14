@@ -1,33 +1,42 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>XLib Backend</title>
+<title>
+  XLib Surfaces</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
 <link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
-<link rel="up" href="pt02.html" title="Part&#160;II.&#160;Reference">
-<link rel="prev" href="cairo-XCB-Backend.html" title="XCB Backend">
-<link rel="next" href="ix01.html" title="Index">
+<link rel="up" href="Surfaces.html" title="Surfaces">
+<link rel="prev" href="cairo-Win32-Surfaces.html" title="
+  Win32 Surfaces">
+<link rel="next" href="Support.html" title="Utilities">
 <meta name="generator" content="GTK-Doc V1.4 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="pt01.html" title="Part&#160;I.&#160;Tutorial">
 <link rel="part" href="pt02.html" title="Part&#160;II.&#160;Reference">
+<link rel="chapter" href="Drawing.html" title="Drawing">
+<link rel="chapter" href="Fonts.html" title="Fonts">
+<link rel="chapter" href="Surfaces.html" title="Surfaces">
+<link rel="chapter" href="Support.html" title="Utilities">
 <link rel="index" href="ix01.html" title="Index">
 <link rel="appendix" href="language-bindings.html" title="Appendix&#160;A.&#160;Creating a language binding for cairo">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="cairo-XCB-Backend.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="pt02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="cairo-Win32-Surfaces.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="Surfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
-<td><a accesskey="n" href="ix01.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="Support.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="refentry" lang="en">
-<a name="cairo-XLib-Backend"></a><div class="titlepage"></div>
+<a name="cairo-XLib-Surfaces"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2><span class="refentrytitle">XLib Backend</span></h2>
-<p>XLib Backend &#8212; </p>
+<h2><span class="refentrytitle">
+  XLib Surfaces</span></h2>
+<p>
+  XLib Surfaces &#8212; 
+  X Window System rendering using XLib</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -37,38 +46,38 @@
 
 
 
-<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-XLib-Backend.html#cairo-xlib-surface-create">cairo_xlib_surface_create</a>  (Display *dpy,
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-XLib-Surfaces.html#cairo-xlib-surface-create">cairo_xlib_surface_create</a>  (Display *dpy,
                                              Drawable drawable,
                                              Visual *visual,
                                              int width,
                                              int height);
-<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-XLib-Backend.html#cairo-xlib-surface-create-for-bitmap">cairo_xlib_surface_create_for_bitmap</a>
+<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* <a href="cairo-XLib-Surfaces.html#cairo-xlib-surface-create-for-bitmap">cairo_xlib_surface_create_for_bitmap</a>
                                             (Display *dpy,
                                              Pixmap bitmap,
                                              Screen *screen,
                                              int width,
                                              int height);
-void        <a href="cairo-XLib-Backend.html#cairo-xlib-surface-set-size">cairo_xlib_surface_set_size</a>     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+void        <a href="cairo-XLib-Surfaces.html#cairo-xlib-surface-set-size">cairo_xlib_surface_set_size</a>     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              int width,
                                              int height);
-void        <a href="cairo-XLib-Backend.html#cairo-xlib-surface-set-drawable">cairo_xlib_surface_set_drawable</a> (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+void        <a href="cairo-XLib-Surfaces.html#cairo-xlib-surface-set-drawable">cairo_xlib_surface_set_drawable</a> (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              Drawable drawable,
                                              int width,
                                              int height);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2903948"></a><h2>Description</h2>
+<a name="id2852292"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2903959"></a><h2>Details</h2>
+<a name="id2852303"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2903965"></a><h3>
+<a name="id2852310"></a><h3>
 <a name="cairo-xlib-surface-create"></a>cairo_xlib_surface_create ()</h3>
-<a class="indexterm" name="id2861558"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create  (Display *dpy,
+<a class="indexterm" name="id2852318"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create  (Display *dpy,
                                              Drawable drawable,
                                              Visual *visual,
                                              int width,
@@ -131,9 +140,9 @@ window changes.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2861735"></a><h3>
+<a name="id2855503"></a><h3>
 <a name="cairo-xlib-surface-create-for-bitmap"></a>cairo_xlib_surface_create_for_bitmap ()</h3>
-<a class="indexterm" name="id2861744"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create_for_bitmap
+<a class="indexterm" name="id2855512"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create_for_bitmap
                                             (Display *dpy,
                                              Pixmap bitmap,
                                              Screen *screen,
@@ -189,9 +198,9 @@ This will be drawn to as a CAIRO_FORMAT_A1 object.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2903266"></a><h3>
+<a name="id2855676"></a><h3>
 <a name="cairo-xlib-surface-set-size"></a>cairo_xlib_surface_set_size ()</h3>
-<a class="indexterm" name="id2903275"></a><pre class="programlisting">void        cairo_xlib_surface_set_size     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2855685"></a><pre class="programlisting">void        cairo_xlib_surface_set_size     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              int width,
                                              int height);</pre>
 <p>
@@ -234,9 +243,9 @@ this function on a surface created for a Pixmap.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2903385"></a><h3>
+<a name="id2852960"></a><h3>
 <a name="cairo-xlib-surface-set-drawable"></a>cairo_xlib_surface_set_drawable ()</h3>
-<a class="indexterm" name="id2903394"></a><pre class="programlisting">void        cairo_xlib_surface_set_drawable (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2852969"></a><pre class="programlisting">void        cairo_xlib_surface_set_drawable (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              Drawable drawable,
                                              int width,
                                              int height);</pre>
@@ -268,15 +277,13 @@ compatibility.</p>
 <tr>
 <td>
 <span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
-<td>
+<td> the width of the new drawable
 </td>
 </tr>
 <tr>
 <td>
 <span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
-<td>
-
-
+<td> the height of the new drawable
 </td>
 </tr>
 </tbody>
@@ -285,8 +292,9 @@ compatibility.</p>
 </div>
 </div>
 <table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="cairo-XCB-Backend.html"><b>&lt;&lt;&#160;XCB Backend</b></a></td>
-<td align="right"><a accesskey="n" href="ix01.html"><b>Index&#160;&gt;&gt;</b></a></td>
+<td align="left"><a accesskey="p" href="cairo-Win32-Surfaces.html"><b>&lt;&lt;&#160;
+  Win32 Surfaces</b></a></td>
+<td align="right"><a accesskey="n" href="Support.html"><b>Utilities&#160;&gt;&gt;</b></a></td>
 </tr></table>
 </body>
 </html>

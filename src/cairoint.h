@@ -86,6 +86,13 @@
 # define slim_hidden_def(name)
 #endif
 
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
+#define CAIRO_PRINTF_FORMAT(fmt_index, va_index) \
+	__attribute__((__format__(__printf__, fmt_index, va_index)))
+#else
+#define CAIRO_PRINTF_FORMAT(fmt_index, va_index)
+#endif
+
 /* slim_internal.h */
 #if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)) && defined(__ELF__)
 #define cairo_private		__attribute__((__visibility__("hidden")))
@@ -115,6 +122,12 @@
 
 #ifndef __GNUC__
 #define __attribute__(x)
+#endif
+
+#if defined(__GNUC__)
+#define INLINE __inline__
+#else
+#define INLINE
 #endif
 
 #if HAVE_PTHREAD_H
@@ -165,6 +178,7 @@ typedef cairo_fixed_16_16_t cairo_fixed_t;
 #define CAIRO_MINSHORT SHRT_MIN
 
 #define CAIRO_ALPHA_IS_OPAQUE(alpha) ((alpha) >= ((double)0xff00 / (double)0xffff))
+#define CAIRO_ALPHA_IS_ZERO(alpha) ((alpha) <= 0.0)
 
 #include "cairo-hash-private.h"
 
@@ -676,7 +690,7 @@ typedef struct _cairo_surface_backend {
 				 cairo_image_surface_t  *image,
 				 cairo_rectangle_t      *image_rect,
 				 void                   *image_extra);
-	
+
     cairo_status_t
     (*clone_similar)            (void                   *surface,
 				 cairo_surface_t        *src,
@@ -838,6 +852,8 @@ struct _cairo_surface {
 
     double device_x_offset;
     double device_y_offset;
+    double device_x_scale;
+    double device_y_scale;
 
     /*
      * Each time a clip region is modified, it gets the next value in this
@@ -929,7 +945,7 @@ typedef struct _cairo_solid_pattern {
     cairo_color_t color;
 } cairo_solid_pattern_t;
 
-extern const cairo_private cairo_solid_pattern_t cairo_solid_pattern_nil;
+extern const cairo_private cairo_solid_pattern_t cairo_pattern_nil;
 
 typedef struct _cairo_surface_pattern {
     cairo_pattern_t base;
@@ -1553,15 +1569,6 @@ cairo_private cairo_clip_mode_t
 _cairo_surface_get_clip_mode (cairo_surface_t *surface);
 
 cairo_private cairo_status_t
-_cairo_surface_fill_rectangle (cairo_surface_t	   *surface,
-			       cairo_operator_t	    operator,
-			       const cairo_color_t *color,
-			       int		    x,
-			       int		    y,
-			       int		    width,
-			       int		    height);
-
-cairo_private cairo_status_t
 _cairo_surface_composite (cairo_operator_t	operator,
 			  cairo_pattern_t	*src,
 			  cairo_pattern_t	*mask,
@@ -1574,6 +1581,21 @@ _cairo_surface_composite (cairo_operator_t	operator,
 			  int			dst_y,
 			  unsigned int		width,
 			  unsigned int		height);
+
+cairo_private cairo_status_t
+_cairo_surface_fill_rectangle (cairo_surface_t	   *surface,
+			       cairo_operator_t	    operator,
+			       const cairo_color_t *color,
+			       int		    x,
+			       int		    y,
+			       int		    width,
+			       int		    height);
+
+cairo_private cairo_status_t
+_cairo_surface_fill_region (cairo_surface_t	   *surface,
+			    cairo_operator_t	    operator,
+			    const cairo_color_t    *color,
+			    pixman_region16_t      *region);
 
 cairo_private cairo_status_t
 _cairo_surface_fill_rectangles (cairo_surface_t		*surface,
@@ -1689,7 +1711,7 @@ _cairo_surface_show_glyphs (cairo_scaled_font_t	        *scaled_font,
 			    const cairo_glyph_t		*glyphs,
 			    int				num_glyphs);
 
-cairo_private void
+cairo_private cairo_status_t
 _cairo_surface_composite_fixup_unbounded (cairo_surface_t            *dst,
 					  cairo_surface_attributes_t *src_attr,
 					  int                         src_width,
@@ -1706,7 +1728,32 @@ _cairo_surface_composite_fixup_unbounded (cairo_surface_t            *dst,
 					  unsigned int		      width,
 					  unsigned int		      height);
 
+cairo_private cairo_status_t
+_cairo_surface_composite_shape_fixup_unbounded (cairo_surface_t            *dst,
+						cairo_surface_attributes_t *src_attr,
+						int                         src_width,
+						int                         src_height,
+						int                         mask_width,
+						int                         mask_height,
+						int			    src_x,
+						int			    src_y,
+						int			    mask_x,
+						int			    mask_y,
+						int			    dst_x,
+						int			    dst_y,
+						unsigned int		    width,
+						unsigned int		    height);
+
 /* cairo_image_surface.c */
+
+#define CAIRO_FORMAT_VALID(format) ((format) >= CAIRO_FORMAT_ARGB32 && \
+				    (format) <= CAIRO_FORMAT_A1)
+
+#define CAIRO_CONTENT_VALID(content) ((content) && 			         \
+				      (((content) & ~(CAIRO_CONTENT_COLOR |      \
+						      CAIRO_CONTENT_ALPHA |      \
+						      CAIRO_CONTENT_COLOR_ALPHA))\
+				       == 0))
 
 cairo_private cairo_format_t
 _cairo_format_from_content (cairo_content_t content);
@@ -1818,10 +1865,6 @@ _cairo_matrix_transform_bounding_box (const cairo_matrix_t *matrix,
 cairo_private void
 _cairo_matrix_compute_determinant (const cairo_matrix_t *matrix, double *det);
 
-cairo_private void
-_cairo_matrix_compute_eigen_values (const cairo_matrix_t *matrix,
-				    double *lambda1, double *lambda2);
-
 cairo_private cairo_status_t
 _cairo_matrix_compute_scale_factors (const cairo_matrix_t *matrix,
 				     double *sx, double *sy, int x_major);
@@ -1829,6 +1872,9 @@ _cairo_matrix_compute_scale_factors (const cairo_matrix_t *matrix,
 cairo_private cairo_bool_t
 _cairo_matrix_is_integer_translation(const cairo_matrix_t *matrix,
 				     int *itx, int *ity);
+
+cairo_private double
+_cairo_matrix_transformed_circle_major_axis(cairo_matrix_t *matrix, double radius);
 
 /* cairo_traps.c */
 cairo_private void
@@ -1951,6 +1997,14 @@ _cairo_gstate_set_antialias (cairo_gstate_t *gstate,
 cairo_private cairo_antialias_t
 _cairo_gstate_get_antialias (cairo_gstate_t *gstate);
 
+/* cairo-region.c */
+
+cairo_private pixman_region16_t *
+_cairo_region_create_from_rectangle (cairo_rectangle_t *rect);
+
+cairo_private void
+_cairo_region_extents_rectangle (pixman_region16_t *region,
+				 cairo_rectangle_t *rect);
 
 /* cairo_unicode.c */
 
@@ -1992,7 +2046,7 @@ _cairo_output_stream_vprintf (cairo_output_stream_t *stream,
 
 cairo_private cairo_status_t
 _cairo_output_stream_printf (cairo_output_stream_t *stream,
-			     const char *fmt, ...);
+			     const char *fmt, ...) CAIRO_PRINTF_FORMAT(2, 3);
 
 cairo_private long
 _cairo_output_stream_get_position (cairo_output_stream_t *status);

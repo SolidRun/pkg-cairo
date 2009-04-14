@@ -7,7 +7,7 @@ libpixman_la_SOURCES = \
 	pixregion.c \
 	pixregionint.h \
 	fbpict.h \
-	ic.c \
+	fbpict.c \
 	icblt.c \
 	icbltone.c \
 	iccolor.c \
@@ -30,5 +30,14 @@ libpixman_la_SOURCES = \
 	renderedge.c \
 	renderedge.h \
 	slim_internal.h
+
+if USE_MMX
+noinst_LTLIBRARIES += libpixman-mmx.la
+libpixman_mmx_la_SOURCES = \
+	fbmmx.c		\
+	fbmmx.h
+libpixman_mmx_la_CFLAGS = @MMX_CFLAGS@
+libpixman_la_LIBADD = libpixman-mmx.la
+endif
 
 INCLUDES = -I$(top_srcdir) -I$(srcdir) $(WARN_CFLAGS)
