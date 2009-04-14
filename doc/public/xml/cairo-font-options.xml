@@ -215,7 +215,9 @@ Compares two font options objects for equality.</para>
 <varlistentry><term><parameter>other</parameter>&nbsp;:</term>
 <listitem><simpara> another <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if all fields of the two font options objects match
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if all fields of the two font options objects match.
+Note that this function will return <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if either object is in
+error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

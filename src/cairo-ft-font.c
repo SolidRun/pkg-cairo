@@ -37,6 +37,7 @@
  *      Carl Worth <cworth@cworth.org>
  */
 
+#define _BSD_SOURCE /* for strdup() */
 #include "cairoint.h"
 
 #include "cairo-ft-private.h"
@@ -594,6 +595,7 @@ _compute_transform (cairo_ft_font_transform_t *sf,
 		    cairo_matrix_t      *scale)
 {
     cairo_status_t status;
+    double x_scale, y_scale;
     cairo_matrix_t normalized = *scale;
 
     /* The font matrix has x and y "scale" components which we extract and
@@ -603,23 +605,30 @@ _compute_transform (cairo_ft_font_transform_t *sf,
      * freetype's transformation.
      */
 
-    status = _cairo_matrix_compute_scale_factors (&normalized,
-						  &sf->x_scale, &sf->y_scale,
+    status = _cairo_matrix_compute_scale_factors (scale,
+						  &x_scale, &y_scale,
 						  /* XXX */ 1);
     if (status)
 	return status;
 
-    if (sf->x_scale != 0 && sf->y_scale != 0) {
-	cairo_matrix_scale (&normalized, 1.0 / sf->x_scale, 1.0 / sf->y_scale);
+    /* FreeType docs say this about x_scale and y_scale:
+     * "A character width or height smaller than 1pt is set to 1pt;"
+     * So, we cap them from below at 1.0 and let the FT transform
+     * take care of sub-1.0 scaling. */
+    if (x_scale < 1.0)
+      x_scale = 1.0;
+    if (y_scale < 1.0)
+      y_scale = 1.0;
 
-	_cairo_matrix_get_affine (&normalized,
-				  &sf->shape[0][0], &sf->shape[0][1],
-				  &sf->shape[1][0], &sf->shape[1][1],
-				  NULL, NULL);
-    } else {
-	sf->shape[0][0] = sf->shape[1][1] = 1.0;
-	sf->shape[0][1] = sf->shape[1][0] = 0.0;
-    }
+    sf->x_scale = x_scale;
+    sf->y_scale = y_scale;
+
+    cairo_matrix_scale (&normalized, 1.0 / x_scale, 1.0 / y_scale);
+
+    _cairo_matrix_get_affine (&normalized,
+			      &sf->shape[0][0], &sf->shape[0][1],
+			      &sf->shape[1][0], &sf->shape[1][1],
+			      NULL, NULL);
 
     return CAIRO_STATUS_SUCCESS;
 }
@@ -675,8 +684,8 @@ _cairo_ft_unscaled_font_set_scale (cairo_ft_unscaled_font_t *unscaled,
 
     if ((unscaled->face->face_flags & FT_FACE_FLAG_SCALABLE) != 0) {
 	error = FT_Set_Char_Size (unscaled->face,
-				  sf.x_scale * 64.0,
-				  sf.y_scale * 64.0,
+				  sf.x_scale * 64.0 + .5,
+				  sf.y_scale * 64.0 + .5,
 				  0, 0);
 	if (error)
 	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
@@ -932,7 +941,7 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
 					     width, height, stride);
     if ((*surface)->base.status) {
 	free (data);
-	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return (*surface)->base.status;
     }
 
     if (subpixel)
@@ -1051,9 +1060,8 @@ _render_glyph_outline (FT_Face                    face,
 	bitmap.width = width * hmul;
 	bitmap.rows = height * vmul;
 	bitmap.buffer = calloc (stride, bitmap.rows);
-	if (bitmap.buffer == NULL) {
+	if (bitmap.buffer == NULL)
 	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
-	}
 
 	FT_Outline_Translate (outline, -cbox.xMin*hmul, -cbox.yMin*vmul);
 
@@ -1603,6 +1611,11 @@ _cairo_ft_scaled_font_create_toy (cairo_toy_font_face_t	      *toy_face,
     cairo_ft_font_transform_t sf;
     cairo_ft_options_t ft_options;
 
+    cairo_matrix_multiply (&scale, font_matrix, ctm);
+    status = _compute_transform (&sf, &scale);
+    if (status)
+	return status;
+
     pattern = FcPatternCreate ();
     if (!pattern)
 	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
@@ -1649,9 +1662,6 @@ _cairo_ft_scaled_font_create_toy (cairo_toy_font_face_t	      *toy_face,
 	goto FREE_PATTERN;
     }
 
-    cairo_matrix_multiply (&scale, font_matrix, ctm);
-    _compute_transform (&sf, &scale);
-
     if (! FcPatternAddDouble (pattern, FC_PIXEL_SIZE, sf.y_scale)) {
 	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	goto FREE_PATTERN;
@@ -1662,11 +1672,9 @@ _cairo_ft_scaled_font_create_toy (cairo_toy_font_face_t	      *toy_face,
 	goto FREE_PATTERN;
     }
 
-    if (font_options != NULL) {
-	status = _cairo_ft_font_options_substitute (font_options, pattern);
-	if (status)
-	    goto FREE_PATTERN;
-    }
+    status = _cairo_ft_font_options_substitute (font_options, pattern);
+    if (status)
+	goto FREE_PATTERN;
 
     FcDefaultSubstitute (pattern);
 
@@ -2310,7 +2318,7 @@ _cairo_ft_font_face_create (cairo_ft_unscaled_font_t *unscaled,
 	    font_face->ft_options.extra_flags == ft_options->extra_flags &&
 	    cairo_font_options_equal (&font_face->ft_options.base, &ft_options->base))
 	{
-	    if (! font_face->base.status)
+	    if (font_face->base.status == CAIRO_STATUS_SUCCESS)
 		return cairo_font_face_reference (&font_face->base);
 
 	    /* The font_face has been left in an error state, abandon it. */
@@ -2323,7 +2331,7 @@ _cairo_ft_font_face_create (cairo_ft_unscaled_font_t *unscaled,
     font_face = malloc (sizeof (cairo_ft_font_face_t));
     if (!font_face) {
 	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	return NULL;
+	return (cairo_font_face_t *)&_cairo_font_face_nil;
     }
 
     font_face->unscaled = unscaled;
@@ -2501,10 +2509,7 @@ cairo_ft_font_face_create_for_pattern (FcPattern *pattern)
     font_face = _cairo_ft_font_face_create (unscaled, &ft_options);
     _cairo_unscaled_font_destroy (&unscaled->base);
 
-    if (font_face)
-	return font_face;
-    else
-	return (cairo_font_face_t *)&_cairo_font_face_nil;
+    return font_face;
 }
 
 /**
@@ -2554,10 +2559,7 @@ cairo_ft_font_face_create_for_ft_face (FT_Face         face,
     font_face = _cairo_ft_font_face_create (unscaled, &ft_options);
     _cairo_unscaled_font_destroy (&unscaled->base);
 
-    if (font_face)
-	return font_face;
-    else
-	return (cairo_font_face_t *)&_cairo_font_face_nil;
+    return font_face;
 }
 
 /**

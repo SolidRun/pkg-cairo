@@ -70,12 +70,16 @@ test_surface_with_width_and_stride (int width, int stride,
     cairo_test_status_t status;
     cairo_surface_t *surface;
     cairo_t *cr;
+    int len;
     unsigned char *data;
 
     cairo_test_log ("Creating surface with width %d and stride %d\n",
 		    width, stride);
 
-    data = malloc (stride);
+    len = stride;
+    if (len < 0)
+	len = -len;
+    data = xmalloc (len);
 
     surface = cairo_image_surface_create_for_data (data, CAIRO_FORMAT_A8,
 						   width, 1, stride);
@@ -85,15 +89,17 @@ test_surface_with_width_and_stride (int width, int stride,
 
     status = check_status (cairo_surface_status (surface), expected);
     if (status)
-	return status;
+	goto BAIL;
 
     status = check_status (cairo_status (cr), expected);
     if (status)
-	return status;
+	goto BAIL;
 
+  BAIL:
+    cairo_destroy (cr);
+    cairo_surface_destroy (surface);
     free (data);
-
-    return CAIRO_TEST_SUCCESS;
+    return status;
 }
 
 static cairo_test_status_t
@@ -121,10 +127,23 @@ draw (cairo_t *cr, int dst_width, int dst_height)
 	if (status)
 	    return status;
 
+	status = test_surface_with_width_and_stride (test_width,
+						     -test_width,
+						     expected);
+	if (status)
+	    return status;
+
+
 	/* Then create a surface using the correct stride, (should
 	   always succeed).*/
 	status = test_surface_with_width_and_stride (test_width,
 						     stride,
+						     CAIRO_STATUS_SUCCESS);
+	if (status)
+	    return status;
+
+	status = test_surface_with_width_and_stride (test_width,
+						     -stride,
 						     CAIRO_STATUS_SUCCESS);
 	if (status)
 	    return status;
@@ -135,7 +154,7 @@ draw (cairo_t *cr, int dst_width, int dst_height)
     stride = cairo_format_stride_for_width (CAIRO_FORMAT_A8,
 					    MASK_WIDTH);
 
-    mask_aligned = malloc (stride * MASK_HEIGHT);
+    mask_aligned = xmalloc (stride * MASK_HEIGHT);
 
     src = mask;
     dst = mask_aligned;

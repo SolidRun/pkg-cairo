@@ -42,7 +42,7 @@
 #include "cairo-clip-private.h"
 #include "cairo-gstate-private.h"
 
-#if _XOPEN_SOURCE >= 600 || _ISOC99_SOURCE
+#if _XOPEN_SOURCE >= 600 || defined (_ISOC99_SOURCE)
 #define ISFINITE(x) isfinite (x)
 #else
 #define ISFINITE(x) ((x) * (x) >= 0.) /* check for NaNs */
@@ -206,9 +206,6 @@ _cairo_gstate_fini (cairo_gstate_t *gstate)
 static void
 _cairo_gstate_destroy (cairo_gstate_t *gstate)
 {
-    if (gstate == NULL)
-	return;
-
     _cairo_gstate_fini (gstate);
     free (gstate);
 }
@@ -225,8 +222,8 @@ _cairo_gstate_destroy (cairo_gstate_t *gstate)
  * Return value: a new #cairo_gstate_t or %NULL if there is insufficient
  * memory.
  **/
-static cairo_gstate_t*
-_cairo_gstate_clone (cairo_gstate_t *other)
+static cairo_status_t
+_cairo_gstate_clone (cairo_gstate_t *other, cairo_gstate_t **out)
 {
     cairo_status_t status;
     cairo_gstate_t *gstate;
@@ -234,18 +231,17 @@ _cairo_gstate_clone (cairo_gstate_t *other)
     assert (other != NULL);
 
     gstate = malloc (sizeof (cairo_gstate_t));
-    if (gstate == NULL) {
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	return NULL;
-    }
+    if (gstate == NULL)
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
     status = _cairo_gstate_init_copy (gstate, other);
     if (status) {
 	free (gstate);
-	return NULL;
+	return status;
     }
 
-    return gstate;
+    *out = gstate;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 /**
@@ -259,11 +255,12 @@ _cairo_gstate_clone (cairo_gstate_t *other)
 cairo_status_t
 _cairo_gstate_save (cairo_gstate_t **gstate)
 {
-    cairo_gstate_t *top;
+    cairo_gstate_t *top = NULL;
+    cairo_status_t status;
 
-    top = _cairo_gstate_clone (*gstate);
-    if (top == NULL)
-	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+    status = _cairo_gstate_clone (*gstate, &top);
+    if (status)
+	return status;
 
     top->next = *gstate;
     *gstate = top;
@@ -291,27 +288,6 @@ _cairo_gstate_restore (cairo_gstate_t **gstate)
     _cairo_gstate_destroy (top);
 
     return CAIRO_STATUS_SUCCESS;
-}
-
-static cairo_status_t
-_cairo_gstate_recursive_apply_clip_path (cairo_gstate_t *gstate,
-					 cairo_clip_path_t *cpath)
-{
-    cairo_status_t status;
-
-    if (cpath == NULL)
-	return CAIRO_STATUS_SUCCESS;
-
-    status = _cairo_gstate_recursive_apply_clip_path (gstate, cpath->prev);
-    if (status)
-	return status;
-
-    return _cairo_clip_clip (&gstate->clip,
-			     &cpath->path,
-			     cpath->fill_rule,
-			     cpath->tolerance,
-			     cpath->antialias,
-			     gstate->target);
 }
 
 /**
@@ -448,9 +424,6 @@ _cairo_gstate_set_source (cairo_gstate_t  *gstate,
 cairo_pattern_t *
 _cairo_gstate_get_source (cairo_gstate_t *gstate)
 {
-    if (gstate == NULL)
-	return NULL;
-
     return gstate->source;
 }
 
@@ -818,15 +791,21 @@ _cairo_gstate_stroke_to_path (cairo_gstate_t *gstate)
 }
 */
 
-void
+cairo_status_t
 _cairo_gstate_path_extents (cairo_gstate_t     *gstate,
 			    cairo_path_fixed_t *path,
 			    double *x1, double *y1,
 			    double *x2, double *y2)
 {
-    _cairo_path_fixed_bounds (path, x1, y1, x2, y2, gstate->tolerance);
-    
+    cairo_status_t status;
+
+    status = _cairo_path_fixed_bounds (path, x1, y1, x2, y2, gstate->tolerance);
+    if (status)
+	return status;
+
     _cairo_gstate_backend_to_user_rectangle (gstate, x1, y1, x2, y2, NULL);
+
+    return CAIRO_STATUS_SUCCESS;
 }
 
 static cairo_status_t
@@ -898,85 +877,6 @@ _cairo_gstate_paint (cairo_gstate_t *gstate)
     _cairo_pattern_fini (&pattern.base);
 
     return status;
-}
-
-/**
- * _cairo_operator_bounded_by_mask:
- * @op: a #cairo_operator_t
- *
- * A bounded operator is one where mask pixel
- * of zero results in no effect on the destination image.
- *
- * Unbounded operators often require special handling; if you, for
- * example, draw trapezoids with an unbounded operator, the effect
- * extends past the bounding box of the trapezoids.
- *
- * Return value: %TRUE if the operator is bounded by the mask operand
- **/
-cairo_bool_t
-_cairo_operator_bounded_by_mask (cairo_operator_t op)
-{
-    switch (op) {
-    case CAIRO_OPERATOR_CLEAR:
-    case CAIRO_OPERATOR_SOURCE:
-    case CAIRO_OPERATOR_OVER:
-    case CAIRO_OPERATOR_ATOP:
-    case CAIRO_OPERATOR_DEST:
-    case CAIRO_OPERATOR_DEST_OVER:
-    case CAIRO_OPERATOR_DEST_OUT:
-    case CAIRO_OPERATOR_XOR:
-    case CAIRO_OPERATOR_ADD:
-    case CAIRO_OPERATOR_SATURATE:
-	return TRUE;
-    case CAIRO_OPERATOR_OUT:
-    case CAIRO_OPERATOR_IN:
-    case CAIRO_OPERATOR_DEST_IN:
-    case CAIRO_OPERATOR_DEST_ATOP:
-	return FALSE;
-    }
-
-    ASSERT_NOT_REACHED;
-    return FALSE;
-}
-
-/**
- * _cairo_operator_bounded_by_source:
- * @op: a #cairo_operator_t
- *
- * A bounded operator is one where source pixels of zero
- * (in all four components, r, g, b and a) effect no change
- * in the resulting destination image.
- *
- * Unbounded operators often require special handling; if you, for
- * example, copy a surface with the SOURCE operator, the effect
- * extends past the bounding box of the source surface.
- *
- * Return value: %TRUE if the operator is bounded by the source operand
- **/
-cairo_bool_t
-_cairo_operator_bounded_by_source (cairo_operator_t op)
-{
-    switch (op) {
-    case CAIRO_OPERATOR_OVER:
-    case CAIRO_OPERATOR_ATOP:
-    case CAIRO_OPERATOR_DEST:
-    case CAIRO_OPERATOR_DEST_OVER:
-    case CAIRO_OPERATOR_DEST_OUT:
-    case CAIRO_OPERATOR_XOR:
-    case CAIRO_OPERATOR_ADD:
-    case CAIRO_OPERATOR_SATURATE:
-	return TRUE;
-    case CAIRO_OPERATOR_CLEAR:
-    case CAIRO_OPERATOR_SOURCE:
-    case CAIRO_OPERATOR_OUT:
-    case CAIRO_OPERATOR_IN:
-    case CAIRO_OPERATOR_DEST_IN:
-    case CAIRO_OPERATOR_DEST_ATOP:
-	return FALSE;
-    }
-
-    ASSERT_NOT_REACHED;
-    return FALSE;
 }
 
 cairo_status_t

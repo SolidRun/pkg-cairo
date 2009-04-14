@@ -201,15 +201,21 @@ _cairo_win32_printing_surface_analyze_operation (cairo_win32_surface_t *surface,
     if (! pattern_supported (surface, pattern))
 	return CAIRO_INT_STATUS_UNSUPPORTED;
 
+    if (!(op == CAIRO_OPERATOR_SOURCE ||
+	  op == CAIRO_OPERATOR_OVER ||
+	  op == CAIRO_OPERATOR_CLEAR))
+	return CAIRO_INT_STATUS_UNSUPPORTED;
+
+    if (pattern->type == CAIRO_PATTERN_TYPE_SURFACE) {
+	cairo_surface_pattern_t *surface_pattern = (cairo_surface_pattern_t *) pattern;
+
+	if ( _cairo_surface_is_meta (surface_pattern->surface))
+	    return CAIRO_INT_STATUS_ANALYZE_META_SURFACE_PATTERN;
+    }
+
     if (op == CAIRO_OPERATOR_SOURCE ||
 	op == CAIRO_OPERATOR_CLEAR)
 	return CAIRO_STATUS_SUCCESS;
-
-    /* If the operation is anything other than CLEAR, SOURCE, or
-     * OVER, we have to go to fallback.
-     */
-    if (op != CAIRO_OPERATOR_OVER)
-	return CAIRO_INT_STATUS_UNSUPPORTED;
 
     /* CAIRO_OPERATOR_OVER is only supported for opaque patterns. If
      * the pattern contains transparency, we return
@@ -224,10 +230,7 @@ _cairo_win32_printing_surface_analyze_operation (cairo_win32_surface_t *surface,
     if (pattern->type == CAIRO_PATTERN_TYPE_SURFACE) {
 	cairo_surface_pattern_t *surface_pattern = (cairo_surface_pattern_t *) pattern;
 
-	if ( _cairo_surface_is_meta (surface_pattern->surface))
-	    return CAIRO_INT_STATUS_ANALYZE_META_SURFACE_PATTERN;
-	else
-	    return analyze_surface_pattern_transparency (surface_pattern);
+	return analyze_surface_pattern_transparency (surface_pattern);
     }
 
     if (_cairo_pattern_is_opaque (pattern))
@@ -461,8 +464,9 @@ _cairo_win32_printing_surface_paint_meta_pattern (cairo_win32_surface_t   *surfa
 	    SelectClipPath (surface->dc, RGN_AND);
 
 	    SaveDC (surface->dc); /* Allow clip path to be reset during replay */
-	    status = _cairo_meta_surface_replay (meta_surface, &surface->base);
-
+	    status = _cairo_meta_surface_replay_region (meta_surface, &surface->base,
+							CAIRO_META_REGION_NATIVE);
+	    assert (status != CAIRO_INT_STATUS_UNSUPPORTED);
 	    /* Restore both the clip save and our earlier path SaveDC */
 	    RestoreDC (surface->dc, -2);
 
@@ -753,7 +757,7 @@ _cairo_win32_printing_surface_paint_linear_pattern (cairo_win32_surface_t *surfa
 	}
 
 	stop = i%num_rects + 1;
-	vert[i*2+1].x = (LONG)(d*(range_start + i/num_rects + _cairo_fixed_to_double (pattern->base.stops[stop].x)));
+	vert[i*2+1].x = (LONG)(d*(range_start + i/num_rects + pattern->base.stops[stop].offset));
 	vert[i*2+1].y = (LONG) clip.bottom;
 	if (extend == CAIRO_EXTEND_REFLECT && (range_start+(i/num_rects))%2)
 	    stop = num_rects - stop;
@@ -1158,7 +1162,7 @@ _cairo_win32_printing_surface_stroke (void                 *abstract_surface,
 	pen_style |= PS_SOLID;
     }
 
-    SetMiterLimit (surface->dc, (FLOAT) (scale * style->miter_limit), NULL);
+    SetMiterLimit (surface->dc, (FLOAT) (style->miter_limit), NULL);
     if (source->type == CAIRO_PATTERN_TYPE_SOLID) {
 	cairo_solid_pattern_t *solid = (cairo_solid_pattern_t *) source;
 
@@ -1415,6 +1419,9 @@ _cairo_win32_printing_surface_start_page (void *abstract_surface)
 {
     cairo_win32_surface_t *surface = abstract_surface;
     XFORM xform;
+    double x_res, y_res;
+    cairo_matrix_t inverse_ctm;
+    cairo_status_t status;
 
     SaveDC (surface->dc); /* Save application context first, before doing MWT */
 
@@ -1427,6 +1434,17 @@ _cairo_win32_printing_surface_start_page (void *abstract_surface)
     surface->ctm.x0 = xform.eDx;
     surface->ctm.y0 = xform.eDy;
     surface->has_ctm = !_cairo_matrix_is_identity (&surface->ctm);
+
+    inverse_ctm = surface->ctm;
+    status = cairo_matrix_invert (&inverse_ctm);
+    if (status)
+	return status;
+
+    x_res = (double) GetDeviceCaps(surface->dc, LOGPIXELSX);
+    y_res = (double) GetDeviceCaps(surface->dc, LOGPIXELSY);
+    cairo_matrix_transform_distance (&inverse_ctm, &x_res, &y_res);
+    _cairo_surface_set_resolution (&surface->base, x_res, y_res);
+
     if (!ModifyWorldTransform (surface->dc, NULL, MWT_IDENTITY))
 	return _cairo_win32_print_gdi_error ("_cairo_win32_printing_surface_start_page:ModifyWorldTransform");
 
@@ -1464,7 +1482,6 @@ cairo_surface_t *
 cairo_win32_printing_surface_create (HDC hdc)
 {
     cairo_win32_surface_t *surface;
-    int xr, yr;
     RECT rect;
 
     surface = malloc (sizeof (cairo_win32_surface_t));
@@ -1499,10 +1516,6 @@ cairo_win32_printing_surface_create (HDC hdc)
     _cairo_win32_printing_surface_init_ps_mode (surface);
     _cairo_surface_init (&surface->base, &cairo_win32_printing_surface_backend,
                          CAIRO_CONTENT_COLOR_ALPHA);
-
-    xr = GetDeviceCaps(hdc, LOGPIXELSX);
-    yr = GetDeviceCaps(hdc, LOGPIXELSY);
-    _cairo_surface_set_resolution (&surface->base, (double) xr, (double) yr);
 
     return _cairo_paginated_surface_create (&surface->base,
                                             CAIRO_CONTENT_COLOR_ALPHA,

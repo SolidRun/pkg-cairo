@@ -29,16 +29,16 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="cairo-Text.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2617095" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2613269" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id2586811" class="shortcut">Description</a></nobr></td></tr>
+                  <a href="#id2596606" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="cairo-Transformations"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id2617095"></a><span class="refentrytitle">Transformations</span>
+<a name="id2613269"></a><span class="refentrytitle">Transformations</span>
 </h2>
 <p>Transformations &#8212; Manipulating the current transformation matrix</p>
 </td>
@@ -80,7 +80,7 @@ void                <a class="link" href="cairo-Transformations.html#cairo-devic
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2586811"></a><h2>Description</h2>
+<a name="id2596606"></a><h2>Description</h2>
 <p>
 The current transformation matrix, <em class="firstterm">ctm</em>, is a
 two-dimensional affine transformation that maps all coordinates and other
@@ -90,11 +90,11 @@ space</em>.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2586840"></a><h2>Details</h2>
+<a name="id2588662"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2586851"></a><h3>
+<a name="id2588673"></a><h3>
 <a name="cairo-translate"></a>cairo_translate ()</h3>
-<a class="indexterm" name="id2586863"></a><pre class="programlisting">void                cairo_translate                     (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2588685"></a><pre class="programlisting">void                cairo_translate                     (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          double tx,
                                                          double ty);</pre>
 <p>
@@ -129,9 +129,9 @@ user-space origin takes place after any existing transformation.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2576384"></a><h3>
+<a name="id2588803"></a><h3>
 <a name="cairo-scale"></a>cairo_scale ()</h3>
-<a class="indexterm" name="id2576396"></a><pre class="programlisting">void                cairo_scale                         (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2588815"></a><pre class="programlisting">void                cairo_scale                         (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          double sx,
                                                          double sy);</pre>
 <p>
@@ -165,9 +165,9 @@ space.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2576503"></a><h3>
+<a name="id2581992"></a><h3>
 <a name="cairo-rotate"></a>cairo_rotate ()</h3>
-<a class="indexterm" name="id2576515"></a><pre class="programlisting">void                cairo_rotate                        (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2582004"></a><pre class="programlisting">void                cairo_rotate                        (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          double angle);</pre>
 <p>
 Modifies the current transformation matrix (CTM) by rotating the
@@ -197,9 +197,9 @@ rotated
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2576598"></a><h3>
+<a name="id2582087"></a><h3>
 <a name="cairo-transform"></a>cairo_transform ()</h3>
-<a class="indexterm" name="id2625779"></a><pre class="programlisting">void                cairo_transform                     (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2582099"></a><pre class="programlisting">void                cairo_transform                     (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          const <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
 <p>
 Modifies the current transformation matrix (CTM) by applying
@@ -226,9 +226,9 @@ user space takes place after any existing transformation.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2625860"></a><h3>
+<a name="id2577124"></a><h3>
 <a name="cairo-set-matrix"></a>cairo_set_matrix ()</h3>
-<a class="indexterm" name="id2625872"></a><pre class="programlisting">void                cairo_set_matrix                    (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2577136"></a><pre class="programlisting">void                cairo_set_matrix                    (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          const <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
 <p>
 Modifies the current transformation matrix (CTM) by setting it
@@ -254,9 +254,9 @@ equal to <em class="parameter"><code>matrix</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2625952"></a><h3>
+<a name="id2577216"></a><h3>
 <a name="cairo-get-matrix"></a>cairo_get_matrix ()</h3>
-<a class="indexterm" name="id2625964"></a><pre class="programlisting">void                cairo_get_matrix                    (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2577228"></a><pre class="programlisting">void                cairo_get_matrix                    (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          <a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t">cairo_matrix_t</a> *matrix);</pre>
 <p>
 Stores the current transformation matrix (CTM) into <em class="parameter"><code>matrix</code></em>.</p>
@@ -281,9 +281,9 @@ Stores the current transformation matrix (CTM) into <em class="parameter"><code>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2588257"></a><h3>
+<a name="id2577306"></a><h3>
 <a name="cairo-identity-matrix"></a>cairo_identity_matrix ()</h3>
-<a class="indexterm" name="id2588269"></a><pre class="programlisting">void                cairo_identity_matrix               (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr);</pre>
+<a class="indexterm" name="id2577317"></a><pre class="programlisting">void                cairo_identity_matrix               (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr);</pre>
 <p>
 Resets the current transformation matrix (CTM) by setting it equal
 to the identity matrix. That is, the user-space and device-space
@@ -303,9 +303,9 @@ device-space unit.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2588322"></a><h3>
+<a name="id2577370"></a><h3>
 <a name="cairo-user-to-device"></a>cairo_user_to_device ()</h3>
-<a class="indexterm" name="id2588333"></a><pre class="programlisting">void                cairo_user_to_device                (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2577382"></a><pre class="programlisting">void                cairo_user_to_device                (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          double *x,
                                                          double *y);</pre>
 <p>
@@ -338,9 +338,9 @@ multiplying the given point by the current transformation matrix
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2588427"></a><h3>
+<a name="id2588241"></a><h3>
 <a name="cairo-user-to-device-distance"></a>cairo_user_to_device_distance ()</h3>
-<a class="indexterm" name="id2588438"></a><pre class="programlisting">void                cairo_user_to_device_distance       (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2588252"></a><pre class="programlisting">void                cairo_user_to_device_distance       (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          double *dx,
                                                          double *dy);</pre>
 <p>
@@ -374,9 +374,9 @@ translation components of the CTM will be ignored when transforming
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2586203"></a><h3>
+<a name="id2588369"></a><h3>
 <a name="cairo-device-to-user"></a>cairo_device_to_user ()</h3>
-<a class="indexterm" name="id2586214"></a><pre class="programlisting">void                cairo_device_to_user                (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2588380"></a><pre class="programlisting">void                cairo_device_to_user                (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          double *x,
                                                          double *y);</pre>
 <p>
@@ -409,9 +409,9 @@ transformation matrix (CTM).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2586309"></a><h3>
+<a name="id2594756"></a><h3>
 <a name="cairo-device-to-user-distance"></a>cairo_device_to_user_distance ()</h3>
-<a class="indexterm" name="id2586320"></a><pre class="programlisting">void                cairo_device_to_user_distance       (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
+<a class="indexterm" name="id2594767"></a><pre class="programlisting">void                cairo_device_to_user_distance       (<a class="link" href="cairo-cairo-t.html#cairo-t">cairo_t</a> *cr,
                                                          double *dx,
                                                          double *dy);</pre>
 <p>
@@ -445,7 +445,7 @@ transforming (<em class="parameter"><code>dx</code></em>,<em class="parameter"><
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2594082"></a><h2>See Also</h2>
+<a name="id2594886"></a><h2>See Also</h2>
 <p>
 </p>
 <div class="itemizedlist"><ul type="disc"><li><a class="link" href="cairo-cairo-matrix-t.html#cairo-matrix-t"><span class="type">cairo_matrix_t</span></a></li></ul></div>
@@ -453,9 +453,9 @@ transforming (<em class="parameter"><code>dx</code></em>,<em class="parameter"><
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2594105"></a><div class="refsect2" lang="en"><a name="id2594106"></a></div>
+<a name="id2594909"></a><div class="refsect2" lang="en"><a name="id2594910"></a></div>
 <hr>
-<div class="refsect2" lang="en"><a name="id2594107"></a></div>
+<div class="refsect2" lang="en"><a name="id2594911"></a></div>
 </div>
 </div>
 </body>

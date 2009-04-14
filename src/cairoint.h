@@ -98,8 +98,20 @@ _cairo_win32_tmpfile (void);
 #define M_SQRT2 1.41421356237309504880
 #endif
 
+#ifndef M_SQRT1_2
+#define M_SQRT1_2 0.707106781186547524400844362104849039
+#endif
+
 #undef  ARRAY_LENGTH
 #define ARRAY_LENGTH(__array) ((int) (sizeof (__array) / sizeof (__array[0])))
+
+
+/* This has to be updated whenever #cairo_status_t is extended.  That's
+ * a bit of a pain, but it should be easy to always catch as long as
+ * one adds a new test case to test a trigger of the new status value.
+ */
+#define CAIRO_STATUS_LAST_STATUS CAIRO_STATUS_INVALID_STRIDE
+
 
 /* Size in bytes of buffer to use off the stack per functions.
  * Mostly used by text functions.  For larger allocations, they'll
@@ -127,6 +139,27 @@ do {					\
  * Source: http://graphics.stanford.edu/~seander/bithacks.html#ReverseByteWith32Bits
  */
 #define CAIRO_BITSWAP8(c) ((((c) * 0x0802LU & 0x22110LU) | ((c) * 0x8020LU & 0x88440LU)) * 0x10101LU >> 16)
+
+/* Return the number of 1 bits in mask.
+ *
+ * GCC 3.4 supports a "population count" builtin, which on many targets is
+ * implemented with a single instruction. There is a fallback definition
+ * in libgcc in case a target does not have one, which should be just as
+ * good as the open-coded solution below, (which is "HACKMEM 169").
+ */
+static inline int
+_cairo_popcount (uint32_t mask)
+{
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)
+    return __builtin_popcount (mask);
+#else
+    register int y;
+
+    y = (mask >> 1) &033333333333;
+    y = mask - y - ((y >>1) & 033333333333);
+    return (((y + (y >> 3)) & 030707070707) % 077);
+#endif
+}
 
 #ifdef WORDS_BIGENDIAN
 #define CAIRO_BITSWAP8_IF_LITTLE_ENDIAN(c) (c)
@@ -179,6 +212,12 @@ _cairo_box_round_to_rectangle (cairo_box_t *box, cairo_rectangle_int_t *rectangl
 cairo_private void
 _cairo_rectangle_intersect (cairo_rectangle_int_t *dest, cairo_rectangle_int_t *src);
 
+cairo_private cairo_bool_t
+_cairo_box_intersects_line_segment (cairo_box_t *box, cairo_line_t *line);
+
+cairo_private cairo_bool_t
+_cairo_box_contains_point (cairo_box_t *box, cairo_point_t *point);
+
 /* cairo_array.c structures and functions */
 
 cairo_private void
@@ -192,7 +231,7 @@ cairo_private void
 _cairo_array_fini (cairo_array_t *array);
 
 cairo_private cairo_status_t
-_cairo_array_grow_by (cairo_array_t *array, int additional);
+_cairo_array_grow_by (cairo_array_t *array, unsigned int additional);
 
 cairo_private void
 _cairo_array_truncate (cairo_array_t *array, unsigned int num_elements);
@@ -414,9 +453,9 @@ extern const cairo_private struct _cairo_scaled_font_backend cairo_win32_scaled_
 
 #endif
 
-#if CAIRO_HAS_ATSUI_FONT
+#if CAIRO_HAS_QUARTZ_FONT
 
-extern const cairo_private struct _cairo_scaled_font_backend cairo_atsui_scaled_font_backend;
+extern const cairo_private struct _cairo_scaled_font_backend cairo_quartz_scaled_font_backend;
 
 #endif
 
@@ -690,6 +729,7 @@ struct _cairo_image_surface {
     unsigned char *data;
     cairo_bool_t owns_data;
     cairo_bool_t has_clip;
+    cairo_image_transparency_t transparency;
 
     int width;
     int height;
@@ -721,7 +761,7 @@ struct _cairo_color {
 
 #define CAIRO_EXTEND_SURFACE_DEFAULT CAIRO_EXTEND_NONE
 #define CAIRO_EXTEND_GRADIENT_DEFAULT CAIRO_EXTEND_PAD
-#define CAIRO_FILTER_DEFAULT CAIRO_FILTER_BEST
+#define CAIRO_FILTER_DEFAULT CAIRO_FILTER_GOOD
 
 struct _cairo_pattern {
     cairo_pattern_type_t	type;
@@ -750,7 +790,7 @@ typedef struct _cairo_surface_pattern {
 } cairo_surface_pattern_t;
 
 typedef struct _cairo_gradient_stop {
-    cairo_fixed_t x;
+    double offset;
     cairo_color_t color;
 } cairo_gradient_stop_t;
 
@@ -822,7 +862,7 @@ typedef struct _cairo_traps {
 #define CAIRO_FONT_WEIGHT_DEFAULT  CAIRO_FONT_WEIGHT_NORMAL
 
 #define CAIRO_WIN32_FONT_FAMILY_DEFAULT "Arial"
-#define CAIRO_ATSUI_FONT_FAMILY_DEFAULT  "Monaco"
+#define CAIRO_QUARTZ_FONT_FAMILY_DEFAULT  "Helvetica"
 #define CAIRO_FT_FONT_FAMILY_DEFAULT     ""
 
 #if   CAIRO_HAS_WIN32_FONT
@@ -830,10 +870,10 @@ typedef struct _cairo_traps {
 #define CAIRO_FONT_FAMILY_DEFAULT CAIRO_WIN32_FONT_FAMILY_DEFAULT
 #define CAIRO_SCALED_FONT_BACKEND_DEFAULT &cairo_win32_scaled_font_backend
 
-#elif CAIRO_HAS_ATSUI_FONT
+#elif CAIRO_HAS_QUARTZ_FONT
 
-#define CAIRO_FONT_FAMILY_DEFAULT CAIRO_ATSUI_FONT_FAMILY_DEFAULT
-#define CAIRO_SCALED_FONT_BACKEND_DEFAULT &cairo_atsui_scaled_font_backend
+#define CAIRO_FONT_FAMILY_DEFAULT CAIRO_QUARTZ_FONT_FAMILY_DEFAULT
+#define CAIRO_SCALED_FONT_BACKEND_DEFAULT &cairo_quartz_scaled_font_backend
 
 #elif CAIRO_HAS_FT_FONT
 
@@ -1009,7 +1049,7 @@ _cairo_gstate_backend_to_user_rectangle (cairo_gstate_t *gstate,
                                          double *x2, double *y2,
                                          cairo_bool_t *is_tight);
 
-cairo_private void
+cairo_private cairo_status_t
 _cairo_gstate_path_extents (cairo_gstate_t     *gstate,
 			    cairo_path_fixed_t *path,
 			    double *x1, double *y1,
@@ -1217,8 +1257,13 @@ cairo_private cairo_status_t
 _cairo_scaled_font_set_error (cairo_scaled_font_t *scaled_font,
 			      cairo_status_t status);
 
+cairo_private cairo_scaled_font_t *
+_cairo_scaled_font_create_in_error (cairo_status_t status);
+
+cairo_private void
+_cairo_scaled_font_reset_static_data (void);
+
 extern const cairo_private cairo_font_face_t _cairo_font_face_nil;
-extern const cairo_private cairo_scaled_font_t _cairo_scaled_font_nil;
 
 cairo_private void
 _cairo_font_face_init (cairo_font_face_t               *font_face,
@@ -1359,7 +1404,7 @@ _cairo_path_fixed_interpret_flat (cairo_path_fixed_t	  *path,
 		       void				  *closure,
 		       double				  tolerance);
 
-cairo_private void
+cairo_private cairo_status_t
 _cairo_path_fixed_bounds (cairo_path_fixed_t *path,
 			  double *x1, double *y1,
 			  double *x2, double *y2,
@@ -1368,6 +1413,17 @@ _cairo_path_fixed_bounds (cairo_path_fixed_t *path,
 cairo_private void
 _cairo_path_fixed_device_transform (cairo_path_fixed_t	*path,
 				    cairo_matrix_t	*device_transform);
+
+cairo_private cairo_bool_t
+_cairo_path_fixed_is_empty (cairo_path_fixed_t *path);
+
+cairo_private cairo_bool_t
+_cairo_path_fixed_is_box (cairo_path_fixed_t *path,
+                          cairo_box_t *box);
+
+cairo_private cairo_bool_t
+_cairo_path_fixed_is_rectangle (cairo_path_fixed_t *path,
+				cairo_box_t        *box);
 
 /* cairo_path_fill.c */
 cairo_private cairo_status_t
@@ -1475,6 +1531,11 @@ _cairo_stroke_style_init_copy (cairo_stroke_style_t *style,
 
 cairo_private void
 _cairo_stroke_style_fini (cairo_stroke_style_t *style);
+
+cairo_private void
+_cairo_stroke_style_max_distance_from_path (const cairo_stroke_style_t *style,
+                                            const cairo_matrix_t *ctm,
+                                            double *dx, double *dy);
 
 /* cairo-surface.c */
 
@@ -1689,6 +1750,9 @@ _cairo_surface_intersect_clip_path (cairo_surface_t    *surface,
 				    double		tolerance,
 				    cairo_antialias_t	antialias);
 
+cairo_private cairo_clip_t *
+_cairo_surface_get_clip (cairo_surface_t *surface);
+
 cairo_private cairo_status_t
 _cairo_surface_set_clip (cairo_surface_t *surface, cairo_clip_t *clip);
 
@@ -1789,6 +1853,11 @@ _cairo_surface_has_device_transform (cairo_surface_t *surface);
 #define CAIRO_FORMAT_INVALID ((unsigned int) -1)
 #define CAIRO_FORMAT_VALID(format) ((format) <= CAIRO_FORMAT_A1)
 
+/* pixman-required stride alignment in bytes. */
+#define CAIRO_STRIDE_ALIGNMENT (sizeof (uint32_t))
+#define CAIRO_STRIDE_FOR_WIDTH_BPP(w,bpp) \
+   (((bpp)*(w)+7)/8 + CAIRO_STRIDE_ALIGNMENT-1) & ~(CAIRO_STRIDE_ALIGNMENT-1)
+
 #define CAIRO_CONTENT_VALID(content) ((content) && 			         \
 				      (((content) & ~(CAIRO_CONTENT_COLOR |      \
 						      CAIRO_CONTENT_ALPHA |      \
@@ -1808,15 +1877,13 @@ cairo_private cairo_surface_t *
 _cairo_image_surface_create_for_pixman_image (pixman_image_t		*pixman_image,
 					      pixman_format_code_t	 pixman_format);
 
-cairo_private pixman_format_code_t
-_pixman_format_from_masks (cairo_format_masks_t *masks);
+cairo_private cairo_int_status_t
+_pixman_format_from_masks (cairo_format_masks_t *masks,
+			   pixman_format_code_t *format_ret);
 
 cairo_private void
 _pixman_format_to_masks (pixman_format_code_t	 pixman_format,
-			 uint32_t		*bpp,
-			 uint32_t		*red,
-			 uint32_t		*green,
-			 uint32_t		*blue);
+			 cairo_format_masks_t	*masks);
 
 cairo_private cairo_surface_t *
 _cairo_image_surface_create_with_pixman_format (unsigned char		*data,
@@ -1863,6 +1930,9 @@ _cairo_image_surface_set_clip_region (void *abstract_surface,
 cairo_private cairo_image_surface_t *
 _cairo_image_surface_clone (cairo_image_surface_t	*surface,
 			    cairo_format_t		 format);
+
+cairo_private cairo_image_transparency_t
+_cairo_image_analyze_transparency (cairo_image_surface_t      *image);
 
 cairo_private cairo_bool_t
 _cairo_surface_is_image (const cairo_surface_t *surface);
@@ -1996,6 +2066,10 @@ cairo_private void
 _cairo_traps_limit (cairo_traps_t	*traps,
 		    cairo_box_t		*limits);
 
+cairo_private cairo_bool_t
+_cairo_traps_get_limit (cairo_traps_t *traps,
+                        cairo_box_t   *limits);
+
 cairo_private cairo_status_t
 _cairo_traps_init_box (cairo_traps_t *traps,
 		       cairo_box_t   *box);
@@ -2053,12 +2127,6 @@ _cairo_slope_init (cairo_slope_t *slope, cairo_point_t *a, cairo_point_t *b);
 
 cairo_private int
 _cairo_slope_compare (cairo_slope_t *a, cairo_slope_t *b);
-
-cairo_private int
-_cairo_slope_clockwise (cairo_slope_t *a, cairo_slope_t *b);
-
-cairo_private int
-_cairo_slope_counter_clockwise (cairo_slope_t *a, cairo_slope_t *b);
 
 /* cairo_pattern.c */
 
@@ -2161,7 +2229,7 @@ _cairo_utf8_to_ucs4 (const unsigned char *str,
 		     uint32_t	        **result,
 		     int		 *items_written);
 
-#if CAIRO_HAS_WIN32_FONT+0 || CAIRO_HAS_ATSUI_FONT+0
+#if CAIRO_HAS_WIN32_FONT+0 || CAIRO_HAS_QUARTZ_FONT+0
 # define CAIRO_HAS_UTF8_TO_UTF16 1
 #endif
 #if CAIRO_HAS_UTF8_TO_UTF16
@@ -2205,8 +2273,11 @@ slim_hidden_proto (cairo_get_matrix);
 slim_hidden_proto (cairo_get_tolerance);
 slim_hidden_proto (cairo_image_surface_create);
 slim_hidden_proto (cairo_image_surface_create_for_data);
+slim_hidden_proto (cairo_image_surface_get_data);
 slim_hidden_proto (cairo_image_surface_get_height);
+slim_hidden_proto (cairo_image_surface_get_stride);
 slim_hidden_proto (cairo_image_surface_get_width);
+slim_hidden_proto (cairo_format_stride_for_width);
 slim_hidden_proto (cairo_line_to);
 slim_hidden_proto (cairo_mask);
 slim_hidden_proto (cairo_matrix_init);

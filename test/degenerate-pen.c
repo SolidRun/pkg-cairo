@@ -60,12 +60,17 @@ cairo_test_t test = {
 static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
+    cairo_set_source_rgb (cr, 1, 1, 1);
+    cairo_paint (cr);
+
+    cairo_set_source_rgb (cr, 0, 0, 0);
     cairo_set_line_join (cr, CAIRO_LINE_JOIN_ROUND);
 
     cairo_translate (cr, PAD, PAD);
 
     /* First compress the pen to a vertical line. */
     cairo_rectangle (cr, 0, 0, SIZE, SIZE);
+    cairo_curve_to (cr, SIZE / 2, 0, SIZE, SIZE / 2, SIZE, SIZE);
     cairo_save (cr);
     {
 	cairo_scale (cr, 0.000001, 1.0);
@@ -77,6 +82,7 @@ draw (cairo_t *cr, int width, int height)
 
     /* Then compress the pen to a horizontal line. */
     cairo_rectangle (cr, 0, 0, SIZE, SIZE);
+    cairo_curve_to (cr, SIZE / 2, 0, SIZE, SIZE / 2, SIZE, SIZE);
     cairo_save (cr);
     {
 	cairo_scale (cr, 1.0, 0.000001);
@@ -88,6 +94,7 @@ draw (cairo_t *cr, int width, int height)
 
     /* Finally a line at an angle. */
     cairo_rectangle (cr, 0, 0, SIZE, SIZE);
+    cairo_curve_to (cr, SIZE / 2, 0, SIZE, SIZE / 2, SIZE, SIZE);
     cairo_save (cr);
     {
 	cairo_rotate (cr, M_PI / 4.0);
