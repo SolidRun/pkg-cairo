@@ -50,10 +50,13 @@ host_triplet = @host@
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__append_6 = xlib-surface
 @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@am__append_7 = multi-page
 @CAIRO_HAS_PDF_SURFACE_TRUE@@CAIRO_HAS_PS_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_8 = fallback-resolution
+EXTRA_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_11) \
+	$(am__EXEEXT_12) $(am__EXEEXT_15)
 @HAVE_PTHREAD_TRUE@am__append_9 = -lpthread
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__append_10 = pdf2png$(EXEEXT)
-@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__append_11 = svg2png$(EXEEXT)
-EXTRA_PROGRAMS = $(am__EXEEXT_9) $(am__EXEEXT_12)
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_11 = pdf2svg$(EXEEXT)
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__append_12 = svg2png$(EXEEXT)
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_13 = svg2pdf$(EXEEXT)
 subdir = test
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -64,26 +67,29 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
+am__DEPENDENCIES_1 =
 libcairotest_la_DEPENDENCIES = $(top_builddir)/test/pdiff/libpdiff.la \
 	$(top_builddir)/boilerplate/libcairoboilerplate.la \
-	$(top_builddir)/src/libcairo.la
+	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_1)
 am_libcairotest_la_OBJECTS = buffer-diff.lo cairo-test.lo
 libcairotest_la_OBJECTS = $(am_libcairotest_la_OBJECTS)
-@HAVE_PTHREAD_TRUE@am__EXEEXT_1 = pthread-show-text$(EXEEXT)
-@CAIRO_HAS_FT_FONT_TRUE@am__EXEEXT_2 = bitmap-font$(EXEEXT) \
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__EXEEXT_1 = pdf2svg$(EXEEXT)
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@am__EXEEXT_2 = svg2pdf$(EXEEXT)
+@HAVE_PTHREAD_TRUE@am__EXEEXT_3 = pthread-show-text$(EXEEXT)
+@CAIRO_HAS_FT_FONT_TRUE@am__EXEEXT_4 = bitmap-font$(EXEEXT) \
 @CAIRO_HAS_FT_FONT_TRUE@	ft-font-create-for-ft-face$(EXEEXT) \
 @CAIRO_HAS_FT_FONT_TRUE@	ft-text-vertical-layout-type1$(EXEEXT) \
 @CAIRO_HAS_FT_FONT_TRUE@	ft-text-vertical-layout-type3$(EXEEXT) \
 @CAIRO_HAS_FT_FONT_TRUE@	ft-text-antialias-none$(EXEEXT)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__EXEEXT_3 = svg-surface$(EXEEXT) \
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__EXEEXT_5 = svg-surface$(EXEEXT) \
 @CAIRO_HAS_SVG_SURFACE_TRUE@	svg-clip$(EXEEXT)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__EXEEXT_4 = pdf-features$(EXEEXT)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__EXEEXT_5 = ps-features$(EXEEXT)
-@CAIRO_HAS_XLIB_SURFACE_TRUE@am__EXEEXT_6 = xlib-surface$(EXEEXT)
-@CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@am__EXEEXT_7 =  \
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__EXEEXT_6 = pdf-features$(EXEEXT)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__EXEEXT_7 = ps-features$(EXEEXT)
+@CAIRO_HAS_XLIB_SURFACE_TRUE@am__EXEEXT_8 = xlib-surface$(EXEEXT)
+@CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@am__EXEEXT_9 =  \
 @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@	multi-page$(EXEEXT)
-@CAIRO_HAS_PDF_SURFACE_TRUE@@CAIRO_HAS_PS_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__EXEEXT_8 = fallback-resolution$(EXEEXT)
-am__EXEEXT_9 = a8-mask$(EXEEXT) big-trap$(EXEEXT) caps-joins$(EXEEXT) \
+@CAIRO_HAS_PDF_SURFACE_TRUE@@CAIRO_HAS_PS_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__EXEEXT_10 = fallback-resolution$(EXEEXT)
+am__EXEEXT_11 = a8-mask$(EXEEXT) big-trap$(EXEEXT) caps-joins$(EXEEXT) \
 	caps-joins-alpha$(EXEEXT) caps-sub-paths$(EXEEXT) \
 	clip-all$(EXEEXT) clip-fill-rule$(EXEEXT) \
 	clip-fill-rule-pixel-aligned$(EXEEXT) clip-nesting$(EXEEXT) \
@@ -108,7 +114,8 @@ am__EXEEXT_9 = a8-mask$(EXEEXT) big-trap$(EXEEXT) caps-joins$(EXEEXT) \
 	get-clip$(EXEEXT) get-group-target$(EXEEXT) \
 	get-path-extents$(EXEEXT) gradient-alpha$(EXEEXT) \
 	infinite-join$(EXEEXT) in-fill-empty-trapezoid$(EXEEXT) \
-	leaky-dash$(EXEEXT) leaky-polygon$(EXEEXT) line-width$(EXEEXT) \
+	invalid-matrix$(EXEEXT) leaky-dash$(EXEEXT) \
+	leaky-polygon$(EXEEXT) line-width$(EXEEXT) \
 	line-width-scale$(EXEEXT) line-width-zero$(EXEEXT) \
 	linear-gradient$(EXEEXT) linear-gradient-reflect$(EXEEXT) \
 	long-lines$(EXEEXT) mask$(EXEEXT) mask-ctm$(EXEEXT) \
@@ -127,516 +134,618 @@ am__EXEEXT_9 = a8-mask$(EXEEXT) big-trap$(EXEEXT) caps-joins$(EXEEXT) \
 	select-font-no-show-text$(EXEEXT) self-copy$(EXEEXT) \
 	self-intersecting$(EXEEXT) set-source$(EXEEXT) \
 	show-text-current-point$(EXEEXT) skew-extreme$(EXEEXT) \
-	source-clip$(EXEEXT) source-clip-scale$(EXEEXT) \
-	source-surface-scale-paint$(EXEEXT) \
+	solid-pattern-cache-stress$(EXEEXT) source-clip$(EXEEXT) \
+	source-clip-scale$(EXEEXT) source-surface-scale-paint$(EXEEXT) \
 	surface-finish-twice$(EXEEXT) surface-pattern$(EXEEXT) \
 	surface-pattern-scale-down$(EXEEXT) \
 	surface-pattern-scale-up$(EXEEXT) text-antialias-gray$(EXEEXT) \
 	text-antialias-none$(EXEEXT) text-antialias-subpixel$(EXEEXT) \
-	text-cache-crash$(EXEEXT) text-glyph-range$(EXEEXT) \
-	text-pattern$(EXEEXT) text-rotate$(EXEEXT) \
-	text-zero-len$(EXEEXT) transforms$(EXEEXT) \
-	translate-show-surface$(EXEEXT) trap-clip$(EXEEXT) \
-	truetype-tables$(EXEEXT) unantialiased-shapes$(EXEEXT) \
-	unbounded-operator$(EXEEXT) user-data$(EXEEXT) \
-	rel-path$(EXEEXT) push-group$(EXEEXT) zero-alpha$(EXEEXT) \
-	$(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
-	$(am__EXEEXT_4) $(am__EXEEXT_5) $(am__EXEEXT_6) \
-	$(am__EXEEXT_7) $(am__EXEEXT_8)
-@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__EXEEXT_10 = pdf2png$(EXEEXT)
-@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__EXEEXT_11 = svg2png$(EXEEXT)
-am__EXEEXT_12 = imagediff$(EXEEXT) png-flatten$(EXEEXT) \
-	$(am__EXEEXT_10) $(am__EXEEXT_11)
+	text-cache-crash$(EXEEXT) text-pattern$(EXEEXT) \
+	text-rotate$(EXEEXT) text-zero-len$(EXEEXT) \
+	transforms$(EXEEXT) translate-show-surface$(EXEEXT) \
+	trap-clip$(EXEEXT) truetype-tables$(EXEEXT) \
+	unantialiased-shapes$(EXEEXT) unbounded-operator$(EXEEXT) \
+	user-data$(EXEEXT) rel-path$(EXEEXT) push-group$(EXEEXT) \
+	zero-alpha$(EXEEXT) $(am__EXEEXT_3) $(am__EXEEXT_4) \
+	$(am__EXEEXT_5) $(am__EXEEXT_6) $(am__EXEEXT_7) \
+	$(am__EXEEXT_8) $(am__EXEEXT_9) $(am__EXEEXT_10)
+am__EXEEXT_12 = extend-reflect$(EXEEXT) show-glyphs-many$(EXEEXT) \
+	text-glyph-range$(EXEEXT)
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@am__EXEEXT_13 = pdf2png$(EXEEXT)
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@am__EXEEXT_14 = svg2png$(EXEEXT)
+am__EXEEXT_15 = imagediff$(EXEEXT) png-flatten$(EXEEXT) \
+	$(am__EXEEXT_13) $(am__EXEEXT_14)
 a8_mask_SOURCES = a8-mask.c
 a8_mask_OBJECTS = a8-mask.$(OBJEXT)
 a8_mask_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
-a8_mask_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+a8_mask_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 big_trap_SOURCES = big-trap.c
 big_trap_OBJECTS = big-trap.$(OBJEXT)
 big_trap_LDADD = $(LDADD)
-big_trap_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+big_trap_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 bitmap_font_SOURCES = bitmap-font.c
 bitmap_font_OBJECTS = bitmap-font.$(OBJEXT)
 bitmap_font_LDADD = $(LDADD)
-bitmap_font_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+bitmap_font_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 caps_joins_SOURCES = caps-joins.c
 caps_joins_OBJECTS = caps-joins.$(OBJEXT)
 caps_joins_LDADD = $(LDADD)
-caps_joins_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+caps_joins_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 caps_joins_alpha_SOURCES = caps-joins-alpha.c
 caps_joins_alpha_OBJECTS = caps-joins-alpha.$(OBJEXT)
 caps_joins_alpha_LDADD = $(LDADD)
-caps_joins_alpha_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+caps_joins_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 caps_sub_paths_SOURCES = caps-sub-paths.c
 caps_sub_paths_OBJECTS = caps-sub-paths.$(OBJEXT)
 caps_sub_paths_LDADD = $(LDADD)
-caps_sub_paths_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+caps_sub_paths_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 clip_all_SOURCES = clip-all.c
 clip_all_OBJECTS = clip-all.$(OBJEXT)
 clip_all_LDADD = $(LDADD)
-clip_all_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+clip_all_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 clip_fill_rule_SOURCES = clip-fill-rule.c
 clip_fill_rule_OBJECTS = clip-fill-rule.$(OBJEXT)
 clip_fill_rule_LDADD = $(LDADD)
-clip_fill_rule_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+clip_fill_rule_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 clip_fill_rule_pixel_aligned_SOURCES = clip-fill-rule-pixel-aligned.c
 clip_fill_rule_pixel_aligned_OBJECTS =  \
 	clip-fill-rule-pixel-aligned.$(OBJEXT)
 clip_fill_rule_pixel_aligned_LDADD = $(LDADD)
-clip_fill_rule_pixel_aligned_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+clip_fill_rule_pixel_aligned_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 clip_nesting_SOURCES = clip-nesting.c
 clip_nesting_OBJECTS = clip-nesting.$(OBJEXT)
 clip_nesting_LDADD = $(LDADD)
-clip_nesting_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+clip_nesting_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 clip_operator_SOURCES = clip-operator.c
 clip_operator_OBJECTS = clip-operator.$(OBJEXT)
 clip_operator_LDADD = $(LDADD)
-clip_operator_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+clip_operator_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 clip_push_group_SOURCES = clip-push-group.c
 clip_push_group_OBJECTS = clip-push-group.$(OBJEXT)
 clip_push_group_LDADD = $(LDADD)
-clip_push_group_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+clip_push_group_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 clip_twice_SOURCES = clip-twice.c
 clip_twice_OBJECTS = clip-twice.$(OBJEXT)
 clip_twice_LDADD = $(LDADD)
-clip_twice_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+clip_twice_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 close_path_SOURCES = close-path.c
 close_path_OBJECTS = close-path.$(OBJEXT)
 close_path_LDADD = $(LDADD)
-close_path_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+close_path_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 composite_integer_translate_over_SOURCES =  \
 	composite-integer-translate-over.c
 composite_integer_translate_over_OBJECTS =  \
 	composite-integer-translate-over.$(OBJEXT)
 composite_integer_translate_over_LDADD = $(LDADD)
-composite_integer_translate_over_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+composite_integer_translate_over_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 composite_integer_translate_over_repeat_SOURCES =  \
 	composite-integer-translate-over-repeat.c
 composite_integer_translate_over_repeat_OBJECTS =  \
 	composite-integer-translate-over-repeat.$(OBJEXT)
 composite_integer_translate_over_repeat_LDADD = $(LDADD)
 composite_integer_translate_over_repeat_DEPENDENCIES =  \
-	libcairotest.la $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) libcairotest.la $(am__DEPENDENCIES_1)
 composite_integer_translate_source_SOURCES =  \
 	composite-integer-translate-source.c
 composite_integer_translate_source_OBJECTS =  \
 	composite-integer-translate-source.$(OBJEXT)
 composite_integer_translate_source_LDADD = $(LDADD)
-composite_integer_translate_source_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+composite_integer_translate_source_DEPENDENCIES =  \
+	$(am__DEPENDENCIES_1) libcairotest.la $(am__DEPENDENCIES_1)
 copy_path_SOURCES = copy-path.c
 copy_path_OBJECTS = copy-path.$(OBJEXT)
 copy_path_LDADD = $(LDADD)
-copy_path_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+copy_path_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 create_for_stream_SOURCES = create-for-stream.c
 create_for_stream_OBJECTS = create-for-stream.$(OBJEXT)
 create_for_stream_LDADD = $(LDADD)
-create_for_stream_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+create_for_stream_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 create_from_png_SOURCES = create-from-png.c
 create_from_png_OBJECTS = create-from-png.$(OBJEXT)
 create_from_png_LDADD = $(LDADD)
-create_from_png_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+create_from_png_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 create_from_png_stream_SOURCES = create-from-png-stream.c
 create_from_png_stream_OBJECTS = create-from-png-stream.$(OBJEXT)
 create_from_png_stream_LDADD = $(LDADD)
-create_from_png_stream_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+create_from_png_stream_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 dash_caps_joins_SOURCES = dash-caps-joins.c
 dash_caps_joins_OBJECTS = dash-caps-joins.$(OBJEXT)
 dash_caps_joins_LDADD = $(LDADD)
-dash_caps_joins_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+dash_caps_joins_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 dash_no_dash_SOURCES = dash-no-dash.c
 dash_no_dash_OBJECTS = dash-no-dash.$(OBJEXT)
 dash_no_dash_LDADD = $(LDADD)
-dash_no_dash_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+dash_no_dash_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 dash_offset_negative_SOURCES = dash-offset-negative.c
 dash_offset_negative_OBJECTS = dash-offset-negative.$(OBJEXT)
 dash_offset_negative_LDADD = $(LDADD)
-dash_offset_negative_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+dash_offset_negative_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 dash_scale_SOURCES = dash-scale.c
 dash_scale_OBJECTS = dash-scale.$(OBJEXT)
 dash_scale_LDADD = $(LDADD)
-dash_scale_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+dash_scale_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 dash_state_SOURCES = dash-state.c
 dash_state_OBJECTS = dash-state.$(OBJEXT)
 dash_state_LDADD = $(LDADD)
-dash_state_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+dash_state_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 dash_zero_length_SOURCES = dash-zero-length.c
 dash_zero_length_OBJECTS = dash-zero-length.$(OBJEXT)
 dash_zero_length_LDADD = $(LDADD)
-dash_zero_length_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+dash_zero_length_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 degenerate_path_SOURCES = degenerate-path.c
 degenerate_path_OBJECTS = degenerate-path.$(OBJEXT)
 degenerate_path_LDADD = $(LDADD)
-degenerate_path_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+degenerate_path_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 device_offset_SOURCES = device-offset.c
 device_offset_OBJECTS = device-offset.$(OBJEXT)
 device_offset_LDADD = $(LDADD)
-device_offset_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+device_offset_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 device_offset_positive_SOURCES = device-offset-positive.c
 device_offset_positive_OBJECTS = device-offset-positive.$(OBJEXT)
 device_offset_positive_LDADD = $(LDADD)
-device_offset_positive_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+device_offset_positive_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 extend_pad_SOURCES = extend-pad.c
 extend_pad_OBJECTS = extend-pad.$(OBJEXT)
 extend_pad_LDADD = $(LDADD)
-extend_pad_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+extend_pad_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
+extend_reflect_SOURCES = extend-reflect.c
+extend_reflect_OBJECTS = extend-reflect.$(OBJEXT)
+extend_reflect_LDADD = $(LDADD)
+extend_reflect_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 fallback_resolution_SOURCES = fallback-resolution.c
 fallback_resolution_OBJECTS = fallback-resolution.$(OBJEXT)
 fallback_resolution_LDADD = $(LDADD)
-fallback_resolution_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+fallback_resolution_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 fill_and_stroke_SOURCES = fill-and-stroke.c
 fill_and_stroke_OBJECTS = fill-and-stroke.$(OBJEXT)
 fill_and_stroke_LDADD = $(LDADD)
-fill_and_stroke_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+fill_and_stroke_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 fill_and_stroke_alpha_SOURCES = fill-and-stroke-alpha.c
 fill_and_stroke_alpha_OBJECTS = fill-and-stroke-alpha.$(OBJEXT)
 fill_and_stroke_alpha_LDADD = $(LDADD)
-fill_and_stroke_alpha_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+fill_and_stroke_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 fill_and_stroke_alpha_add_SOURCES = fill-and-stroke-alpha-add.c
 fill_and_stroke_alpha_add_OBJECTS =  \
 	fill-and-stroke-alpha-add.$(OBJEXT)
 fill_and_stroke_alpha_add_LDADD = $(LDADD)
-fill_and_stroke_alpha_add_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+fill_and_stroke_alpha_add_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 fill_degenerate_sort_order_SOURCES = fill-degenerate-sort-order.c
 fill_degenerate_sort_order_OBJECTS =  \
 	fill-degenerate-sort-order.$(OBJEXT)
 fill_degenerate_sort_order_LDADD = $(LDADD)
-fill_degenerate_sort_order_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+fill_degenerate_sort_order_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 fill_missed_stop_SOURCES = fill-missed-stop.c
 fill_missed_stop_OBJECTS = fill-missed-stop.$(OBJEXT)
 fill_missed_stop_LDADD = $(LDADD)
-fill_missed_stop_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+fill_missed_stop_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 fill_rule_SOURCES = fill-rule.c
 fill_rule_OBJECTS = fill-rule.$(OBJEXT)
 fill_rule_LDADD = $(LDADD)
-fill_rule_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+fill_rule_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 filter_nearest_offset_SOURCES = filter-nearest-offset.c
 filter_nearest_offset_OBJECTS = filter-nearest-offset.$(OBJEXT)
 filter_nearest_offset_LDADD = $(LDADD)
-filter_nearest_offset_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+filter_nearest_offset_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 font_face_get_type_SOURCES = font-face-get-type.c
 font_face_get_type_OBJECTS = font-face-get-type.$(OBJEXT)
 font_face_get_type_LDADD = $(LDADD)
-font_face_get_type_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+font_face_get_type_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 font_matrix_translation_SOURCES = font-matrix-translation.c
 font_matrix_translation_OBJECTS = font-matrix-translation.$(OBJEXT)
 font_matrix_translation_LDADD = $(LDADD)
-font_matrix_translation_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+font_matrix_translation_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 ft_font_create_for_ft_face_SOURCES = ft-font-create-for-ft-face.c
 ft_font_create_for_ft_face_OBJECTS =  \
 	ft-font-create-for-ft-face.$(OBJEXT)
 ft_font_create_for_ft_face_LDADD = $(LDADD)
-ft_font_create_for_ft_face_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+ft_font_create_for_ft_face_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 ft_text_antialias_none_SOURCES = ft-text-antialias-none.c
 ft_text_antialias_none_OBJECTS = ft-text-antialias-none.$(OBJEXT)
 ft_text_antialias_none_LDADD = $(LDADD)
-ft_text_antialias_none_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+ft_text_antialias_none_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 ft_text_vertical_layout_type1_SOURCES =  \
 	ft-text-vertical-layout-type1.c
 ft_text_vertical_layout_type1_OBJECTS =  \
 	ft-text-vertical-layout-type1.$(OBJEXT)
 ft_text_vertical_layout_type1_LDADD = $(LDADD)
-ft_text_vertical_layout_type1_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+ft_text_vertical_layout_type1_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 ft_text_vertical_layout_type3_SOURCES =  \
 	ft-text-vertical-layout-type3.c
 ft_text_vertical_layout_type3_OBJECTS =  \
 	ft-text-vertical-layout-type3.$(OBJEXT)
 ft_text_vertical_layout_type3_LDADD = $(LDADD)
-ft_text_vertical_layout_type3_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+ft_text_vertical_layout_type3_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 get_and_set_SOURCES = get-and-set.c
 get_and_set_OBJECTS = get-and-set.$(OBJEXT)
 get_and_set_LDADD = $(LDADD)
-get_and_set_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+get_and_set_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 get_clip_SOURCES = get-clip.c
 get_clip_OBJECTS = get-clip.$(OBJEXT)
 get_clip_LDADD = $(LDADD)
-get_clip_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+get_clip_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 get_group_target_SOURCES = get-group-target.c
 get_group_target_OBJECTS = get-group-target.$(OBJEXT)
 get_group_target_LDADD = $(LDADD)
-get_group_target_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+get_group_target_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 get_path_extents_SOURCES = get-path-extents.c
 get_path_extents_OBJECTS = get-path-extents.$(OBJEXT)
 get_path_extents_LDADD = $(LDADD)
-get_path_extents_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+get_path_extents_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 glyph_cache_pressure_SOURCES = glyph-cache-pressure.c
 glyph_cache_pressure_OBJECTS = glyph-cache-pressure.$(OBJEXT)
 glyph_cache_pressure_LDADD = $(LDADD)
-glyph_cache_pressure_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+glyph_cache_pressure_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 gradient_alpha_SOURCES = gradient-alpha.c
 gradient_alpha_OBJECTS = gradient-alpha.$(OBJEXT)
 gradient_alpha_LDADD = $(LDADD)
-gradient_alpha_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+gradient_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 imagediff_SOURCES = imagediff.c
 imagediff_OBJECTS = imagediff.$(OBJEXT)
 imagediff_LDADD = $(LDADD)
-imagediff_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+imagediff_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 in_fill_empty_trapezoid_SOURCES = in-fill-empty-trapezoid.c
 in_fill_empty_trapezoid_OBJECTS = in-fill-empty-trapezoid.$(OBJEXT)
 in_fill_empty_trapezoid_LDADD = $(LDADD)
-in_fill_empty_trapezoid_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+in_fill_empty_trapezoid_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 infinite_join_SOURCES = infinite-join.c
 infinite_join_OBJECTS = infinite-join.$(OBJEXT)
 infinite_join_LDADD = $(LDADD)
-infinite_join_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+infinite_join_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
+invalid_matrix_SOURCES = invalid-matrix.c
+invalid_matrix_OBJECTS = invalid-matrix.$(OBJEXT)
+invalid_matrix_LDADD = $(LDADD)
+invalid_matrix_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 leaky_dash_SOURCES = leaky-dash.c
 leaky_dash_OBJECTS = leaky-dash.$(OBJEXT)
 leaky_dash_LDADD = $(LDADD)
-leaky_dash_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+leaky_dash_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 leaky_polygon_SOURCES = leaky-polygon.c
 leaky_polygon_OBJECTS = leaky-polygon.$(OBJEXT)
 leaky_polygon_LDADD = $(LDADD)
-leaky_polygon_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+leaky_polygon_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 line_width_SOURCES = line-width.c
 line_width_OBJECTS = line-width.$(OBJEXT)
 line_width_LDADD = $(LDADD)
-line_width_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+line_width_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 line_width_scale_SOURCES = line-width-scale.c
 line_width_scale_OBJECTS = line-width-scale.$(OBJEXT)
 line_width_scale_LDADD = $(LDADD)
-line_width_scale_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+line_width_scale_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 line_width_zero_SOURCES = line-width-zero.c
 line_width_zero_OBJECTS = line-width-zero.$(OBJEXT)
 line_width_zero_LDADD = $(LDADD)
-line_width_zero_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+line_width_zero_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 linear_gradient_SOURCES = linear-gradient.c
 linear_gradient_OBJECTS = linear-gradient.$(OBJEXT)
 linear_gradient_LDADD = $(LDADD)
-linear_gradient_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+linear_gradient_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 linear_gradient_reflect_SOURCES = linear-gradient-reflect.c
 linear_gradient_reflect_OBJECTS = linear-gradient-reflect.$(OBJEXT)
 linear_gradient_reflect_LDADD = $(LDADD)
-linear_gradient_reflect_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+linear_gradient_reflect_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 long_lines_SOURCES = long-lines.c
 long_lines_OBJECTS = long-lines.$(OBJEXT)
 long_lines_LDADD = $(LDADD)
-long_lines_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+long_lines_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 mask_SOURCES = mask.c
 mask_OBJECTS = mask.$(OBJEXT)
 mask_LDADD = $(LDADD)
-mask_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+mask_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 mask_ctm_SOURCES = mask-ctm.c
 mask_ctm_OBJECTS = mask-ctm.$(OBJEXT)
 mask_ctm_LDADD = $(LDADD)
-mask_ctm_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+mask_ctm_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 mask_surface_ctm_SOURCES = mask-surface-ctm.c
 mask_surface_ctm_OBJECTS = mask-surface-ctm.$(OBJEXT)
 mask_surface_ctm_LDADD = $(LDADD)
-mask_surface_ctm_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+mask_surface_ctm_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 move_to_show_surface_SOURCES = move-to-show-surface.c
 move_to_show_surface_OBJECTS = move-to-show-surface.$(OBJEXT)
 move_to_show_surface_LDADD = $(LDADD)
-move_to_show_surface_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+move_to_show_surface_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 multi_page_SOURCES = multi-page.c
 multi_page_OBJECTS = multi-page.$(OBJEXT)
 multi_page_LDADD = $(LDADD)
-multi_page_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+multi_page_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 new_sub_path_SOURCES = new-sub-path.c
 new_sub_path_OBJECTS = new-sub-path.$(OBJEXT)
 new_sub_path_LDADD = $(LDADD)
-new_sub_path_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+new_sub_path_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 nil_surface_SOURCES = nil-surface.c
 nil_surface_OBJECTS = nil-surface.$(OBJEXT)
 nil_surface_LDADD = $(LDADD)
-nil_surface_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+nil_surface_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 operator_clear_SOURCES = operator-clear.c
 operator_clear_OBJECTS = operator-clear.$(OBJEXT)
 operator_clear_LDADD = $(LDADD)
-operator_clear_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+operator_clear_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 operator_source_SOURCES = operator-source.c
 operator_source_OBJECTS = operator-source.$(OBJEXT)
 operator_source_LDADD = $(LDADD)
-operator_source_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+operator_source_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 paint_SOURCES = paint.c
 paint_OBJECTS = paint.$(OBJEXT)
 paint_LDADD = $(LDADD)
-paint_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+paint_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 paint_repeat_SOURCES = paint-repeat.c
 paint_repeat_OBJECTS = paint-repeat.$(OBJEXT)
 paint_repeat_LDADD = $(LDADD)
-paint_repeat_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+paint_repeat_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 paint_source_alpha_SOURCES = paint-source-alpha.c
 paint_source_alpha_OBJECTS = paint-source-alpha.$(OBJEXT)
 paint_source_alpha_LDADD = $(LDADD)
-paint_source_alpha_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+paint_source_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 paint_with_alpha_SOURCES = paint-with-alpha.c
 paint_with_alpha_OBJECTS = paint-with-alpha.$(OBJEXT)
 paint_with_alpha_LDADD = $(LDADD)
-paint_with_alpha_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+paint_with_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 pattern_get_type_SOURCES = pattern-get-type.c
 pattern_get_type_OBJECTS = pattern-get-type.$(OBJEXT)
 pattern_get_type_LDADD = $(LDADD)
-pattern_get_type_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+pattern_get_type_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 pattern_getters_SOURCES = pattern-getters.c
 pattern_getters_OBJECTS = pattern-getters.$(OBJEXT)
 pattern_getters_LDADD = $(LDADD)
-pattern_getters_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+pattern_getters_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 pdf_features_SOURCES = pdf-features.c
 pdf_features_OBJECTS = pdf-features.$(OBJEXT)
 pdf_features_LDADD = $(LDADD)
-pdf_features_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+pdf_features_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 pdf2png_SOURCES = pdf2png.c
 pdf2png_OBJECTS = pdf2png-pdf2png.$(OBJEXT)
-am__DEPENDENCIES_2 = libcairotest.la $(am__DEPENDENCIES_1)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@pdf2png_DEPENDENCIES =  \
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@	$(am__DEPENDENCIES_2) \
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@	$(am__DEPENDENCIES_1)
+pdf2svg_SOURCES = pdf2svg.c
+pdf2svg_OBJECTS = pdf2svg-pdf2svg.$(OBJEXT)
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@pdf2svg_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@	$(am__DEPENDENCIES_1)
 pixman_rotate_SOURCES = pixman-rotate.c
 pixman_rotate_OBJECTS = pixman-rotate.$(OBJEXT)
 pixman_rotate_LDADD = $(LDADD)
-pixman_rotate_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+pixman_rotate_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 png_flatten_SOURCES = png-flatten.c
 png_flatten_OBJECTS = png-flatten.$(OBJEXT)
 png_flatten_LDADD = $(LDADD)
-png_flatten_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+png_flatten_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 ps_features_SOURCES = ps-features.c
 ps_features_OBJECTS = ps-features.$(OBJEXT)
 ps_features_LDADD = $(LDADD)
-ps_features_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+ps_features_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 pthread_show_text_SOURCES = pthread-show-text.c
 pthread_show_text_OBJECTS = pthread-show-text.$(OBJEXT)
 pthread_show_text_LDADD = $(LDADD)
-pthread_show_text_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+pthread_show_text_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 push_group_SOURCES = push-group.c
 push_group_OBJECTS = push-group.$(OBJEXT)
 push_group_LDADD = $(LDADD)
-push_group_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+push_group_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 radial_gradient_SOURCES = radial-gradient.c
 radial_gradient_OBJECTS = radial-gradient.$(OBJEXT)
 radial_gradient_LDADD = $(LDADD)
-radial_gradient_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+radial_gradient_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 random_intersections_SOURCES = random-intersections.c
 random_intersections_OBJECTS = random-intersections.$(OBJEXT)
 random_intersections_LDADD = $(LDADD)
-random_intersections_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+random_intersections_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 rectangle_rounding_error_SOURCES = rectangle-rounding-error.c
 rectangle_rounding_error_OBJECTS = rectangle-rounding-error.$(OBJEXT)
 rectangle_rounding_error_LDADD = $(LDADD)
-rectangle_rounding_error_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+rectangle_rounding_error_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 rectilinear_stroke_SOURCES = rectilinear-stroke.c
 rectilinear_stroke_OBJECTS = rectilinear-stroke.$(OBJEXT)
 rectilinear_stroke_LDADD = $(LDADD)
-rectilinear_stroke_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+rectilinear_stroke_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 rel_path_SOURCES = rel-path.c
 rel_path_OBJECTS = rel-path.$(OBJEXT)
 rel_path_LDADD = $(LDADD)
-rel_path_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+rel_path_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 rotate_image_surface_paint_SOURCES = rotate-image-surface-paint.c
 rotate_image_surface_paint_OBJECTS =  \
 	rotate-image-surface-paint.$(OBJEXT)
 rotate_image_surface_paint_LDADD = $(LDADD)
-rotate_image_surface_paint_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+rotate_image_surface_paint_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 scale_down_source_surface_paint_SOURCES =  \
 	scale-down-source-surface-paint.c
 scale_down_source_surface_paint_OBJECTS =  \
 	scale-down-source-surface-paint.$(OBJEXT)
 scale_down_source_surface_paint_LDADD = $(LDADD)
-scale_down_source_surface_paint_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+scale_down_source_surface_paint_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 scale_source_surface_paint_SOURCES = scale-source-surface-paint.c
 scale_source_surface_paint_OBJECTS =  \
 	scale-source-surface-paint.$(OBJEXT)
 scale_source_surface_paint_LDADD = $(LDADD)
-scale_source_surface_paint_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+scale_source_surface_paint_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 select_font_face_SOURCES = select-font-face.c
 select_font_face_OBJECTS = select-font-face.$(OBJEXT)
 select_font_face_LDADD = $(LDADD)
-select_font_face_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+select_font_face_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 select_font_no_show_text_SOURCES = select-font-no-show-text.c
 select_font_no_show_text_OBJECTS = select-font-no-show-text.$(OBJEXT)
 select_font_no_show_text_LDADD = $(LDADD)
-select_font_no_show_text_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+select_font_no_show_text_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 self_copy_SOURCES = self-copy.c
 self_copy_OBJECTS = self-copy.$(OBJEXT)
 self_copy_LDADD = $(LDADD)
-self_copy_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+self_copy_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 self_intersecting_SOURCES = self-intersecting.c
 self_intersecting_OBJECTS = self-intersecting.$(OBJEXT)
 self_intersecting_LDADD = $(LDADD)
-self_intersecting_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+self_intersecting_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 set_source_SOURCES = set-source.c
 set_source_OBJECTS = set-source.$(OBJEXT)
 set_source_LDADD = $(LDADD)
-set_source_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+set_source_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
+show_glyphs_many_SOURCES = show-glyphs-many.c
+show_glyphs_many_OBJECTS = show-glyphs-many.$(OBJEXT)
+show_glyphs_many_LDADD = $(LDADD)
+show_glyphs_many_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 show_text_current_point_SOURCES = show-text-current-point.c
 show_text_current_point_OBJECTS = show-text-current-point.$(OBJEXT)
 show_text_current_point_LDADD = $(LDADD)
-show_text_current_point_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+show_text_current_point_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 skew_extreme_SOURCES = skew-extreme.c
 skew_extreme_OBJECTS = skew-extreme.$(OBJEXT)
 skew_extreme_LDADD = $(LDADD)
-skew_extreme_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+skew_extreme_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
+solid_pattern_cache_stress_SOURCES = solid-pattern-cache-stress.c
+solid_pattern_cache_stress_OBJECTS =  \
+	solid-pattern-cache-stress.$(OBJEXT)
+solid_pattern_cache_stress_LDADD = $(LDADD)
+solid_pattern_cache_stress_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 source_clip_SOURCES = source-clip.c
 source_clip_OBJECTS = source-clip.$(OBJEXT)
 source_clip_LDADD = $(LDADD)
-source_clip_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+source_clip_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 source_clip_scale_SOURCES = source-clip-scale.c
 source_clip_scale_OBJECTS = source-clip-scale.$(OBJEXT)
 source_clip_scale_LDADD = $(LDADD)
-source_clip_scale_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+source_clip_scale_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 source_surface_scale_paint_SOURCES = source-surface-scale-paint.c
 source_surface_scale_paint_OBJECTS =  \
 	source-surface-scale-paint.$(OBJEXT)
 source_surface_scale_paint_LDADD = $(LDADD)
-source_surface_scale_paint_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+source_surface_scale_paint_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 surface_finish_twice_SOURCES = surface-finish-twice.c
 surface_finish_twice_OBJECTS = surface-finish-twice.$(OBJEXT)
 surface_finish_twice_LDADD = $(LDADD)
-surface_finish_twice_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+surface_finish_twice_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 surface_pattern_SOURCES = surface-pattern.c
 surface_pattern_OBJECTS = surface-pattern.$(OBJEXT)
 surface_pattern_LDADD = $(LDADD)
-surface_pattern_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+surface_pattern_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 surface_pattern_scale_down_SOURCES = surface-pattern-scale-down.c
 surface_pattern_scale_down_OBJECTS =  \
 	surface-pattern-scale-down.$(OBJEXT)
 surface_pattern_scale_down_LDADD = $(LDADD)
-surface_pattern_scale_down_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+surface_pattern_scale_down_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 surface_pattern_scale_up_SOURCES = surface-pattern-scale-up.c
 surface_pattern_scale_up_OBJECTS = surface-pattern-scale-up.$(OBJEXT)
 surface_pattern_scale_up_LDADD = $(LDADD)
-surface_pattern_scale_up_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+surface_pattern_scale_up_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 svg_clip_SOURCES = svg-clip.c
 svg_clip_OBJECTS = svg-clip.$(OBJEXT)
 svg_clip_LDADD = $(LDADD)
-svg_clip_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+svg_clip_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 svg_surface_SOURCES = svg-surface.c
 svg_surface_OBJECTS = svg-surface.$(OBJEXT)
 svg_surface_LDADD = $(LDADD)
-svg_surface_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+svg_surface_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
+svg2pdf_SOURCES = svg2pdf.c
+svg2pdf_OBJECTS = svg2pdf-svg2pdf.$(OBJEXT)
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@svg2pdf_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@	$(am__DEPENDENCIES_1)
 svg2png_SOURCES = svg2png.c
 svg2png_OBJECTS = svg2png-svg2png.$(OBJEXT)
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@svg2png_DEPENDENCIES =  \
@@ -645,77 +754,88 @@ svg2png_OBJECTS = svg2png-svg2png.$(OBJEXT)
 text_antialias_gray_SOURCES = text-antialias-gray.c
 text_antialias_gray_OBJECTS = text-antialias-gray.$(OBJEXT)
 text_antialias_gray_LDADD = $(LDADD)
-text_antialias_gray_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+text_antialias_gray_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 text_antialias_none_SOURCES = text-antialias-none.c
 text_antialias_none_OBJECTS = text-antialias-none.$(OBJEXT)
 text_antialias_none_LDADD = $(LDADD)
-text_antialias_none_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+text_antialias_none_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 text_antialias_subpixel_SOURCES = text-antialias-subpixel.c
 text_antialias_subpixel_OBJECTS = text-antialias-subpixel.$(OBJEXT)
 text_antialias_subpixel_LDADD = $(LDADD)
-text_antialias_subpixel_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+text_antialias_subpixel_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 text_cache_crash_SOURCES = text-cache-crash.c
 text_cache_crash_OBJECTS = text-cache-crash.$(OBJEXT)
 text_cache_crash_LDADD = $(LDADD)
-text_cache_crash_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+text_cache_crash_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 text_glyph_range_SOURCES = text-glyph-range.c
 text_glyph_range_OBJECTS = text-glyph-range.$(OBJEXT)
 text_glyph_range_LDADD = $(LDADD)
-text_glyph_range_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+text_glyph_range_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 text_pattern_SOURCES = text-pattern.c
 text_pattern_OBJECTS = text-pattern.$(OBJEXT)
 text_pattern_LDADD = $(LDADD)
-text_pattern_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+text_pattern_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 text_rotate_SOURCES = text-rotate.c
 text_rotate_OBJECTS = text-rotate.$(OBJEXT)
 text_rotate_LDADD = $(LDADD)
-text_rotate_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+text_rotate_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 text_zero_len_SOURCES = text-zero-len.c
 text_zero_len_OBJECTS = text-zero-len.$(OBJEXT)
 text_zero_len_LDADD = $(LDADD)
-text_zero_len_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+text_zero_len_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 transforms_SOURCES = transforms.c
 transforms_OBJECTS = transforms.$(OBJEXT)
 transforms_LDADD = $(LDADD)
-transforms_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+transforms_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 translate_show_surface_SOURCES = translate-show-surface.c
 translate_show_surface_OBJECTS = translate-show-surface.$(OBJEXT)
 translate_show_surface_LDADD = $(LDADD)
-translate_show_surface_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+translate_show_surface_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 trap_clip_SOURCES = trap-clip.c
 trap_clip_OBJECTS = trap-clip.$(OBJEXT)
 trap_clip_LDADD = $(LDADD)
-trap_clip_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+trap_clip_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 truetype_tables_SOURCES = truetype-tables.c
 truetype_tables_OBJECTS = truetype-tables.$(OBJEXT)
 truetype_tables_LDADD = $(LDADD)
-truetype_tables_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+truetype_tables_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 unantialiased_shapes_SOURCES = unantialiased-shapes.c
 unantialiased_shapes_OBJECTS = unantialiased-shapes.$(OBJEXT)
 unantialiased_shapes_LDADD = $(LDADD)
-unantialiased_shapes_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+unantialiased_shapes_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 unbounded_operator_SOURCES = unbounded-operator.c
 unbounded_operator_OBJECTS = unbounded-operator.$(OBJEXT)
 unbounded_operator_LDADD = $(LDADD)
-unbounded_operator_DEPENDENCIES = libcairotest.la \
-	$(am__DEPENDENCIES_1)
+unbounded_operator_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libcairotest.la $(am__DEPENDENCIES_1)
 user_data_SOURCES = user-data.c
 user_data_OBJECTS = user-data.$(OBJEXT)
 user_data_LDADD = $(LDADD)
-user_data_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+user_data_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 xlib_surface_SOURCES = xlib-surface.c
 xlib_surface_OBJECTS = xlib-surface.$(OBJEXT)
 xlib_surface_LDADD = $(LDADD)
-xlib_surface_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+xlib_surface_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 zero_alpha_SOURCES = zero-alpha.c
 zero_alpha_OBJECTS = zero-alpha.$(OBJEXT)
 zero_alpha_LDADD = $(LDADD)
-zero_alpha_DEPENDENCIES = libcairotest.la $(am__DEPENDENCIES_1)
+zero_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1) libcairotest.la \
+	$(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -738,7 +858,7 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	dash-caps-joins.c dash-no-dash.c dash-offset-negative.c \
 	dash-scale.c dash-state.c dash-zero-length.c degenerate-path.c \
 	device-offset.c device-offset-positive.c extend-pad.c \
-	fallback-resolution.c fill-and-stroke.c \
+	extend-reflect.c fallback-resolution.c fill-and-stroke.c \
 	fill-and-stroke-alpha.c fill-and-stroke-alpha-add.c \
 	fill-degenerate-sort-order.c fill-missed-stop.c fill-rule.c \
 	filter-nearest-offset.c font-face-get-type.c \
@@ -747,31 +867,32 @@ SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	ft-text-vertical-layout-type3.c get-and-set.c get-clip.c \
 	get-group-target.c get-path-extents.c glyph-cache-pressure.c \
 	gradient-alpha.c imagediff.c in-fill-empty-trapezoid.c \
-	infinite-join.c leaky-dash.c leaky-polygon.c line-width.c \
-	line-width-scale.c line-width-zero.c linear-gradient.c \
-	linear-gradient-reflect.c long-lines.c mask.c mask-ctm.c \
-	mask-surface-ctm.c move-to-show-surface.c multi-page.c \
-	new-sub-path.c nil-surface.c operator-clear.c \
+	infinite-join.c invalid-matrix.c leaky-dash.c leaky-polygon.c \
+	line-width.c line-width-scale.c line-width-zero.c \
+	linear-gradient.c linear-gradient-reflect.c long-lines.c \
+	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
+	multi-page.c new-sub-path.c nil-surface.c operator-clear.c \
 	operator-source.c paint.c paint-repeat.c paint-source-alpha.c \
 	paint-with-alpha.c pattern-get-type.c pattern-getters.c \
-	pdf-features.c pdf2png.c pixman-rotate.c png-flatten.c \
-	ps-features.c pthread-show-text.c push-group.c \
+	pdf-features.c pdf2png.c pdf2svg.c pixman-rotate.c \
+	png-flatten.c ps-features.c pthread-show-text.c push-group.c \
 	radial-gradient.c random-intersections.c \
 	rectangle-rounding-error.c rectilinear-stroke.c rel-path.c \
 	rotate-image-surface-paint.c scale-down-source-surface-paint.c \
 	scale-source-surface-paint.c select-font-face.c \
 	select-font-no-show-text.c self-copy.c self-intersecting.c \
-	set-source.c show-text-current-point.c skew-extreme.c \
-	source-clip.c source-clip-scale.c source-surface-scale-paint.c \
+	set-source.c show-glyphs-many.c show-text-current-point.c \
+	skew-extreme.c solid-pattern-cache-stress.c source-clip.c \
+	source-clip-scale.c source-surface-scale-paint.c \
 	surface-finish-twice.c surface-pattern.c \
 	surface-pattern-scale-down.c surface-pattern-scale-up.c \
-	svg-clip.c svg-surface.c svg2png.c text-antialias-gray.c \
-	text-antialias-none.c text-antialias-subpixel.c \
-	text-cache-crash.c text-glyph-range.c text-pattern.c \
-	text-rotate.c text-zero-len.c transforms.c \
-	translate-show-surface.c trap-clip.c truetype-tables.c \
-	unantialiased-shapes.c unbounded-operator.c user-data.c \
-	xlib-surface.c zero-alpha.c
+	svg-clip.c svg-surface.c svg2pdf.c svg2png.c \
+	text-antialias-gray.c text-antialias-none.c \
+	text-antialias-subpixel.c text-cache-crash.c \
+	text-glyph-range.c text-pattern.c text-rotate.c \
+	text-zero-len.c transforms.c translate-show-surface.c \
+	trap-clip.c truetype-tables.c unantialiased-shapes.c \
+	unbounded-operator.c user-data.c xlib-surface.c zero-alpha.c
 DIST_SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	bitmap-font.c caps-joins.c caps-joins-alpha.c caps-sub-paths.c \
 	clip-all.c clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
@@ -783,7 +904,7 @@ DIST_SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	dash-caps-joins.c dash-no-dash.c dash-offset-negative.c \
 	dash-scale.c dash-state.c dash-zero-length.c degenerate-path.c \
 	device-offset.c device-offset-positive.c extend-pad.c \
-	fallback-resolution.c fill-and-stroke.c \
+	extend-reflect.c fallback-resolution.c fill-and-stroke.c \
 	fill-and-stroke-alpha.c fill-and-stroke-alpha-add.c \
 	fill-degenerate-sort-order.c fill-missed-stop.c fill-rule.c \
 	filter-nearest-offset.c font-face-get-type.c \
@@ -792,31 +913,32 @@ DIST_SOURCES = $(libcairotest_la_SOURCES) a8-mask.c big-trap.c \
 	ft-text-vertical-layout-type3.c get-and-set.c get-clip.c \
 	get-group-target.c get-path-extents.c glyph-cache-pressure.c \
 	gradient-alpha.c imagediff.c in-fill-empty-trapezoid.c \
-	infinite-join.c leaky-dash.c leaky-polygon.c line-width.c \
-	line-width-scale.c line-width-zero.c linear-gradient.c \
-	linear-gradient-reflect.c long-lines.c mask.c mask-ctm.c \
-	mask-surface-ctm.c move-to-show-surface.c multi-page.c \
-	new-sub-path.c nil-surface.c operator-clear.c \
+	infinite-join.c invalid-matrix.c leaky-dash.c leaky-polygon.c \
+	line-width.c line-width-scale.c line-width-zero.c \
+	linear-gradient.c linear-gradient-reflect.c long-lines.c \
+	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
+	multi-page.c new-sub-path.c nil-surface.c operator-clear.c \
 	operator-source.c paint.c paint-repeat.c paint-source-alpha.c \
 	paint-with-alpha.c pattern-get-type.c pattern-getters.c \
-	pdf-features.c pdf2png.c pixman-rotate.c png-flatten.c \
-	ps-features.c pthread-show-text.c push-group.c \
+	pdf-features.c pdf2png.c pdf2svg.c pixman-rotate.c \
+	png-flatten.c ps-features.c pthread-show-text.c push-group.c \
 	radial-gradient.c random-intersections.c \
 	rectangle-rounding-error.c rectilinear-stroke.c rel-path.c \
 	rotate-image-surface-paint.c scale-down-source-surface-paint.c \
 	scale-source-surface-paint.c select-font-face.c \
 	select-font-no-show-text.c self-copy.c self-intersecting.c \
-	set-source.c show-text-current-point.c skew-extreme.c \
-	source-clip.c source-clip-scale.c source-surface-scale-paint.c \
+	set-source.c show-glyphs-many.c show-text-current-point.c \
+	skew-extreme.c solid-pattern-cache-stress.c source-clip.c \
+	source-clip-scale.c source-surface-scale-paint.c \
 	surface-finish-twice.c surface-pattern.c \
 	surface-pattern-scale-down.c surface-pattern-scale-up.c \
-	svg-clip.c svg-surface.c svg2png.c text-antialias-gray.c \
-	text-antialias-none.c text-antialias-subpixel.c \
-	text-cache-crash.c text-glyph-range.c text-pattern.c \
-	text-rotate.c text-zero-len.c transforms.c \
-	translate-show-surface.c trap-clip.c truetype-tables.c \
-	unantialiased-shapes.c unbounded-operator.c user-data.c \
-	xlib-surface.c zero-alpha.c
+	svg-clip.c svg-surface.c svg2pdf.c svg2png.c \
+	text-antialias-gray.c text-antialias-none.c \
+	text-antialias-subpixel.c text-cache-crash.c \
+	text-glyph-range.c text-pattern.c text-rotate.c \
+	text-zero-len.c transforms.c translate-show-surface.c \
+	trap-clip.c truetype-tables.c unantialiased-shapes.c \
+	unbounded-operator.c user-data.c xlib-surface.c zero-alpha.c
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -885,6 +1007,7 @@ CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@
+CAIRO_LDADD = @CAIRO_LDADD@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
@@ -916,6 +1039,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
@@ -951,7 +1075,6 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
-MMX_CFLAGS = @MMX_CFLAGS@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
 OS_WIN32_TRUE = @OS_WIN32_TRUE@
@@ -962,6 +1085,8 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
+PIXMAN_LDADD = @PIXMAN_LDADD@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
@@ -969,12 +1094,13 @@ POPPLER_LIBS = @POPPLER_LIBS@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_MMX_FALSE = @USE_MMX_FALSE@
 USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
-WARN_CFLAGS = @WARN_CFLAGS@
+XARGS = @XARGS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -1058,46 +1184,76 @@ TESTS = a8-mask big-trap caps-joins caps-joins-alpha caps-sub-paths \
 	filter-nearest-offset font-face-get-type \
 	font-matrix-translation glyph-cache-pressure get-and-set \
 	get-clip get-group-target get-path-extents gradient-alpha \
-	infinite-join in-fill-empty-trapezoid leaky-dash leaky-polygon \
-	line-width line-width-scale line-width-zero linear-gradient \
-	linear-gradient-reflect long-lines mask mask-ctm \
-	mask-surface-ctm move-to-show-surface new-sub-path nil-surface \
-	operator-clear operator-source paint paint-repeat \
-	paint-source-alpha paint-with-alpha pattern-get-type \
-	pattern-getters pixman-rotate radial-gradient \
+	infinite-join in-fill-empty-trapezoid invalid-matrix \
+	leaky-dash leaky-polygon line-width line-width-scale \
+	line-width-zero linear-gradient linear-gradient-reflect \
+	long-lines mask mask-ctm mask-surface-ctm move-to-show-surface \
+	new-sub-path nil-surface operator-clear operator-source paint \
+	paint-repeat paint-source-alpha paint-with-alpha \
+	pattern-get-type pattern-getters pixman-rotate radial-gradient \
 	random-intersections rectangle-rounding-error \
 	rectilinear-stroke rotate-image-surface-paint \
 	scale-down-source-surface-paint scale-source-surface-paint \
 	select-font-face select-font-no-show-text self-copy \
 	self-intersecting set-source show-text-current-point \
-	skew-extreme source-clip source-clip-scale \
-	source-surface-scale-paint surface-finish-twice \
-	surface-pattern surface-pattern-scale-down \
-	surface-pattern-scale-up text-antialias-gray \
-	text-antialias-none text-antialias-subpixel text-cache-crash \
-	text-glyph-range text-pattern text-rotate text-zero-len \
-	transforms translate-show-surface trap-clip truetype-tables \
-	unantialiased-shapes unbounded-operator user-data rel-path \
-	push-group zero-alpha $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8)
+	skew-extreme solid-pattern-cache-stress source-clip \
+	source-clip-scale source-surface-scale-paint \
+	surface-finish-twice surface-pattern \
+	surface-pattern-scale-down surface-pattern-scale-up \
+	text-antialias-gray text-antialias-none \
+	text-antialias-subpixel text-cache-crash text-pattern \
+	text-rotate text-zero-len transforms translate-show-surface \
+	trap-clip truetype-tables unantialiased-shapes \
+	unbounded-operator user-data rel-path push-group zero-alpha \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8)
 
 # XXX: Here are some existing tests that are currently disabled for
-# one reason or another.
-# 
-# show-glyphs-many - this stress test was exercising a particular bug
-#      in the xlib surface code (exceeding the X11 protocol request
-#      limit) when rendering several thousand glyphs at once. The
-#      original xlib-surface bug is fixed now, but the test continues
-#      to stress some other aspects of the test suite. For example,
-#      when doing text as paths, the resuilting PostScript file is one
-#      giant path that ghostscript has a particularly hard time
-#      with. I'm disabling this test for now, since I don't care about
-#      that performance problem in ghostscript. (But, there is a
-#      similar performance problem when using cairo to rasterize the
-#      equivalen giant path---from an SBG files say---so this might be
-#      a useful kind of test to bring back again for performance (not
-#      correctness) testing.
+# one reason or another. They can still be built and run (manually)
+# but we don't currently run them as part of 'make check' to avoid
+# inflicting some particularly nasty problems on the user of the test
+# suite (described below).
+#
+# It would definitely be worthwhile to address these problems so that
+# these tests can get back into the test suite proper, (since the
+# problems do indicated bugs somewhere and we're less likely to get
+# those bugs fixed without the attention due to having these tests in
+# the suite).
+#
+# The reasons for disabling the tests are as follows:
+#
+# extend-reflect - Triggers an infinite (or near-infinite) bug in some
+#	X servers in some circumstances. Details and cause unknown.
+#
+# show-glyphs-many - This stress test was exercising a particular bug
+#	in the xlib surface code (exceeding the X11 protocol request
+#	limit) when rendering several thousand glyphs at once. The
+#	original xlib-surface bug is fixed now, but the test continues
+#	to stress some other aspects of the test suite. For example,
+#	when doing text as paths, the resuilting PostScript file is one
+#	giant path that ghostscript has a particularly hard time
+#	with. I'm disabling this test for now, since I don't care about
+#	that performance problem in ghostscript. (But, there is a
+#	similar performance problem when using cairo to rasterize the
+#	equivalen giant path---from an SVG files say---so this might be
+#	a useful kind of test to bring back again for performance (not
+#	correctness) testing.
+# text-glyph-range - This test triggers the following assertion in cairo:
+#
+#	lt-text-glyph-range: cairo-scaled-font-subsets.c:350:
+#	_cairo_sub_font_collect: Assertion `collection->num_glyphs ==
+#	collection->max_glyph + 1' failed.
+#
+#	And as a result causes a failure to be recorded by the test
+#	suite, (in spite of the XFAIL status of the test). So maybe
+#	that's just a bug in the test rig that should just consider
+#	the abort an XFAIL like any other.
+DISABLED_TESTS = \
+extend-reflect			\
+show-glyphs-many		\
+text-glyph-range
+
 
 # All tests which have a reference image go here.
 REFERENCE_IMAGES = \
@@ -1151,7 +1307,6 @@ REFERENCE_IMAGES = \
 	dash-zero-length-ref.png	\
 	dash-zero-length-rgb24-ref.png	\
 	degenerate-path-ps-argb32-ref.png	\
-	degenerate-path-quartz-rgb24-ref.png	\
 	degenerate-path-ref.png	\
 	degenerate-path-rgb24-ref.png	\
 	device-offset-positive-ref.png	\
@@ -1338,13 +1493,11 @@ a8-mask				\
 big-trap			\
 extend-pad			\
 filter-nearest-offset		\
-ft-text-vertical-layout-type1	\
 long-lines			\
 self-intersecting		\
 surface-pattern			\
 surface-pattern-scale-down	\
-surface-pattern-scale-up	\
-text-glyph-range
+surface-pattern-scale-up
 
 
 # Any test that doesn't generate a log file goes here
@@ -1359,7 +1512,7 @@ multi-page			\
 fallback-resolution
 
 SUPPORT_PROGS = imagediff$(EXEEXT) png-flatten$(EXEEXT) \
-	$(am__append_10) $(am__append_11)
+	$(am__append_10) $(am__append_12)
 
 # We're using _GNU_SOURCE to get the prototype for asprintf. This may
 # not be the most portable approach, but it is pragmatic and I'm
@@ -1385,15 +1538,22 @@ libcairotest_la_SOURCES = \
 libcairotest_la_LIBADD = \
 	$(top_builddir)/test/pdiff/libpdiff.la \
         $(top_builddir)/boilerplate/libcairoboilerplate.la \
-	$(top_builddir)/src/libcairo.la
+	$(top_builddir)/src/libcairo.la \
+	$(CAIRO_LDADD)
 
-LDADD = libcairotest.la $(am__append_9)
+LDADD = $(CAIRO_LDADD) libcairotest.la $(am__append_9)
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@pdf2png_CFLAGS = $(POPPLER_CFLAGS)
 # add LDADD, so poppler uses "our" cairo
 @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@pdf2png_LDADD = $(LDADD) $(POPPLER_LIBS)
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@pdf2svg_CFLAGS = $(POPPLER_CFLAGS)
+# add LDADD, so poppler uses "our" cairo
+@CAIRO_CAN_TEST_PDF_SURFACE_TRUE@@CAIRO_HAS_SVG_SURFACE_TRUE@pdf2svg_LDADD = $(LDADD) $(POPPLER_LIBS)
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@svg2png_CFLAGS = $(LIBRSVG_CFLAGS)
 # add LDADD, so librsvg uses "our" cairo
 @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@svg2png_LDADD = $(LDADD) $(LIBRSVG_LIBS)
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@svg2pdf_CFLAGS = $(LIBRSVG_CFLAGS)
+# add LDADD, so librsvg uses "our" cairo
+@CAIRO_CAN_TEST_SVG_SURFACE_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@svg2pdf_LDADD = $(LDADD) $(LIBRSVG_LIBS)
 
 # Do a funny transition of CAIRO_TEST_TARGET through TARGETS such that
 # one can limit tested targets both through CAIRO_TEST_TARGET env var
@@ -1546,6 +1706,9 @@ device-offset-positive$(EXEEXT): $(device_offset_positive_OBJECTS) $(device_offs
 extend-pad$(EXEEXT): $(extend_pad_OBJECTS) $(extend_pad_DEPENDENCIES) 
 	@rm -f extend-pad$(EXEEXT)
 	$(LINK) $(extend_pad_LDFLAGS) $(extend_pad_OBJECTS) $(extend_pad_LDADD) $(LIBS)
+extend-reflect$(EXEEXT): $(extend_reflect_OBJECTS) $(extend_reflect_DEPENDENCIES) 
+	@rm -f extend-reflect$(EXEEXT)
+	$(LINK) $(extend_reflect_LDFLAGS) $(extend_reflect_OBJECTS) $(extend_reflect_LDADD) $(LIBS)
 fallback-resolution$(EXEEXT): $(fallback_resolution_OBJECTS) $(fallback_resolution_DEPENDENCIES) 
 	@rm -f fallback-resolution$(EXEEXT)
 	$(LINK) $(fallback_resolution_LDFLAGS) $(fallback_resolution_OBJECTS) $(fallback_resolution_LDADD) $(LIBS)
@@ -1615,6 +1778,9 @@ in-fill-empty-trapezoid$(EXEEXT): $(in_fill_empty_trapezoid_OBJECTS) $(in_fill_e
 infinite-join$(EXEEXT): $(infinite_join_OBJECTS) $(infinite_join_DEPENDENCIES) 
 	@rm -f infinite-join$(EXEEXT)
 	$(LINK) $(infinite_join_LDFLAGS) $(infinite_join_OBJECTS) $(infinite_join_LDADD) $(LIBS)
+invalid-matrix$(EXEEXT): $(invalid_matrix_OBJECTS) $(invalid_matrix_DEPENDENCIES) 
+	@rm -f invalid-matrix$(EXEEXT)
+	$(LINK) $(invalid_matrix_LDFLAGS) $(invalid_matrix_OBJECTS) $(invalid_matrix_LDADD) $(LIBS)
 leaky-dash$(EXEEXT): $(leaky_dash_OBJECTS) $(leaky_dash_DEPENDENCIES) 
 	@rm -f leaky-dash$(EXEEXT)
 	$(LINK) $(leaky_dash_LDFLAGS) $(leaky_dash_OBJECTS) $(leaky_dash_LDADD) $(LIBS)
@@ -1690,6 +1856,9 @@ pdf-features$(EXEEXT): $(pdf_features_OBJECTS) $(pdf_features_DEPENDENCIES)
 pdf2png$(EXEEXT): $(pdf2png_OBJECTS) $(pdf2png_DEPENDENCIES) 
 	@rm -f pdf2png$(EXEEXT)
 	$(LINK) $(pdf2png_LDFLAGS) $(pdf2png_OBJECTS) $(pdf2png_LDADD) $(LIBS)
+pdf2svg$(EXEEXT): $(pdf2svg_OBJECTS) $(pdf2svg_DEPENDENCIES) 
+	@rm -f pdf2svg$(EXEEXT)
+	$(LINK) $(pdf2svg_LDFLAGS) $(pdf2svg_OBJECTS) $(pdf2svg_LDADD) $(LIBS)
 pixman-rotate$(EXEEXT): $(pixman_rotate_OBJECTS) $(pixman_rotate_DEPENDENCIES) 
 	@rm -f pixman-rotate$(EXEEXT)
 	$(LINK) $(pixman_rotate_LDFLAGS) $(pixman_rotate_OBJECTS) $(pixman_rotate_LDADD) $(LIBS)
@@ -1744,12 +1913,18 @@ self-intersecting$(EXEEXT): $(self_intersecting_OBJECTS) $(self_intersecting_DEP
 set-source$(EXEEXT): $(set_source_OBJECTS) $(set_source_DEPENDENCIES) 
 	@rm -f set-source$(EXEEXT)
 	$(LINK) $(set_source_LDFLAGS) $(set_source_OBJECTS) $(set_source_LDADD) $(LIBS)
+show-glyphs-many$(EXEEXT): $(show_glyphs_many_OBJECTS) $(show_glyphs_many_DEPENDENCIES) 
+	@rm -f show-glyphs-many$(EXEEXT)
+	$(LINK) $(show_glyphs_many_LDFLAGS) $(show_glyphs_many_OBJECTS) $(show_glyphs_many_LDADD) $(LIBS)
 show-text-current-point$(EXEEXT): $(show_text_current_point_OBJECTS) $(show_text_current_point_DEPENDENCIES) 
 	@rm -f show-text-current-point$(EXEEXT)
 	$(LINK) $(show_text_current_point_LDFLAGS) $(show_text_current_point_OBJECTS) $(show_text_current_point_LDADD) $(LIBS)
 skew-extreme$(EXEEXT): $(skew_extreme_OBJECTS) $(skew_extreme_DEPENDENCIES) 
 	@rm -f skew-extreme$(EXEEXT)
 	$(LINK) $(skew_extreme_LDFLAGS) $(skew_extreme_OBJECTS) $(skew_extreme_LDADD) $(LIBS)
+solid-pattern-cache-stress$(EXEEXT): $(solid_pattern_cache_stress_OBJECTS) $(solid_pattern_cache_stress_DEPENDENCIES) 
+	@rm -f solid-pattern-cache-stress$(EXEEXT)
+	$(LINK) $(solid_pattern_cache_stress_LDFLAGS) $(solid_pattern_cache_stress_OBJECTS) $(solid_pattern_cache_stress_LDADD) $(LIBS)
 source-clip$(EXEEXT): $(source_clip_OBJECTS) $(source_clip_DEPENDENCIES) 
 	@rm -f source-clip$(EXEEXT)
 	$(LINK) $(source_clip_LDFLAGS) $(source_clip_OBJECTS) $(source_clip_LDADD) $(LIBS)
@@ -1777,6 +1952,9 @@ svg-clip$(EXEEXT): $(svg_clip_OBJECTS) $(svg_clip_DEPENDENCIES)
 svg-surface$(EXEEXT): $(svg_surface_OBJECTS) $(svg_surface_DEPENDENCIES) 
 	@rm -f svg-surface$(EXEEXT)
 	$(LINK) $(svg_surface_LDFLAGS) $(svg_surface_OBJECTS) $(svg_surface_LDADD) $(LIBS)
+svg2pdf$(EXEEXT): $(svg2pdf_OBJECTS) $(svg2pdf_DEPENDENCIES) 
+	@rm -f svg2pdf$(EXEEXT)
+	$(LINK) $(svg2pdf_LDFLAGS) $(svg2pdf_OBJECTS) $(svg2pdf_LDADD) $(LIBS)
 svg2png$(EXEEXT): $(svg2png_OBJECTS) $(svg2png_DEPENDENCIES) 
 	@rm -f svg2png$(EXEEXT)
 	$(LINK) $(svg2png_LDFLAGS) $(svg2png_OBJECTS) $(svg2png_LDADD) $(LIBS)
@@ -1871,6 +2049,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/device-offset-positive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/device-offset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extend-pad.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extend-reflect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fallback-resolution.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fill-and-stroke-alpha-add.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fill-and-stroke-alpha.Po@am__quote@
@@ -1894,6 +2073,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imagediff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/in-fill-empty-trapezoid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/infinite-join.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invalid-matrix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/leaky-dash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/leaky-polygon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/line-width-scale.Po@am__quote@
@@ -1919,6 +2099,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pattern-getters.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pdf-features.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pdf2png-pdf2png.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pdf2svg-pdf2svg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pixman-rotate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/png-flatten.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ps-features.Po@am__quote@
@@ -1937,8 +2118,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/self-copy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/self-intersecting.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set-source.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/show-glyphs-many.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/show-text-current-point.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skew-extreme.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/solid-pattern-cache-stress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source-clip-scale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source-clip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source-surface-scale-paint.Po@am__quote@
@@ -1948,6 +2131,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/surface-pattern.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svg-clip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svg-surface.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svg2pdf-svg2pdf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svg2png-svg2png.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text-antialias-gray.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text-antialias-none.Po@am__quote@
@@ -2001,6 +2185,34 @@ pdf2png-pdf2png.obj: pdf2png.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pdf2png.c' object='pdf2png-pdf2png.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pdf2png_CFLAGS) $(CFLAGS) -c -o pdf2png-pdf2png.obj `if test -f 'pdf2png.c'; then $(CYGPATH_W) 'pdf2png.c'; else $(CYGPATH_W) '$(srcdir)/pdf2png.c'; fi`
+
+pdf2svg-pdf2svg.o: pdf2svg.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pdf2svg_CFLAGS) $(CFLAGS) -MT pdf2svg-pdf2svg.o -MD -MP -MF "$(DEPDIR)/pdf2svg-pdf2svg.Tpo" -c -o pdf2svg-pdf2svg.o `test -f 'pdf2svg.c' || echo '$(srcdir)/'`pdf2svg.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/pdf2svg-pdf2svg.Tpo" "$(DEPDIR)/pdf2svg-pdf2svg.Po"; else rm -f "$(DEPDIR)/pdf2svg-pdf2svg.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pdf2svg.c' object='pdf2svg-pdf2svg.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pdf2svg_CFLAGS) $(CFLAGS) -c -o pdf2svg-pdf2svg.o `test -f 'pdf2svg.c' || echo '$(srcdir)/'`pdf2svg.c
+
+pdf2svg-pdf2svg.obj: pdf2svg.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pdf2svg_CFLAGS) $(CFLAGS) -MT pdf2svg-pdf2svg.obj -MD -MP -MF "$(DEPDIR)/pdf2svg-pdf2svg.Tpo" -c -o pdf2svg-pdf2svg.obj `if test -f 'pdf2svg.c'; then $(CYGPATH_W) 'pdf2svg.c'; else $(CYGPATH_W) '$(srcdir)/pdf2svg.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/pdf2svg-pdf2svg.Tpo" "$(DEPDIR)/pdf2svg-pdf2svg.Po"; else rm -f "$(DEPDIR)/pdf2svg-pdf2svg.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pdf2svg.c' object='pdf2svg-pdf2svg.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pdf2svg_CFLAGS) $(CFLAGS) -c -o pdf2svg-pdf2svg.obj `if test -f 'pdf2svg.c'; then $(CYGPATH_W) 'pdf2svg.c'; else $(CYGPATH_W) '$(srcdir)/pdf2svg.c'; fi`
+
+svg2pdf-svg2pdf.o: svg2pdf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(svg2pdf_CFLAGS) $(CFLAGS) -MT svg2pdf-svg2pdf.o -MD -MP -MF "$(DEPDIR)/svg2pdf-svg2pdf.Tpo" -c -o svg2pdf-svg2pdf.o `test -f 'svg2pdf.c' || echo '$(srcdir)/'`svg2pdf.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/svg2pdf-svg2pdf.Tpo" "$(DEPDIR)/svg2pdf-svg2pdf.Po"; else rm -f "$(DEPDIR)/svg2pdf-svg2pdf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='svg2pdf.c' object='svg2pdf-svg2pdf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(svg2pdf_CFLAGS) $(CFLAGS) -c -o svg2pdf-svg2pdf.o `test -f 'svg2pdf.c' || echo '$(srcdir)/'`svg2pdf.c
+
+svg2pdf-svg2pdf.obj: svg2pdf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(svg2pdf_CFLAGS) $(CFLAGS) -MT svg2pdf-svg2pdf.obj -MD -MP -MF "$(DEPDIR)/svg2pdf-svg2pdf.Tpo" -c -o svg2pdf-svg2pdf.obj `if test -f 'svg2pdf.c'; then $(CYGPATH_W) 'svg2pdf.c'; else $(CYGPATH_W) '$(srcdir)/svg2pdf.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/svg2pdf-svg2pdf.Tpo" "$(DEPDIR)/svg2pdf-svg2pdf.Po"; else rm -f "$(DEPDIR)/svg2pdf-svg2pdf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='svg2pdf.c' object='svg2pdf-svg2pdf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(svg2pdf_CFLAGS) $(CFLAGS) -c -o svg2pdf-svg2pdf.obj `if test -f 'svg2pdf.c'; then $(CYGPATH_W) 'svg2pdf.c'; else $(CYGPATH_W) '$(srcdir)/svg2pdf.c'; fi`
 
 svg2png-svg2png.o: svg2png.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(svg2png_CFLAGS) $(CFLAGS) -MT svg2png-svg2png.o -MD -MP -MF "$(DEPDIR)/svg2png-svg2png.Tpo" -c -o svg2png-svg2png.o `test -f 'svg2png.c' || echo '$(srcdir)/'`svg2png.c; \
@@ -2369,7 +2581,7 @@ uninstall-info: uninstall-info-recursive
 	tags tags-recursive uninstall uninstall-am uninstall-info-am
 
 
-$(top_builddir)/boilerplate/libcairoboilerplate.la:
+$(top_builddir)/boilerplate/libcairoboilerplate.la: $(top_builddir)/src/libcairo.la
 	cd $(top_builddir)/boilerplate && $(MAKE) $(AM_MAKEFLAGS) libcairoboilerplate.la
 
 $(top_builddir)/src/libcairo.la:
@@ -2378,14 +2590,17 @@ $(top_builddir)/src/libcairo.la:
 $(top_builddir)/test/pdiff/libpdiff.la:
 	cd $(top_builddir)/test/pdiff && $(MAKE) $(AM_MAKEFLAGS) libpdiff.la
 
-# some systems cannot handle all of our clean files together
+# This used to be a simple 'echo ${RM} *.ps *.pdf *.svg *.etc', but
+# most systems cannot handle all of our clean files together.
+# Then it became a fancy find using many GNU extensions, but then the ugly
+# reality of portability was raised and it became....
 clean-local:
-	-$(RM) *.ps
-	-$(RM) *.pdf
-	-$(RM) *.svg
-	-$(RM) *-out.png
-	-$(RM) *-diff.png
-	-$(RM) *.log
+	-${FIND} . -name '*.ps'       -print | ${XARGS} ${RM}
+	-${FIND} . -name '*.pdf'      -print | ${XARGS} ${RM}
+	-${FIND} . -name '*.svg'      -print | ${XARGS} ${RM}
+	-${FIND} . -name '*-out.png'  -print | ${XARGS} ${RM}
+	-${FIND} . -name '*-diff.png' -print | ${XARGS} ${RM}
+	-${FIND} . -name '*.log'      -print | ${XARGS} ${RM}
 
 # Check tests under valgrind
 # Saves log to valgrind-log

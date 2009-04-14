@@ -89,12 +89,13 @@ am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
 	cairo-font-options.c cairo-freelist.c cairo-freelist-private.h \
 	cairo-gstate.c cairo-gstate-private.h cairo-hash.c \
 	cairo-hash-private.h cairo-hull.c cairo-image-surface.c \
-	cairo-lzw.c cairo-matrix.c cairo-operator.c cairo-path.c \
-	cairo-path-private.h cairo-path-bounds.c cairo-path-fill.c \
-	cairo-path-fixed.c cairo-path-fixed-private.h \
-	cairo-path-stroke.c cairo-pen.c cairo-polygon.c \
-	cairo-rectangle.c cairo-region.c cairo-scaled-font.c \
-	cairo-scaled-font-test.h cairo-skiplist.c \
+	cairo-lzw.c cairo-matrix.c cairo-mutex.c \
+	cairo-mutex-list-private.h cairo-mutex-private.h \
+	cairo-operator.c cairo-path.c cairo-path-private.h \
+	cairo-path-bounds.c cairo-path-fill.c cairo-path-fixed.c \
+	cairo-path-fixed-private.h cairo-path-stroke.c cairo-pen.c \
+	cairo-polygon.c cairo-rectangle.c cairo-region.c \
+	cairo-scaled-font.c cairo-scaled-font-test.h cairo-skiplist.c \
 	cairo-skiplist-private.h cairo-slope.c cairo-spline.c \
 	cairo-stroke-style.c cairo-surface.c cairo-surface-fallback.c \
 	cairo-surface-fallback-private.h cairo-traps.c cairo-pattern.c \
@@ -158,20 +159,21 @@ am_libcairo_la_OBJECTS = cairo.lo cairo-arc.lo cairo-array.lo \
 	cairo-font.lo cairo-font-options.lo cairo-freelist.lo \
 	cairo-gstate.lo cairo-hash.lo cairo-hull.lo \
 	cairo-image-surface.lo cairo-lzw.lo cairo-matrix.lo \
-	cairo-operator.lo cairo-path.lo cairo-path-bounds.lo \
-	cairo-path-fill.lo cairo-path-fixed.lo cairo-path-stroke.lo \
-	cairo-pen.lo cairo-polygon.lo cairo-rectangle.lo \
-	cairo-region.lo cairo-scaled-font.lo cairo-skiplist.lo \
-	cairo-slope.lo cairo-spline.lo cairo-stroke-style.lo \
-	cairo-surface.lo cairo-surface-fallback.lo cairo-traps.lo \
-	cairo-pattern.lo cairo-unicode.lo cairo-output-stream.lo \
-	cairo-wideint.lo cairo-meta-surface.lo \
-	cairo-paginated-surface.lo cairo-analysis-surface.lo \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_10) $(am__objects_11) \
-	$(am__objects_12) $(am__objects_13) $(am__objects_14) \
-	$(am__objects_17) $(am__objects_19) $(am__objects_20)
+	cairo-mutex.lo cairo-operator.lo cairo-path.lo \
+	cairo-path-bounds.lo cairo-path-fill.lo cairo-path-fixed.lo \
+	cairo-path-stroke.lo cairo-pen.lo cairo-polygon.lo \
+	cairo-rectangle.lo cairo-region.lo cairo-scaled-font.lo \
+	cairo-skiplist.lo cairo-slope.lo cairo-spline.lo \
+	cairo-stroke-style.lo cairo-surface.lo \
+	cairo-surface-fallback.lo cairo-traps.lo cairo-pattern.lo \
+	cairo-unicode.lo cairo-output-stream.lo cairo-wideint.lo \
+	cairo-meta-surface.lo cairo-paginated-surface.lo \
+	cairo-analysis-surface.lo $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6) $(am__objects_7) $(am__objects_10) \
+	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
+	$(am__objects_14) $(am__objects_17) $(am__objects_19) \
+	$(am__objects_20)
 libcairo_la_OBJECTS = $(am_libcairo_la_OBJECTS)
 libcairo_beos_la_LIBADD =
 am__libcairo_beos_la_SOURCES_DIST = cairo-beos-surface.cpp
@@ -274,6 +276,7 @@ CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_FALSE@
 CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE = @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@
+CAIRO_LDADD = @CAIRO_LDADD@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
@@ -305,6 +308,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 
 # These names match automake style variable definition conventions so
@@ -345,7 +349,6 @@ LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
 LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
 MAKEINFO = @MAKEINFO@
-MMX_CFLAGS = @MMX_CFLAGS@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
 OS_WIN32_TRUE = @OS_WIN32_TRUE@
@@ -356,6 +359,8 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
+PIXMAN_LDADD = @PIXMAN_LDADD@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
@@ -363,12 +368,13 @@ POPPLER_LIBS = @POPPLER_LIBS@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_MMX_FALSE = @USE_MMX_FALSE@
 USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
-WARN_CFLAGS = @WARN_CFLAGS@
+XARGS = @XARGS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -539,6 +545,9 @@ libcairo_la_SOURCES = \
 	cairo-image-surface.c			\
 	cairo-lzw.c				\
 	cairo-matrix.c				\
+	cairo-mutex.c				\
+	cairo-mutex-list-private.h		\
+	cairo-mutex-private.h			\
 	cairo-operator.c			\
 	cairo-path.c				\
 	cairo-path-private.h			\
@@ -593,7 +602,7 @@ libcairo_la_SOURCES = \
 
 libcairo_la_LDFLAGS = -version-info @VERSION_INFO@ -no-undefined $(export_symbols)
 INCLUDES = -I$(srcdir) -I$(top_srcdir)/pixman/src $(CAIRO_CFLAGS)
-libcairo_la_LIBADD = $(top_builddir)/pixman/src/libpixman.la $(CAIRO_LIBS) $(noinst_LTLIBRARIES)
+libcairo_la_LIBADD = $(top_builddir)/pixman/src/libpixman.la $(CAIRO_LIBS) $(noinst_LTLIBRARIES) $(CAIRO_LDADD)
 libcairo_la_DEPENDENCIES = $(cairo_def_dependency) $(top_builddir)/pixman/src/libpixman.la $(noinst_LTLIBRARIES)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = cairo.pc $(backend_pkgconfigs)
@@ -601,7 +610,7 @@ DISTCLEANFILES = $(backend_pkgconfigs) cairo-features.h
 EXTRA_DIST = cairo-backend.pc.in $(TESTS)
 CLEANFILES = cairo.def
 TESTS_ENVIRONMENT = srcdir="$(srcdir)"
-TESTS = check-def.sh check-plt.sh check-headers.sh
+TESTS = check-def.sh check-plt.sh check-headers.sh check-cairoint.sh
 all: all-am
 
 .SUFFIXES:
@@ -710,6 +719,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-lzw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-matrix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-meta-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-mutex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-operator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-os2-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-output-stream.Plo@am__quote@
