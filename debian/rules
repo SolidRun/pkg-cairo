@@ -10,7 +10,7 @@
 #  svg        SVG
 #
 # Experimental and unsupported backends:
-#  directfb  DirectFB (requires Build-Depend on libdirectfb-0.9-22-dev )
+#  directfb  DirectFB (requires Build-Depend on libdirectfb-dev (>=0.9.25) )
 #  glitz     OpenGL (glitz)
 #  xcb       XCB  (requires Build-Depend on at least libxcb1-dev)
 #
@@ -25,7 +25,7 @@ MAIN_CONFIGURE_FLAGS = \
 --enable-png
 
 # udeb package flags
-#  directfb  DirectFB (requires Build-Depend on libdirectfb-0.9-24-dev )
+#  directfb  DirectFB (requires Build-Depend on libdirectfb-dev (>= 0.9.25) )
 DIRECTFB_CONFIGURE_FLAGS = \
 --enable-directfb \
 --disable-xlib  --enable-pdf --enable-ps --disable-svg \
@@ -48,10 +48,15 @@ export DH_COMPAT=5
 export DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 export DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
-ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -g -O0
+CFLAGS = -g
+CFLAGS_UDEB = -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+	CFLAGS_UDEB += -O0
 else
 	CFLAGS += -O2
+	CFLAGS_UDEB += -Os
 endif
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
@@ -93,7 +98,9 @@ configure-main-stamp: configure-common-stamp
 	dh_testdir
 	mkdir -p $(MAIN_BUILD_DIR); \
 	cd $(MAIN_BUILD_DIR); \
-	$(SRC_DIR)/configure $(CONFFLAGS) \
+	$(SRC_DIR)/configure \
+		CFLAGS="$(CFLAGS)" \
+		$(CONFFLAGS) \
 		--prefix=$(prefix) \
 		--mandir=$(share)/man \
 		--infodir=$(share)/info \
@@ -105,7 +112,9 @@ configure-udeb-stamp: configure-common-stamp
 	dh_testdir
 	mkdir -p $(DIRECTFB_BUILD_DIR); \
 	cd $(DIRECTFB_BUILD_DIR); \
-	$(SRC_DIR)/configure $(CONFFLAGS) \
+	$(SRC_DIR)/configure \
+		CFLAGS="$(CFLAGS_UDEB)" \
+		$(CONFFLAGS) \
 		--prefix=$(DIRECTFB_PREFIX) \
 		--mandir=$(share)/man \
 		--infodir=$(share)/info \
@@ -182,7 +191,7 @@ binary-arch: build install
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs -plibcairo2 -V --add-udeb 'libcairo-directfb2-udeb'
-	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>= 1.2.4-4)' --add-udeb 'libcairo-directfb2-udeb'
+	dh_makeshlibs -plibcairo-directfb2 -V 'libcairo-directfb2 (>= 1.2.6-1)' --add-udeb 'libcairo-directfb2-udeb'
 	dh_installdeb
 	dh_shlibdeps
 	dh_perl
