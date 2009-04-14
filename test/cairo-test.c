@@ -241,7 +241,7 @@ cairo_test_target_has_similar (const cairo_test_t *test, cairo_boilerplate_targe
 	cairo_t * cr = cairo_create (surface);
 	cairo_surface_t *similar;
 	cairo_push_group_with_content (cr, target->content);
-	similar = cairo_get_target (cr);
+	similar = cairo_get_group_target (cr);
 	has_similar = cairo_surface_get_type (similar) == cairo_surface_get_type (surface);
 
 	cairo_destroy (cr);
@@ -373,7 +373,9 @@ cairo_test_for_target (cairo_test_t			 *test,
     cairo_set_font_options (cr, font_options);
     cairo_font_options_destroy (font_options);
 
+    cairo_save (cr);
     status = (test->draw) (cr, test->width, test->height);
+    cairo_restore (cr);
 
     /* Then, check all the different ways it could fail. */
     if (status) {
@@ -384,6 +386,7 @@ cairo_test_for_target (cairo_test_t			 *test,
 
     if (similar) {
 	cairo_pop_group_to_source (cr);
+	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint (cr);
     }
 

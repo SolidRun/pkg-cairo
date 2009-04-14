@@ -8,7 +8,14 @@ if ! which nm 2>/dev/null >/dev/null; then
 fi
 
 test -z "$srcdir" && srcdir=.
+test -z "$MAKE" && MAKE=make
 status=0
+
+$MAKE check-has-hidden-symbols.i || exit 1
+if tail -1 check-has-hidden-symbols.i | grep CAIRO_HAS_HIDDEN_SYMBOLS >/dev/null; then
+	echo "Compiler doesn't support symbol visibility; skipping test"
+	exit 0
+fi
 
 get_cairo_syms='nm "$so" | grep " T " | cut -d" " -f3'
 if [ "`uname -s`" = "Linux" ]; then
@@ -16,7 +23,7 @@ if [ "`uname -s`" = "Linux" ]; then
 fi
 
 defs="cairo.def"
-make $defs
+$MAKE $defs
 for def in $defs; do
 	lib=`echo "$def" | sed 's/[.]def$//'`
 	lib=`echo "$lib" | sed 's@.*/@@'`

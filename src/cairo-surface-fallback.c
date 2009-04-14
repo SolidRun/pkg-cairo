@@ -1043,15 +1043,15 @@ _cairo_surface_fallback_snapshot (cairo_surface_t *surface)
 
     status = _cairo_surface_acquire_source_image (surface,
 						  &image, &image_extra);
-    if (status != CAIRO_STATUS_SUCCESS)
-	return (cairo_surface_t *) &_cairo_surface_nil;
+    if (status)
+	return _cairo_surface_create_in_error (status);
 
     snapshot = cairo_image_surface_create (image->format,
 					   image->width,
 					   image->height);
     if (cairo_surface_status (snapshot)) {
 	_cairo_surface_release_source_image (surface,
-					     image, &image_extra);
+					     image, image_extra);
 	return snapshot;
     }
 
@@ -1069,11 +1069,11 @@ _cairo_surface_fallback_snapshot (cairo_surface_t *surface)
 
     _cairo_pattern_fini (&pattern.base);
     _cairo_surface_release_source_image (surface,
-					 image, &image_extra);
+					 image, image_extra);
 
     if (status) {
 	cairo_surface_destroy (snapshot);
-	return (cairo_surface_t *) &_cairo_surface_nil;
+	return _cairo_surface_create_in_error (status);
     }
 
     snapshot->device_transform = surface->device_transform;

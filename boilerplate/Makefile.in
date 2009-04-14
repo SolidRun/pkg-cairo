@@ -69,10 +69,9 @@ host_triplet = @host@
 @CAIRO_HAS_WIN32_SURFACE_TRUE@am__append_14 = -lwinspool
 @CAIRO_HAS_XCB_SURFACE_TRUE@am__append_15 = cairo-boilerplate-xcb.c \
 @CAIRO_HAS_XCB_SURFACE_TRUE@	cairo-boilerplate-xcb-private.h
-@CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__append_16 =  \
-@CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@	cairo-boilerplate-xlib.c \
-@CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@	cairo-boilerplate-xlib.h \
-@CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@	cairo-boilerplate-xlib-private.h
+@CAIRO_HAS_XLIB_SURFACE_TRUE@am__append_16 = cairo-boilerplate-xlib.c \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@	cairo-boilerplate-xlib.h \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@	cairo-boilerplate-xlib-private.h
 subdir = boilerplate
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -123,7 +122,8 @@ am__libcairoboilerplate_la_SOURCES_DIST = cairo-boilerplate.c \
 @CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32.lo \
 @CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-boilerplate-win32-printing.lo
 @CAIRO_HAS_XCB_SURFACE_TRUE@am__objects_10 = cairo-boilerplate-xcb.lo
-@CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__objects_11 = cairo-boilerplate-xlib.lo
+@CAIRO_HAS_XLIB_SURFACE_TRUE@am__objects_11 =  \
+@CAIRO_HAS_XLIB_SURFACE_TRUE@	cairo-boilerplate-xlib.lo
 am_libcairoboilerplate_la_OBJECTS = cairo-boilerplate.lo xmalloc.lo \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
@@ -179,6 +179,8 @@ CAIRO_CAN_TEST_PS_SURFACE_FALSE = @CAIRO_CAN_TEST_PS_SURFACE_FALSE@
 CAIRO_CAN_TEST_PS_SURFACE_TRUE = @CAIRO_CAN_TEST_PS_SURFACE_TRUE@
 CAIRO_CAN_TEST_SVG_SURFACE_FALSE = @CAIRO_CAN_TEST_SVG_SURFACE_FALSE@
 CAIRO_CAN_TEST_SVG_SURFACE_TRUE = @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@
+CAIRO_CAN_TEST_WIN32_PRINTING_SURFACE_FALSE = @CAIRO_CAN_TEST_WIN32_PRINTING_SURFACE_FALSE@
+CAIRO_CAN_TEST_WIN32_PRINTING_SURFACE_TRUE = @CAIRO_CAN_TEST_WIN32_PRINTING_SURFACE_TRUE@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
 CAIRO_HAS_ATSUI_FONT_FALSE = @CAIRO_HAS_ATSUI_FONT_FALSE@
 CAIRO_HAS_ATSUI_FONT_TRUE = @CAIRO_HAS_ATSUI_FONT_TRUE@

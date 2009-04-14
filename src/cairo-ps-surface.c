@@ -47,11 +47,17 @@
 #include "cairo-meta-surface-private.h"
 #include "cairo-output-stream-private.h"
 
+#include <stdio.h>
 #include <ctype.h>
 #include <time.h>
 #include <zlib.h>
+#include <errno.h>
 
 #define DEBUG_PS 0
+
+#ifndef HAVE_CTIME_R
+#define ctime_r(T, BUF) ctime (T)
+#endif
 
 typedef enum _cairo_image_transparency {
     CAIRO_IMAGE_IS_OPAQUE,
@@ -169,6 +175,9 @@ static cairo_output_stream_t *
 _word_wrap_stream_create (cairo_output_stream_t *output, int max_column)
 {
     word_wrap_stream_t *stream;
+
+    if (output->status)
+	return _cairo_output_stream_create_in_error (output->status);
 
     stream = malloc (sizeof (word_wrap_stream_t));
     if (stream == NULL) {
@@ -295,7 +304,7 @@ _cairo_ps_surface_emit_path (cairo_ps_surface_t	   *surface,
     word_wrap = _word_wrap_stream_create (stream, 79);
     status = _cairo_output_stream_get_status (word_wrap);
     if (status)
-	return status;
+	return _cairo_output_stream_destroy (word_wrap);
 
     path_info.surface = surface;
     path_info.stream = word_wrap;
@@ -318,18 +327,19 @@ _cairo_ps_surface_emit_path (cairo_ps_surface_t	   *surface,
 static void
 _cairo_ps_surface_emit_header (cairo_ps_surface_t *surface)
 {
+    char ctime_buf[26];
     time_t now;
     char **comments;
     int i, num_comments;
-    const char *level;
+    int level;
     const char *eps_header = "";
 
     now = time (NULL);
 
-    if (surface->ps_level == CAIRO_PS_LEVEL_2)
-	level = "2";
+    if (surface->ps_level_used == CAIRO_PS_LEVEL_2)
+	level = 2;
     else
-	level = "3";
+	level = 3;
 
     if (surface->eps)
 	eps_header = " EPSF-3.0";
@@ -342,7 +352,7 @@ _cairo_ps_surface_emit_header (cairo_ps_surface_t *surface)
 				 "%%%%BoundingBox: %d %d %d %d\n",
 				 eps_header,
 				 cairo_version_string (),
-				 ctime (&now),
+				 ctime_r (&now, ctime_buf),
 				 surface->num_pages,
 				 surface->bbox_x1,
 				 surface->bbox_y1,
@@ -351,7 +361,7 @@ _cairo_ps_surface_emit_header (cairo_ps_surface_t *surface)
 
     _cairo_output_stream_printf (surface->final_stream,
 				 "%%%%DocumentData: Clean7Bit\n"
-				 "%%%%LanguageLevel: %s\n",
+				 "%%%%LanguageLevel: %d\n",
 				 level);
 
     num_comments = _cairo_array_num_elements (&surface->dsc_header_comments);
@@ -375,6 +385,14 @@ _cairo_ps_surface_emit_header (cairo_ps_surface_t *surface)
 				     "/dict_count countdictstack def\n"
 				     "/op_count count 1 sub def\n"
 				     "userdict begin\n");
+    } else {
+	_cairo_output_stream_printf (surface->final_stream,
+				     "/languagelevel where{pop languagelevel}{1}ifelse %d lt{/Helvetica\n"
+				     "findfont 12 scalefont setfont 50 500 moveto\n"
+				     "(This print job requires a PostScript Language Level %d printer.)show\n"
+				     "showpage quit}if\n",
+				     level,
+				     level);
     }
 
     _cairo_output_stream_printf (surface->final_stream,
@@ -569,7 +587,8 @@ _cairo_ps_surface_emit_truetype_font_subset (cairo_ps_surface_t		*surface,
 static cairo_int_status_t
 _cairo_ps_surface_emit_outline_glyph_data (cairo_ps_surface_t	*surface,
 					   cairo_scaled_font_t	*scaled_font,
-					   unsigned long	 glyph_index)
+					   unsigned long	 glyph_index,
+					   cairo_box_t          *bbox)
 {
     cairo_scaled_glyph_t *scaled_glyph;
     cairo_status_t status;
@@ -582,6 +601,7 @@ _cairo_ps_surface_emit_outline_glyph_data (cairo_ps_surface_t	*surface,
     if (status)
 	return status;
 
+    *bbox = scaled_glyph->bbox;
     _cairo_output_stream_printf (surface->final_stream,
 				 "0 0 %f %f %f %f setcachedevice\n",
 				 _cairo_fixed_to_double (scaled_glyph->bbox.p1.x),
@@ -594,6 +614,8 @@ _cairo_ps_surface_emit_outline_glyph_data (cairo_ps_surface_t	*surface,
 					  surface->final_stream,
 					  scaled_glyph->path,
 					  CAIRO_LINE_CAP_ROUND);
+    if (status)
+	return status;
 
     _cairo_output_stream_printf (surface->final_stream,
 				 "F\n");
@@ -604,7 +626,8 @@ _cairo_ps_surface_emit_outline_glyph_data (cairo_ps_surface_t	*surface,
 static cairo_int_status_t
 _cairo_ps_surface_emit_bitmap_glyph_data (cairo_ps_surface_t	*surface,
 					  cairo_scaled_font_t	*scaled_font,
-					  unsigned long	 glyph_index)
+					  unsigned long	 glyph_index,
+					  cairo_box_t           *bbox)
 {
     cairo_scaled_glyph_t *scaled_glyph;
     cairo_status_t status;
@@ -621,6 +644,7 @@ _cairo_ps_surface_emit_bitmap_glyph_data (cairo_ps_surface_t	*surface,
     if (status)
 	return status;
 
+    *bbox = scaled_glyph->bbox;
     x_advance = scaled_glyph->metrics.x_advance;
     y_advance = scaled_glyph->metrics.y_advance;
     cairo_matrix_transform_distance (&scaled_font->ctm, &x_advance, &y_advance);
@@ -684,7 +708,8 @@ static cairo_status_t
 _cairo_ps_surface_emit_glyph (cairo_ps_surface_t	*surface,
 			      cairo_scaled_font_t	*scaled_font,
 			      unsigned long		 scaled_font_glyph_index,
-			      unsigned int		 subset_glyph_index)
+			      unsigned int		 subset_glyph_index,
+			      cairo_box_t               *bbox)
 {
     cairo_status_t	    status = CAIRO_STATUS_SUCCESS;
 
@@ -694,11 +719,13 @@ _cairo_ps_surface_emit_glyph (cairo_ps_surface_t	*surface,
     if (subset_glyph_index != 0) {
 	status = _cairo_ps_surface_emit_outline_glyph_data (surface,
 							    scaled_font,
-							    scaled_font_glyph_index);
+							    scaled_font_glyph_index,
+							    bbox);
 	if (status == CAIRO_INT_STATUS_UNSUPPORTED)
 	    status = _cairo_ps_surface_emit_bitmap_glyph_data (surface,
 							       scaled_font,
-							       scaled_font_glyph_index);
+							       scaled_font_glyph_index,
+							       bbox);
     }
 
     _cairo_output_stream_printf (surface->final_stream,
@@ -719,6 +746,8 @@ _cairo_ps_surface_emit_type3_font_subset (cairo_ps_surface_t		*surface,
     cairo_status_t status;
     cairo_matrix_t matrix;
     unsigned int i;
+    cairo_box_t font_bbox = {{0,0},{0,0}};
+    cairo_box_t bbox = {{0,0},{0,0}};
 
 #if DEBUG_PS
     _cairo_output_stream_printf (surface->final_stream,
@@ -733,7 +762,6 @@ _cairo_ps_surface_emit_type3_font_subset (cairo_ps_surface_t		*surface,
 				 "8 dict begin\n"
 				 "/FontType 3 def\n"
 				 "/FontMatrix [%f %f %f %f 0 0] def\n"
-				 "/FontBBox [0 0 0 0] def\n"
 				 "/Encoding 256 array def\n"
 				 "0 1 255 { Encoding exch /.notdef put } for\n",
 				 matrix.xx,
@@ -758,13 +786,31 @@ _cairo_ps_surface_emit_type3_font_subset (cairo_ps_surface_t		*surface,
     for (i = 0; i < font_subset->num_glyphs; i++) {
 	status = _cairo_ps_surface_emit_glyph (surface,
 				               font_subset->scaled_font,
-					       font_subset->glyphs[i], i);
+					       font_subset->glyphs[i], i,
+					       &bbox);
 	if (status)
 	    return status;
+
+        if (i == 0) {
+            font_bbox.p1.x = bbox.p1.x;
+            font_bbox.p1.y = bbox.p1.y;
+            font_bbox.p2.x = bbox.p2.x;
+            font_bbox.p2.y = bbox.p2.y;
+        } else {
+            if (bbox.p1.x < font_bbox.p1.x)
+                font_bbox.p1.x = bbox.p1.x;
+            if (bbox.p1.y < font_bbox.p1.y)
+                font_bbox.p1.y = bbox.p1.y;
+            if (bbox.p2.x > font_bbox.p2.x)
+                font_bbox.p2.x = bbox.p2.x;
+            if (bbox.p2.y > font_bbox.p2.y)
+                font_bbox.p2.y = bbox.p2.y;
+        }
     }
 
     _cairo_output_stream_printf (surface->final_stream,
 				 "] def\n"
+				 "/FontBBox [%f %f %f %f] def\n"
 				 "/BuildChar {\n"
 				 "  exch /Glyphs get\n"
 				 "  exch get exec\n"
@@ -772,6 +818,10 @@ _cairo_ps_surface_emit_type3_font_subset (cairo_ps_surface_t		*surface,
 				 "currentdict\n"
 				 "end\n"
 				 "/CairoFont-%d-%d exch definefont pop\n",
+				 _cairo_fixed_to_double (font_bbox.p1.x),
+				 _cairo_fixed_to_double (font_bbox.p1.y),
+				 _cairo_fixed_to_double (font_bbox.p2.x),
+				 _cairo_fixed_to_double (font_bbox.p2.y),
 				 font_subset->font_id,
 				 font_subset->subset_id);
 
@@ -852,15 +902,20 @@ BAIL:
     return status;
 }
 
-static void
+static cairo_status_t
 _cairo_ps_surface_emit_body (cairo_ps_surface_t *surface)
 {
     char    buf[4096];
     int	    n;
 
+    if (ferror (surface->tmpfile) != 0)
+	return _cairo_error (CAIRO_STATUS_TEMP_FILE_ERROR);
+
     rewind (surface->tmpfile);
     while ((n = fread (buf, 1, sizeof (buf), surface->tmpfile)) > 0)
 	_cairo_output_stream_write (surface->final_stream, buf, n);
+
+    return CAIRO_STATUS_SUCCESS;
 }
 
 static void
@@ -885,7 +940,7 @@ _cairo_ps_surface_create_for_stream_internal (cairo_output_stream_t *stream,
 					      double		     width,
 					      double		     height)
 {
-    cairo_status_t status;
+    cairo_status_t status, status_ignored;
     cairo_ps_surface_t *surface;
 
     surface = malloc (sizeof (cairo_ps_surface_t));
@@ -900,20 +955,32 @@ _cairo_ps_surface_create_for_stream_internal (cairo_output_stream_t *stream,
     surface->final_stream = stream;
 
     surface->tmpfile = tmpfile ();
-    if (surface->tmpfile == NULL)
+    if (surface->tmpfile == NULL) {
+	switch (errno) {
+	case ENOMEM:
+	    status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	    break;
+	default:
+	    status = _cairo_error (CAIRO_STATUS_TEMP_FILE_ERROR);
+	    break;
+	}
 	goto CLEANUP_SURFACE;
+    }
 
     surface->stream = _cairo_output_stream_create_for_file (surface->tmpfile);
     status = _cairo_output_stream_get_status (surface->stream);
     if (status)
-	goto CLEANUP_TMPFILE;
+	goto CLEANUP_OUTPUT_STREAM;
 
     surface->font_subsets = _cairo_scaled_font_subsets_create_simple ();
-    if (! surface->font_subsets)
+    if (surface->font_subsets == NULL) {
+	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	goto CLEANUP_OUTPUT_STREAM;
+    }
 
     surface->eps = FALSE;
     surface->ps_level = CAIRO_PS_LEVEL_3;
+    surface->ps_level_used = CAIRO_PS_LEVEL_2;
     surface->width  = width;
     surface->height = height;
     surface->paginated_mode = CAIRO_PAGINATED_MODE_ANALYZE;
@@ -933,22 +1000,21 @@ _cairo_ps_surface_create_for_stream_internal (cairo_output_stream_t *stream,
 					   CAIRO_CONTENT_COLOR_ALPHA,
 					   width, height,
 					   &cairo_ps_surface_paginated_backend);
-    if (surface->paginated_surface->status == CAIRO_STATUS_SUCCESS)
+    status = surface->paginated_surface->status;
+    if (status == CAIRO_STATUS_SUCCESS)
 	return surface->paginated_surface;
 
     _cairo_scaled_font_subsets_destroy (surface->font_subsets);
  CLEANUP_OUTPUT_STREAM:
-    status = _cairo_output_stream_destroy (surface->stream);
-    /* Ignore status---we're already on a failure path. */
- CLEANUP_TMPFILE:
+    status_ignored = _cairo_output_stream_destroy (surface->stream);
     fclose (surface->tmpfile);
  CLEANUP_SURFACE:
     free (surface);
  CLEANUP:
     /* destroy stream on behalf of caller */
-    status = _cairo_output_stream_destroy (stream);
-    _cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-    return (cairo_surface_t*) &_cairo_surface_nil;
+    status_ignored = _cairo_output_stream_destroy (stream);
+
+    return _cairo_surface_create_in_error (status);
 }
 
 /**
@@ -980,15 +1046,11 @@ cairo_ps_surface_create (const char		*filename,
 			 double			 width_in_points,
 			 double			 height_in_points)
 {
-    cairo_status_t status;
     cairo_output_stream_t *stream;
 
     stream = _cairo_output_stream_create_for_filename (filename);
-    status = _cairo_output_stream_get_status (stream);
-    if (status)
-	return (status == CAIRO_STATUS_WRITE_ERROR) ?
-		(cairo_surface_t*) &_cairo_surface_nil_write_error :
-		(cairo_surface_t*) &_cairo_surface_nil;
+    if (_cairo_output_stream_get_status (stream))
+	return _cairo_surface_create_in_error (_cairo_output_stream_destroy (stream));
 
     return _cairo_ps_surface_create_for_stream_internal (stream,
 							 width_in_points,
@@ -1026,13 +1088,11 @@ cairo_ps_surface_create_for_stream (cairo_write_func_t	write_func,
 				    double		width_in_points,
 				    double		height_in_points)
 {
-    cairo_status_t status;
     cairo_output_stream_t *stream;
 
     stream = _cairo_output_stream_create (write_func, NULL, closure);
-    status = _cairo_output_stream_get_status (stream);
-    if (status)
-	return (cairo_surface_t*) &_cairo_surface_nil;
+    if (_cairo_output_stream_get_status (stream))
+	return _cairo_surface_create_in_error (_cairo_output_stream_destroy (stream));
 
     return _cairo_ps_surface_create_for_stream_internal (stream,
 							 width_in_points,
@@ -1458,11 +1518,16 @@ _cairo_ps_surface_finish (void *abstract_surface)
     _cairo_ps_surface_emit_header (surface);
 
     status = _cairo_ps_surface_emit_font_subsets (surface);
+    if (status)
+	goto CLEANUP;
 
-    _cairo_ps_surface_emit_body (surface);
+    status = _cairo_ps_surface_emit_body (surface);
+    if (status)
+	goto CLEANUP;
 
     _cairo_ps_surface_emit_footer (surface);
 
+CLEANUP:
     status2 = _cairo_output_stream_destroy (surface->stream);
     if (status == CAIRO_STATUS_SUCCESS)
 	status = status2;
@@ -1537,7 +1602,6 @@ static cairo_status_t
 _analyze_image_transparency (cairo_image_surface_t      *image,
 			     cairo_image_transparency_t *transparency)
 {
-    cairo_status_t status;
     int x, y;
 
     if (image->format == CAIRO_FORMAT_RGB24) {
@@ -1569,9 +1633,8 @@ _analyze_image_transparency (cairo_image_surface_t      *image,
 	    }
 	}
     }
-    status = CAIRO_STATUS_SUCCESS;
 
-    return status;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 static cairo_int_status_t
@@ -1602,10 +1665,12 @@ _cairo_ps_surface_analyze_surface_pattern_transparency (cairo_ps_surface_t      
 	break;
 
     case CAIRO_IMAGE_HAS_BILEVEL_ALPHA:
-	if (surface->ps_level == CAIRO_PS_LEVEL_2)
+	if (surface->ps_level == CAIRO_PS_LEVEL_2) {
 	    status = CAIRO_INT_STATUS_FLATTEN_TRANSPARENCY;
-	else
+	} else {
+	    surface->ps_level_used = CAIRO_PS_LEVEL_3;
 	    status = CAIRO_STATUS_SUCCESS;
+	}
 	break;
 
     case CAIRO_IMAGE_HAS_ALPHA:
@@ -1668,6 +1733,7 @@ _gradient_pattern_supported (cairo_ps_surface_t    *surface,
     if (surface->ps_level == CAIRO_PS_LEVEL_2)
 	return FALSE;
 
+    surface->ps_level_used = CAIRO_PS_LEVEL_3;
     extend = cairo_pattern_get_extend (pattern);
 
     if (extend == CAIRO_EXTEND_REPEAT ||
@@ -1728,18 +1794,15 @@ _cairo_ps_surface_analyze_operation (cairo_ps_surface_t    *surface,
 	  op == CAIRO_OPERATOR_OVER))
 	return CAIRO_INT_STATUS_UNSUPPORTED;
 
-    if (op == CAIRO_OPERATOR_SOURCE)
-	return CAIRO_STATUS_SUCCESS;
-
     if (pattern->type == CAIRO_PATTERN_TYPE_SURFACE) {
 	cairo_surface_pattern_t *surface_pattern = (cairo_surface_pattern_t *) pattern;
 
 	if ( _cairo_surface_is_meta (surface_pattern->surface))
 	    return CAIRO_INT_STATUS_ANALYZE_META_SURFACE_PATTERN;
-	else
-	    return _cairo_ps_surface_analyze_surface_pattern_transparency (surface,
-									   surface_pattern);
     }
+
+    if (op == CAIRO_OPERATOR_SOURCE)
+	return CAIRO_STATUS_SUCCESS;
 
     /* CAIRO_OPERATOR_OVER is only supported for opaque patterns. If
      * the pattern contains transparency, we return
@@ -1750,6 +1813,13 @@ _cairo_ps_surface_analyze_operation (cairo_ps_surface_t    *surface,
      * render stage and we blend the transarency into the white
      * background to convert the pattern to opaque.
      */
+
+    if (pattern->type == CAIRO_PATTERN_TYPE_SURFACE) {
+	cairo_surface_pattern_t *surface_pattern = (cairo_surface_pattern_t *) pattern;
+
+	return _cairo_ps_surface_analyze_surface_pattern_transparency (surface,
+								       surface_pattern);
+    }
 
     if (_cairo_pattern_is_opaque (pattern))
 	return CAIRO_STATUS_SUCCESS;
@@ -1911,10 +1981,8 @@ _cairo_ps_surface_flatten_image_transparency (cairo_ps_surface_t    *surface,
     opaque = cairo_image_surface_create (CAIRO_FORMAT_RGB24,
 					 image->width,
 					 image->height);
-    if (opaque->status) {
-	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
-	return status;
-    }
+    if (opaque->status)
+	return opaque->status;
 
     _cairo_pattern_init_for_surface (&pattern.surface, &image->base);
 
@@ -1952,8 +2020,8 @@ fail:
 
 static cairo_status_t
 _cairo_ps_surface_emit_base85_string (cairo_ps_surface_t    *surface,
-				      unsigned char 	    *data,
-				      unsigned long 	     length)
+				      unsigned char	    *data,
+				      unsigned long	     length)
 {
     cairo_output_stream_t *base85_stream, *string_array_stream;
     cairo_status_t status, status2;
@@ -1961,13 +2029,13 @@ _cairo_ps_surface_emit_base85_string (cairo_ps_surface_t    *surface,
     string_array_stream = _string_array_stream_create (surface->stream);
     status = _cairo_output_stream_get_status (string_array_stream);
     if (status)
-	return status;
+	return _cairo_output_stream_destroy (string_array_stream);
 
     base85_stream = _cairo_base85_stream_create (string_array_stream);
     status = _cairo_output_stream_get_status (base85_stream);
     if (status) {
 	status2 = _cairo_output_stream_destroy (string_array_stream);
-	return status;
+	return _cairo_output_stream_destroy (base85_stream);
     }
 
     _cairo_output_stream_write (base85_stream, data, length);
@@ -1984,7 +2052,7 @@ static cairo_status_t
 _cairo_ps_surface_emit_image (cairo_ps_surface_t    *surface,
 			      cairo_image_surface_t *image,
 			      const char	    *name,
-			      cairo_operator_t 	     op)
+			      cairo_operator_t	     op)
 {
     cairo_status_t status;
     unsigned char *rgb, *rgb_compressed;
@@ -2010,10 +2078,14 @@ _cairo_ps_surface_emit_image (cairo_ps_surface_t    *surface,
     if (op == CAIRO_OPERATOR_SOURCE ||
 	transparency == CAIRO_IMAGE_HAS_ALPHA ||
 	(transparency == CAIRO_IMAGE_HAS_BILEVEL_ALPHA &&
-	 surface->ps_level == CAIRO_PS_LEVEL_2)) {
-	_cairo_ps_surface_flatten_image_transparency (surface,
-						      image,
-						      &opaque_image);
+	 surface->ps_level == CAIRO_PS_LEVEL_2))
+    {
+	status = _cairo_ps_surface_flatten_image_transparency (surface,
+							       image,
+							       &opaque_image);
+	if (status)
+	    return status;
+
 	use_mask = FALSE;
     } else if (transparency == CAIRO_IMAGE_IS_OPAQUE) {
 	opaque_image = image;
@@ -2215,7 +2287,7 @@ _cairo_ps_surface_emit_image_surface (cairo_ps_surface_t      *surface,
 				      cairo_surface_pattern_t *pattern,
 				      int                     *width,
 				      int                     *height,
-				      cairo_operator_t 	       op)
+				      cairo_operator_t	       op)
 {
     cairo_image_surface_t  *image;
     void		   *image_extra;
@@ -2227,7 +2299,7 @@ _cairo_ps_surface_emit_image_surface (cairo_ps_surface_t      *surface,
     if (status)
 	return status;
 
-    _cairo_ps_surface_emit_image (surface, image, "CairoPattern", op);
+    status = _cairo_ps_surface_emit_image (surface, image, "CairoPattern", op);
     if (status)
 	goto fail;
 
@@ -2270,7 +2342,9 @@ _cairo_ps_surface_emit_meta_surface (cairo_ps_surface_t  *surface,
 				     surface->height);
     }
 
-    status = _cairo_meta_surface_replay (meta_surface, &surface->base);
+    status = _cairo_meta_surface_replay_region (meta_surface, &surface->base,
+						CAIRO_META_REGION_NATIVE);
+    assert (status != CAIRO_INT_STATUS_UNSUPPORTED);
     if (status)
 	return status;
 
@@ -2285,11 +2359,11 @@ _cairo_ps_surface_emit_meta_surface (cairo_ps_surface_t  *surface,
 }
 
 static void
-_cairo_ps_surface_flatten_transparency (cairo_ps_surface_t 	*surface,
-					const cairo_color_t 	*color,
-					double 			*red,
-					double 			*green,
-					double 			*blue)
+_cairo_ps_surface_flatten_transparency (cairo_ps_surface_t	*surface,
+					const cairo_color_t	*color,
+					double			*red,
+					double			*green,
+					double			*blue)
 {
     *red = color->red;
     *green = color->green;
@@ -2331,7 +2405,7 @@ _cairo_ps_surface_emit_solid_pattern (cairo_ps_surface_t    *surface,
 static cairo_status_t
 _cairo_ps_surface_emit_surface_pattern (cairo_ps_surface_t      *surface,
 					cairo_surface_pattern_t *pattern,
-					cairo_operator_t 	 op)
+					cairo_operator_t	 op)
 {
     cairo_status_t status;
     int pattern_width = 0; /* squelch bogus compiler warning */
@@ -2349,9 +2423,13 @@ _cairo_ps_surface_emit_surface_pattern (cairo_ps_surface_t      *surface,
 
 	status = _cairo_ps_surface_emit_meta_surface (surface,
 						      meta_surface);
+	if (status)
+	    return status;
+
 	status = _cairo_surface_get_extents (meta_surface, &pattern_extents);
 	if (status)
 	    return status;
+
 	pattern_width = pattern_extents.width;
 	pattern_height = pattern_extents.height;
     } else {
@@ -2497,7 +2575,7 @@ _cairo_ps_surface_emit_pattern_stops (cairo_ps_surface_t       *surface,
 
     allstops = _cairo_malloc_ab ((pattern->n_stops + 2), sizeof (cairo_ps_color_stop_t));
     if (allstops == NULL)
-	return CAIRO_STATUS_NO_MEMORY;
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
     stops = &allstops[1];
     n_stops = pattern->n_stops;
@@ -2553,6 +2631,9 @@ _cairo_ps_surface_emit_linear_pattern (cairo_ps_surface_t     *surface,
     cairo_status_t status;
     cairo_matrix_t inverse = pattern->base.base.matrix;
 
+    if (pattern->base.n_stops == 0)
+        return CAIRO_INT_STATUS_NOTHING_TO_DO;
+
     extend = cairo_pattern_get_extend (&pattern->base.base);
 
     status = cairo_matrix_invert (&inverse);
@@ -2607,6 +2688,9 @@ _cairo_ps_surface_emit_radial_pattern (cairo_ps_surface_t     *surface,
     cairo_extend_t extend;
     cairo_status_t status;
     cairo_matrix_t inverse = pattern->base.base.matrix;
+
+    if (pattern->base.n_stops == 0)
+        return CAIRO_INT_STATUS_NOTHING_TO_DO;
 
     extend = cairo_pattern_get_extend (&pattern->base.base);
 
@@ -2680,11 +2764,17 @@ _cairo_ps_surface_emit_pattern (cairo_ps_surface_t *surface,
 	break;
 
     case CAIRO_PATTERN_TYPE_LINEAR:
-	_cairo_ps_surface_emit_linear_pattern (surface, (cairo_linear_pattern_t *) pattern);
+	status = _cairo_ps_surface_emit_linear_pattern (surface,
+					  (cairo_linear_pattern_t *) pattern);
+	if (status)
+	    return status;
 	break;
 
     case CAIRO_PATTERN_TYPE_RADIAL:
-	_cairo_ps_surface_emit_radial_pattern (surface, (cairo_radial_pattern_t *) pattern);
+	status = _cairo_ps_surface_emit_radial_pattern (surface,
+					  (cairo_radial_pattern_t *) pattern);
+	if (status)
+	    return status;
 	break;
     }
 
@@ -2799,6 +2889,9 @@ _cairo_ps_surface_paint (void			*abstract_surface,
     _cairo_rectangle_intersect (&extents, &pattern_extents);
 
     status = _cairo_ps_surface_emit_pattern (surface, source, op);
+    if (status == CAIRO_INT_STATUS_NOTHING_TO_DO)
+        return CAIRO_STATUS_SUCCESS;
+
     if (status)
 	return status;
 
@@ -2942,13 +3035,24 @@ _cairo_ps_surface_stroke (void			*abstract_surface,
     }
 
     status = _cairo_ps_surface_emit_pattern (surface, source, op);
-    if (status)
+    if (status == CAIRO_INT_STATUS_NOTHING_TO_DO)
+        return CAIRO_STATUS_SUCCESS;
+
+    if (status) {
+	if (dash != style->dash)
+	    free (dash);
 	return status;
+    }
 
     _cairo_output_stream_printf (stream,
 				 "gsave\n");
     status = _cairo_ps_surface_emit_path (surface, stream, path,
 					  style->line_cap);
+    if (status) {
+	if (dash != style->dash)
+	    free (dash);
+	return status;
+    }
 
     /*
      * Switch to user space to set line parameters
@@ -2985,7 +3089,8 @@ _cairo_ps_surface_stroke (void			*abstract_surface,
 				 "stroke\n");
     _cairo_output_stream_printf (stream,
 				 "grestore\n");
-    return status;
+
+    return CAIRO_STATUS_SUCCESS;
 }
 
 static cairo_int_status_t
@@ -3013,6 +3118,9 @@ _cairo_ps_surface_fill (void		*abstract_surface,
 #endif
 
     status = _cairo_ps_surface_emit_pattern (surface, source, op);
+    if (status == CAIRO_INT_STATUS_NOTHING_TO_DO)
+        return CAIRO_STATUS_SUCCESS;
+
     if (status)
 	return status;
 
@@ -3082,6 +3190,9 @@ _cairo_ps_surface_show_glyphs (void		     *abstract_surface,
     num_glyphs_unsigned = num_glyphs;
 
     status = _cairo_ps_surface_emit_pattern (surface, source, op);
+    if (status == CAIRO_INT_STATUS_NOTHING_TO_DO)
+        return CAIRO_STATUS_SUCCESS;
+
     if (status)
 	return status;
 
@@ -3095,6 +3206,7 @@ _cairo_ps_surface_show_glyphs (void		     *abstract_surface,
                                                        &subset_glyph);
         if (status)
             goto fail;
+
         glyph_ids[i].subset_id = subset_glyph.subset_id;
         glyph_ids[i].glyph_id = subset_glyph.subset_glyph_index;
     }
@@ -3141,9 +3253,10 @@ _cairo_ps_surface_show_glyphs (void		     *abstract_surface,
             _cairo_output_stream_printf (surface->stream, "<%02x> S\n", glyph_ids[i].glyph_id);
         } else {
             word_wrap = _word_wrap_stream_create (surface->stream, 79);
-	    status = _cairo_output_stream_get_status (word_wrap);
-	    if (status)
+	    if (_cairo_output_stream_get_status (word_wrap)) {
+		status = _cairo_output_stream_destroy (word_wrap);
 		goto fail;
+	    }
 
             _cairo_output_stream_printf (word_wrap, "<");
             for (j = i; j < last+1; j++)
