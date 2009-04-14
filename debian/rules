@@ -75,9 +75,6 @@ else
 	CFLAGS_main += -O2
 	CFLAGS_udeb += -Os
 endif
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-	INSTALL_PROGRAM += -s
-endif
 
 include /usr/share/dpatch/dpatch.make
 
