@@ -67,7 +67,9 @@ endif
 
 if CAIRO_HAS_WIN32_SURFACE
 libcairoboilerplate_la_SOURCES += cairo-boilerplate-win32.c
+libcairoboilerplate_la_SOURCES += cairo-boilerplate-win32-printing.c
 libcairoboilerplate_la_SOURCES += cairo-boilerplate-win32-private.h
+libcairoboilerplate_la_LIBADD += -lwinspool
 endif
 
 if CAIRO_HAS_XCB_SURFACE
@@ -95,3 +97,5 @@ INCLUDES =					\
 
 CLEANFILES =					\
 	$(EXTRA_LTLIBRARIES)
+
+check test: libcairoboilerplate.la

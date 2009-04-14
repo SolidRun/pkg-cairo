@@ -58,8 +58,6 @@
 
 #include <fontconfig/fontconfig.h>
 
-#include <X11/extensions/Xrender.h>
-
 static int
 parse_boolean (const char *v)
 {
@@ -248,8 +246,9 @@ _cairo_xlib_screen_info_reference (cairo_xlib_screen_info_t *info)
     if (info == NULL)
 	return NULL;
 
-    assert (info->ref_count > 0);
-    info->ref_count++;
+    assert (CAIRO_REFERENCE_COUNT_HAS_REFERENCE (&info->ref_count));
+
+    _cairo_reference_count_inc (&info->ref_count);
 
     return info;
 }
@@ -276,8 +275,9 @@ _cairo_xlib_screen_info_destroy (cairo_xlib_screen_info_t *info)
     if (info == NULL)
 	return;
 
-    assert (info->ref_count > 0);
-    if (--info->ref_count)
+    assert (CAIRO_REFERENCE_COUNT_HAS_REFERENCE (&info->ref_count));
+
+    if (! _cairo_reference_count_dec_and_test (&info->ref_count))
 	return;
 
     CAIRO_MUTEX_LOCK (info->display->mutex);
@@ -332,7 +332,7 @@ _cairo_xlib_screen_info_get (Display *dpy, Screen *screen)
     } else {
 	info = malloc (sizeof (cairo_xlib_screen_info_t));
 	if (info != NULL) {
-	    info->ref_count = 2; /* Add one for display cache */
+	    CAIRO_REFERENCE_COUNT_INIT (&info->ref_count, 2); /* Add one for display cache */
 	    info->display = _cairo_xlib_display_reference (display);
 	    info->screen = screen;
 	    info->has_render = FALSE;

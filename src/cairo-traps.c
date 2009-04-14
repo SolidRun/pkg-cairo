@@ -1,3 +1,4 @@
+/* -*- Mode: c; tab-width: 8; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /*
  * Copyright © 2002 Keith Packard
  * Copyright © 2007 Red Hat, Inc.
@@ -256,22 +257,17 @@ _cairo_traps_grow (cairo_traps_t *traps)
     cairo_trapezoid_t *new_traps;
     int new_size = 2 * MAX (traps->traps_size, 16);
 
-    if (traps->status)
-	return traps->status;
-
     if (traps->traps == traps->traps_embedded) {
 	new_traps = _cairo_malloc_ab (new_size, sizeof (cairo_trapezoid_t));
 	if (new_traps)
 	    memcpy (new_traps, traps->traps, sizeof (traps->traps_embedded));
     } else {
 	new_traps = _cairo_realloc_ab (traps->traps,
-				       new_size, sizeof (cairo_trapezoid_t));
+	                               new_size, sizeof (cairo_trapezoid_t));
     }
 
-    if (new_traps == NULL) {
-	traps->status = CAIRO_STATUS_NO_MEMORY;
-	return traps->status;
-    }
+    if (new_traps == NULL)
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
     traps->traps = new_traps;
     traps->traps_size = new_size;
@@ -349,21 +345,16 @@ _cairo_trapezoid_array_translate_and_scale (cairo_trapezoid_t *offset_traps,
         cairo_fixed_t ysc = _cairo_fixed_from_double (sy);
 
         for (i = 0; i < num_traps; i++) {
-#define FIXED_MUL(_a, _b) \
-            (_cairo_int64_to_int32(_cairo_int64_rsl(_cairo_int32x32_64_mul((_a), (_b)), 16)))
-
-            offset_traps[i].top = FIXED_MUL(src_traps[i].top + yoff, ysc);
-            offset_traps[i].bottom = FIXED_MUL(src_traps[i].bottom + yoff, ysc);
-            offset_traps[i].left.p1.x = FIXED_MUL(src_traps[i].left.p1.x + xoff, xsc);
-            offset_traps[i].left.p1.y = FIXED_MUL(src_traps[i].left.p1.y + yoff, ysc);
-            offset_traps[i].left.p2.x = FIXED_MUL(src_traps[i].left.p2.x + xoff, xsc);
-            offset_traps[i].left.p2.y = FIXED_MUL(src_traps[i].left.p2.y + yoff, ysc);
-            offset_traps[i].right.p1.x = FIXED_MUL(src_traps[i].right.p1.x + xoff, xsc);
-            offset_traps[i].right.p1.y = FIXED_MUL(src_traps[i].right.p1.y + yoff, ysc);
-            offset_traps[i].right.p2.x = FIXED_MUL(src_traps[i].right.p2.x + xoff, xsc);
-            offset_traps[i].right.p2.y = FIXED_MUL(src_traps[i].right.p2.y + yoff, ysc);
-
-#undef FIXED_MUL
+            offset_traps[i].top = _cairo_fixed_mul (src_traps[i].top + yoff, ysc);
+            offset_traps[i].bottom = _cairo_fixed_mul (src_traps[i].bottom + yoff, ysc);
+            offset_traps[i].left.p1.x = _cairo_fixed_mul (src_traps[i].left.p1.x + xoff, xsc);
+            offset_traps[i].left.p1.y = _cairo_fixed_mul (src_traps[i].left.p1.y + yoff, ysc);
+            offset_traps[i].left.p2.x = _cairo_fixed_mul (src_traps[i].left.p2.x + xoff, xsc);
+            offset_traps[i].left.p2.y = _cairo_fixed_mul (src_traps[i].left.p2.y + yoff, ysc);
+            offset_traps[i].right.p1.x = _cairo_fixed_mul (src_traps[i].right.p1.x + xoff, xsc);
+            offset_traps[i].right.p1.y = _cairo_fixed_mul (src_traps[i].right.p1.y + yoff, ysc);
+            offset_traps[i].right.p2.x = _cairo_fixed_mul (src_traps[i].right.p2.x + xoff, xsc);
+            offset_traps[i].right.p2.y = _cairo_fixed_mul (src_traps[i].right.p2.y + yoff, ysc);
         }
     }
 }
@@ -580,29 +571,30 @@ _cairo_traps_extents (cairo_traps_t *traps, cairo_box_t *extents)
     *extents = traps->extents;
 }
 
+#define STACK_BOXES_LEN ((int) (CAIRO_STACK_BUFFER_SIZE / sizeof(cairo_box_int_t)))
+
 /**
  * _cairo_traps_extract_region:
  * @traps: a #cairo_traps_t
- * @region: on return, %NULL is stored here if the trapezoids aren't
- *          exactly representable as a pixman region, otherwise a
- *          a pointer to such a region, newly allocated.
- *          (free with pixman region destroy)
+ * @region: a #cairo_region_t
  *
  * Determines if a set of trapezoids are exactly representable as a
- * pixman region, and if so creates such a region.
+ * cairo region.  If so, the passed-in region is initialized to
+ * the area representing the given traps.  It should be finalized
+ * with _cairo_region_fini().  If not, %CAIRO_INT_STATUS_UNSUPPORTED
+ * is returned.
  *
  * Return value: %CAIRO_STATUS_SUCCESS, %CAIRO_INT_STATUS_UNSUPPORTED
  * or %CAIRO_STATUS_NO_MEMORY
  **/
 cairo_int_status_t
-_cairo_traps_extract_region (cairo_traps_t     *traps,
-			     pixman_region16_t *region)
+_cairo_traps_extract_region (cairo_traps_t  *traps,
+			     cairo_region_t *region)
 {
-#define NUM_STATIC_BOXES 16
-    pixman_box16_t static_boxes[NUM_STATIC_BOXES];
-    pixman_box16_t *boxes;
+    cairo_box_int_t stack_boxes[STACK_BOXES_LEN];
+    cairo_box_int_t *boxes = stack_boxes;
     int i, box_count;
-    pixman_region_status_t status;
+    cairo_int_status_t status;
 
     for (i = 0; i < traps->num_traps; i++)
 	if (!(traps->traps[i].left.p1.x == traps->traps[i].left.p2.x
@@ -614,14 +606,11 @@ _cairo_traps_extract_region (cairo_traps_t     *traps,
 	    return CAIRO_INT_STATUS_UNSUPPORTED;
 	}
 
-    if (traps->num_traps <= NUM_STATIC_BOXES) {
-	boxes = static_boxes;
-    } else {
-	/*boxes = _cairo_malloc2 (traps->num_traps, sizeof(pixman_box16_t));*/
-	boxes = malloc (traps->num_traps * sizeof(pixman_box16_t));
+    if (traps->num_traps > ARRAY_LENGTH(stack_boxes)) {
+	boxes = _cairo_malloc_ab (traps->num_traps, sizeof(cairo_box_int_t));
 
 	if (boxes == NULL)
-	    return CAIRO_STATUS_NO_MEMORY;
+	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
     }
 
     box_count = 0;
@@ -638,23 +627,21 @@ _cairo_traps_extract_region (cairo_traps_t     *traps,
 	if (x1 == x2 || y1 == y2)
 	    continue;
 
-	boxes[box_count].x1 = (short) x1;
-	boxes[box_count].y1 = (short) y1;
-	boxes[box_count].x2 = (short) x2;
-	boxes[box_count].y2 = (short) y2;
+	boxes[box_count].p1.x = x1;
+	boxes[box_count].p1.y = y1;
+	boxes[box_count].p2.x = x2;
+	boxes[box_count].p2.y = y2;
 
 	box_count++;
     }
 
-    status = pixman_region_init_rects (region, boxes, box_count);
+    status = _cairo_region_init_boxes (region, boxes, box_count);
 
-    if (boxes != static_boxes)
+    if (boxes != stack_boxes)
 	free (boxes);
 
-    if (status != PIXMAN_REGION_STATUS_SUCCESS) {
-	pixman_region_fini (region);
-	return CAIRO_INT_STATUS_UNSUPPORTED;
-    }
+    if (status)
+	_cairo_region_fini (region);
 
-    return CAIRO_STATUS_SUCCESS;
+    return status;
 }

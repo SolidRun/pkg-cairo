@@ -528,7 +528,8 @@ until it is greater than <parameter>angle1</parameter>.
 <para>
 If there is a current point, an initial line segment will be added
 to the path to connect the current point to the beginning of the
-arc.
+arc. If this initial line is undesired, it can be avoided by
+calling <link linkend="cairo-new-sub-path"><function>cairo_new_sub_path()</function></link> before calling <link linkend="cairo-arc"><function>cairo_arc()</function></link>.
 </para>
 <para>
 Angles are measured in radians. An angle of 0.0 is in the direction

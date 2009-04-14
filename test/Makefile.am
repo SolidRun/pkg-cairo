@@ -8,12 +8,14 @@ caps-joins			\
 caps-joins-alpha		\
 caps-sub-paths			\
 clip-all			\
+clip-empty			\
 clip-fill-rule			\
 clip-fill-rule-pixel-aligned	\
 clip-nesting			\
 clip-operator			\
 clip-push-group			\
 clip-twice			\
+clip-zero \
 close-path			\
 composite-integer-translate-source \
 composite-integer-translate-over \
@@ -29,6 +31,7 @@ dash-scale			\
 dash-zero-length		\
 dash-state			\
 degenerate-path			\
+degenerate-pen			\
 device-offset			\
 device-offset-positive		\
 extend-pad			\
@@ -59,14 +62,19 @@ linear-gradient			\
 linear-gradient-reflect		\
 long-lines			\
 mask				\
+mask-alpha			\
 mask-ctm			\
 mask-surface-ctm		\
-miter-precision			\
+meta-surface-pattern            \
 move-to-show-surface		\
 new-sub-path			\
 nil-surface			\
 operator-clear			\
 operator-source			\
+over-above-source		\
+over-around-source		\
+over-below-source		\
+over-between-source		\
 paint				\
 paint-repeat			\
 paint-source-alpha		\
@@ -78,6 +86,7 @@ radial-gradient			\
 random-intersections		\
 rectangle-rounding-error	\
 rectilinear-stroke		\
+rgb24-ignore-alpha		\
 rotate-image-surface-paint	\
 scale-down-source-surface-paint	\
 scale-source-surface-paint	\
@@ -214,6 +223,7 @@ REFERENCE_IMAGES = \
 	caps-joins-ref.png	\
 	caps-sub-paths-ref.png	\
 	clip-all-ref.png	\
+	clip-empty-ref.png	\
 	clip-fill-rule-pixel-aligned-ref.png	\
 	clip-fill-rule-pixel-aligned-rgb24-ref.png	\
 	clip-fill-rule-ps-argb32-ref.png	\
@@ -253,6 +263,8 @@ REFERENCE_IMAGES = \
 	dash-zero-length-ps-argb32-ref.png	\
 	dash-zero-length-ref.png	\
 	dash-zero-length-rgb24-ref.png	\
+	degenerate-pen-ref.png		\
+	degenerate-pen-ps-argb32-ref.png	\
 	degenerate-path-ps-argb32-ref.png	\
 	degenerate-path-ref.png	\
 	degenerate-path-rgb24-ref.png	\
@@ -310,6 +322,8 @@ REFERENCE_IMAGES = \
 	line-width-scale-ps-argb32-ref.png	\
 	line-width-scale-ref.png	\
 	long-lines-ref.png	\
+	mask-alpha-ref.png	\
+	mask-alpha-rgb24-ref.png	\
 	mask-ctm-ref.png	\
 	mask-ctm-rgb24-ref.png	\
 	mask-ctm-svg-argb32-ref.png	\
@@ -318,8 +332,10 @@ REFERENCE_IMAGES = \
 	mask-surface-ctm-ref.png	\
 	mask-surface-ctm-rgb24-ref.png	\
 	mask-surface-ctm-svg-argb32-ref.png	\
+	mask-svg-rgb24-ref.png	\
 	mask-svg-argb32-ref.png	\
-	miter-precision-ref.png \
+	meta-surface-pattern-ref.png		\
+	meta-surface-pattern-rgb24-ref.png	\
 	move-to-show-surface-ref.png	\
 	new-sub-path-ps-argb32-ref.png	\
 	new-sub-path-quartz-ref.png	\
@@ -334,6 +350,18 @@ REFERENCE_IMAGES = \
 	operator-clear-rgb24-ref.png	\
 	operator-source-ref.png	\
 	operator-source-rgb24-ref.png	\
+	over-above-source-ps-argb32-ref.png       \
+	over-above-source-ref.png                 \
+	over-above-source-rgb24-ref.png           \
+	over-around-source-ps-argb32-ref.png       \
+	over-around-source-ref.png                 \
+	over-around-source-rgb24-ref.png           \
+	over-below-source-ps-argb32-ref.png       \
+	over-below-source-ref.png                 \
+	over-below-source-rgb24-ref.png           \
+	over-between-source-ps-argb32-ref.png       \
+	over-between-source-ref.png                 \
+	over-between-source-rgb24-ref.png           \
 	paint-ref.png	\
 	paint-repeat-ref.png	\
 	paint-source-alpha-pdf-argb32-ref.png	\
@@ -351,6 +379,7 @@ REFERENCE_IMAGES = \
 	radial-gradient-svg-ref.png	\
 	random-intersections-ps-argb32-ref.png	\
 	random-intersections-ref.png	\
+	rgb24-ignore-alpha-ref.png \
 	rectangle-rounding-error-ref.png	\
 	rectilinear-stroke-ref.png	\
 	rel-path-quartz-ref.png	\
@@ -410,6 +439,7 @@ REFERENCE_IMAGES = \
 	translate-show-surface-ref.png	\
 	trap-clip-quartz-ref.png	\
 	trap-clip-quartz-rgb24-ref.png	\
+	trap-clip-ps-argb32-ref.png	\
 	trap-clip-ref.png	\
 	trap-clip-rgb24-ref.png	\
 	unantialiased-shapes-ref.png	\
@@ -439,7 +469,6 @@ $(REFERENCE_IMAGES)
 XFAIL_TESTS =			\
 a8-mask				\
 big-trap			\
-bitmap-font			\
 extend-pad			\
 filter-nearest-offset		\
 long-lines			\
@@ -512,12 +541,6 @@ check_PROGRAMS += pdf2png
 pdf2png_CFLAGS = $(POPPLER_CFLAGS)
 # add LDADD, so poppler uses "our" cairo
 pdf2png_LDADD  = $(LDADD) $(POPPLER_LIBS)
-if CAIRO_HAS_SVG_SURFACE
-EXTRA_PROGRAMS += pdf2svg$(EXEEXT)
-pdf2svg_CFLAGS = $(POPPLER_CFLAGS)
-# add LDADD, so poppler uses "our" cairo
-pdf2svg_LDADD  = $(LDADD) $(POPPLER_LIBS)
-endif
 endif
 
 if CAIRO_CAN_TEST_SVG_SURFACE
@@ -525,22 +548,17 @@ check_PROGRAMS += svg2png
 svg2png_CFLAGS = $(LIBRSVG_CFLAGS)
 # add LDADD, so librsvg uses "our" cairo
 svg2png_LDADD  = $(LDADD) $(LIBRSVG_LIBS)
-if CAIRO_HAS_PDF_SURFACE
-EXTRA_PROGRAMS += svg2pdf$(EXEEXT)
-svg2pdf_CFLAGS = $(LIBRSVG_CFLAGS)
-# add LDADD, so librsvg uses "our" cairo
-svg2pdf_LDADD  = $(LDADD) $(LIBRSVG_LIBS)
-endif
 endif
 
 EXTRA_PROGRAMS += $(TESTS) $(DISABLED_TESTS)
 
 # Do a funny transition of CAIRO_TEST_TARGET through TARGETS such that
 # one can limit tested targets both through CAIRO_TEST_TARGET env var
-# and TARGETS make var on the command line.
+# and TARGETS make var on the command line.  Same for the rest.
 TARGETS = $(CAIRO_TEST_TARGET)
+TARGETS_EXCLUDE = $(CAIRO_TEST_TARGET_EXCLUDE)
 
-TESTS_ENVIRONMENT = CAIRO_XFAIL_TESTS="$(XFAIL_TESTS)" CAIRO_TEST_TARGET="$(TARGETS)"
+TESTS_ENVIRONMENT = CAIRO_XFAIL_TESTS="$(XFAIL_TESTS)" CAIRO_TEST_TARGET="$(TARGETS)" CAIRO_TEST_TARGET_EXCLUDE="$(TARGETS_EXCLUDE)"
 
 EXTRA_VALGRIND_FLAGS = $(CAIRO_EXTRA_VALGRIND_FLAGS)
 VALGRIND_FLAGS = \
@@ -569,7 +587,7 @@ clean-local:
 # Check tests under valgrind
 # Saves log to valgrind-log
 check-valgrind:
-	$(MAKE) $(AM_MAKEFLAGS) check TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) $(top_srcdir)/libtool --mode=execute valgrind $(VALGRIND_FLAGS)' 2>&1 | tee valgrind-log
+	$(MAKE) $(AM_MAKEFLAGS) check TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) $(top_builddir)/libtool --mode=execute valgrind $(VALGRIND_FLAGS)' 2>&1 | tee valgrind-log
 
 # The following definitions both should work.
 #FAILED_TESTS = `grep -l '\<FAIL\>' $(TESTS:=.log) 2>/dev/null | sed -e 's/[.]log$$//' | xargs echo`

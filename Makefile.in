@@ -102,6 +102,8 @@ CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_FALSE = @CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_FALSE
 CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE = @CAIRO_CAN_TEST_GLITZ_WGL_SURFACE_TRUE@
 CAIRO_CAN_TEST_PDF_SURFACE_FALSE = @CAIRO_CAN_TEST_PDF_SURFACE_FALSE@
 CAIRO_CAN_TEST_PDF_SURFACE_TRUE = @CAIRO_CAN_TEST_PDF_SURFACE_TRUE@
+CAIRO_CAN_TEST_PS_SURFACE_FALSE = @CAIRO_CAN_TEST_PS_SURFACE_FALSE@
+CAIRO_CAN_TEST_PS_SURFACE_TRUE = @CAIRO_CAN_TEST_PS_SURFACE_TRUE@
 CAIRO_CAN_TEST_SVG_SURFACE_FALSE = @CAIRO_CAN_TEST_SVG_SURFACE_FALSE@
 CAIRO_CAN_TEST_SVG_SURFACE_TRUE = @CAIRO_CAN_TEST_SVG_SURFACE_TRUE@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
@@ -115,6 +117,8 @@ CAIRO_HAS_FT_FONT_FALSE = @CAIRO_HAS_FT_FONT_FALSE@
 CAIRO_HAS_FT_FONT_TRUE = @CAIRO_HAS_FT_FONT_TRUE@
 CAIRO_HAS_GLITZ_SURFACE_FALSE = @CAIRO_HAS_GLITZ_SURFACE_FALSE@
 CAIRO_HAS_GLITZ_SURFACE_TRUE = @CAIRO_HAS_GLITZ_SURFACE_TRUE@
+CAIRO_HAS_LCOV_FALSE = @CAIRO_HAS_LCOV_FALSE@
+CAIRO_HAS_LCOV_TRUE = @CAIRO_HAS_LCOV_TRUE@
 CAIRO_HAS_MULTI_PAGE_SURFACES_FALSE = @CAIRO_HAS_MULTI_PAGE_SURFACES_FALSE@
 CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE = @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@
 CAIRO_HAS_OS2_SURFACE_FALSE = @CAIRO_HAS_OS2_SURFACE_FALSE@
@@ -189,6 +193,7 @@ GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
 GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
 GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
 GREP = @GREP@
+GS = @GS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_PTHREAD_FALSE = @HAVE_PTHREAD_FALSE@
@@ -221,8 +226,6 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
-PIXMAN_LDADD = @PIXMAN_LDADD@
 PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
@@ -233,8 +236,6 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
-USE_MMX_FALSE = @USE_MMX_FALSE@
-USE_MMX_TRUE = @USE_MMX_TRUE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 XARGS = @XARGS@
@@ -287,6 +288,8 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pixman_CFLAGS = @pixman_CFLAGS@
+pixman_LIBS = @pixman_LIBS@
 png_CFLAGS = @png_CFLAGS@
 png_LIBS = @png_LIBS@
 png_REQUIRES = @png_REQUIRES@
@@ -303,8 +306,8 @@ xlib_CFLAGS = @xlib_CFLAGS@
 xlib_LIBS = @xlib_LIBS@
 xlib_xrender_CFLAGS = @xlib_xrender_CFLAGS@
 xlib_xrender_LIBS = @xlib_xrender_LIBS@
-DIST_SUBDIRS = pixman src boilerplate test perf doc util
-SUBDIRS = pixman src doc $(am__append_1)
+DIST_SUBDIRS = src boilerplate test perf doc util
+SUBDIRS = src doc $(am__append_1)
 EXTRA_DIST = \
 	AUTHORS \
 	BIBLIOGRAPHY \
@@ -743,7 +746,7 @@ distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
 distclean-am: clean-am distclean-generic distclean-hdr \
-	distclean-libtool distclean-tags
+	distclean-libtool distclean-local distclean-tags
 
 dvi: dvi-recursive
 
@@ -792,15 +795,16 @@ uninstall-info: uninstall-info-recursive
 	ctags ctags-recursive dist dist-all dist-bzip2 dist-gzip \
 	dist-hook dist-shar dist-tarZ dist-zip distcheck distclean \
 	distclean-generic distclean-hdr distclean-libtool \
-	distclean-recursive distclean-tags distcleancheck distdir \
-	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-generic \
-	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am uninstall-info-am
+	distclean-local distclean-recursive distclean-tags \
+	distcleancheck distdir distuninstallcheck dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive \
+	mostlyclean mostlyclean-generic mostlyclean-libtool \
+	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
+	uninstall uninstall-am uninstall-info-am
 
 
 .PHONY: doc test retest recheck check-valgrind
@@ -819,17 +823,31 @@ check-valgrind: all
 	cd perf && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
 perf: all
 	cd perf && $(MAKE) $(AM_MAKEFLAGS) perf
-lcov: check
-	$(LTP) --directory $(top_builddir) --capture --output-file cairo-lcov.info --test-name CAIRO_TEST --no-checksum
-	LANG=C $(LTP_GENHTML) --prefix $(top_builddir) --output-directory cairo-test-lcov --title "Cairo Test Code Coverage" --show-details cairo-test-lcov.info
-lcov-perf: perf
-	$(LTP) --directory $(top_builddir) --capture --output-file cairo-perf-lcov.info --test-name CAIRO_PERF --no-checksum
-	LANG=C $(LTP_GENHTML) --prefix $(top_builddir) --output-directory cairo-perf-lcov --title "Cairo Perf Code Coverage" --show-details cairo-perf-lcov.info
+
+# use recursive makes in order to ignore errors during check/perf
+@CAIRO_HAS_LCOV_TRUE@lcov:
+@CAIRO_HAS_LCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) check
+@CAIRO_HAS_LCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) genlcov
+@CAIRO_HAS_LCOV_TRUE@lcov-perf:
+@CAIRO_HAS_LCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) perf
+@CAIRO_HAS_LCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) genlcov
+
+# we have to massage the lcov.info file slightly to hide the effect of libtool
+# placing the objects files in the .libs/ directory separate from the *.c
+@CAIRO_HAS_LCOV_TRUE@genlcov:
+@CAIRO_HAS_LCOV_TRUE@	$(LTP) --directory $(top_builddir) --capture --output-file cairo-lcov.info --test-name CAIRO_PERF --no-checksum
+@CAIRO_HAS_LCOV_TRUE@	$(SED) -e 's#.libs/##' < cairo-lcov.info > cairo-lcov.info.tmp
+@CAIRO_HAS_LCOV_TRUE@	LANG=C $(LTP_GENHTML) --prefix $(top_builddir) --output-directory cairo-lcov --title "Cairo Code Coverage" --show-details cairo-lcov.info.tmp
+@CAIRO_HAS_LCOV_TRUE@	$(RM) cairo-lcov.info.tmp
+@CAIRO_HAS_LCOV_FALSE@lcov lcov-perf genlcov:
+@CAIRO_HAS_LCOV_FALSE@	@echo You need to configure Cairo with support for gcov enabled.
+@CAIRO_HAS_LCOV_FALSE@	@echo e.g, ./configure --enable-gcov
+
 lcov-clean:
-	$(LTP) --directory $(top_builddir) --reset
-	$(RM) -rf \
-	    cairo-test-lcov.info cairo-test-lcov \
-	    cairo-perf-lcov.info cairo-perf-lcov
+@CAIRO_HAS_LCOV_TRUE@	-$(LTP) --directory $(top_builddir) -z
+	-$(RM) -r cairo-lcov.info cairo-lcov
+	-$(FIND) -name '*.gcda' -print | $(XARGS) $(RM)
+distclean-local: lcov-clean
 
 changelogs:
 	@$(MAKE) $(AM_MAKEFLAGS) $(CHANGELOGS)
@@ -1014,7 +1032,7 @@ doc-publish: doc
 	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
 	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && rm -f manual && ln -s $(MANUAL_DATED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
 
-.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish lcov lcov-perf lcov-clean
+.PHONY: release-verify-even-micro release-verify-newer release-remove-old release-cleanup-group-sticky release-check release-upload release-publish docs-publish lcov lcov-perf lcov-clean genlcov
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -62,7 +62,7 @@ typedef struct _test_fallback_surface {
     cairo_surface_t *backing;
 } test_fallback_surface_t;
 
-const cairo_private cairo_surface_backend_t test_fallback_surface_backend;
+static const cairo_surface_backend_t test_fallback_surface_backend;
 
 slim_hidden_proto (_cairo_test_fallback_surface_create);
 
@@ -81,7 +81,7 @@ _cairo_test_fallback_surface_create (cairo_content_t	content,
     surface = malloc (sizeof (test_fallback_surface_t));
     if (surface == NULL) {
 	cairo_surface_destroy (backing);
-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
 	return (cairo_surface_t*) &_cairo_surface_nil;
     }
 
@@ -140,9 +140,9 @@ _test_fallback_surface_release_source_image (void	     *abstract_surface,
 
 static cairo_status_t
 _test_fallback_surface_acquire_dest_image (void		           *abstract_surface,
-					   cairo_rectangle_int16_t *interest_rect,
+					   cairo_rectangle_int_t   *interest_rect,
 					   cairo_image_surface_t  **image_out,
-					   cairo_rectangle_int16_t *image_rect_out,
+					   cairo_rectangle_int_t   *image_rect_out,
 					   void			  **image_extra)
 {
     test_fallback_surface_t *surface = abstract_surface;
@@ -156,9 +156,9 @@ _test_fallback_surface_acquire_dest_image (void		           *abstract_surface,
 
 static void
 _test_fallback_surface_release_dest_image (void			   *abstract_surface,
-					   cairo_rectangle_int16_t *interest_rect,
+					   cairo_rectangle_int_t   *interest_rect,
 					   cairo_image_surface_t   *image,
-					   cairo_rectangle_int16_t *image_rect,
+					   cairo_rectangle_int_t   *image_rect,
 					   void			   *image_extra)
 {
     test_fallback_surface_t *surface = abstract_surface;
@@ -191,15 +191,15 @@ _test_fallback_surface_clone_similar (void		  *abstract_surface,
 }
 
 static cairo_int_status_t
-_test_fallback_surface_get_extents (void		            *abstract_surface,
-				    cairo_rectangle_int16_t *rectangle)
+_test_fallback_surface_get_extents (void		  *abstract_surface,
+				    cairo_rectangle_int_t *rectangle)
 {
     test_fallback_surface_t *surface = abstract_surface;
 
     return _cairo_surface_get_extents (surface->backing, rectangle);
 }
 
-const cairo_surface_backend_t test_fallback_surface_backend = {
+static const cairo_surface_backend_t test_fallback_surface_backend = {
     CAIRO_INTERNAL_SURFACE_TYPE_TEST_FALLBACK,
     _test_fallback_surface_create_similar,
     _test_fallback_surface_finish,
