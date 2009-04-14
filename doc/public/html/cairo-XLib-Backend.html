@@ -51,20 +51,24 @@
 void        <a href="cairo-XLib-Backend.html#cairo-xlib-surface-set-size">cairo_xlib_surface_set_size</a>     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              int width,
                                              int height);
+void        <a href="cairo-XLib-Backend.html#cairo-xlib-surface-set-drawable">cairo_xlib_surface_set_drawable</a> (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             Drawable drawable,
+                                             int width,
+                                             int height);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2677769"></a><h2>Description</h2>
+<a name="id2903948"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2677780"></a><h2>Details</h2>
+<a name="id2903959"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2677786"></a><h3>
+<a name="id2903965"></a><h3>
 <a name="cairo-xlib-surface-create"></a>cairo_xlib_surface_create ()</h3>
-<a class="indexterm" name="id2656047"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create  (Display *dpy,
+<a class="indexterm" name="id2861558"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create  (Display *dpy,
                                              Drawable drawable,
                                              Visual *visual,
                                              int width,
@@ -127,9 +131,9 @@ window changes.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2656290"></a><h3>
+<a name="id2861735"></a><h3>
 <a name="cairo-xlib-surface-create-for-bitmap"></a>cairo_xlib_surface_create_for_bitmap ()</h3>
-<a class="indexterm" name="id2656301"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create_for_bitmap
+<a class="indexterm" name="id2861744"></a><pre class="programlisting"><a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>* cairo_xlib_surface_create_for_bitmap
                                             (Display *dpy,
                                              Pixmap bitmap,
                                              Screen *screen,
@@ -185,9 +189,9 @@ This will be drawn to as a CAIRO_FORMAT_A1 object.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2678712"></a><h3>
+<a name="id2903266"></a><h3>
 <a name="cairo-xlib-surface-set-size"></a>cairo_xlib_surface_set_size ()</h3>
-<a class="indexterm" name="id2678721"></a><pre class="programlisting">void        cairo_xlib_surface_set_size     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+<a class="indexterm" name="id2903275"></a><pre class="programlisting">void        cairo_xlib_surface_set_size     (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
                                              int width,
                                              int height);</pre>
 <p>
@@ -223,6 +227,56 @@ this function on a surface created for a Pixmap.</p>
 <td>
 <span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
 <td> the new height of the surface
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2903385"></a><h3>
+<a name="cairo-xlib-surface-set-drawable"></a>cairo_xlib_surface_set_drawable ()</h3>
+<a class="indexterm" name="id2903394"></a><pre class="programlisting">void        cairo_xlib_surface_set_drawable (<a href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a> *surface,
+                                             Drawable drawable,
+                                             int width,
+                                             int height);</pre>
+<p>
+Informs cairo of a new X Drawable underlying the
+surface. The drawable must match the display, screen
+and format of the existing drawable or the application
+will get X protocol errors and will probably terminate.
+No checks are done by this function to ensure this
+compatibility.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>surface</code></em>&#160;:</span></td>
+<td> a <a href="cairo-cairo-surface-t.html#cairo-surface-t"><span class="type">cairo_surface_t</span></a> for the XLib backend
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>drawable</code></em>&#160;:</span></td>
+<td> the new drawable for the surface
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td>
+
+
 </td>
 </tr>
 </tbody>

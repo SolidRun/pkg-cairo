@@ -51,17 +51,17 @@ void        <a href="cairo-FreeType-Fonts.html#cairo-ft-scaled-font-unlock-face"
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2625924"></a><h2>Description</h2>
+<a name="id2902931"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2625935"></a><h2>Details</h2>
+<a name="id2902942"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2625942"></a><h3>
+<a name="id2902948"></a><h3>
 <a name="cairo-ft-font-options-substitute"></a>cairo_ft_font_options_substitute ()</h3>
-<a class="indexterm" name="id2625950"></a><pre class="programlisting">void        cairo_ft_font_options_substitute
+<a class="indexterm" name="id2902957"></a><pre class="programlisting">void        cairo_ft_font_options_substitute
                                             (const <a href="cairo-Fonts.html#cairo-font-options-t">cairo_font_options_t</a> *options,
                                              FcPattern *pattern);</pre>
 <p>
@@ -93,9 +93,9 @@ before calling <code class="function">FcDefaultSubstitute()</code>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2606983"></a><h3>
+<a name="id2911623"></a><h3>
 <a name="cairo-ft-font-face-create-for-pattern"></a>cairo_ft_font_face_create_for_pattern ()</h3>
-<a class="indexterm" name="id2606994"></a><pre class="programlisting"><a href="cairo-Fonts.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_pattern
+<a class="indexterm" name="id2911634"></a><pre class="programlisting"><a href="cairo-Fonts.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_pattern
                                             (FcPattern *pattern);</pre>
 <p>
 Creates a new font face for the FreeType font backend based on a
@@ -140,9 +140,9 @@ appropriately to reflect the options in a <a href="cairo-Fonts.html#cairo-font-o
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611005"></a><h3>
+<a name="id2866506"></a><h3>
 <a name="cairo-ft-font-face-create-for-ft-face"></a>cairo_ft_font_face_create_for_ft_face ()</h3>
-<a class="indexterm" name="id2611016"></a><pre class="programlisting"><a href="cairo-Fonts.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_ft_face
+<a class="indexterm" name="id2866517"></a><pre class="programlisting"><a href="cairo-Fonts.html#cairo-font-face-t">cairo_font_face_t</a>* cairo_ft_font_face_create_for_ft_face
                                             (FT_Face face,
                                              int load_flags);</pre>
 <p>
@@ -192,9 +192,9 @@ and can be used with functions such as <code class="function">cairo_ft_font_lock
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611220"></a><h3>
+<a name="id2910607"></a><h3>
 <a name="cairo-ft-scaled-font-lock-face"></a>cairo_ft_scaled_font_lock_face ()</h3>
-<a class="indexterm" name="id2611231"></a><pre class="programlisting">FT_Face     cairo_ft_scaled_font_lock_face  (<a href="cairo-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
+<a class="indexterm" name="id2910618"></a><pre class="programlisting">FT_Face     cairo_ft_scaled_font_lock_face  (<a href="cairo-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 <code class="function">cairo_ft_font_lock_face()</code> gets the <span class="type">FT_Face</span> object from a FreeType
 backend font and scales it appropriately for the font. You must
@@ -234,7 +234,7 @@ threaded application.)</p>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
 <td> The <span class="type">FT_Face</span> object for <em class="parameter"><code>font</code></em>, scaled appropriately,
 or <code class="literal">NULL</code> if <em class="parameter"><code>scaled_font</code></em> is in an error state (see
-<code class="function">cairo_scaled_font_status()</code>) or there is insufficient memory.
+<a href="cairo-Fonts.html#cairo-scaled-font-status"><code class="function">cairo_scaled_font_status()</code></a>) or there is insufficient memory.
 </td>
 </tr>
 </tbody>
@@ -242,9 +242,9 @@ or <code class="literal">NULL</code> if <em class="parameter"><code>scaled_font<
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649899"></a><h3>
+<a name="id2910849"></a><h3>
 <a name="cairo-ft-scaled-font-unlock-face"></a>cairo_ft_scaled_font_unlock_face ()</h3>
-<a class="indexterm" name="id2649910"></a><pre class="programlisting">void        cairo_ft_scaled_font_unlock_face
+<a class="indexterm" name="id2910860"></a><pre class="programlisting">void        cairo_ft_scaled_font_unlock_face
                                             (<a href="cairo-Fonts.html#cairo-scaled-font-t">cairo_scaled_font_t</a> *scaled_font);</pre>
 <p>
 Releases a face obtained with <code class="function">cairo_ft_font_lock_face()</code>. See the

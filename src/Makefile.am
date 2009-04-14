@@ -85,12 +85,18 @@ libcairo_la_SOURCES =				\
 	cairo-arc-private.h			\
 	cairo-array.c				\
 	cairo-cache.c				\
+	cairo-clip.c				\
+	cairo-clip-private.h			\
 	cairo-color.c				\
+	cairo-debug.c				\
+	cairo-debug.h				\
 	cairo-fixed.c				\
 	cairo-font.c				\
 	cairo-font-options.c			\
 	cairo-gstate.c				\
 	cairo-gstate-private.h			\
+	cairo-hash.c				\
+	cairo-hash-private.h			\
 	cairo-hull.c				\
 	cairo-image-surface.c			\
 	cairo-matrix.c				\
@@ -129,9 +135,9 @@ libcairo_la_SOURCES =				\
 
 libcairo_la_LDFLAGS = -version-info @VERSION_INFO@ -no-undefined
 
-INCLUDES = -I$(srcdir) $(CAIRO_CFLAGS)
+INCLUDES = -I$(srcdir) -I$(top_srcdir)/pixman/src $(CAIRO_CFLAGS)
 
-libcairo_la_LIBADD = $(CAIRO_LIBS)
+libcairo_la_LIBADD = $(top_builddir)/pixman/src/libpixman.la $(CAIRO_LIBS)
 
 install-data-local:
 	@if test -f "$(DESTDIR)$(includedir)/cairo.h" || test -f "$(DESTDIR)$(includedir)/cairo-features.h" ; then \

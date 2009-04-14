@@ -349,8 +349,7 @@ _cairo_glitz_surface_clone_similar (void	    *abstract_surface,
 
     if (src->backend == surface->base.backend)
     {
-	*clone_out = src;
-	cairo_surface_reference (src);
+	*clone_out = cairo_surface_reference (src);	
 	
 	return CAIRO_STATUS_SUCCESS;
     }
@@ -937,6 +936,7 @@ static cairo_int_status_t
 _cairo_glitz_surface_composite_trapezoids (cairo_operator_t  op,
 					   cairo_pattern_t   *pattern,
 					   void		     *abstract_dst,
+					   cairo_antialias_t antialias,
 					   int		     src_x,
 					   int		     src_y,
 					   int		     dst_x,
@@ -1610,14 +1610,42 @@ _cairo_glitz_glyph_cache_create_entry (void *abstract_cache,
 {
     cairo_glitz_glyph_cache_entry_t *entry;
     cairo_glyph_cache_key_t	    *key = abstract_key;
-    
+   
+    cairo_status_t status;
+    cairo_cache_t *im_cache;
+    cairo_image_glyph_cache_entry_t *im;
+
+    unsigned long entry_memory = 0;
+
     entry = malloc (sizeof (cairo_glitz_glyph_cache_entry_t));
     if (!entry)
 	return CAIRO_STATUS_NO_MEMORY;
 
+    _cairo_lock_global_image_glyph_cache ();
+
+    im_cache = _cairo_get_global_image_glyph_cache ();
+    if (im_cache == NULL) {
+	_cairo_unlock_global_image_glyph_cache ();
+	free (entry);
+	return CAIRO_STATUS_NO_MEMORY;
+    }
+
+    status = _cairo_cache_lookup (im_cache, key, (void **) (&im), NULL);
+    if (status != CAIRO_STATUS_SUCCESS || im == NULL) {
+	_cairo_unlock_global_image_glyph_cache ();
+	free (entry);
+	return CAIRO_STATUS_NO_MEMORY;
+    }
+
+    if (im->image)
+	entry_memory = im->image->width * im->image->stride;
+
+    _cairo_unlock_global_image_glyph_cache ();
+
     entry->ref_count = 1;
     entry->key	    = *key;
-    entry->area     = NULL;
+    entry->key.base.memory = entry_memory;
+    entry->area	    = NULL;
     entry->locked   = FALSE;
 
     _cairo_unscaled_font_reference (entry->key.unscaled);
@@ -1754,7 +1782,8 @@ _cairo_glitz_cache_glyph (cairo_glitz_glyph_cache_t	  *cache,
 	entry->size.height > GLYPH_CACHE_MAX_HEIGHT)
 	return CAIRO_STATUS_SUCCESS;
 
-    if (!image_entry->image)
+    if ((entry->size.width  == 0 && entry->size.height == 0) ||
+        !image_entry->image)
     {
 	entry->area = &_empty_area;
 	return CAIRO_STATUS_SUCCESS;

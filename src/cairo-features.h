@@ -37,6 +37,20 @@
 #ifndef CAIRO_FEATURES_H
 #define CAIRO_FEATURES_H
 
+#ifdef  __cplusplus
+# define CAIRO_BEGIN_DECLS  extern "C" {
+# define CAIRO_END_DECLS    }
+#else
+# define CAIRO_BEGIN_DECLS
+# define CAIRO_END_DECLS
+#endif
+
+#define CAIRO_VERSION_MAJOR 0
+#define CAIRO_VERSION_MINOR 9
+#define CAIRO_VERSION_MICRO 2
+
+#define CAIRO_VERSION_STRING "0.9.2"
+
 #define CAIRO_HAS_PS_SURFACE 1
 
 #define CAIRO_HAS_PDF_SURFACE 1

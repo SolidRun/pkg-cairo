@@ -20,7 +20,7 @@
 
 typedef     <link linkend="cairo-t">cairo_t</link>;
 <link linkend="cairo-t">cairo_t</link>*    <link linkend="cairo-create">cairo_create</link>                    (<link linkend="cairo-surface-t">cairo_surface_t</link> *target);
-<link linkend="void">void</link>        <link linkend="cairo-reference">cairo_reference</link>                 (<link linkend="cairo-t">cairo_t</link> *cr);
+<link linkend="cairo-t">cairo_t</link>*    <link linkend="cairo-reference">cairo_reference</link>                 (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="void">void</link>        <link linkend="cairo-destroy">cairo_destroy</link>                   (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="void">void</link>        <link linkend="cairo-save">cairo_save</link>                      (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="void">void</link>        <link linkend="cairo-restore">cairo_restore</link>                   (<link linkend="cairo-t">cairo_t</link> *cr);
@@ -48,6 +48,9 @@ enum        <link linkend="cairo-operator-t">cairo_operator_t</link>;
                                              <link linkend="double">double</link> y);
 <link linkend="void">void</link>        <link linkend="cairo-set-tolerance">cairo_set_tolerance</link>             (<link linkend="cairo-t">cairo_t</link> *cr,
                                              <link linkend="double">double</link> tolerance);
+enum        <link linkend="cairo-antialias-t">cairo_antialias_t</link>;
+<link linkend="void">void</link>        <link linkend="cairo-set-antialias">cairo_set_antialias</link>             (<link linkend="cairo-t">cairo_t</link> *cr,
+                                             <link linkend="cairo-antialias-t">cairo_antialias_t</link> antialias);
 enum        <link linkend="cairo-fill-rule-t">cairo_fill_rule_t</link>;
 <link linkend="void">void</link>        <link linkend="cairo-set-fill-rule">cairo_set_fill_rule</link>             (<link linkend="cairo-t">cairo_t</link> *cr,
                                              <link linkend="cairo-fill-rule-t">cairo_fill_rule_t</link> fill_rule);
@@ -212,6 +215,7 @@ enum        <link linkend="cairo-font-weight-t">cairo_font_weight_t</link>;
 <link linkend="cairo-operator-t">cairo_operator_t</link> <link linkend="cairo-get-operator">cairo_get_operator</link>         (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="cairo-pattern-t">cairo_pattern_t</link>* <link linkend="cairo-get-source">cairo_get_source</link>           (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="double">double</link>      <link linkend="cairo-get-tolerance">cairo_get_tolerance</link>             (<link linkend="cairo-t">cairo_t</link> *cr);
+<link linkend="cairo-antialias-t">cairo_antialias_t</link> <link linkend="cairo-get-antialias">cairo_get_antialias</link>       (<link linkend="cairo-t">cairo_t</link> *cr);
 <link linkend="void">void</link>        <link linkend="cairo-get-current-point">cairo_get_current_point</link>         (<link linkend="cairo-t">cairo_t</link> *cr,
                                              <link linkend="double">double</link> *x,
                                              <link linkend="double">double</link> *y);
@@ -254,6 +258,7 @@ enum        <link linkend="cairo-filter-t">cairo_filter_t</link>;
 <link linkend="cairo-status-t">cairo_status_t</link> (<link linkend="cairo-write-func-t">*cairo_write_func_t</link>)        (<link linkend="void">void</link> *closure,
                                              unsigned <link linkend="char">char</link> *data,
                                              unsigned <link linkend="int">int</link> length);
+<link linkend="void">void</link>        <link linkend="cairo-debug-reset-static-data">cairo_debug_reset_static_data</link>   (void);
 
 </synopsis>
 </refsynopsisdiv>
@@ -338,7 +343,7 @@ provide a way to achieve this explicitly). See also the
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="cairo-reference"/>cairo_reference ()</title>
-<indexterm><primary>cairo_reference</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_reference                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<indexterm><primary>cairo_reference</primary></indexterm><programlisting><link linkend="cairo-t">cairo_t</link>*    cairo_reference                 (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 Increases the reference count on <parameter>cr</parameter> by one. This prevents
 <parameter>cr</parameter> from being destroyed until a matching call to <link linkend="cairo-destroy"><function>cairo_destroy()</function></link> 
@@ -348,6 +353,8 @@ is made.</para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the referenced <link linkend="cairo-t"><type>cairo_t</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -633,6 +640,12 @@ will then be used for any subsequent drawing operation until a new
 source pattern is set.
 </para>
 <para>
+Note: The pattern's transformation matrix will be locked to the
+user space in effect at the time of <link linkend="cairo-set-source"><function>cairo_set_source()</function></link>. This means
+that further modifications of the CTM will not affect the source
+pattern. See <link linkend="cairo-pattern-set-matrix"><function>cairo_pattern_set_matrix()</function></link>.
+</para>
+<para>
 XXX: I'd also like to direct the reader's attention to some
 (not-yet-written) section on cairo's imaging model. How would I do
 that if such a section existed? (cworth).</para>
@@ -707,6 +720,68 @@ is unlikely to improve appearance significantly.)</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tolerance</parameter>&nbsp;:</term>
 <listitem><simpara> the tolerance, in device units (typically pixels)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-antialias-t"/>enum cairo_antialias_t</title>
+<indexterm><primary>cairo_antialias_t</primary></indexterm><programlisting>typedef enum _cairo_antialias {
+    CAIRO_ANTIALIAS_DEFAULT,
+    CAIRO_ANTIALIAS_NONE,
+    CAIRO_ANTIALIAS_GRAY,
+    CAIRO_ANTIALIAS_SUBPIXEL
+} cairo_antialias_t;
+</programlisting>
+<para>
+Specifies the type of antialiasing to do when rendering text or shapes.</para>
+<para>
+
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>CAIRO_ANTIALIAS_DEFAULT</literal></term>
+<listitem><simpara> Use the default antialiasing for
+  the subsystem and target device
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_ANTIALIAS_NONE</literal></term>
+<listitem><simpara> Use a bilevel alpha mask
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_ANTIALIAS_GRAY</literal></term>
+<listitem><simpara> Perform single-color antialiasing (using
+ shades of gray for black text on a white background, for example).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>CAIRO_ANTIALIAS_SUBPIXEL</literal></term>
+<listitem><simpara> Perform antialiasing by taking
+ advantage of the order of subpixel elements on devices
+ such as LCD panels
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-set-antialias"/>cairo_set_antialias ()</title>
+<indexterm><primary>cairo_set_antialias</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_set_antialias             (<link linkend="cairo-t">cairo_t</link> *cr,
+                                             <link linkend="cairo-antialias-t">cairo_antialias_t</link> antialias);</programlisting>
+<para>
+Set the antialiasing mode of the rasterizer used for drawing shapes.
+This value is a hint, and a particular backend may or may not support
+a particular value.  At the current time, no backend supports
+<literal>CAIRO_ANTIALIAS_SUBPIXEL</literal> when drawing shapes.
+</para>
+<para>
+Note that this option does not affect text rendering, instead see
+<link linkend="cairo-font-options-set-antialias"><function>cairo_font_options_set_antialias()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>antialias</parameter>&nbsp;:</term>
+<listitem><simpara> the new antialiasing mode
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1540,8 +1615,9 @@ See <link linkend="cairo-set-line-width"><function>cairo_set_line_width()</funct
 <indexterm><primary>cairo_fill</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_fill                      (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 A drawing operator that fills the current path according to the
-current fill rule. After cairo_fill, the current path will be
-cleared from the cairo context. See <link linkend="cairo-set-fill-rule"><function>cairo_set_fill_rule()</function></link> and
+current fill rule, (each sub-path is implicitly closed before being
+filled). After cairo_fill, the current path will be cleared from
+the cairo context. See <link linkend="cairo-set-fill-rule"><function>cairo_set_fill_rule()</function></link> and
 <link linkend="cairo-fill-preserve"><function>cairo_fill_preserve()</function></link>.</para>
 <para>
 
@@ -1555,8 +1631,9 @@ cleared from the cairo context. See <link linkend="cairo-set-fill-rule"><functio
 <indexterm><primary>cairo_fill_preserve</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_fill_preserve             (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
 <para>
 A drawing operator that fills the current path according to the
-current fill rule. Unlike <link linkend="cairo-fill"><function>cairo_fill()</function></link>, cairo_fill_preserve
-preserves the path within the cairo context.
+current fill rule, (each sub-path is implicitly closed before being
+filled). Unlike <link linkend="cairo-fill"><function>cairo_fill()</function></link>, cairo_fill_preserve preserves the
+path within the cairo context.
 </para>
 <para>
 See <link linkend="cairo-set-fill-rule"><function>cairo_set_fill_rule()</function></link> and <link linkend="cairo-fill"><function>cairo_fill()</function></link>.</para>
@@ -1875,7 +1952,7 @@ only for applications with simple font needs: Cairo doesn't provide
 for operations such as listing all available fonts on the system,
 and it is expected that most applications will need to use a more
 comprehensive font handling and text layout library in addition to
-Cairo.</para>
+cairo.</para>
 <para>
 
 </para><variablelist role="params">
@@ -2224,6 +2301,20 @@ Gets the current tolerance value, as set by <link linkend="cairo-set-tolerance">
 <listitem><simpara> a cairo context
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current tolerance value.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-get-antialias"/>cairo_get_antialias ()</title>
+<indexterm><primary>cairo_get_antialias</primary></indexterm><programlisting><link linkend="cairo-antialias-t">cairo_antialias_t</link> cairo_get_antialias       (<link linkend="cairo-t">cairo_t</link> *cr);</programlisting>
+<para>
+Gets the current shape antialiasing mode, as set by <link linkend="cairo-set-shape-antialias"><function>cairo_set_shape_antialias()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a cairo context
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current shape antialiasing mode.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -2894,6 +2985,32 @@ CAIRO_STATUS_WRITE_ERROR otherwise.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the status code of the write operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="cairo-debug-reset-static-data"/>cairo_debug_reset_static_data ()</title>
+<indexterm><primary>cairo_debug_reset_static_data</primary></indexterm><programlisting><link linkend="void">void</link>        cairo_debug_reset_static_data   (void);</programlisting>
+<para>
+Resets all static data within cairo to its original state,
+(ie. identical to the state at the time of program invocation). For
+example, all caches within cairo will be flushed empty.
+</para>
+<para>
+This function is intended to be useful when using memory-checking
+tools such as valgrind. When valgrind's memcheck analyzes a
+cairo-using program without a call to cairo_debug_reset_static_data,
+it will report all data reachable via cairo's static objects as
+"still reachable". Calling cairo_debug_reset_static_data just prior
+to program termination will make it easier to get squeaky clean
+reports from valgrind.
+</para>
+<para>
+WARNING: It is only safe to call this function when there are no
+active cairo objects remaining, (ie. the appropriate destroy
+functions have been called as necessary). If there are active cairo
+objects, this call is likely to cause a crash, (eg. an assertion
+failure due to a hash table being destroyed when non-empty).</para>
+<para>
+
+</para></refsect2>
 
 </refsect1>
 
