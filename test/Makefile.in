@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 
-SOURCES = $(libcairotest_la_SOURCES) clip-nesting.c clip-twice.c composite-integer-translate-over.c composite-integer-translate-over-repeat.c composite-integer-translate-source.c create-from-png.c create-from-png-stream.c fill-and-stroke.c fill-rule.c filter-nearest-offset.c get-and-set.c gradient-alpha.c imagediff.c leaky-polygon.c line-width.c linear-gradient.c mask.c move-to-show-surface.c paint.c paint-with-alpha.c path-data.c pdf-clip.c pdf-surface.c pixman-rotate.c ps-surface.c rel-path.c scale-source-surface-paint.c select-font-no-show-text.c self-copy.c self-intersecting.c set-source.c source-clip.c source-surface-scale-paint.c surface-finish-twice.c surface-pattern.c text-antialias-gray.c text-antialias-none.c text-antialias-subpixel.c text-cache-crash.c text-rotate.c transforms.c translate-show-surface.c trap-clip.c user-data.c xlib-surface.c
+SOURCES = $(libcairotest_la_SOURCES) a8-mask.c clip-nesting.c clip-operator.c clip-twice.c composite-integer-translate-over.c composite-integer-translate-over-repeat.c composite-integer-translate-source.c create-from-png.c create-from-png-stream.c fill-and-stroke.c fill-rule.c filter-nearest-offset.c get-and-set.c gradient-alpha.c imagediff.c leaky-polygon.c line-width.c linear-gradient.c mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c paint.c paint-with-alpha.c path-data.c pdf-clip.c pdf-surface.c pixman-rotate.c ps-surface.c rel-path.c scale-source-surface-paint.c select-font-no-show-text.c self-copy.c self-intersecting.c set-source.c source-clip.c source-surface-scale-paint.c surface-finish-twice.c surface-pattern.c text-antialias-gray.c text-antialias-none.c text-antialias-subpixel.c text-cache-crash.c text-rotate.c transforms.c translate-show-surface.c trap-clip.c unantialiased-shapes.c unbounded-operator.c user-data.c xlib-surface.c
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -43,6 +43,7 @@ host_triplet = @host@
 @CAIRO_HAS_PS_SURFACE_TRUE@am__append_2 = ps-surface
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__append_3 = xlib-surface
 check_PROGRAMS = $(am__EXEEXT_4)
+@HAVE_PTHREAD_TRUE@am__append_4 = -lpthread
 noinst_PROGRAMS = imagediff$(EXEEXT)
 subdir = test
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -63,7 +64,8 @@ libcairotest_la_OBJECTS = $(am_libcairotest_la_OBJECTS)
 @CAIRO_HAS_PDF_SURFACE_TRUE@	pdf-clip$(EXEEXT)
 @CAIRO_HAS_PS_SURFACE_TRUE@am__EXEEXT_2 = ps-surface$(EXEEXT)
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__EXEEXT_3 = xlib-surface$(EXEEXT)
-am__EXEEXT_4 = clip-nesting$(EXEEXT) clip-twice$(EXEEXT) \
+am__EXEEXT_4 = a8-mask$(EXEEXT) clip-nesting$(EXEEXT) \
+	clip-operator$(EXEEXT) clip-twice$(EXEEXT) \
 	composite-integer-translate-source$(EXEEXT) \
 	composite-integer-translate-over$(EXEEXT) \
 	composite-integer-translate-over-repeat$(EXEEXT) \
@@ -72,6 +74,7 @@ am__EXEEXT_4 = clip-nesting$(EXEEXT) clip-twice$(EXEEXT) \
 	filter-nearest-offset$(EXEEXT) get-and-set$(EXEEXT) \
 	gradient-alpha$(EXEEXT) leaky-polygon$(EXEEXT) \
 	line-width$(EXEEXT) linear-gradient$(EXEEXT) mask$(EXEEXT) \
+	mask-ctm$(EXEEXT) mask-surface-ctm$(EXEEXT) \
 	move-to-show-surface$(EXEEXT) paint$(EXEEXT) \
 	paint-with-alpha$(EXEEXT) path-data$(EXEEXT) \
 	pixman-rotate$(EXEEXT) scale-source-surface-paint$(EXEEXT) \
@@ -83,155 +86,176 @@ am__EXEEXT_4 = clip-nesting$(EXEEXT) clip-twice$(EXEEXT) \
 	text-antialias-subpixel$(EXEEXT) text-cache-crash$(EXEEXT) \
 	text-rotate$(EXEEXT) transforms$(EXEEXT) \
 	translate-show-surface$(EXEEXT) trap-clip$(EXEEXT) \
+	unantialiased-shapes$(EXEEXT) unbounded-operator$(EXEEXT) \
 	user-data$(EXEEXT) rel-path$(EXEEXT) $(am__EXEEXT_1) \
 	$(am__EXEEXT_2) $(am__EXEEXT_3)
 PROGRAMS = $(noinst_PROGRAMS)
+a8_mask_SOURCES = a8-mask.c
+a8_mask_OBJECTS = a8-mask.$(OBJEXT)
+am__DEPENDENCIES_1 =
+am__DEPENDENCIES_2 = libcairotest.la $(top_builddir)/src/libcairo.la \
+	$(am__DEPENDENCIES_1)
+a8_mask_DEPENDENCIES = $(am__DEPENDENCIES_2)
 clip_nesting_SOURCES = clip-nesting.c
 clip_nesting_OBJECTS = clip-nesting.$(OBJEXT)
-am__DEPENDENCIES_1 = libcairotest.la $(top_builddir)/src/libcairo.la
-clip_nesting_DEPENDENCIES = $(am__DEPENDENCIES_1)
+clip_nesting_DEPENDENCIES = $(am__DEPENDENCIES_2)
+clip_operator_SOURCES = clip-operator.c
+clip_operator_OBJECTS = clip-operator.$(OBJEXT)
+clip_operator_DEPENDENCIES = $(am__DEPENDENCIES_2)
 clip_twice_SOURCES = clip-twice.c
 clip_twice_OBJECTS = clip-twice.$(OBJEXT)
-clip_twice_DEPENDENCIES = $(am__DEPENDENCIES_1)
+clip_twice_DEPENDENCIES = $(am__DEPENDENCIES_2)
 composite_integer_translate_over_SOURCES =  \
 	composite-integer-translate-over.c
 composite_integer_translate_over_OBJECTS =  \
 	composite-integer-translate-over.$(OBJEXT)
-composite_integer_translate_over_DEPENDENCIES = $(am__DEPENDENCIES_1)
+composite_integer_translate_over_DEPENDENCIES = $(am__DEPENDENCIES_2)
 composite_integer_translate_over_repeat_SOURCES =  \
 	composite-integer-translate-over-repeat.c
 composite_integer_translate_over_repeat_OBJECTS =  \
 	composite-integer-translate-over-repeat.$(OBJEXT)
 composite_integer_translate_over_repeat_DEPENDENCIES =  \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_2)
 composite_integer_translate_source_SOURCES =  \
 	composite-integer-translate-source.c
 composite_integer_translate_source_OBJECTS =  \
 	composite-integer-translate-source.$(OBJEXT)
 composite_integer_translate_source_DEPENDENCIES =  \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_2)
 create_from_png_SOURCES = create-from-png.c
 create_from_png_OBJECTS = create-from-png.$(OBJEXT)
-create_from_png_DEPENDENCIES = $(am__DEPENDENCIES_1)
+create_from_png_DEPENDENCIES = $(am__DEPENDENCIES_2)
 create_from_png_stream_SOURCES = create-from-png-stream.c
 create_from_png_stream_OBJECTS = create-from-png-stream.$(OBJEXT)
-create_from_png_stream_DEPENDENCIES = $(am__DEPENDENCIES_1)
+create_from_png_stream_DEPENDENCIES = $(am__DEPENDENCIES_2)
 fill_and_stroke_SOURCES = fill-and-stroke.c
 fill_and_stroke_OBJECTS = fill-and-stroke.$(OBJEXT)
-fill_and_stroke_DEPENDENCIES = $(am__DEPENDENCIES_1)
+fill_and_stroke_DEPENDENCIES = $(am__DEPENDENCIES_2)
 fill_rule_SOURCES = fill-rule.c
 fill_rule_OBJECTS = fill-rule.$(OBJEXT)
-fill_rule_DEPENDENCIES = $(am__DEPENDENCIES_1)
+fill_rule_DEPENDENCIES = $(am__DEPENDENCIES_2)
 filter_nearest_offset_SOURCES = filter-nearest-offset.c
 filter_nearest_offset_OBJECTS = filter-nearest-offset.$(OBJEXT)
-filter_nearest_offset_DEPENDENCIES = $(am__DEPENDENCIES_1)
+filter_nearest_offset_DEPENDENCIES = $(am__DEPENDENCIES_2)
 get_and_set_SOURCES = get-and-set.c
 get_and_set_OBJECTS = get-and-set.$(OBJEXT)
-get_and_set_DEPENDENCIES = $(am__DEPENDENCIES_1)
+get_and_set_DEPENDENCIES = $(am__DEPENDENCIES_2)
 gradient_alpha_SOURCES = gradient-alpha.c
 gradient_alpha_OBJECTS = gradient-alpha.$(OBJEXT)
-gradient_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1)
+gradient_alpha_DEPENDENCIES = $(am__DEPENDENCIES_2)
 imagediff_SOURCES = imagediff.c
 imagediff_OBJECTS = imagediff.$(OBJEXT)
-imagediff_DEPENDENCIES = $(am__DEPENDENCIES_1)
+imagediff_DEPENDENCIES = $(am__DEPENDENCIES_2)
 leaky_polygon_SOURCES = leaky-polygon.c
 leaky_polygon_OBJECTS = leaky-polygon.$(OBJEXT)
-leaky_polygon_DEPENDENCIES = $(am__DEPENDENCIES_1)
+leaky_polygon_DEPENDENCIES = $(am__DEPENDENCIES_2)
 line_width_SOURCES = line-width.c
 line_width_OBJECTS = line-width.$(OBJEXT)
-line_width_DEPENDENCIES = $(am__DEPENDENCIES_1)
+line_width_DEPENDENCIES = $(am__DEPENDENCIES_2)
 linear_gradient_SOURCES = linear-gradient.c
 linear_gradient_OBJECTS = linear-gradient.$(OBJEXT)
-linear_gradient_DEPENDENCIES = $(am__DEPENDENCIES_1)
+linear_gradient_DEPENDENCIES = $(am__DEPENDENCIES_2)
 mask_SOURCES = mask.c
 mask_OBJECTS = mask.$(OBJEXT)
-mask_DEPENDENCIES = $(am__DEPENDENCIES_1)
+mask_DEPENDENCIES = $(am__DEPENDENCIES_2)
+mask_ctm_SOURCES = mask-ctm.c
+mask_ctm_OBJECTS = mask-ctm.$(OBJEXT)
+mask_ctm_DEPENDENCIES = $(am__DEPENDENCIES_2)
+mask_surface_ctm_SOURCES = mask-surface-ctm.c
+mask_surface_ctm_OBJECTS = mask-surface-ctm.$(OBJEXT)
+mask_surface_ctm_DEPENDENCIES = $(am__DEPENDENCIES_2)
 move_to_show_surface_SOURCES = move-to-show-surface.c
 move_to_show_surface_OBJECTS = move-to-show-surface.$(OBJEXT)
-move_to_show_surface_DEPENDENCIES = $(am__DEPENDENCIES_1)
+move_to_show_surface_DEPENDENCIES = $(am__DEPENDENCIES_2)
 paint_SOURCES = paint.c
 paint_OBJECTS = paint.$(OBJEXT)
-paint_DEPENDENCIES = $(am__DEPENDENCIES_1)
+paint_DEPENDENCIES = $(am__DEPENDENCIES_2)
 paint_with_alpha_SOURCES = paint-with-alpha.c
 paint_with_alpha_OBJECTS = paint-with-alpha.$(OBJEXT)
-paint_with_alpha_DEPENDENCIES = $(am__DEPENDENCIES_1)
+paint_with_alpha_DEPENDENCIES = $(am__DEPENDENCIES_2)
 path_data_SOURCES = path-data.c
 path_data_OBJECTS = path-data.$(OBJEXT)
-path_data_DEPENDENCIES = $(am__DEPENDENCIES_1)
+path_data_DEPENDENCIES = $(am__DEPENDENCIES_2)
 pdf_clip_SOURCES = pdf-clip.c
 pdf_clip_OBJECTS = pdf-clip.$(OBJEXT)
-pdf_clip_DEPENDENCIES = $(am__DEPENDENCIES_1)
+pdf_clip_DEPENDENCIES = $(am__DEPENDENCIES_2)
 pdf_surface_SOURCES = pdf-surface.c
 pdf_surface_OBJECTS = pdf-surface.$(OBJEXT)
-pdf_surface_DEPENDENCIES = $(am__DEPENDENCIES_1)
+pdf_surface_DEPENDENCIES = $(am__DEPENDENCIES_2)
 pixman_rotate_SOURCES = pixman-rotate.c
 pixman_rotate_OBJECTS = pixman-rotate.$(OBJEXT)
-pixman_rotate_DEPENDENCIES = $(am__DEPENDENCIES_1)
+pixman_rotate_DEPENDENCIES = $(am__DEPENDENCIES_2)
 ps_surface_SOURCES = ps-surface.c
 ps_surface_OBJECTS = ps-surface.$(OBJEXT)
-ps_surface_DEPENDENCIES = $(am__DEPENDENCIES_1)
+ps_surface_DEPENDENCIES = $(am__DEPENDENCIES_2)
 rel_path_SOURCES = rel-path.c
 rel_path_OBJECTS = rel-path.$(OBJEXT)
-rel_path_DEPENDENCIES = $(am__DEPENDENCIES_1)
+rel_path_DEPENDENCIES = $(am__DEPENDENCIES_2)
 scale_source_surface_paint_SOURCES = scale-source-surface-paint.c
 scale_source_surface_paint_OBJECTS =  \
 	scale-source-surface-paint.$(OBJEXT)
-scale_source_surface_paint_DEPENDENCIES = $(am__DEPENDENCIES_1)
+scale_source_surface_paint_DEPENDENCIES = $(am__DEPENDENCIES_2)
 select_font_no_show_text_SOURCES = select-font-no-show-text.c
 select_font_no_show_text_OBJECTS = select-font-no-show-text.$(OBJEXT)
-select_font_no_show_text_DEPENDENCIES = $(am__DEPENDENCIES_1)
+select_font_no_show_text_DEPENDENCIES = $(am__DEPENDENCIES_2)
 self_copy_SOURCES = self-copy.c
 self_copy_OBJECTS = self-copy.$(OBJEXT)
-self_copy_DEPENDENCIES = $(am__DEPENDENCIES_1)
+self_copy_DEPENDENCIES = $(am__DEPENDENCIES_2)
 self_intersecting_SOURCES = self-intersecting.c
 self_intersecting_OBJECTS = self-intersecting.$(OBJEXT)
-self_intersecting_DEPENDENCIES = $(am__DEPENDENCIES_1)
+self_intersecting_DEPENDENCIES = $(am__DEPENDENCIES_2)
 set_source_SOURCES = set-source.c
 set_source_OBJECTS = set-source.$(OBJEXT)
-set_source_DEPENDENCIES = $(am__DEPENDENCIES_1)
+set_source_DEPENDENCIES = $(am__DEPENDENCIES_2)
 source_clip_SOURCES = source-clip.c
 source_clip_OBJECTS = source-clip.$(OBJEXT)
-source_clip_DEPENDENCIES = $(am__DEPENDENCIES_1)
+source_clip_DEPENDENCIES = $(am__DEPENDENCIES_2)
 source_surface_scale_paint_SOURCES = source-surface-scale-paint.c
 source_surface_scale_paint_OBJECTS =  \
 	source-surface-scale-paint.$(OBJEXT)
-source_surface_scale_paint_DEPENDENCIES = $(am__DEPENDENCIES_1)
+source_surface_scale_paint_DEPENDENCIES = $(am__DEPENDENCIES_2)
 surface_finish_twice_SOURCES = surface-finish-twice.c
 surface_finish_twice_OBJECTS = surface-finish-twice.$(OBJEXT)
-surface_finish_twice_DEPENDENCIES = $(am__DEPENDENCIES_1)
+surface_finish_twice_DEPENDENCIES = $(am__DEPENDENCIES_2)
 surface_pattern_SOURCES = surface-pattern.c
 surface_pattern_OBJECTS = surface-pattern.$(OBJEXT)
-surface_pattern_DEPENDENCIES = $(am__DEPENDENCIES_1)
+surface_pattern_DEPENDENCIES = $(am__DEPENDENCIES_2)
 text_antialias_gray_SOURCES = text-antialias-gray.c
 text_antialias_gray_OBJECTS = text-antialias-gray.$(OBJEXT)
-text_antialias_gray_DEPENDENCIES = $(am__DEPENDENCIES_1)
+text_antialias_gray_DEPENDENCIES = $(am__DEPENDENCIES_2)
 text_antialias_none_SOURCES = text-antialias-none.c
 text_antialias_none_OBJECTS = text-antialias-none.$(OBJEXT)
-text_antialias_none_DEPENDENCIES = $(am__DEPENDENCIES_1)
+text_antialias_none_DEPENDENCIES = $(am__DEPENDENCIES_2)
 text_antialias_subpixel_SOURCES = text-antialias-subpixel.c
 text_antialias_subpixel_OBJECTS = text-antialias-subpixel.$(OBJEXT)
-text_antialias_subpixel_DEPENDENCIES = $(am__DEPENDENCIES_1)
+text_antialias_subpixel_DEPENDENCIES = $(am__DEPENDENCIES_2)
 text_cache_crash_SOURCES = text-cache-crash.c
 text_cache_crash_OBJECTS = text-cache-crash.$(OBJEXT)
-text_cache_crash_DEPENDENCIES = $(am__DEPENDENCIES_1)
+text_cache_crash_DEPENDENCIES = $(am__DEPENDENCIES_2)
 text_rotate_SOURCES = text-rotate.c
 text_rotate_OBJECTS = text-rotate.$(OBJEXT)
-text_rotate_DEPENDENCIES = $(am__DEPENDENCIES_1)
+text_rotate_DEPENDENCIES = $(am__DEPENDENCIES_2)
 transforms_SOURCES = transforms.c
 transforms_OBJECTS = transforms.$(OBJEXT)
-transforms_DEPENDENCIES = $(am__DEPENDENCIES_1)
+transforms_DEPENDENCIES = $(am__DEPENDENCIES_2)
 translate_show_surface_SOURCES = translate-show-surface.c
 translate_show_surface_OBJECTS = translate-show-surface.$(OBJEXT)
-translate_show_surface_DEPENDENCIES = $(am__DEPENDENCIES_1)
+translate_show_surface_DEPENDENCIES = $(am__DEPENDENCIES_2)
 trap_clip_SOURCES = trap-clip.c
 trap_clip_OBJECTS = trap-clip.$(OBJEXT)
-trap_clip_DEPENDENCIES = $(am__DEPENDENCIES_1)
+trap_clip_DEPENDENCIES = $(am__DEPENDENCIES_2)
+unantialiased_shapes_SOURCES = unantialiased-shapes.c
+unantialiased_shapes_OBJECTS = unantialiased-shapes.$(OBJEXT)
+unantialiased_shapes_DEPENDENCIES = $(am__DEPENDENCIES_2)
+unbounded_operator_SOURCES = unbounded-operator.c
+unbounded_operator_OBJECTS = unbounded-operator.$(OBJEXT)
+unbounded_operator_DEPENDENCIES = $(am__DEPENDENCIES_2)
 user_data_SOURCES = user-data.c
 user_data_OBJECTS = user-data.$(OBJEXT)
-user_data_DEPENDENCIES = $(am__DEPENDENCIES_1)
+user_data_DEPENDENCIES = $(am__DEPENDENCIES_2)
 xlib_surface_SOURCES = xlib-surface.c
 xlib_surface_OBJECTS = xlib-surface.$(OBJEXT)
-xlib_surface_DEPENDENCIES = $(am__DEPENDENCIES_1)
+xlib_surface_DEPENDENCIES = $(am__DEPENDENCIES_2)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -243,39 +267,43 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libcairotest_la_SOURCES) clip-nesting.c clip-twice.c \
+SOURCES = $(libcairotest_la_SOURCES) a8-mask.c clip-nesting.c \
+	clip-operator.c clip-twice.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c \
 	composite-integer-translate-source.c create-from-png.c \
 	create-from-png-stream.c fill-and-stroke.c fill-rule.c \
 	filter-nearest-offset.c get-and-set.c gradient-alpha.c \
 	imagediff.c leaky-polygon.c line-width.c linear-gradient.c \
-	mask.c move-to-show-surface.c paint.c paint-with-alpha.c \
-	path-data.c pdf-clip.c pdf-surface.c pixman-rotate.c \
-	ps-surface.c rel-path.c scale-source-surface-paint.c \
-	select-font-no-show-text.c self-copy.c self-intersecting.c \
-	set-source.c source-clip.c source-surface-scale-paint.c \
-	surface-finish-twice.c surface-pattern.c text-antialias-gray.c \
-	text-antialias-none.c text-antialias-subpixel.c \
-	text-cache-crash.c text-rotate.c transforms.c \
-	translate-show-surface.c trap-clip.c user-data.c \
+	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
+	paint.c paint-with-alpha.c path-data.c pdf-clip.c \
+	pdf-surface.c pixman-rotate.c ps-surface.c rel-path.c \
+	scale-source-surface-paint.c select-font-no-show-text.c \
+	self-copy.c self-intersecting.c set-source.c source-clip.c \
+	source-surface-scale-paint.c surface-finish-twice.c \
+	surface-pattern.c text-antialias-gray.c text-antialias-none.c \
+	text-antialias-subpixel.c text-cache-crash.c text-rotate.c \
+	transforms.c translate-show-surface.c trap-clip.c \
+	unantialiased-shapes.c unbounded-operator.c user-data.c \
 	xlib-surface.c
-DIST_SOURCES = $(libcairotest_la_SOURCES) clip-nesting.c clip-twice.c \
+DIST_SOURCES = $(libcairotest_la_SOURCES) a8-mask.c clip-nesting.c \
+	clip-operator.c clip-twice.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c \
 	composite-integer-translate-source.c create-from-png.c \
 	create-from-png-stream.c fill-and-stroke.c fill-rule.c \
 	filter-nearest-offset.c get-and-set.c gradient-alpha.c \
 	imagediff.c leaky-polygon.c line-width.c linear-gradient.c \
-	mask.c move-to-show-surface.c paint.c paint-with-alpha.c \
-	path-data.c pdf-clip.c pdf-surface.c pixman-rotate.c \
-	ps-surface.c rel-path.c scale-source-surface-paint.c \
-	select-font-no-show-text.c self-copy.c self-intersecting.c \
-	set-source.c source-clip.c source-surface-scale-paint.c \
-	surface-finish-twice.c surface-pattern.c text-antialias-gray.c \
-	text-antialias-none.c text-antialias-subpixel.c \
-	text-cache-crash.c text-rotate.c transforms.c \
-	translate-show-surface.c trap-clip.c user-data.c \
+	mask.c mask-ctm.c mask-surface-ctm.c move-to-show-surface.c \
+	paint.c paint-with-alpha.c path-data.c pdf-clip.c \
+	pdf-surface.c pixman-rotate.c ps-surface.c rel-path.c \
+	scale-source-surface-paint.c select-font-no-show-text.c \
+	self-copy.c self-intersecting.c set-source.c source-clip.c \
+	source-surface-scale-paint.c surface-finish-twice.c \
+	surface-pattern.c text-antialias-gray.c text-antialias-none.c \
+	text-antialias-subpixel.c text-cache-crash.c text-rotate.c \
+	transforms.c translate-show-surface.c trap-clip.c \
+	unantialiased-shapes.c unbounded-operator.c user-data.c \
 	xlib-surface.c
 ETAGS = etags
 CTAGS = ctags
@@ -314,6 +342,10 @@ CAIRO_HAS_XCB_SURFACE_TRUE = @CAIRO_HAS_XCB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
 CAIRO_LIBS = @CAIRO_LIBS@
+CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
+CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
+CAIRO_VERSION_MINOR = @CAIRO_VERSION_MINOR@
+CAIRO_VERSION_OTHER = @CAIRO_VERSION_OTHER@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -349,6 +381,8 @@ GLITZ_REQUIRES = @GLITZ_REQUIRES@
 GLITZ_SURFACE_FEATURE = @GLITZ_SURFACE_FEATURE@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
+HAVE_PTHREAD_FALSE = @HAVE_PTHREAD_FALSE@
+HAVE_PTHREAD_TRUE = @HAVE_PTHREAD_TRUE@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -374,8 +408,7 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDF_LIBS = @PDF_LIBS@
 PDF_SURFACE_FEATURE = @PDF_SURFACE_FEATURE@
-PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
-PIXMAN_LIBS = @PIXMAN_LIBS@
+PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 PNG_CFLAGS = @PNG_CFLAGS@
 PNG_FUNCTIONS_FEATURE = @PNG_FUNCTIONS_FEATURE@
@@ -448,26 +481,30 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # All test cases go here
-TESTS = clip-nesting clip-twice composite-integer-translate-source \
+TESTS = a8-mask clip-nesting clip-operator clip-twice \
+	composite-integer-translate-source \
 	composite-integer-translate-over \
 	composite-integer-translate-over-repeat create-from-png \
 	create-from-png-stream fill-and-stroke fill-rule \
 	filter-nearest-offset get-and-set gradient-alpha leaky-polygon \
-	line-width linear-gradient mask move-to-show-surface paint \
-	paint-with-alpha path-data pixman-rotate \
-	scale-source-surface-paint select-font-no-show-text self-copy \
-	self-intersecting set-source source-clip \
-	source-surface-scale-paint surface-finish-twice \
-	surface-pattern text-antialias-gray text-antialias-none \
-	text-antialias-subpixel text-cache-crash text-rotate \
-	transforms translate-show-surface trap-clip user-data rel-path \
+	line-width linear-gradient mask mask-ctm mask-surface-ctm \
+	move-to-show-surface paint paint-with-alpha path-data \
+	pixman-rotate scale-source-surface-paint \
+	select-font-no-show-text self-copy self-intersecting \
+	set-source source-clip source-surface-scale-paint \
+	surface-finish-twice surface-pattern text-antialias-gray \
+	text-antialias-none text-antialias-subpixel text-cache-crash \
+	text-rotate transforms translate-show-surface trap-clip \
+	unantialiased-shapes unbounded-operator user-data rel-path \
 	$(am__append_1) $(am__append_2) $(am__append_3)
 
 # All tests which have a reference image go here.
 # I really don't like having to repeat this list. Anyone know a good
 # way to avoid it? Can I use a wildcard here?
 EXTRA_DIST = \
+a8-mask-ref.png				\
 clip-nesting-ref.png			\
+clip-operator-ref.png			\
 clip-twice-ref.png			\
 composite-integer-translate-source-ref.png		\
 composite-integer-translate-over-ref.png		\
@@ -482,6 +519,8 @@ leaky-polygon-ref.png			\
 line-width-ref.png			\
 linear-gradient-ref.png			\
 mask-ref.png				\
+mask-ctm-ref.png			\
+mask-surface-ctm-ref.png		\
 move-to-show-surface-ref.png		\
 paint-ref.png				\
 paint-with-alpha-ref.png		\
@@ -500,6 +539,8 @@ text-antialias-none-ref.png		\
 transforms-ref.png			\
 translate-show-surface-ref.png		\
 trap-clip-ref.png			\
+unantialiased-shapes-ref.png		\
+unbounded-operator-ref.png		\
 rel-path-ref.png
 
 
@@ -517,10 +558,10 @@ rel-path-ref.png
 # Also, any test listed here should call cairo_test_expect_failure and
 # provide an explanation for the expected failure.
 XFAIL_TESTS = \
+a8-mask				\
 filter-nearest-offset		\
 pixman-rotate			\
 self-intersecting		\
-source-surface-scale-paint	\
 text-antialias-subpixel		\
 text-rotate
 
@@ -531,10 +572,11 @@ text-rotate
 # problem.
 INCLUDES = \
 	-D_GNU_SOURCE				\
-	$(CAIRO_CFLAGS)				\
 	-I$(srcdir)				\
+	-I$(top_srcdir)/pixman/src		\
 	-I$(top_builddir)/src			\
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src			\
+	$(CAIRO_CFLAGS)
 
 noinst_LTLIBRARIES = libcairotest.la
 libcairotest_la_SOURCES = \
@@ -549,12 +591,15 @@ write-png.h	\
 xmalloc.c	\
 xmalloc.h
 
-LDADDS = libcairotest.la $(top_builddir)/src/libcairo.la
+LDADDS = libcairotest.la $(top_builddir)/src/libcairo.la \
+	$(am__append_4)
 
 # ARGH! I have to repeat the list of tests a third time. Maybe it's
 # time to break down and auto-generate the Makefile.am or something
 # from autogen.sh. My, but this is painful...
+a8_mask_LDADD = $(LDADDS)
 clip_nesting_LDADD = $(LDADDS)
+clip_operator_LDADD = $(LDADDS)
 clip_twice_LDADD = $(LDADDS)
 composite_integer_translate_source_LDADD = $(LDADDS)
 composite_integer_translate_over_LDADD = $(LDADDS)
@@ -570,6 +615,8 @@ leaky_polygon_LDADD = $(LDADDS)
 line_width_LDADD = $(LDADDS)
 linear_gradient_LDADD = $(LDADDS)
 mask_LDADD = $(LDADDS)
+mask_ctm_LDADD = $(LDADDS)
+mask_surface_ctm_LDADD = $(LDADDS)
 move_to_show_surface_LDADD = $(LDADDS)
 paint_LDADD = $(LDADDS)
 paint_with_alpha_LDADD = $(LDADDS)
@@ -595,6 +642,8 @@ text_rotate_LDADD = $(LDADDS)
 transforms_LDADD = $(LDADDS)
 translate_show_surface_LDADD = $(LDADDS)
 trap_clip_LDADD = $(LDADDS)
+unantialiased_shapes_LDADD = $(LDADDS)
+unbounded_operator_LDADD = $(LDADDS)
 user_data_LDADD = $(LDADDS)
 rel_path_LDADD = $(LDADDS)
 xlib_surface_LDADD = $(LDADDS)
@@ -665,9 +714,15 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+a8-mask$(EXEEXT): $(a8_mask_OBJECTS) $(a8_mask_DEPENDENCIES) 
+	@rm -f a8-mask$(EXEEXT)
+	$(LINK) $(a8_mask_LDFLAGS) $(a8_mask_OBJECTS) $(a8_mask_LDADD) $(LIBS)
 clip-nesting$(EXEEXT): $(clip_nesting_OBJECTS) $(clip_nesting_DEPENDENCIES) 
 	@rm -f clip-nesting$(EXEEXT)
 	$(LINK) $(clip_nesting_LDFLAGS) $(clip_nesting_OBJECTS) $(clip_nesting_LDADD) $(LIBS)
+clip-operator$(EXEEXT): $(clip_operator_OBJECTS) $(clip_operator_DEPENDENCIES) 
+	@rm -f clip-operator$(EXEEXT)
+	$(LINK) $(clip_operator_LDFLAGS) $(clip_operator_OBJECTS) $(clip_operator_LDADD) $(LIBS)
 clip-twice$(EXEEXT): $(clip_twice_OBJECTS) $(clip_twice_DEPENDENCIES) 
 	@rm -f clip-twice$(EXEEXT)
 	$(LINK) $(clip_twice_LDFLAGS) $(clip_twice_OBJECTS) $(clip_twice_LDADD) $(LIBS)
@@ -716,6 +771,12 @@ linear-gradient$(EXEEXT): $(linear_gradient_OBJECTS) $(linear_gradient_DEPENDENC
 mask$(EXEEXT): $(mask_OBJECTS) $(mask_DEPENDENCIES) 
 	@rm -f mask$(EXEEXT)
 	$(LINK) $(mask_LDFLAGS) $(mask_OBJECTS) $(mask_LDADD) $(LIBS)
+mask-ctm$(EXEEXT): $(mask_ctm_OBJECTS) $(mask_ctm_DEPENDENCIES) 
+	@rm -f mask-ctm$(EXEEXT)
+	$(LINK) $(mask_ctm_LDFLAGS) $(mask_ctm_OBJECTS) $(mask_ctm_LDADD) $(LIBS)
+mask-surface-ctm$(EXEEXT): $(mask_surface_ctm_OBJECTS) $(mask_surface_ctm_DEPENDENCIES) 
+	@rm -f mask-surface-ctm$(EXEEXT)
+	$(LINK) $(mask_surface_ctm_LDFLAGS) $(mask_surface_ctm_OBJECTS) $(mask_surface_ctm_LDADD) $(LIBS)
 move-to-show-surface$(EXEEXT): $(move_to_show_surface_OBJECTS) $(move_to_show_surface_DEPENDENCIES) 
 	@rm -f move-to-show-surface$(EXEEXT)
 	$(LINK) $(move_to_show_surface_LDFLAGS) $(move_to_show_surface_OBJECTS) $(move_to_show_surface_LDADD) $(LIBS)
@@ -794,6 +855,12 @@ translate-show-surface$(EXEEXT): $(translate_show_surface_OBJECTS) $(translate_s
 trap-clip$(EXEEXT): $(trap_clip_OBJECTS) $(trap_clip_DEPENDENCIES) 
 	@rm -f trap-clip$(EXEEXT)
 	$(LINK) $(trap_clip_LDFLAGS) $(trap_clip_OBJECTS) $(trap_clip_LDADD) $(LIBS)
+unantialiased-shapes$(EXEEXT): $(unantialiased_shapes_OBJECTS) $(unantialiased_shapes_DEPENDENCIES) 
+	@rm -f unantialiased-shapes$(EXEEXT)
+	$(LINK) $(unantialiased_shapes_LDFLAGS) $(unantialiased_shapes_OBJECTS) $(unantialiased_shapes_LDADD) $(LIBS)
+unbounded-operator$(EXEEXT): $(unbounded_operator_OBJECTS) $(unbounded_operator_DEPENDENCIES) 
+	@rm -f unbounded-operator$(EXEEXT)
+	$(LINK) $(unbounded_operator_LDFLAGS) $(unbounded_operator_OBJECTS) $(unbounded_operator_LDADD) $(LIBS)
 user-data$(EXEEXT): $(user_data_OBJECTS) $(user_data_DEPENDENCIES) 
 	@rm -f user-data$(EXEEXT)
 	$(LINK) $(user_data_LDFLAGS) $(user_data_OBJECTS) $(user_data_LDADD) $(LIBS)
@@ -807,9 +874,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a8-mask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/buffer-diff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-test.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clip-nesting.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clip-operator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clip-twice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite-integer-translate-over-repeat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite-integer-translate-over.Po@am__quote@
@@ -825,6 +894,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/leaky-polygon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/line-width.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linear-gradient.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mask-ctm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mask-surface-ctm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/move-to-show-surface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint-with-alpha.Po@am__quote@
@@ -853,6 +924,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transforms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/translate-show-surface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/trap-clip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unantialiased-shapes.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unbounded-operator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/user-data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/write-png.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xlib-surface.Po@am__quote@

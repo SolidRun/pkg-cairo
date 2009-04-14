@@ -111,6 +111,48 @@ _cairo_set_error (cairo_t *cr, cairo_status_t status)
 }
 
 /**
+ * cairo_version:
+ * 
+ * Returns the version of the cairo library encoded in a single
+ * integer as per CAIRO_VERSION_ENCODE. The encoding ensures that
+ * later versions compare greater than earlier versions.
+ *
+ * A run-time comparison to check that cairo's version is greater than
+ * or equal to version X.Y.Z could be performed as follows:
+ *
+ * <informalexample><programlisting>
+ * if (cairo_version() >= CAIRO_VERSION_ENCODE(X,Y,Z)) {...}
+ * </programlisting></informalexample>
+ *
+ * See also cairo_version_string() as well as the compile-time
+ * equivalents %CAIRO_VERSION and %CAIRO_VERSION_STRING.
+ * 
+ * Return value: the encoded version.
+ **/
+int
+cairo_version (void)
+{
+    return CAIRO_VERSION;
+}
+
+/**
+ * cairo_version_string:
+ * 
+ * Returns the version of the cairo library as a human-readable string
+ * of the form "X.Y.Z".
+ *
+ * See also cairo_version() as well as the compile-time equivalents
+ * %CAIRO_VERSION_STRING and %CAIRO_VERSION.
+ * 
+ * Return value: a string containing the version.
+ **/
+const char*
+cairo_version_string (void)
+{
+    return CAIRO_VERSION_STRING;
+}
+
+/**
  * cairo_create:
  * @target: target surface for the context
  * 
@@ -178,14 +220,18 @@ cairo_create (cairo_surface_t *target)
  * Increases the reference count on @cr by one. This prevents
  * @cr from being destroyed until a matching call to cairo_destroy() 
  * is made.
+ *
+ * Return value: the referenced #cairo_t.
  **/
-void
+cairo_t *
 cairo_reference (cairo_t *cr)
 {
     if (cr->ref_count == (unsigned int)-1)
-	return;
+	return cr;
     
     cr->ref_count++;
+
+    return cr;
 }
 
 /**
@@ -457,6 +503,11 @@ cairo_set_source_surface (cairo_t	  *cr,
  * will then be used for any subsequent drawing operation until a new
  * source pattern is set.
  *
+ * Note: The pattern's transformation matrix will be locked to the
+ * user space in effect at the time of cairo_set_source(). This means
+ * that further modifications of the CTM will not affect the source
+ * pattern. See cairo_pattern_set_matrix().
+ *
  * XXX: I'd also like to direct the reader's attention to some
  * (not-yet-written) section on cairo's imaging model. How would I do
  * that if such a section existed? (cworth).
@@ -527,6 +578,32 @@ cairo_set_tolerance (cairo_t *cr, double tolerance)
     _cairo_restrict_value (&tolerance, CAIRO_TOLERANCE_MINIMUM, tolerance);
 
     cr->status = _cairo_gstate_set_tolerance (cr->gstate, tolerance);
+    if (cr->status)
+	_cairo_set_error (cr, cr->status);
+}
+
+/**
+ * cairo_set_antialias:
+ * @cr: a #cairo_t
+ * @antialias: the new antialiasing mode
+ * 
+ * Set the antialiasing mode of the rasterizer used for drawing shapes.
+ * This value is a hint, and a particular backend may or may not support
+ * a particular value.  At the current time, no backend supports
+ * %CAIRO_ANTIALIAS_SUBPIXEL when drawing shapes.
+ *
+ * Note that this option does not affect text rendering, instead see
+ * cairo_font_options_set_antialias().
+ **/
+void
+cairo_set_antialias (cairo_t *cr, cairo_antialias_t antialias)
+{
+    if (cr->status) {
+	_cairo_set_error (cr, cr->status);
+	return;
+    }
+
+    cr->status = _cairo_gstate_set_antialias (cr->gstate, antialias);
     if (cr->status)
 	_cairo_set_error (cr, cr->status);
 }
@@ -1401,8 +1478,9 @@ slim_hidden_def(cairo_stroke_preserve);
  * @cr: a cairo context
  * 
  * A drawing operator that fills the current path according to the
- * current fill rule. After cairo_fill, the current path will be
- * cleared from the cairo context. See cairo_set_fill_rule() and
+ * current fill rule, (each sub-path is implicitly closed before being
+ * filled). After cairo_fill, the current path will be cleared from
+ * the cairo context. See cairo_set_fill_rule() and
  * cairo_fill_preserve().
  **/
 void
@@ -1418,8 +1496,9 @@ cairo_fill (cairo_t *cr)
  * @cr: a cairo context
  * 
  * A drawing operator that fills the current path according to the
- * current fill rule. Unlike cairo_fill(), cairo_fill_preserve
- * preserves the path within the cairo context.
+ * current fill rule, (each sub-path is implicitly closed before being
+ * filled). Unlike cairo_fill(), cairo_fill_preserve preserves the
+ * path within the cairo context.
  *
  * See cairo_set_fill_rule() and cairo_fill().
  **/
@@ -1645,7 +1724,7 @@ cairo_reset_clip (cairo_t *cr)
  * for operations such as listing all available fonts on the system,
  * and it is expected that most applications will need to use a more
  * comprehensive font handling and text layout library in addition to
- * Cairo.
+ * cairo.
  **/
 void
 cairo_select_font_face (cairo_t              *cr, 
@@ -1681,16 +1760,13 @@ cairo_get_font_face (cairo_t *cr)
 
     if (cr->status) {
 	_cairo_set_error (cr, cr->status);
-	return NULL;
+	return (cairo_font_face_t*) &_cairo_font_face_nil;
     }
 
     cr->status = _cairo_gstate_get_font_face (cr->gstate, &font_face);
     if (cr->status) {
 	_cairo_set_error (cr, cr->status);
-	/* XXX: When available:
-	return _cairo_font_face_nil;
-	*/
-	return NULL;
+	return (cairo_font_face_t*) &_cairo_font_face_nil;
     }
 
     return font_face;
@@ -2079,6 +2155,20 @@ cairo_get_tolerance (cairo_t *cr)
 }
 
 /**
+ * cairo_get_antialias:
+ * @cr: a cairo context
+ * 
+ * Gets the current shape antialiasing mode, as set by cairo_set_shape_antialias().
+ * 
+ * Return value: the current shape antialiasing mode.
+ **/
+cairo_antialias_t
+cairo_get_antialias (cairo_t *cr)
+{
+    return _cairo_gstate_get_antialias (cr->gstate);
+}
+
+/**
  * cairo_get_current_point:
  * @cr: a cairo context
  * @x: return value for X coordinate of the current point
@@ -2257,7 +2347,7 @@ cairo_path_t *
 cairo_copy_path (cairo_t *cr)
 {
     if (cr->status)
-	return &cairo_path_nil;
+	return (cairo_path_t*) &_cairo_path_nil;
 
     return _cairo_path_data_create (&cr->path, cr->gstate);
 }
@@ -2296,7 +2386,7 @@ cairo_path_t *
 cairo_copy_path_flat (cairo_t *cr)
 {
     if (cr->status)
-	return &cairo_path_nil;
+	return (cairo_path_t*) &_cairo_path_nil;
     else
 	return _cairo_path_data_create_flat (&cr->path, cr->gstate);
 }

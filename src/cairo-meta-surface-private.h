@@ -77,6 +77,7 @@ typedef struct _cairo_command_composite_trapezoids {
     cairo_command_type_t	type;
     cairo_operator_t		operator;
     cairo_pattern_union_t	pattern;
+    cairo_antialias_t		antialias;
     int				x_src;
     int				y_src;
     int				x_dst;
@@ -99,6 +100,7 @@ typedef struct _cairo_command_intersect_clip_path {
     cairo_path_fixed_t		path;
     cairo_fill_rule_t		fill_rule;
     double			tolerance;
+    cairo_antialias_t		antialias;
 } cairo_command_intersect_clip_path_t;
 
 typedef struct _cairo_command_show_glyphs {
@@ -123,6 +125,7 @@ typedef struct _cairo_command_fill_path {
     cairo_path_fixed_t		path;
     cairo_fill_rule_t		fill_rule;
     double			tolerance;
+    cairo_antialias_t		antialias;
 } cairo_command_fill_path_t;
 
 typedef union _cairo_command {
@@ -142,10 +145,10 @@ typedef struct _cairo_meta_surface {
     cairo_array_t commands;
 } cairo_meta_surface_t;
 
-cairo_surface_t *
+cairo_private cairo_surface_t *
 _cairo_meta_surface_create (double width, double height);
 
-cairo_int_status_t
+cairo_private cairo_int_status_t
 _cairo_meta_surface_replay (cairo_surface_t *surface,
 			    cairo_surface_t *target);
 

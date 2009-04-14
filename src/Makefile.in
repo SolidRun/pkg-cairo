@@ -62,14 +62,16 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(cairoincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libcairo_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libcairo_la_DEPENDENCIES = $(top_builddir)/pixman/src/libpixman.la \
+	$(am__DEPENDENCIES_1)
 am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
 	cairo-arc.c cairo-arc-private.h cairo-array.c cairo-cache.c \
-	cairo-color.c cairo-fixed.c cairo-font.c cairo-font-options.c \
-	cairo-gstate.c cairo-gstate-private.h cairo-hull.c \
-	cairo-image-surface.c cairo-matrix.c cairo-path.c \
-	cairo-path-bounds.c cairo-path-data.c \
-	cairo-path-data-private.h cairo-path-fill.c \
+	cairo-clip.c cairo-clip-private.h cairo-color.c cairo-debug.c \
+	cairo-debug.h cairo-fixed.c cairo-font.c cairo-font-options.c \
+	cairo-gstate.c cairo-gstate-private.h cairo-hash.c \
+	cairo-hash-private.h cairo-hull.c cairo-image-surface.c \
+	cairo-matrix.c cairo-path.c cairo-path-bounds.c \
+	cairo-path-data.c cairo-path-data-private.h cairo-path-fill.c \
 	cairo-path-fixed-private.h cairo-path-stroke.c cairo-pen.c \
 	cairo-polygon.c cairo-slope.c cairo-spline.c cairo-surface.c \
 	cairo-traps.c cairo-pattern.c cairo-unicode.c \
@@ -99,8 +101,9 @@ am__libcairo_la_SOURCES_DIST = cairo.c cairo.h cairo-private.h \
 @CAIRO_HAS_WIN32_FONT_TRUE@am__objects_12 = cairo-win32-font.lo
 am__objects_13 = $(am__objects_11) $(am__objects_12)
 am_libcairo_la_OBJECTS = cairo.lo cairo-arc.lo cairo-array.lo \
-	cairo-cache.lo cairo-color.lo cairo-fixed.lo cairo-font.lo \
-	cairo-font-options.lo cairo-gstate.lo cairo-hull.lo \
+	cairo-cache.lo cairo-clip.lo cairo-color.lo cairo-debug.lo \
+	cairo-fixed.lo cairo-font.lo cairo-font-options.lo \
+	cairo-gstate.lo cairo-hash.lo cairo-hull.lo \
 	cairo-image-surface.lo cairo-matrix.lo cairo-path.lo \
 	cairo-path-bounds.lo cairo-path-data.lo cairo-path-fill.lo \
 	cairo-path-stroke.lo cairo-pen.lo cairo-polygon.lo \
@@ -168,6 +171,10 @@ CAIRO_HAS_XCB_SURFACE_TRUE = @CAIRO_HAS_XCB_SURFACE_TRUE@
 CAIRO_HAS_XLIB_SURFACE_FALSE = @CAIRO_HAS_XLIB_SURFACE_FALSE@
 CAIRO_HAS_XLIB_SURFACE_TRUE = @CAIRO_HAS_XLIB_SURFACE_TRUE@
 CAIRO_LIBS = @CAIRO_LIBS@
+CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
+CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
+CAIRO_VERSION_MINOR = @CAIRO_VERSION_MINOR@
+CAIRO_VERSION_OTHER = @CAIRO_VERSION_OTHER@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -208,6 +215,8 @@ GLITZ_REQUIRES = @GLITZ_REQUIRES@
 GLITZ_SURFACE_FEATURE = @GLITZ_SURFACE_FEATURE@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
+HAVE_PTHREAD_FALSE = @HAVE_PTHREAD_FALSE@
+HAVE_PTHREAD_TRUE = @HAVE_PTHREAD_TRUE@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -233,8 +242,7 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDF_LIBS = @PDF_LIBS@
 PDF_SURFACE_FEATURE = @PDF_SURFACE_FEATURE@
-PIXMAN_CFLAGS = @PIXMAN_CFLAGS@
-PIXMAN_LIBS = @PIXMAN_LIBS@
+PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 PNG_CFLAGS = @PNG_CFLAGS@
 PNG_FUNCTIONS_FEATURE = @PNG_FUNCTIONS_FEATURE@
@@ -349,12 +357,18 @@ libcairo_la_SOURCES = \
 	cairo-arc-private.h			\
 	cairo-array.c				\
 	cairo-cache.c				\
+	cairo-clip.c				\
+	cairo-clip-private.h			\
 	cairo-color.c				\
+	cairo-debug.c				\
+	cairo-debug.h				\
 	cairo-fixed.c				\
 	cairo-font.c				\
 	cairo-font-options.c			\
 	cairo-gstate.c				\
 	cairo-gstate-private.h			\
+	cairo-hash.c				\
+	cairo-hash-private.h			\
 	cairo-hull.c				\
 	cairo-image-surface.c			\
 	cairo-matrix.c				\
@@ -392,8 +406,8 @@ libcairo_la_SOURCES = \
 	cairoint.h
 
 libcairo_la_LDFLAGS = -version-info @VERSION_INFO@ -no-undefined
-INCLUDES = -I$(srcdir) $(CAIRO_CFLAGS)
-libcairo_la_LIBADD = $(CAIRO_LIBS)
+INCLUDES = -I$(srcdir) -I$(top_srcdir)/pixman/src $(CAIRO_CFLAGS)
+libcairo_la_LIBADD = $(top_builddir)/pixman/src/libpixman.la $(CAIRO_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -469,7 +483,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-array.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-atsui-font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-cache.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-clip.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-color.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-fixed.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-font-options.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-font-subset.Plo@am__quote@
@@ -477,6 +493,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-ft-font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-glitz-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-gstate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-hull.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-image-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-matrix.Plo@am__quote@
