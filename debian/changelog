@@ -1,3 +1,35 @@
+cairo (1.8.8-1) experimental; urgency=low
+
+  [ Loïc Minier ]
+  * Use "udeb" consistently to describe this flavor
+  * Rename CFLAGS to CFLAGS_MAIN for consistency
+  * Rename %-flavor-stamp targets to %-stamp-flavor
+  * Also strip dependency_libs in DEB_DIST_DIR
+  * Always lowercase the flavor name in vars
+  * Drop unused configure-main and udeb targets
+  * Drop dangerous configure target listed in .PHONY
+  * Drop build-main and build-udeb targets
+  * Make the build and configure rules implicit ones
+  * Define builddir using the current_flavor
+  * Split flavors installation into a install-% target
+  * Move debian/build-* and /dist-* to nicer places
+  * Misc cleanups
+  * Factor configure flags
+  * Fix --host and --build handling
+  * Remove useless cleanups
+  * Factor "touch" calls
+  * Save and restore config.guess and .sub
+  * Drop INSTALL_PROGRAM, not needed with dh_strip
+  * Factor CFLAGS; add -Wall
+  * Implement an optional optimized flavor
+
+  [ Sebastian Dröge ]
+  * New upstream bugfix release.
+  * Update Standards-Version to 3.8.2.
+  * Update sections of binary packages
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 17 Jun 2009 16:47:55 +0200
+
 cairo (1.8.6-2) unstable; urgency=low
 
   * Upload to unstable.
