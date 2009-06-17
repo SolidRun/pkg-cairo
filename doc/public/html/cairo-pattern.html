@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cairo_pattern_t</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-drawing.html" title="Drawing">
 <link rel="prev" href="cairo-paths.html" title="Paths">
 <link rel="next" href="cairo-transformations.html" title="Transformations">
@@ -36,7 +36,7 @@
                 <a href="#cairo-pattern.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="cairo_pattern_t">
 <a name="cairo-pattern"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -45,7 +45,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-pattern.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 typedef             <a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a>;
@@ -132,7 +132,7 @@ void *              <a class="link" href="cairo-pattern.html#cairo-pattern-get-u
                                                          const <a class="link" href="cairo-types.html#cairo-user-data-key-t" title="cairo_user_data_key_t">cairo_user_data_key_t</a> *key);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="cairo-pattern.description"></a><h2>Description</h2>
 <p>
 <a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t"><span class="type">cairo_pattern_t</span></a> is the paint with which cairo draws.
@@ -146,9 +146,9 @@ or implicitly through
 cairo_set_source_<span class="emphasis"><em>type</em></span>() functions.
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="cairo-pattern.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_t">
 <a name="cairo-pattern-t"></a><h3>cairo_pattern_t</h3>
 <pre class="programlisting">typedef struct _cairo_pattern cairo_pattern_t;
 </pre>
@@ -175,7 +175,7 @@ Memory management of <a class="link" href="cairo-pattern.html#cairo-pattern-t" t
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_add_color_stop_rgb ()">
 <a name="cairo-pattern-add-color-stop-rgb"></a><h3>cairo_pattern_add_color_stop_rgb ()</h3>
 <pre class="programlisting">void                cairo_pattern_add_color_stop_rgb    (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          double offset,
@@ -237,7 +237,7 @@ with a status of <a class="link" href="cairo-error-status.html#CAIRO-STATUS-PATT
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_add_color_stop_rgba ()">
 <a name="cairo-pattern-add-color-stop-rgba"></a><h3>cairo_pattern_add_color_stop_rgba ()</h3>
 <pre class="programlisting">void                cairo_pattern_add_color_stop_rgba   (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          double offset,
@@ -305,7 +305,7 @@ with a status of <a class="link" href="cairo-error-status.html#CAIRO-STATUS-PATT
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_color_stop_count ()">
 <a name="cairo-pattern-get-color-stop-count"></a><h3>cairo_pattern_get_color_stop_count ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_get_color_stop_count  (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          int *count);</pre>
@@ -325,7 +325,7 @@ pattern.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>count</code></em> :</span></p></td>
 <td> return value for the number of color stops, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
@@ -342,7 +342,7 @@ pattern.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_color_stop_rgba ()">
 <a name="cairo-pattern-get-color-stop-rgba"></a><h3>cairo_pattern_get_color_stop_rgba ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_get_color_stop_rgba   (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          int index,
@@ -373,35 +373,35 @@ returned by <a class="link" href="cairo-pattern.html#cairo-pattern-get-color-sto
 <tr>
 <td><p><span class="term"><em class="parameter"><code>offset</code></em> :</span></p></td>
 <td> return value for the offset of the stop, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>red</code></em> :</span></p></td>
 <td> return value for red component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>green</code></em> :</span></p></td>
 <td> return value for green component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>blue</code></em> :</span></p></td>
 <td> return value for blue component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>alpha</code></em> :</span></p></td>
 <td> return value for alpha component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
@@ -419,7 +419,7 @@ returned.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_create_rgb ()">
 <a name="cairo-pattern-create-rgb"></a><h3>cairo_pattern_create_rgb ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *   cairo_pattern_create_rgb            (double red,
                                                          double green,
@@ -465,7 +465,7 @@ the status of a pattern use <a class="link" href="cairo-pattern.html#cairo-patte
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_create_rgba ()">
 <a name="cairo-pattern-create-rgba"></a><h3>cairo_pattern_create_rgba ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *   cairo_pattern_create_rgba           (double red,
                                                          double green,
@@ -517,7 +517,7 @@ the status of a pattern use <a class="link" href="cairo-pattern.html#cairo-patte
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_rgba ()">
 <a name="cairo-pattern-get-rgba"></a><h3>cairo_pattern_get_rgba ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_get_rgba              (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          double *red,
@@ -539,28 +539,28 @@ Gets the solid color for a solid color pattern.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>red</code></em> :</span></p></td>
 <td> return value for red component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>green</code></em> :</span></p></td>
 <td> return value for green component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>blue</code></em> :</span></p></td>
 <td> return value for blue component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>alpha</code></em> :</span></p></td>
 <td> return value for alpha component of color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
@@ -577,7 +577,7 @@ color pattern.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_create_for_surface ()">
 <a name="cairo-pattern-create-for-surface"></a><h3>cairo_pattern_create_for_surface ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *   cairo_pattern_create_for_surface    (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
@@ -608,7 +608,7 @@ the status of a pattern use <a class="link" href="cairo-pattern.html#cairo-patte
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_surface ()">
 <a name="cairo-pattern-get-surface"></a><h3>cairo_pattern_get_surface ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_get_surface           (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> **surface);</pre>
@@ -629,7 +629,7 @@ Gets the surface of a surface pattern.  The reference returned in
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
 <td> return value for surface of pattern, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
@@ -646,7 +646,7 @@ pattern.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_create_linear ()">
 <a name="cairo-pattern-create-linear"></a><h3>cairo_pattern_create_linear ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *   cairo_pattern_create_linear         (double x0,
                                                          double y0,
@@ -704,7 +704,7 @@ the status of a pattern use <a class="link" href="cairo-pattern.html#cairo-patte
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_linear_points ()">
 <a name="cairo-pattern-get-linear-points"></a><h3>cairo_pattern_get_linear_points ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_get_linear_points     (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          double *x0,
@@ -726,28 +726,28 @@ Gets the gradient endpoints for a linear gradient.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>x0</code></em> :</span></p></td>
 <td> return value for the x coordinate of the first point, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>y0</code></em> :</span></p></td>
 <td> return value for the y coordinate of the first point, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>x1</code></em> :</span></p></td>
 <td> return value for the x coordinate of the second point, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>y1</code></em> :</span></p></td>
 <td> return value for the y coordinate of the second point, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
@@ -764,7 +764,7 @@ gradient pattern.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_create_radial ()">
 <a name="cairo-pattern-create-radial"></a><h3>cairo_pattern_create_radial ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *   cairo_pattern_create_radial         (double cx0,
                                                          double cy0,
@@ -834,7 +834,7 @@ the status of a pattern use <a class="link" href="cairo-pattern.html#cairo-patte
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_radial_circles ()">
 <a name="cairo-pattern-get-radial-circles"></a><h3>cairo_pattern_get_radial_circles ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_get_radial_circles    (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          double *x0,
@@ -859,42 +859,42 @@ specified as a center coordinate and a radius.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>x0</code></em> :</span></p></td>
 <td> return value for the x coordinate of the center of the first circle, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>y0</code></em> :</span></p></td>
 <td> return value for the y coordinate of the center of the first circle, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>r0</code></em> :</span></p></td>
 <td> return value for the radius of the first circle, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>x1</code></em> :</span></p></td>
 <td> return value for the x coordinate of the center of the second circle, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>y1</code></em> :</span></p></td>
 <td> return value for the y coordinate of the center of the second circle, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>r1</code></em> :</span></p></td>
 <td> return value for the radius of the second circle, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
@@ -911,7 +911,7 @@ gradient pattern.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_reference ()">
 <a name="cairo-pattern-reference"></a><h3>cairo_pattern_reference ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *   cairo_pattern_reference             (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern);</pre>
 <p>
@@ -941,7 +941,7 @@ The number of references to a <a class="link" href="cairo-pattern.html#cairo-pat
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_destroy ()">
 <a name="cairo-pattern-destroy"></a><h3>cairo_pattern_destroy ()</h3>
 <pre class="programlisting">void                cairo_pattern_destroy               (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern);</pre>
 <p>
@@ -960,7 +960,7 @@ zero, then <em class="parameter"><code>pattern</code></em> and all associated re
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_status ()">
 <a name="cairo-pattern-status"></a><h3>cairo_pattern_status ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_status                (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern);</pre>
 <p>
@@ -986,7 +986,7 @@ pattern.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="enum cairo_extend_t">
 <a name="cairo-extend-t"></a><h3>enum cairo_extend_t</h3>
 <pre class="programlisting">typedef enum _cairo_extend {
     CAIRO_EXTEND_NONE,
@@ -1040,7 +1040,7 @@ New entries may be added in future versions.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_set_extend ()">
 <a name="cairo-pattern-set-extend"></a><h3>cairo_pattern_set_extend ()</h3>
 <pre class="programlisting">void                cairo_pattern_set_extend            (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-pattern.html#cairo-extend-t" title="enum cairo_extend_t">cairo_extend_t</a> extend);</pre>
@@ -1072,7 +1072,7 @@ pattern will be drawn
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_extend ()">
 <a name="cairo-pattern-get-extend"></a><h3>cairo_pattern_get_extend ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-extend-t" title="enum cairo_extend_t">cairo_extend_t</a>      cairo_pattern_get_extend            (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern);</pre>
 <p>
@@ -1098,7 +1098,7 @@ pattern.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="enum cairo_filter_t">
 <a name="cairo-filter-t"></a><h3>enum cairo_filter_t</h3>
 <pre class="programlisting">typedef enum _cairo_filter {
     CAIRO_FILTER_FAST,
@@ -1157,7 +1157,7 @@ used with a particular pattern.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_set_filter ()">
 <a name="cairo-pattern-set-filter"></a><h3>cairo_pattern_set_filter ()</h3>
 <pre class="programlisting">void                cairo_pattern_set_filter            (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-pattern.html#cairo-filter-t" title="enum cairo_filter_t">cairo_filter_t</a> filter);</pre>
@@ -1176,7 +1176,7 @@ creates implicitly. For example:
 </p>
 <div class="informalexample"><pre class="programlisting">
 cairo_set_source_surface (cr, image, x, y);
-cairo_pattern_set_filter (cairo_get_source (cr), %CAIRO_FILTER_NEAREST);
+cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
 </pre></div>
 <p>
 </p>
@@ -1198,7 +1198,7 @@ the pattern
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_filter ()">
 <a name="cairo-pattern-get-filter"></a><h3>cairo_pattern_get_filter ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-filter-t" title="enum cairo_filter_t">cairo_filter_t</a>      cairo_pattern_get_filter            (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern);</pre>
 <p>
@@ -1223,7 +1223,7 @@ for details on each filter.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_set_matrix ()">
 <a name="cairo-pattern-set-matrix"></a><h3>cairo_pattern_set_matrix ()</h3>
 <pre class="programlisting">void                cairo_pattern_set_matrix            (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          const <a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *matrix);</pre>
@@ -1281,7 +1281,7 @@ semantics of <a class="link" href="cairo-context.html#cairo-set-source" title="c
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_matrix ()">
 <a name="cairo-pattern-get-matrix"></a><h3>cairo_pattern_get_matrix ()</h3>
 <pre class="programlisting">void                cairo_pattern_get_matrix            (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          <a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *matrix);</pre>
@@ -1306,7 +1306,7 @@ Stores the pattern's transformation matrix into <em class="parameter"><code>matr
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="enum cairo_pattern_type_t">
 <a name="cairo-pattern-type-t"></a><h3>enum cairo_pattern_type_t</h3>
 <pre class="programlisting">typedef enum _cairo_pattern_type {
     CAIRO_PATTERN_TYPE_SOLID,
@@ -1370,7 +1370,7 @@ color. It may be opaque or translucent.
 <p class="since">Since 1.2</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_type ()">
 <a name="cairo-pattern-get-type"></a><h3>cairo_pattern_get_type ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-pattern.html#cairo-pattern-type-t" title="enum cairo_pattern_type_t">cairo_pattern_type_t</a>  cairo_pattern_get_type            (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern);</pre>
 <p>
@@ -1397,7 +1397,7 @@ See <a class="link" href="cairo-pattern.html#cairo-pattern-type-t" title="enum c
 <p class="since">Since 1.2</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_reference_count ()">
 <a name="cairo-pattern-get-reference-count"></a><h3>cairo_pattern_get_reference_count ()</h3>
 <pre class="programlisting">unsigned int        cairo_pattern_get_reference_count   (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern);</pre>
 <p>
@@ -1424,7 +1424,7 @@ object is a nil object, 0 will be returned.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_set_user_data ()">
 <a name="cairo-pattern-set-user-data"></a><h3>cairo_pattern_set_user_data ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_pattern_set_user_data         (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          const <a class="link" href="cairo-types.html#cairo-user-data-key-t" title="cairo_user_data_key_t">cairo_user_data_key_t</a> *key,
@@ -1433,7 +1433,7 @@ object is a nil object, 0 will be returned.
 <p>
 Attach user data to <em class="parameter"><code>pattern</code></em>.  To remove user data from a surface,
 call this function with the key that was used to set it and <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 for <em class="parameter"><code>data</code></em>.</p>
 <p>
@@ -1475,7 +1475,7 @@ slot could not be allocated for the user data.
 <p class="since">Since 1.4</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_pattern_get_user_data ()">
 <a name="cairo-pattern-get-user-data"></a><h3>cairo_pattern_get_user_data ()</h3>
 <pre class="programlisting">void *              cairo_pattern_get_user_data         (<a class="link" href="cairo-pattern.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *pattern,
                                                          const <a class="link" href="cairo-types.html#cairo-user-data-key-t" title="cairo_user_data_key_t">cairo_user_data_key_t</a> *key);</pre>
@@ -1483,7 +1483,7 @@ slot could not be allocated for the user data.
 Return user data previously attached to <em class="parameter"><code>pattern</code></em> using the
 specified key.  If no user data has been attached with the given
 key this function returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>.</p>
 <p>
 </p>
@@ -1504,7 +1504,7 @@ attached to
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the user data previously attached or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>.
 
 </td>
@@ -1514,13 +1514,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 <p class="since">Since 1.4</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="cairo-pattern.see-also"></a><h2>See Also</h2>
 <p>
 </p>
-<div class="itemizedlist"><ul type="disc">
-<li><a class="link" href="cairo-context.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a></li>
-<li><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a></li>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><a class="link" href="cairo-context.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a></li>
+<li class="listitem"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a></li>
 </ul></div>
 <p>
 </p>

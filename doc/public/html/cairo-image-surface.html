@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Image Surfaces</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-surface.html" title="cairo_surface_t">
 <link rel="next" href="cairo-pdf-surface.html" title="PDF Surfaces">
@@ -36,7 +36,7 @@
                 <a href="#cairo-image-surface.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="Image Surfaces">
 <a name="cairo-image-surface"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -45,7 +45,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-image-surface.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 #define             <a class="link" href="cairo-image-surface.html#CAIRO-HAS-IMAGE-SURFACE--CAPS" title="CAIRO_HAS_IMAGE_SURFACE">CAIRO_HAS_IMAGE_SURFACE</a>
@@ -67,7 +67,7 @@ int                 <a class="link" href="cairo-image-surface.html#cairo-image-s
 int                 <a class="link" href="cairo-image-surface.html#cairo-image-surface-get-stride" title="cairo_image_surface_get_stride ()">cairo_image_surface_get_stride</a>      (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="cairo-image-surface.description"></a><h2>Description</h2>
 <p>
 Image surfaces provide the ability to render to memory buffers
@@ -75,9 +75,9 @@ either allocated by cairo or by the calling code.  The supported
 image formats are those defined in <a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t"><span class="type">cairo_format_t</span></a>.
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="cairo-image-surface.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="CAIRO_HAS_IMAGE_SURFACE">
 <a name="CAIRO-HAS-IMAGE-SURFACE--CAPS"></a><h3>CAIRO_HAS_IMAGE_SURFACE</h3>
 <pre class="programlisting">#define CAIRO_HAS_IMAGE_SURFACE 1
 </pre>
@@ -89,7 +89,7 @@ This macro was added for completeness in cairo 1.8.
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="enum cairo_format_t">
 <a name="cairo-format-t"></a><h3>enum cairo_format_t</h3>
 <pre class="programlisting">typedef enum _cairo_format {
     CAIRO_FORMAT_ARGB32,
@@ -149,7 +149,7 @@ New entries may be added in future versions.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_format_stride_for_width ()">
 <a name="cairo-format-stride-for-width"></a><h3>cairo_format_stride_for_width ()</h3>
 <pre class="programlisting">int                 cairo_format_stride_for_width       (<a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t">cairo_format_t</a> format,
                                                          int width);</pre>
@@ -199,7 +199,7 @@ too large.
 <p class="since">Since 1.6</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_create ()">
 <a name="cairo-image-surface-create"></a><h3>cairo_image_surface_create ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_image_surface_create          (<a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t">cairo_format_t</a> format,
                                                          int width,
@@ -245,7 +245,7 @@ occurs. You can use <a class="link" href="cairo-surface.html#cairo-surface-statu
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_create_for_data ()">
 <a name="cairo-image-surface-create-for-data"></a><h3>cairo_image_surface_create_for_data ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_image_surface_create_for_data (unsigned char *data,
                                                          <a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t">cairo_format_t</a> format,
@@ -256,7 +256,7 @@ occurs. You can use <a class="link" href="cairo-surface.html#cairo-surface-statu
 Creates an image surface for the provided pixel data. The output
 buffer must be kept around until the <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> is destroyed
 or <a class="link" href="cairo-surface.html#cairo-surface-finish" title="cairo_surface_finish ()"><code class="function">cairo_surface_finish()</code></a> is called on the surface.  The initial
-contents of <em class="parameter"><code>buffer</code></em> will be used as the initial image contents; you
+contents of <em class="parameter"><code>data</code></em> will be used as the initial image contents; you
 must explicitly clear the buffer, using, for example,
 <a class="link" href="cairo-paths.html#cairo-rectangle" title="cairo_rectangle ()"><code class="function">cairo_rectangle()</code></a> and <a class="link" href="cairo-context.html#cairo-fill" title="cairo_fill ()"><code class="function">cairo_fill()</code></a> if you want it cleared.
 </p>
@@ -325,7 +325,7 @@ destroy-notification fallback to the surface if necessary.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_get_data ()">
 <a name="cairo-image-surface-get-data"></a><h3>cairo_image_surface_get_data ()</h3>
 <pre class="programlisting">unsigned char *     cairo_image_surface_get_data        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
@@ -344,7 +344,7 @@ inspection or modification.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a pointer to the image data of this surface or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 if <em class="parameter"><code>surface</code></em> is not an image surface, or if <a class="link" href="cairo-surface.html#cairo-surface-finish" title="cairo_surface_finish ()"><code class="function">cairo_surface_finish()</code></a>
 has been called.
@@ -356,7 +356,7 @@ has been called.
 <p class="since">Since 1.2</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_get_format ()">
 <a name="cairo-image-surface-get-format"></a><h3>cairo_image_surface_get_format ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t">cairo_format_t</a>      cairo_image_surface_get_format      (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
@@ -382,7 +382,7 @@ Get the format of the surface.</p>
 <p class="since">Since 1.2</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_get_width ()">
 <a name="cairo-image-surface-get-width"></a><h3>cairo_image_surface_get_width ()</h3>
 <pre class="programlisting">int                 cairo_image_surface_get_width       (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
@@ -406,7 +406,7 @@ Get the width of the image surface in pixels.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_get_height ()">
 <a name="cairo-image-surface-get-height"></a><h3>cairo_image_surface_get_height ()</h3>
 <pre class="programlisting">int                 cairo_image_surface_get_height      (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
@@ -430,7 +430,7 @@ Get the height of the image surface in pixels.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_get_stride ()">
 <a name="cairo-image-surface-get-stride"></a><h3>cairo_image_surface_get_stride ()</h3>
 <pre class="programlisting">int                 cairo_image_surface_get_stride      (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
@@ -459,11 +459,11 @@ beginning of the next row.
 <p class="since">Since 1.2</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="cairo-image-surface.see-also"></a><h2>See Also</h2>
 <p>
 </p>
-<div class="itemizedlist"><ul type="disc"><li><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a></li></ul></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a></li></ul></div>
 <p>
 </p>
 </div>

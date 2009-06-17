@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Quartz (CGFont) Fonts</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-win32-font.html" title="Win32 Fonts">
 <link rel="next" href="cairo-user-font.html" title="User Fonts">
@@ -36,7 +36,7 @@
                 <a href="#cairo-quartz-font.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="Quartz (CGFont) Fonts">
 <a name="cairo-quartz-font"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -45,7 +45,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-quartz-font.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 #define             <a class="link" href="cairo-quartz-font.html#CAIRO-HAS-QUARTZ-FONT--CAPS" title="CAIRO_HAS_QUARTZ_FONT">CAIRO_HAS_QUARTZ_FONT</a>
@@ -55,7 +55,7 @@
                                                         (ATSUFontID font_id);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="cairo-quartz-font.description"></a><h2>Description</h2>
 <p>
 The Quartz font backend is primarily used to render text on Apple
@@ -63,9 +63,9 @@ MacOS X systems.  The CGFont API is used for the internal
 implementation of the font backend methods.
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="cairo-quartz-font.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="CAIRO_HAS_QUARTZ_FONT">
 <a name="CAIRO-HAS-QUARTZ-FONT--CAPS"></a><h3>CAIRO_HAS_QUARTZ_FONT</h3>
 <pre class="programlisting">#define             CAIRO_HAS_QUARTZ_FONT</pre>
 <p>
@@ -74,7 +74,7 @@ This macro can be used to conditionally compile backend-specific code.
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_quartz_font_face_create_for_cgfont ()">
 <a name="cairo-quartz-font-face-create-for-cgfont"></a><h3>cairo_quartz_font_face_create_for_cgfont ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * cairo_quartz_font_face_create_for_cgfont
                                                         (CGFontRef font);</pre>
@@ -104,7 +104,7 @@ Creates a new font for the Quartz font backend based on a
 <p class="since">Since 1.6</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_quartz_font_face_create_for_atsu_font_id ()">
 <a name="cairo-quartz-font-face-create-for-atsu-font-id"></a><h3>cairo_quartz_font_face_create_for_atsu_font_id ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * cairo_quartz_font_face_create_for_atsu_font_id
                                                         (ATSUFontID font_id);</pre>
@@ -134,11 +134,11 @@ Creates a new font for the Quartz font backend based on an
 <p class="since">Since 1.6</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="cairo-quartz-font.see-also"></a><h2>See Also</h2>
 <p>
 </p>
-<div class="itemizedlist"><ul type="disc"><li><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a></li></ul></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a></li></ul></div>
 <p>
 </p>
 </div>

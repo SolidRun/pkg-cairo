@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>PNG Support</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-pdf-surface.html" title="PDF Surfaces">
 <link rel="next" href="cairo-ps-surface.html" title="PostScript Surfaces">
@@ -36,7 +36,7 @@
                 <a href="#cairo-png-functions.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="PNG Support">
 <a name="cairo-png-functions"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -45,7 +45,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-png-functions.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 #define             <a class="link" href="cairo-png-functions.html#CAIRO-HAS-PNG-FUNCTIONS--CAPS" title="CAIRO_HAS_PNG_FUNCTIONS">CAIRO_HAS_PNG_FUNCTIONS</a>
@@ -66,16 +66,16 @@
                                                          void *closure);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="cairo-png-functions.description"></a><h2>Description</h2>
 <p>
 The PNG functions allow reading PNG images into image surfaces, and writing
 any surface to a PNG file.
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="cairo-png-functions.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="CAIRO_HAS_PNG_FUNCTIONS">
 <a name="CAIRO-HAS-PNG-FUNCTIONS--CAPS"></a><h3>CAIRO_HAS_PNG_FUNCTIONS</h3>
 <pre class="programlisting">#define CAIRO_HAS_PNG_FUNCTIONS 1
 </pre>
@@ -86,7 +86,7 @@ PNG functions.
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_create_from_png ()">
 <a name="cairo-image-surface-create-from-png"></a><h3>cairo_image_surface_create_from_png ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_image_surface_create_from_png (const char *filename);</pre>
 <p>
@@ -112,13 +112,17 @@ may return one of the following values:
 <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 <a class="link" href="cairo-error-status.html#CAIRO-STATUS-FILE-NOT-FOUND--CAPS"><code class="literal">CAIRO_STATUS_FILE_NOT_FOUND</code></a>
 <a class="link" href="cairo-error-status.html#CAIRO-STATUS-READ-ERROR--CAPS"><code class="literal">CAIRO_STATUS_READ_ERROR</code></a>
+
+Alternatively, you can allow errors to propagate through the drawing
+operations and check the status on the context upon completion
+using <a class="link" href="cairo-context.html#cairo-status" title="cairo_status ()"><code class="function">cairo_status()</code></a>.
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_read_func_t ()">
 <a name="cairo-read-func-t"></a><h3>cairo_read_func_t ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      (*cairo_read_func_t)                (void *closure,
                                                          unsigned char *data,
@@ -160,7 +164,7 @@ length of the data in bytes.  The read function should return
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_image_surface_create_from_png_stream ()">
 <a name="cairo-image-surface-create-from-png-stream"></a><h3>cairo_image_surface_create_from_png_stream ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_image_surface_create_from_png_stream
                                                         (<a class="link" href="cairo-png-functions.html#cairo-read-func-t" title="cairo_read_func_t ()">cairo_read_func_t</a> read_func,
@@ -186,17 +190,24 @@ via the <em class="parameter"><code>read_func</code></em> function.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> initialized with the contents
-of the PNG file or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if the data read is not a valid PNG image or
-memory could not be allocated for the operation.
+of the PNG file or a "nil" surface if the data read is not a valid PNG image
+or memory could not be allocated for the operation.  A nil
+surface can be checked for with cairo_surface_status(surface) which
+may return one of the following values:
+
+<a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
+<a class="link" href="cairo-error-status.html#CAIRO-STATUS-READ-ERROR--CAPS"><code class="literal">CAIRO_STATUS_READ_ERROR</code></a>
+
+Alternatively, you can allow errors to propagate through the drawing
+operations and check the status on the context upon completion
+using <a class="link" href="cairo-context.html#cairo-status" title="cairo_status ()"><code class="function">cairo_status()</code></a>.
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_surface_write_to_png ()">
 <a name="cairo-surface-write-to-png"></a><h3>cairo_surface_write_to_png ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_surface_write_to_png          (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
                                                          const char *filename);</pre>
@@ -232,7 +243,7 @@ while attempting to write the file.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_write_func_t ()">
 <a name="cairo-write-func-t"></a><h3>cairo_write_func_t ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      (*cairo_write_func_t)               (void *closure,
                                                          unsigned char *data,
@@ -274,7 +285,7 @@ data in bytes.  The write function should return
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_surface_write_to_png_stream ()">
 <a name="cairo-surface-write-to-png-stream"></a><h3>cairo_surface_write_to_png_stream ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_surface_write_to_png_stream   (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
                                                          <a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()">cairo_write_func_t</a> write_func,
@@ -314,11 +325,11 @@ pixel contents.
 </table></div>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="cairo-png-functions.see-also"></a><h2>See Also</h2>
 <p>
 </p>
-<div class="itemizedlist"><ul type="disc"><li><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a></li></ul></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a></li></ul></div>
 <p>
 </p>
 </div>

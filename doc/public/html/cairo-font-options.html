@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cairo_font_options_t</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-scaled-font.html" title="cairo_scaled_font_t">
 <link rel="next" href="cairo-ft-font.html" title="FreeType Fonts">
@@ -36,7 +36,7 @@
                 <a href="#cairo-font-options.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="cairo_font_options_t">
 <a name="cairo-font-options"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -45,7 +45,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-font-options.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 typedef             <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a>;
@@ -78,7 +78,7 @@ void                <a class="link" href="cairo-font-options.html#cairo-font-opt
                                                         (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="cairo-font-options.description"></a><h2>Description</h2>
 <p>
 The font options specify how fonts should be rendered.  Most of the time the
@@ -87,9 +87,9 @@ but for pixel-based targets tweaking font options may result in superior
 output on a particular display.
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="cairo-font-options.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_t">
 <a name="cairo-font-options-t"></a><h3>cairo_font_options_t</h3>
 <pre class="programlisting">typedef struct _cairo_font_options cairo_font_options_t;
 </pre>
@@ -116,7 +116,7 @@ for equality, merge, or compute a hash value of
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_create ()">
 <a name="cairo-font-options-create"></a><h3>cairo_font_options_create ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> * cairo_font_options_create        (void);</pre>
 <p>
@@ -138,7 +138,7 @@ Allocates a new font options object with all options initialized
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_copy ()">
 <a name="cairo-font-options-copy"></a><h3>cairo_font_options_copy ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> * cairo_font_options_copy          (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *original);</pre>
 <p>
@@ -167,11 +167,11 @@ Allocates a new font options object copying the option values from
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_destroy ()">
 <a name="cairo-font-options-destroy"></a><h3>cairo_font_options_destroy ()</h3>
 <pre class="programlisting">void                cairo_font_options_destroy          (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
 <p>
-Destroys a <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t"><span class="type">cairo_font_options_t</span></a> object created with with
+Destroys a <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t"><span class="type">cairo_font_options_t</span></a> object created with
 <a class="link" href="cairo-font-options.html#cairo-font-options-create" title="cairo_font_options_create ()"><code class="function">cairo_font_options_create()</code></a> or <a class="link" href="cairo-font-options.html#cairo-font-options-copy" title="cairo_font_options_copy ()"><code class="function">cairo_font_options_copy()</code></a>.</p>
 <p>
 </p>
@@ -185,7 +185,7 @@ Destroys a <a class="link" href="cairo-font-options.html#cairo-font-options-t" t
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_status ()">
 <a name="cairo-font-options-status"></a><h3>cairo_font_options_status ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_font_options_status           (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
 <p>
@@ -210,7 +210,7 @@ font options object</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_merge ()">
 <a name="cairo-font-options-merge"></a><h3>cairo_font_options_merge ()</h3>
 <pre class="programlisting">void                cairo_font_options_merge            (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
                                                          const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *other);</pre>
@@ -238,7 +238,7 @@ of <code class="literal">CAIRO_OPERATION_OVER</code>.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_hash ()">
 <a name="cairo-font-options-hash"></a><h3>cairo_font_options_hash ()</h3>
 <pre class="programlisting">unsigned long       cairo_font_options_hash             (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
 <p>
@@ -266,7 +266,7 @@ in a hash table.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_equal ()">
 <a name="cairo-font-options-equal"></a><h3>cairo_font_options_equal ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-types.html#cairo-bool-t" title="cairo_bool_t">cairo_bool_t</a>        cairo_font_options_equal            (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
                                                          const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *other);</pre>
@@ -290,10 +290,10 @@ Compares two font options objects for equality.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if all fields of the two font options objects match.
 Note that this function will return <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a> if either object is in
 error.
 </td>
@@ -302,7 +302,7 @@ error.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_set_antialias ()">
 <a name="cairo-font-options-set-antialias"></a><h3>cairo_font_options_set_antialias ()</h3>
 <pre class="programlisting">void                cairo_font_options_set_antialias    (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
                                                          <a class="link" href="cairo-context.html#cairo-antialias-t" title="enum cairo_antialias_t">cairo_antialias_t</a> antialias);</pre>
@@ -328,7 +328,7 @@ specifies the type of antialiasing to do when rendering text.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_get_antialias ()">
 <a name="cairo-font-options-get-antialias"></a><h3>cairo_font_options_get_antialias ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-context.html#cairo-antialias-t" title="enum cairo_antialias_t">cairo_antialias_t</a>   cairo_font_options_get_antialias    (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
 <p>
@@ -352,7 +352,7 @@ Gets the antialiasing mode for the font options object.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="enum cairo_subpixel_order_t">
 <a name="cairo-subpixel-order-t"></a><h3>enum cairo_subpixel_order_t</h3>
 <pre class="programlisting">typedef enum _cairo_subpixel_order {
     CAIRO_SUBPIXEL_ORDER_DEFAULT,
@@ -405,7 +405,7 @@ antialiasing mode of <a class="link" href="cairo-context.html#CAIRO-ANTIALIAS-SU
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_set_subpixel_order ()">
 <a name="cairo-font-options-set-subpixel-order"></a><h3>cairo_font_options_set_subpixel_order ()</h3>
 <pre class="programlisting">void                cairo_font_options_set_subpixel_order
                                                         (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
@@ -435,7 +435,7 @@ the display device when rendering with an antialiasing mode of
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_get_subpixel_order ()">
 <a name="cairo-font-options-get-subpixel-order"></a><h3>cairo_font_options_get_subpixel_order ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-font-options.html#cairo-subpixel-order-t" title="enum cairo_subpixel_order_t">cairo_subpixel_order_t</a>  cairo_font_options_get_subpixel_order
                                                         (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
@@ -461,7 +461,7 @@ See the documentation for <a class="link" href="cairo-font-options.html#cairo-su
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="enum cairo_hint_style_t">
 <a name="cairo-hint-style-t"></a><h3>enum cairo_hint_style_t</h3>
 <pre class="programlisting">typedef enum _cairo_hint_style {
     CAIRO_HINT_STYLE_DEFAULT,
@@ -520,7 +520,7 @@ New entries may be added in future versions.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_set_hint_style ()">
 <a name="cairo-font-options-set-hint-style"></a><h3>cairo_font_options_set_hint_style ()</h3>
 <pre class="programlisting">void                cairo_font_options_set_hint_style   (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
                                                          <a class="link" href="cairo-font-options.html#cairo-hint-style-t" title="enum cairo_hint_style_t">cairo_hint_style_t</a> hint_style);</pre>
@@ -548,7 +548,7 @@ See the documentation for <a class="link" href="cairo-font-options.html#cairo-hi
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_get_hint_style ()">
 <a name="cairo-font-options-get-hint-style"></a><h3>cairo_font_options_get_hint_style ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-font-options.html#cairo-hint-style-t" title="enum cairo_hint_style_t">cairo_hint_style_t</a>  cairo_font_options_get_hint_style   (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
 <p>
@@ -573,7 +573,7 @@ See the documentation for <a class="link" href="cairo-font-options.html#cairo-hi
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="enum cairo_hint_metrics_t">
 <a name="cairo-hint-metrics-t"></a><h3>enum cairo_hint_metrics_t</h3>
 <pre class="programlisting">typedef enum _cairo_hint_metrics {
     CAIRO_HINT_METRICS_DEFAULT,
@@ -612,7 +612,7 @@ will be laid out differently at different zoom factors.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_set_hint_metrics ()">
 <a name="cairo-font-options-set-hint-metrics"></a><h3>cairo_font_options_set_hint_metrics ()</h3>
 <pre class="programlisting">void                cairo_font_options_set_hint_metrics (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
                                                          <a class="link" href="cairo-font-options.html#cairo-hint-metrics-t" title="enum cairo_hint_metrics_t">cairo_hint_metrics_t</a> hint_metrics);</pre>
@@ -640,7 +640,7 @@ See the documentation for <a class="link" href="cairo-font-options.html#cairo-hi
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_font_options_get_hint_metrics ()">
 <a name="cairo-font-options-get-hint-metrics"></a><h3>cairo_font_options_get_hint_metrics ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-font-options.html#cairo-hint-metrics-t" title="enum cairo_hint_metrics_t">cairo_hint_metrics_t</a>  cairo_font_options_get_hint_metrics
                                                         (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
@@ -666,11 +666,11 @@ See the documentation for <a class="link" href="cairo-font-options.html#cairo-hi
 </table></div>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="cairo-font-options.see-also"></a><h2>See Also</h2>
 <p>
 </p>
-<div class="itemizedlist"><ul type="disc"><li><a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a></li></ul></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a></li></ul></div>
 <p>
 </p>
 </div>

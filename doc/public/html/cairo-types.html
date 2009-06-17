@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Types</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-support.html" title="Utilities">
 <link rel="prev" href="cairo-version-info.html" title="Version Information">
 <link rel="next" href="index-all.html" title="Index">
@@ -36,7 +36,7 @@
                 <a href="#cairo-types.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="Types">
 <a name="cairo-types"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -45,7 +45,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-types.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 typedef             <a class="link" href="cairo-types.html#cairo-bool-t" title="cairo_bool_t">cairo_bool_t</a>;
@@ -53,15 +53,15 @@ typedef             <a class="link" href="cairo-types.html#cairo-bool-t" title="
 void                (<a class="link" href="cairo-types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()">*cairo_destroy_func_t</a>)             (void *data);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="cairo-types.description"></a><h2>Description</h2>
 <p>
 Generic data types used in the cairo API
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="cairo-types.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_bool_t">
 <a name="cairo-bool-t"></a><h3>cairo_bool_t</h3>
 <pre class="programlisting">typedef int cairo_bool_t;
 </pre>
@@ -82,7 +82,7 @@ value as a boolean condition.
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_user_data_key_t">
 <a name="cairo-user-data-key-t"></a><h3>cairo_user_data_key_t</h3>
 <pre class="programlisting">typedef struct {
     int unused;
@@ -106,7 +106,7 @@ would just use the address of a static <span class="type">cairo_data_key_t</span
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="cairo_destroy_func_t ()">
 <a name="cairo-destroy-func-t"></a><h3>cairo_destroy_func_t ()</h3>
 <pre class="programlisting">void                (*cairo_destroy_func_t)             (void *data);</pre>
 <p>
