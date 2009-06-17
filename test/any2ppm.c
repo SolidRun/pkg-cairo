@@ -160,7 +160,24 @@ write_ppm (cairo_surface_t *surface, int fd)
     int width, height, stride;
     int i, j;
 
+    data = cairo_image_surface_get_data (surface);
+    height = cairo_image_surface_get_height (surface);
+    width = cairo_image_surface_get_width (surface);
+    stride = cairo_image_surface_get_stride (surface);
     format = cairo_image_surface_get_format (surface);
+    if (format == CAIRO_FORMAT_ARGB32) {
+	/* see if we can convert to a standard ppm type and trim a few bytes */
+	const unsigned char *alpha = data;
+	for (j = height; j--; alpha += stride) {
+	    for (i = 0; i < width; i++) {
+		if ((*(unsigned int *) (alpha+4*i) & 0xff000000) != 0xff000000)
+		    goto done;
+	    }
+	}
+	format = CAIRO_FORMAT_RGB24;
+ done: ;
+    }
+
     switch (format) {
     case CAIRO_FORMAT_ARGB32:
 	/* XXX need true alpha for svg */
@@ -177,33 +194,32 @@ write_ppm (cairo_surface_t *surface, int fd)
 	return "unhandled image format";
     }
 
-    data = cairo_image_surface_get_data (surface);
-    height = cairo_image_surface_get_height (surface);
-    width = cairo_image_surface_get_width (surface);
-    stride = cairo_image_surface_get_stride (surface);
-
     len = sprintf (buf, "%s %d %d 255\n", format_str, width, height);
     for (j = 0; j < height; j++) {
-	const unsigned char *row = data + stride * j;
+	const unsigned int *row = (unsigned int *) (data + stride * j);
 
 	switch ((int) format) {
 	case CAIRO_FORMAT_ARGB32:
 	    len = _write (fd,
 			  buf, sizeof (buf), len,
-			  row, 4 * width);
+			  (unsigned char *) row, 4 * width);
 	    break;
 	case CAIRO_FORMAT_RGB24:
 	    for (i = 0; i < width; i++) {
+		unsigned char rgb[3];
+		unsigned int p = *row++;
+		rgb[0] = (p & 0xff0000) >> 16;
+		rgb[1] = (p & 0x00ff00) >> 8;
+		rgb[2] = (p & 0x0000ff) >> 0;
 		len = _write (fd,
 			      buf, sizeof (buf), len,
-			      row, 3);
-		row += 4;
+			      rgb, 3);
 	    }
 	    break;
 	case CAIRO_FORMAT_A8:
 	    len = _write (fd,
 			  buf, sizeof (buf), len,
-			  row, width);
+			  (unsigned char *) row, width);
 	    break;
 	}
 	if (len < 0)

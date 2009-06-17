@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Memory management</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="Cairo: A Vector Graphics Library">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="language-bindings.html" title="Appendix A. Creating a language binding for cairo">
 <link rel="prev" href="language-bindings.html" title="Appendix A. Creating a language binding for cairo">
 <link rel="next" href="bindings-return-values.html" title="Multiple return values">
@@ -29,7 +29,7 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="bindings-return-values.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
-<div class="sect1" lang="en">
+<div class="sect1" title="Memory management">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="bindings-memory"></a>Memory management</h2></div></div></div>
 <p>
@@ -57,8 +57,8 @@
       finalized. This is the recommended method, though there are
       a couple of caveats to be noted:
     </p>
-<div class="itemizedlist"><ul type="disc">
-<li><p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
 	  Equality won't work as expected. You can have two language
 	  objects for the same cairo and they won't necessarily
 	  compare equal. If the language allows customizing the
@@ -71,7 +71,7 @@
 	  <a class="link" href="cairo-surface.html#cairo-surface-set-user-data" title="cairo_surface_set_user_data ()"><code class="function">cairo_surface_set_user_data()</code></a>
 	  instead of a separate pin table.
 	</p></li>
-<li>
+<li class="listitem">
 <p>
 	  Derivation from the language object doesn't work because
 	  you can lose the language object while keeping the Cairo

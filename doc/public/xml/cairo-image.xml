@@ -198,7 +198,7 @@ occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface
 Creates an image surface for the provided pixel data. The output
 buffer must be kept around until the <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> is destroyed
 or <link linkend="cairo-surface-finish"><function>cairo_surface_finish()</function></link> is called on the surface.  The initial
-contents of <parameter>buffer</parameter> will be used as the initial image contents; you
+contents of <parameter>data</parameter> will be used as the initial image contents; you
 must explicitly clear the buffer, using, for example,
 <link linkend="cairo-rectangle"><function>cairo_rectangle()</function></link> and <link linkend="cairo-fill"><function>cairo_fill()</function></link> if you want it cleared.
 </para>

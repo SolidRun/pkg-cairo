@@ -84,6 +84,10 @@ may return one of the following values:
 <link linkend="CAIRO-STATUS-NO-MEMORY--CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>
 <link linkend="CAIRO-STATUS-FILE-NOT-FOUND--CAPS"><literal>CAIRO_STATUS_FILE_NOT_FOUND</literal></link>
 <link linkend="CAIRO-STATUS-READ-ERROR--CAPS"><literal>CAIRO_STATUS_READ_ERROR</literal></link>
+
+Alternatively, you can allow errors to propagate through the drawing
+operations and check the status on the context upon completion
+using <link linkend="cairo-status"><function>cairo_status()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-read-func-t" role="function">
@@ -130,8 +134,17 @@ via the <parameter>read_func</parameter> function.</para>
 <listitem><simpara> data to pass to <parameter>read_func</parameter>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a new <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> initialized with the contents
-of the PNG file or <link linkend="NULL--CAPS"><literal>NULL</literal></link> if the data read is not a valid PNG image or
-memory could not be allocated for the operation.
+of the PNG file or a "nil" surface if the data read is not a valid PNG image
+or memory could not be allocated for the operation.  A nil
+surface can be checked for with cairo_surface_status(surface) which
+may return one of the following values:
+
+<link linkend="CAIRO-STATUS-NO-MEMORY--CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>
+<link linkend="CAIRO-STATUS-READ-ERROR--CAPS"><literal>CAIRO_STATUS_READ_ERROR</literal></link>
+
+Alternatively, you can allow errors to propagate through the drawing
+operations and check the status on the context upon completion
+using <link linkend="cairo-status"><function>cairo_status()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-surface-write-to-png" role="function">
