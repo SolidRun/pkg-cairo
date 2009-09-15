@@ -27,6 +27,13 @@
                                                          <link linkend="void">void</link> *closure,
                                                          <link linkend="double">double</link> width_in_points,
                                                          <link linkend="double">double</link> height_in_points);
+<link linkend="void">void</link>                <link linkend="cairo-pdf-surface-restrict-to-version">cairo_pdf_surface_restrict_to_version</link>
+                                                        (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                                         <link linkend="cairo-pdf-version-t">cairo_pdf_version_t</link> version);
+enum                <link linkend="cairo-pdf-version-t">cairo_pdf_version_t</link>;
+<link linkend="void">void</link>                <link linkend="cairo-pdf-get-versions">cairo_pdf_get_versions</link>              (<link linkend="cairo-pdf-version-t">cairo_pdf_version_t</link> const **versions,
+                                                         <link linkend="int">int</link> *num_versions);
+const <link linkend="char">char</link> *        <link linkend="cairo-pdf-version-to-string">cairo_pdf_version_to_string</link>         (<link linkend="cairo-pdf-version-t">cairo_pdf_version_t</link> version);
 <link linkend="void">void</link>                <link linkend="cairo-pdf-surface-set-size">cairo_pdf_surface_set_size</link>          (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
                                                          <link linkend="double">double</link> width_in_points,
                                                          <link linkend="double">double</link> height_in_points);
@@ -127,6 +134,87 @@ occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
+<refsect2 id="cairo-pdf-surface-restrict-to-version" role="function" condition="since:1.10">
+<title>cairo_pdf_surface_restrict_to_version ()</title>
+<indexterm zone="cairo-pdf-surface-restrict-to-version" role="1.10"><primary sortas="cairo_pdf_surface_restrict_to_version">cairo_pdf_surface_restrict_to_version</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_pdf_surface_restrict_to_version
+                                                        (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                                         <link linkend="cairo-pdf-version-t">cairo_pdf_version_t</link> version);</programlisting>
+<para>
+Restricts the generated PDF file to <parameter>version</parameter>. See <link linkend="cairo-pdf-get-versions"><function>cairo_pdf_get_versions()</function></link>
+for a list of available version values that can be used here.
+</para>
+<para>
+This function should only be called before any drawing operations
+have been performed on the given surface. The simplest way to do
+this is to call this function immediately after creating the
+surface.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&#160;:</term>
+<listitem><simpara> a PDF <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>version</parameter>&#160;:</term>
+<listitem><simpara> PDF version
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 1.10</para></refsect2>
+<refsect2 id="cairo-pdf-version-t" role="enum">
+<title>enum cairo_pdf_version_t</title>
+<indexterm zone="cairo-pdf-version-t"><primary sortas="cairo_pdf_version_t">cairo_pdf_version_t</primary></indexterm><programlisting>typedef enum _cairo_pdf_version {
+    CAIRO_PDF_VERSION_1_4,
+    CAIRO_PDF_VERSION_1_5
+} cairo_pdf_version_t;
+</programlisting>
+<para>
+<link linkend="cairo-pdf-version-t"><type>cairo_pdf_version_t</type></link> is used to describe the version number of the PDF
+specification that a generated PDF file will conform to.
+</para>
+<para>
+Since 1.10</para>
+<para>
+</para><variablelist role="enum">
+<varlistentry id="CAIRO-PDF-VERSION-1-4--CAPS" role="constant">
+<term><literal>CAIRO_PDF_VERSION_1_4</literal></term>
+<listitem><simpara> The version 1.4 of the PDF specification.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-PDF-VERSION-1-5--CAPS" role="constant">
+<term><literal>CAIRO_PDF_VERSION_1_5</literal></term>
+<listitem><simpara> The version 1.5 of the PDF specification.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="cairo-pdf-get-versions" role="function" condition="since:1.10">
+<title>cairo_pdf_get_versions ()</title>
+<indexterm zone="cairo-pdf-get-versions" role="1.10"><primary sortas="cairo_pdf_get_versions">cairo_pdf_get_versions</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_pdf_get_versions              (<link linkend="cairo-pdf-version-t">cairo_pdf_version_t</link> const **versions,
+                                                         <link linkend="int">int</link> *num_versions);</programlisting>
+<para>
+Used to retrieve the list of supported versions. See
+<link linkend="cairo-pdf-surface-restrict-to-version"><function>cairo_pdf_surface_restrict_to_version()</function></link>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>versions</parameter>&#160;:</term>
+<listitem><simpara> supported version list
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num_versions</parameter>&#160;:</term>
+<listitem><simpara> list length
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 1.10</para></refsect2>
+<refsect2 id="cairo-pdf-version-to-string" role="function" condition="since:1.10">
+<title>cairo_pdf_version_to_string ()</title>
+<indexterm zone="cairo-pdf-version-to-string" role="1.10"><primary sortas="cairo_pdf_version_to_string">cairo_pdf_version_to_string</primary></indexterm><programlisting>const <link linkend="char">char</link> *        cairo_pdf_version_to_string         (<link linkend="cairo-pdf-version-t">cairo_pdf_version_t</link> version);</programlisting>
+<para>
+Get the string representation of the given <parameter>version</parameter> id. This function
+will return <link linkend="NULL--CAPS"><literal>NULL</literal></link> if <parameter>version</parameter> isn't valid. See <link linkend="cairo-pdf-get-versions"><function>cairo_pdf_get_versions()</function></link>
+for a way to get the list of valid version ids.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>version</parameter>&#160;:</term>
+<listitem><simpara> a version id
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the string associated to given version.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 1.10</para></refsect2>
 <refsect2 id="cairo-pdf-surface-set-size" role="function" condition="since:1.2">
 <title>cairo_pdf_surface_set_size ()</title>
 <indexterm zone="cairo-pdf-surface-set-size" role="1.2"><primary sortas="cairo_pdf_surface_set_size">cairo_pdf_surface_set_size</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_pdf_surface_set_size          (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,

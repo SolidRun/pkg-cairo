@@ -128,13 +128,33 @@ _content_to_string (cairo_content_t content, cairo_bool_t similar)
 static cairo_bool_t
 cairo_perf_has_similar (cairo_perf_t *perf)
 {
-    cairo_surface_t *target = cairo_get_target (perf->cr);
+    cairo_surface_t *target;
+
+    if (getenv ("CAIRO_TEST_SIMILAR") == NULL)
+	return FALSE;
 
     /* exclude the image backend */
+    target = cairo_get_target (perf->cr);
     if (cairo_surface_get_type (target) == CAIRO_SURFACE_TYPE_IMAGE)
 	return FALSE;
 
     return TRUE;
+}
+
+cairo_bool_t
+cairo_perf_can_run (cairo_perf_t	*perf,
+		    const char		*name)
+{
+    unsigned int i;
+
+    if (perf->num_names == 0)
+	return TRUE;
+
+    for (i = 0; i < perf->num_names; i++)
+	if (strstr (name, perf->names[i]))
+	    return TRUE;
+
+    return FALSE;
 }
 
 void
@@ -148,27 +168,23 @@ cairo_perf_run (cairo_perf_t		*perf,
     cairo_stats_t stats = {0.0, 0.0};
     int low_std_dev_count;
 
-    if (perf->num_names) {
-	for (i = 0; i < perf->num_names; i++)
-	    if (strstr (name, perf->names[i]))
-		goto NAME_FOUND;
-	return;
-    }
-  NAME_FOUND:
-
     if (perf->list_only) {
 	printf ("%s\n", name);
 	return;
     }
 
     if (first_run) {
-	if (perf->raw)
-	    printf ("[ # ] %s-%-s %s %s %s ...\n",
+	if (perf->raw) {
+	    printf ("[ # ] %s.%-s %s %s %s ...\n",
 		    "backend", "content", "test-size", "ticks-per-ms", "time(ticks)");
-	else
-	    printf ("[ # ] %8s-%-4s %28s %8s %8s %5s %5s %s\n",
-		    "backend", "content", "test-size", "min(ticks)", "min(ms)", "median(ms)",
-		    "stddev.", "iterations");
+	}
+
+	if (perf->summary) {
+	    fprintf (perf->summary,
+		     "[ # ] %8s.%-4s %28s %8s %8s %5s %5s %s\n",
+		     "backend", "content", "test-size", "min(ticks)", "min(ms)", "median(ms)",
+		     "stddev.", "iterations");
+	}
 	first_run = FALSE;
     }
 
@@ -176,6 +192,15 @@ cairo_perf_run (cairo_perf_t		*perf,
 
     has_similar = cairo_perf_has_similar (perf);
     for (similar = 0; similar <= has_similar; similar++) {
+	if (perf->summary) {
+	    fprintf (perf->summary,
+		     "[%3d] %8s.%-5s %26s.%-3d ",
+		     perf->test_number, perf->target->name,
+		     _content_to_string (perf->target->content, similar),
+		     name, perf->size);
+	    fflush (perf->summary);
+	}
+
 	/* We run one iteration in advance to warm caches, etc. */
 	cairo_perf_yield ();
 	if (similar)
@@ -197,7 +222,7 @@ cairo_perf_run (cairo_perf_t		*perf,
 
 	    if (perf->raw) {
 		if (i == 0)
-		    printf ("[*] %s-%s %s-%d %g",
+		    printf ("[*] %s.%s %s.%d %g",
 			    perf->target->name,
 			    _content_to_string (perf->target->content, similar),
 			    name, perf->size,
@@ -219,20 +244,18 @@ cairo_perf_run (cairo_perf_t		*perf,
 	    }
 	}
 
-	if (perf->raw) {
+	if (perf->raw)
 	    printf ("\n");
-	} else {
-	    _cairo_stats_compute (&stats, times, i);
-	    printf ("[%3d] %8s-%-5s %26s-%-3d ",
-		    perf->test_number, perf->target->name,
-		    _content_to_string (perf->target->content, similar),
-		    name, perf->size);
 
-	    printf ("%10lld %#8.3f %#8.3f %#5.2f%% %3d\n",
-		    (long long) stats.min_ticks,
-		    (stats.min_ticks * 1000.0) / cairo_perf_ticks_per_second (),
-		    (stats.median_ticks * 1000.0) / cairo_perf_ticks_per_second (),
-		    stats.std_dev * 100.0, stats.iterations);
+	if (perf->summary) {
+	    _cairo_stats_compute (&stats, times, i);
+	    fprintf (perf->summary,
+		     "%10lld %#8.3f %#8.3f %#5.2f%% %3d\n",
+		     (long long) stats.min_ticks,
+		     (stats.min_ticks * 1000.0) / cairo_perf_ticks_per_second (),
+		     (stats.median_ticks * 1000.0) / cairo_perf_ticks_per_second (),
+		     stats.std_dev * 100.0, stats.iterations);
+	    fflush (perf->summary);
 	}
 
 	perf->test_number++;
@@ -243,18 +266,19 @@ static void
 usage (const char *argv0)
 {
     fprintf (stderr,
-	     "Usage: %s [-l] [-r] [-i iterations] [test-names ...]\n"
-	     "       %s -l\n"
-	     "\n"
-	     "Run the cairo performance test suite over the given tests (all by default)\n"
-	     "The command-line arguments are interpreted as follows:\n"
-	     "\n"
-	     "  -r	raw; display each time measurement instead of summary statistics\n"
-	     "  -i	iterations; specify the number of iterations per test case\n"
-	     "  -l	list only; just list selected test case names without executing\n"
-	     "\n"
-	     "If test names are given they are used as sub-string matches so a command\n"
-	     "such as \"cairo-perf text\" can be used to run all text test cases.\n",
+"Usage: %s [-l] [-r] [-v] [-i iterations] [test-names ...]\n"
+"       %s -l\n"
+"\n"
+"Run the cairo performance test suite over the given tests (all by default)\n"
+"The command-line arguments are interpreted as follows:\n"
+"\n"
+"  -r	raw; display each time measurement instead of summary statistics\n"
+"  -v	verbose; in raw mode also show the summaries\n"
+"  -i	iterations; specify the number of iterations per test case\n"
+"  -l	list only; just list selected test case names without executing\n"
+"\n"
+"If test names are given they are used as sub-string matches so a command\n"
+"such as \"cairo-perf text\" can be used to run all text test cases.\n",
 	     argv0, argv0);
 }
 
@@ -264,6 +288,7 @@ parse_options (cairo_perf_t *perf, int argc, char *argv[])
     int c;
     const char *iters;
     char *end;
+    int verbose = 0;
 
     if ((iters = getenv("CAIRO_PERF_ITERATIONS")) && *iters)
 	perf->iterations = strtol(iters, NULL, 0);
@@ -275,9 +300,10 @@ parse_options (cairo_perf_t *perf, int argc, char *argv[])
     perf->list_only = FALSE;
     perf->names = NULL;
     perf->num_names = 0;
+    perf->summary = stdout;
 
     while (1) {
-	c = _cairo_getopt (argc, argv, "i:lr");
+	c = _cairo_getopt (argc, argv, "i:lrv");
 	if (c == -1)
 	    break;
 
@@ -296,6 +322,10 @@ parse_options (cairo_perf_t *perf, int argc, char *argv[])
 	    break;
 	case 'r':
 	    perf->raw = TRUE;
+	    perf->summary = NULL;
+	    break;
+	case 'v':
+	    verbose = 1;
 	    break;
 	default:
 	    fprintf (stderr, "Internal error: unhandled option: %c\n", c);
@@ -305,6 +335,10 @@ parse_options (cairo_perf_t *perf, int argc, char *argv[])
 	    exit (1);
 	}
     }
+
+    if (verbose && perf->summary == NULL)
+	perf->summary = stderr;
+
     if (optind < argc) {
 	perf->names = &argv[optind];
 	perf->num_names = argc - optind;
@@ -440,11 +474,13 @@ main (int argc, char *argv[])
 }
 
 const cairo_perf_case_t perf_cases[] = {
-    { paint,  256, 512},
-    { paint_with_alpha,  256, 512},
-    { fill,   64, 256},
-    { stroke, 64, 256},
-    { text,   64, 256},
+    { paint,  64, 512},
+    { paint_with_alpha,  64, 512},
+    { fill,   64, 512},
+    { stroke, 64, 512},
+    { text,   64, 512},
+    { glyphs,   64, 512},
+    { mask,  64, 512},
     { tessellate, 100, 100},
     { subimage_copy, 16, 512},
     { pattern_create_radial, 16, 16},
@@ -458,5 +494,10 @@ const cairo_perf_case_t perf_cases[] = {
     { rounded_rectangles, 512, 512},
     { long_dashed_lines, 512, 512},
     { composite_checker, 16, 512},
+    { twin, 800, 800},
+    { dragon, 1024, 1024 },
+    { pythagoras_tree, 768, 768 },
+    { intersections, 512, 512 },
+    { spiral, 512, 512 },
     { NULL }
 };

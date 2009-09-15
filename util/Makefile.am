@@ -1,5 +1,11 @@
 include $(top_srcdir)/build/Makefile.am.common
 
+SUBDIRS = . cairo-script
+
+if BUILD_TRACE
+SUBDIRS += cairo-trace
+endif
+
 util: malloc-stats.so backtrace-symbols.so
 
 .la.so:
@@ -16,8 +22,19 @@ EXTRA_LTLIBRARIES += malloc-stats.la backtrace-symbols.la
 
 backtrace_symbols_la_LIBADD  = -lbfd -liberty
 
-malloc_stats_la_LIBADD  = $(backtrace_symbols_la_LIBADD) backtrace-symbols.lo
+#malloc_stats_la_LIBADD  = $(backtrace_symbols_la_LIBADD) backtrace-symbols.lo
+
+noinst_PROGRAMS =
+
+if HAVE_GTK
+noinst_PROGRAMS += font-view
+font_view_CFLAGS = $(gtk_CFLAGS)
+font_view_LDADD = ../src/libcairo.la $(gtk_LIBS)
+endif
 
 EXTRA_DIST += \
+	COPYING \
 	xr2cairo \
-	cairo-api-update
+	cairo-api-update \
+	cairo-view \
+	waterfall

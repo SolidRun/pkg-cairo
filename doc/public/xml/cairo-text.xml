@@ -287,6 +287,14 @@ remember), but the standard CSS2 generic family names, ("serif",
 work as expected.
 </para>
 <para>
+If <parameter>family</parameter> starts with the string "<parameter>cairo</parameter>:", or if no native font
+backends are compiled in, cairo will use an internal font family.
+The internal font family recognizes many modifiers in the <parameter>family</parameter>
+string, most notably, it recognizes the string "monospace".  That is,
+the family name "<parameter>cairo</parameter>:monospace" will use the monospace version of
+the internal font family.
+</para>
+<para>
 For "real" font selection, see the font-backend-specific
 font_face_create functions for the font backend you are using. (For
 example, if you are using the freetype-based cairo-ft font backend,
@@ -730,7 +738,7 @@ family is assumed.  The default family then can be queried using
 </para>
 <para>
 The <link linkend="cairo-select-font-face"><function>cairo_select_font_face()</function></link> function uses this to create font faces.
-See that function for limitations of toy font faces.</para>
+See that function for limitations and other details of toy font faces.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>family</parameter>&#160;:</term>

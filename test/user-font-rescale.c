@@ -36,15 +36,6 @@
 #define HEIGHT ((TEXT_SIZE + 2*BORDER)*3 + BORDER)
 #define TEXT   "test of rescaled glyphs"
 
-static cairo_test_draw_function_t draw;
-
-static const cairo_test_t test = {
-    "user-font-rescale",
-    "Tests drawing text with user defined widths",
-    WIDTH, HEIGHT,
-    draw
-};
-
 static const cairo_user_data_key_t rescale_font_closure_key;
 
 struct rescaled_font {
@@ -220,7 +211,7 @@ create_rescaled_font (cairo_font_face_t *substitute_font,
     for (i = 0; i < r->glyph_count; i++) {
 	r->desired_width[i] = desired_width[i];
 	/* use NaN to specify unset */
-	r->rescale_factor[i] = strtod ("NaN", NULL);
+	r->rescale_factor[i] = cairo_test_NaN ();
     }
 
     status = cairo_font_face_set_user_data (user_font_face,
@@ -332,7 +323,7 @@ draw (cairo_t *cr, int width, int height)
     cairo_show_text (cr, text);
 
     /* same text in 'mono' with widths that match the 'sans' version */
-    old = cairo_get_font_face (cr);
+    old = cairo_font_face_reference (cairo_get_font_face (cr));
     cairo_select_font_face (cr,
 			    "Bitstream Vera Sans Mono",
 			    CAIRO_FONT_SLANT_NORMAL,
@@ -340,10 +331,12 @@ draw (cairo_t *cr, int width, int height)
     substitute = cairo_get_font_face (cr);
 
     status = get_user_font_face (substitute, text, old, &rescaled);
+    cairo_font_face_destroy (old);
     if (status) {
 	return cairo_test_status_from_status (cairo_test_get_context (cr),
 					      status);
     }
+
     cairo_set_font_face (cr, rescaled);
     cairo_font_face_destroy (rescaled);
 
@@ -364,8 +357,9 @@ draw (cairo_t *cr, int width, int height)
     return CAIRO_TEST_SUCCESS;
 }
 
-int
-main (void)
-{
-    return cairo_test (&test);
-}
+CAIRO_TEST (user_font_rescale,
+	    "Tests drawing text with user defined widths",
+	    "user-font, font", /* keywords */
+	    NULL, /* requirements */
+	    WIDTH, HEIGHT,
+	    NULL, draw)

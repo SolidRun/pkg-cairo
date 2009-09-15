@@ -57,12 +57,14 @@ cairo_private = \
 	cairo-atomic-private.h \
 	cairo-cache-private.h \
 	cairo-clip-private.h \
+	cairo-combsort-private.h \
 	cairo-compiler-private.h \
 	cairo-fixed-private.h \
 	cairo-fixed-type-private.h \
 	cairo-freelist-private.h \
 	cairo-gstate-private.h \
 	cairo-hash-private.h \
+	cairo-image-info-private.h \
 	cairo-malloc-private.h \
 	cairo-meta-surface-private.h \
 	cairo-mutex-impl-private.h \
@@ -76,9 +78,9 @@ cairo_private = \
 	cairo-path-private.h \
 	cairo-private.h \
 	cairo-reference-count-private.h \
-	cairo-region-private.h \
 	cairo-scaled-font-private.h \
 	cairo-skiplist-private.h \
+	cairo-spans-private.h \
 	cairo-surface-fallback-private.h \
 	cairo-surface-private.h \
 	cairo-types-private.h \
@@ -107,6 +109,7 @@ cairo_sources = \
 	cairo-gstate.c \
 	cairo-hash.c \
 	cairo-hull.c \
+	cairo-image-info.c \
 	cairo-image-surface.c \
 	cairo-lzw.c \
 	cairo-matrix.c \
@@ -119,6 +122,7 @@ cairo_sources = \
 	cairo-path.c \
 	cairo-path-fill.c \
 	cairo-path-fixed.c \
+	cairo-path-in-fill.c \
 	cairo-path-stroke.c \
 	cairo-pattern.c \
 	cairo-pen.c \
@@ -128,12 +132,15 @@ cairo_sources = \
 	cairo-scaled-font.c \
 	cairo-skiplist.c \
 	cairo-slope.c \
+	cairo-spans.c \
 	cairo-spline.c \
 	cairo-stroke-style.c \
 	cairo-surface.c \
 	cairo-surface-fallback.c \
+	cairo-tor-scan-converter.c \
 	cairo-system.c \
 	cairo-traps.c \
+	cairo-toy-font-face.c \
 	cairo-unicode.c \
 	cairo-user-font.c \
 	cairo-version.c \
@@ -183,11 +190,13 @@ cairo_ft_sources = cairo-ft-font.c
 # These are private, even though they look like public headers
 cairo_test_surfaces_private = \
 	test-fallback-surface.h \
+	test-fallback16-surface.h \
 	test-meta-surface.h \
 	test-paginated-surface.h \
 	$(NULL)
 cairo_test_surfaces_sources = \
 	test-fallback-surface.c \
+	test-fallback16-surface.c \
 	test-meta-surface.c \
 	test-paginated-surface.c \
 	$(NULL)
@@ -242,3 +251,6 @@ cairo_glitz_sources = cairo-glitz-surface.c
 
 cairo_directfb_headers = cairo-directfb.h
 cairo_directfb_sources = cairo-directfb-surface.c
+
+cairo_script_headers = cairo-script.h
+cairo_script_sources = cairo-script-surface.c

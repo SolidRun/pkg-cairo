@@ -337,6 +337,14 @@ remember), but the standard CSS2 generic family names, ("serif",
 work as expected.
 </p>
 <p>
+If <em class="parameter"><code>family</code></em> starts with the string "<em class="parameter"><code>cairo</code></em>:", or if no native font
+backends are compiled in, cairo will use an internal font family.
+The internal font family recognizes many modifiers in the <em class="parameter"><code>family</code></em>
+string, most notably, it recognizes the string "monospace".  That is,
+the family name "<em class="parameter"><code>cairo</code></em>:monospace" will use the monospace version of
+the internal font family.
+</p>
+<p>
 For "real" font selection, see the font-backend-specific
 font_face_create functions for the font backend you are using. (For
 example, if you are using the freetype-based cairo-ft font backend,
@@ -563,9 +571,7 @@ destroyed if there are no other references to it.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td> a <a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a>, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> to restore to the default font
+<td> a <a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a>, or <code class="literal">NULL</code> to restore to the default font
 </td>
 </tr>
 </tbody>
@@ -593,9 +599,7 @@ Gets the current font face for a <a class="link" href="cairo-context.html#cairo-
 cairo. To keep a reference to it, you must call
 <a class="link" href="cairo-font-face.html#cairo-font-face-reference" title="cairo_font_face_reference ()"><code class="function">cairo_font_face_reference()</code></a>.
 
-This function never returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>. If memory cannot be allocated, a
+This function never returns <code class="literal">NULL</code>. If memory cannot be allocated, a
 special "nil" <a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> object will be returned on which
 <a class="link" href="cairo-font-face.html#cairo-font-face-status" title="cairo_font_face_status ()"><code class="function">cairo_font_face_status()</code></a> returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>. Using
 this nil object will cause its error state to propagate to other
@@ -659,9 +663,7 @@ Gets the current scaled font for a <a class="link" href="cairo-context.html#cair
 cairo. To keep a reference to it, you must call
 <a class="link" href="cairo-scaled-font.html#cairo-scaled-font-reference" title="cairo_scaled_font_reference ()"><code class="function">cairo_scaled_font_reference()</code></a>.
 
-This function never returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>. If memory cannot be allocated, a
+This function never returns <code class="literal">NULL</code>. If memory cannot be allocated, a
 special "nil" <a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a> object will be returned on which
 <a class="link" href="cairo-scaled-font.html#cairo-scaled-font-status" title="cairo_scaled_font_status ()"><code class="function">cairo_scaled_font_status()</code></a> returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>. Using
 this nil object will cause its error state to propagate to other
@@ -717,9 +719,7 @@ serious text-using applications. See <a class="link" href="cairo-text.html#cairo
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8</code></em> :</span></p></td>
-<td> a NUL-terminated string of text encoded in UTF-8, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> a NUL-terminated string of text encoded in UTF-8, or <code class="literal">NULL</code>
 </td>
 </tr>
 </tbody>
@@ -900,9 +900,7 @@ affect the x_advance and y_advance values.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8</code></em> :</span></p></td>
-<td> a NUL-terminated string of text encoded in UTF-8, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> a NUL-terminated string of text encoded in UTF-8, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
@@ -979,7 +977,7 @@ family is assumed.  The default family then can be queried using
 </p>
 <p>
 The <a class="link" href="cairo-text.html#cairo-select-font-face" title="cairo_select_font_face ()"><code class="function">cairo_select_font_face()</code></a> function uses this to create font faces.
-See that function for limitations of toy font faces.</p>
+See that function for limitations and other details of toy font faces.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1103,12 +1101,8 @@ For all other uses, user can use their own allocation method
 for glyphs.
 </p>
 <p>
-This function returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if <em class="parameter"><code>num_glyphs</code></em> is not positive,
-or if out of memory.  That means, the <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> return value
+This function returns <code class="literal">NULL</code> if <em class="parameter"><code>num_glyphs</code></em> is not positive,
+or if out of memory.  That means, the <code class="literal">NULL</code> return value
 signals out-of-memory only if <em class="parameter"><code>num_glyphs</code></em> was positive.</p>
 <p>
 </p>
@@ -1148,9 +1142,7 @@ for glyphs.</p>
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>glyphs</code></em> :</span></p></td>
-<td> array of glyphs to free, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> array of glyphs to free, or <code class="literal">NULL</code>
 </td>
 </tr></tbody>
 </table></div>
@@ -1169,12 +1161,8 @@ For all other uses, user can use their own allocation method
 for text clusters.
 </p>
 <p>
-This function returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if <em class="parameter"><code>num_clusters</code></em> is not positive,
-or if out of memory.  That means, the <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> return value
+This function returns <code class="literal">NULL</code> if <em class="parameter"><code>num_clusters</code></em> is not positive,
+or if out of memory.  That means, the <code class="literal">NULL</code> return value
 signals out-of-memory only if <em class="parameter"><code>num_clusters</code></em> was positive.</p>
 <p>
 </p>
@@ -1214,9 +1202,7 @@ for text clusters.</p>
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>clusters</code></em> :</span></p></td>
-<td> array of text clusters to free, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> array of text clusters to free, or <code class="literal">NULL</code>
 </td>
 </tr></tbody>
 </table></div>

@@ -233,9 +233,7 @@ maintain a separate reference to it.</p>
 <td> a newly allocated <a class="link" href="cairo-context.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a> with a reference
  count of 1. The initial reference count should be released
  with <a class="link" href="cairo-context.html#cairo-destroy" title="cairo_destroy ()"><code class="function">cairo_destroy()</code></a> when you are done using the <a class="link" href="cairo-context.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a>.
- This function never returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>. If memory cannot be
+ This function never returns <code class="literal">NULL</code>. If memory cannot be
  allocated, a special <a class="link" href="cairo-context.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a> object will be returned on
  which <a class="link" href="cairo-context.html#cairo-status" title="cairo_status ()"><code class="function">cairo_status()</code></a> returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>.
  You can use this object normally, but no drawing will
@@ -915,7 +913,7 @@ Note that this option does not affect text rendering, instead see
 <a name="cairo-get-antialias"></a><h3>cairo_get_antialias ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-context.html#cairo-antialias-t" title="enum cairo_antialias_t">cairo_antialias_t</a>   cairo_get_antialias                 (<a class="link" href="cairo-context.html#cairo-t" title="cairo_t">cairo_t</a> *cr);</pre>
 <p>
-Gets the current shape antialiasing mode, as set by <a class="link" href="cairo-context.html#cairo-set-antialias" title="cairo_set_antialias ()"><code class="function">cairo_set_antialias()</code></a>.</p>
+Gets the current shape antialiasing mode, as set by <code class="function">cairo_set_shape_antialias()</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1036,9 +1034,7 @@ See also <a class="link" href="cairo-context.html#cairo-set-dash" title="cairo_s
                                                          double *dashes,
                                                          double *offset);</pre>
 <p>
-Gets the current dash array.  If not <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>, <em class="parameter"><code>dashes</code></em> should be big
+Gets the current dash array.  If not <code class="literal">NULL</code>, <em class="parameter"><code>dashes</code></em> should be big
 enough to hold at least the number of values returned by
 <a class="link" href="cairo-context.html#cairo-get-dash-count" title="cairo_get_dash_count ()"><code class="function">cairo_get_dash_count()</code></a>.</p>
 <p>
@@ -1053,16 +1049,12 @@ enough to hold at least the number of values returned by
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dashes</code></em> :</span></p></td>
-<td> return value for the dash array, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> return value for the dash array, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>offset</code></em> :</span></p></td>
-<td> return value for the current dash offset, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> return value for the current dash offset, or <code class="literal">NULL</code>
 </td>
 </tr>
 </tbody>
@@ -2006,9 +1998,7 @@ be dereferenced.</p>
 <pre class="programlisting"><a class="link" href="cairo-context.html#cairo-rectangle-list-t" title="cairo_rectangle_list_t">cairo_rectangle_list_t</a> * cairo_copy_clip_rectangle_list (<a class="link" href="cairo-context.html#cairo-t" title="cairo_t">cairo_t</a> *cr);</pre>
 <p>
 Gets the current clip region as a list of rectangles in user coordinates.
-Never returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.
+Never returns <code class="literal">NULL</code>.
 </p>
 <p>
 The status in the list may be <a class="link" href="cairo-error-status.html#CAIRO-STATUS-CLIP-NOT-REPRESENTABLE--CAPS"><code class="literal">CAIRO_STATUS_CLIP_NOT_REPRESENTABLE</code></a> to
@@ -2561,9 +2551,7 @@ object is a nil object, 0 will be returned.
                                                          <a class="link" href="cairo-types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()">cairo_destroy_func_t</a> destroy);</pre>
 <p>
 Attach user data to <em class="parameter"><code>cr</code></em>.  To remove user data from a surface,
-call this function with the key that was used to set it and <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+call this function with the key that was used to set it and <code class="literal">NULL</code>
 for <em class="parameter"><code>data</code></em>.</p>
 <p>
 </p>
@@ -2611,9 +2599,7 @@ slot could not be allocated for the user data.
 <p>
 Return user data previously attached to <em class="parameter"><code>cr</code></em> using the specified
 key.  If no user data has been attached with the given key this
-function returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.</p>
+function returns <code class="literal">NULL</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -2632,9 +2618,7 @@ attached to
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the user data previously attached or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.
+<td> the user data previously attached or <code class="literal">NULL</code>.
 
 </td>
 </tr>

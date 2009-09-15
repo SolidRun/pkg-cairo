@@ -32,13 +32,18 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/build/Makefile.am.common
-EXTRA_PROGRAMS = cairo-perf$(EXEEXT) cairo-perf-diff-files$(EXEEXT) \
+	$(top_srcdir)/build/Makefile.am.common COPYING
+EXTRA_PROGRAMS = cairo-perf$(EXEEXT) cairo-perf-trace$(EXEEXT) \
+	cairo-perf-diff-files$(EXEEXT) \
+	cairo-perf-compare-backends$(EXEEXT) \
 	cairo-perf-graph-files$(EXEEXT)
 check_PROGRAMS =
 @CAIRO_HAS_WIN32_SURFACE_TRUE@am__append_1 = cairo-perf-win32.c
 @CAIRO_HAS_OS2_SURFACE_TRUE@@CAIRO_HAS_WIN32_SURFACE_FALSE@am__append_2 = cairo-perf-os2.c
 @CAIRO_HAS_OS2_SURFACE_FALSE@@CAIRO_HAS_WIN32_SURFACE_FALSE@am__append_3 = cairo-perf-posix.c
+@CAIRO_HAS_WIN32_SURFACE_TRUE@am__append_4 = cairo-perf-win32.c
+@CAIRO_HAS_OS2_SURFACE_TRUE@@CAIRO_HAS_WIN32_SURFACE_FALSE@am__append_5 = cairo-perf-os2.c
+@CAIRO_HAS_OS2_SURFACE_FALSE@@CAIRO_HAS_WIN32_SURFACE_FALSE@am__append_6 = cairo-perf-posix.c
 subdir = perf
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
@@ -49,6 +54,7 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
 	$(top_srcdir)/build/aclocal.pkg.m4 \
+	$(top_srcdir)/build/aclocal.shave.m4 \
 	$(top_srcdir)/build/libtool.m4 \
 	$(top_srcdir)/build/ltoptions.m4 \
 	$(top_srcdir)/build/ltsugar.m4 \
@@ -57,10 +63,11 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/cairo-version.h \
 	$(top_srcdir)/build/configure.ac.version \
 	$(top_srcdir)/build/configure.ac.tools \
-	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.features \
 	$(top_srcdir)/build/configure.ac.warnings \
+	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.analysis \
+	$(top_srcdir)/build/configure.ac.noversion \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -73,11 +80,12 @@ libcairoperf_la_OBJECTS = $(am_libcairoperf_la_OBJECTS)
 am__cairo_perf_SOURCES_DIST = cairo-perf.c cairo-perf.h \
 	cairo-perf-cover.c box-outline.c composite-checker.c fill.c \
 	long-lines.c mosaic.c mosaic.h paint.c paint-with-alpha.c \
-	pattern_create_radial.c rectangles.c rounded-rectangles.c \
-	stroke.c subimage_copy.c tessellate.c text.c unaligned-clip.c \
-	world-map.c world-map.h zrusin.c zrusin-another.h \
-	long-dashed-lines.c cairo-perf-win32.c cairo-perf-os2.c \
-	cairo-perf-posix.c
+	mask.c pattern_create_radial.c rectangles.c \
+	rounded-rectangles.c stroke.c subimage_copy.c tessellate.c \
+	text.c glyphs.c twin.c unaligned-clip.c world-map.c \
+	world-map.h zrusin.c zrusin-another.h long-dashed-lines.c \
+	dragon.c pythagoras-tree.c intersections.c spiral.c \
+	cairo-perf-win32.c cairo-perf-os2.c cairo-perf-posix.c
 @CAIRO_HAS_WIN32_SURFACE_TRUE@am__objects_1 =  \
 @CAIRO_HAS_WIN32_SURFACE_TRUE@	cairo-perf-win32.$(OBJEXT)
 @CAIRO_HAS_OS2_SURFACE_TRUE@@CAIRO_HAS_WIN32_SURFACE_FALSE@am__objects_2 = cairo-perf-os2.$(OBJEXT)
@@ -86,16 +94,28 @@ am_cairo_perf_OBJECTS = cairo-perf.$(OBJEXT) \
 	cairo-perf-cover.$(OBJEXT) box-outline.$(OBJEXT) \
 	composite-checker.$(OBJEXT) fill.$(OBJEXT) \
 	long-lines.$(OBJEXT) mosaic.$(OBJEXT) paint.$(OBJEXT) \
-	paint-with-alpha.$(OBJEXT) pattern_create_radial.$(OBJEXT) \
-	rectangles.$(OBJEXT) rounded-rectangles.$(OBJEXT) \
-	stroke.$(OBJEXT) subimage_copy.$(OBJEXT) tessellate.$(OBJEXT) \
-	text.$(OBJEXT) unaligned-clip.$(OBJEXT) world-map.$(OBJEXT) \
-	zrusin.$(OBJEXT) long-dashed-lines.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3)
+	paint-with-alpha.$(OBJEXT) mask.$(OBJEXT) \
+	pattern_create_radial.$(OBJEXT) rectangles.$(OBJEXT) \
+	rounded-rectangles.$(OBJEXT) stroke.$(OBJEXT) \
+	subimage_copy.$(OBJEXT) tessellate.$(OBJEXT) text.$(OBJEXT) \
+	glyphs.$(OBJEXT) twin.$(OBJEXT) unaligned-clip.$(OBJEXT) \
+	world-map.$(OBJEXT) zrusin.$(OBJEXT) \
+	long-dashed-lines.$(OBJEXT) dragon.$(OBJEXT) \
+	pythagoras-tree.$(OBJEXT) intersections.$(OBJEXT) \
+	spiral.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
 cairo_perf_OBJECTS = $(am_cairo_perf_OBJECTS)
-cairo_perf_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
-cairo_perf_DEPENDENCIES =  \
+am__DEPENDENCIES_2 =  \
+	$(top_builddir)/boilerplate/libcairoboilerplate.la \
+	$(top_builddir)/src/libcairo.la libcairoperf.la \
+	$(am__DEPENDENCIES_1)
+am_cairo_perf_compare_backends_OBJECTS =  \
+	cairo-perf-compare-backends.$(OBJEXT)
+cairo_perf_compare_backends_OBJECTS =  \
+	$(am_cairo_perf_compare_backends_OBJECTS)
+cairo_perf_compare_backends_LDADD = $(LDADD)
+cairo_perf_compare_backends_DEPENDENCIES =  \
 	$(top_builddir)/boilerplate/libcairoboilerplate.la \
 	$(top_builddir)/src/libcairo.la libcairoperf.la \
 	$(am__DEPENDENCIES_1)
@@ -110,15 +130,16 @@ am_cairo_perf_graph_files_OBJECTS =  \
 	cairo_perf_graph_files-cairo-perf-graph-files.$(OBJEXT) \
 	cairo_perf_graph_files-cairo-perf-graph-widget.$(OBJEXT)
 cairo_perf_graph_files_OBJECTS = $(am_cairo_perf_graph_files_OBJECTS)
-am__DEPENDENCIES_2 =  \
-	$(top_builddir)/boilerplate/libcairoboilerplate.la \
-	$(top_builddir)/src/libcairo.la libcairoperf.la \
-	$(am__DEPENDENCIES_1)
 cairo_perf_graph_files_DEPENDENCIES = $(am__DEPENDENCIES_2)
 cairo_perf_graph_files_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(cairo_perf_graph_files_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am__cairo_perf_trace_SOURCES_DIST = cairo-perf-trace.c \
+	cairo-perf-win32.c cairo-perf-os2.c cairo-perf-posix.c
+am_cairo_perf_trace_OBJECTS = cairo-perf-trace.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
+cairo_perf_trace_OBJECTS = $(am_cairo_perf_trace_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/build/depcomp
 am__depfiles_maybe = depfiles
@@ -129,31 +150,38 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libcairoperf_la_SOURCES) $(cairo_perf_SOURCES) \
+	$(cairo_perf_compare_backends_SOURCES) \
 	$(cairo_perf_diff_files_SOURCES) \
-	$(cairo_perf_graph_files_SOURCES)
+	$(cairo_perf_graph_files_SOURCES) $(cairo_perf_trace_SOURCES)
 DIST_SOURCES = $(libcairoperf_la_SOURCES) \
 	$(am__cairo_perf_SOURCES_DIST) \
+	$(cairo_perf_compare_backends_SOURCES) \
 	$(cairo_perf_diff_files_SOURCES) \
-	$(cairo_perf_graph_files_SOURCES)
+	$(cairo_perf_graph_files_SOURCES) \
+	$(am__cairo_perf_trace_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BFD_LIBS = @BFD_LIBS@
 CAIROPERF_LIBS = @CAIROPERF_LIBS@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
+CAIRO_LDFLAGS = @CAIRO_LDFLAGS@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_LIBTOOL_VERSION_INFO = @CAIRO_LIBTOOL_VERSION_INFO@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
 CAIRO_RELEASE_STATUS = @CAIRO_RELEASE_STATUS@
 CAIRO_REQUIRES = @CAIRO_REQUIRES@
+CAIRO_TEST_MODE = @CAIRO_TEST_MODE@
 CAIRO_TEST_UNDEFINED_LDFLAGS = @CAIRO_TEST_UNDEFINED_LDFLAGS@
 CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
 CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
@@ -180,6 +208,8 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+FC = @FC@
 FGREP = @FGREP@
 FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
@@ -221,10 +251,12 @@ LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
+MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -240,12 +272,14 @@ PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
+Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
+V = @V@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VERSION = @VERSION@
@@ -313,6 +347,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+shavedir = @shavedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -329,7 +364,7 @@ BUILT_SOURCES =
 CLEANFILES = *.i *.s *.gch $(EXTRA_LTLIBRARIES) $(EXTRA_PROGRAMS) \
 	$(check_PROGRAMS) valgrind-log callgrind.out.* index.html
 DISTCLEANFILES = $(BUILT_SOURCES)
-EXTRA_DIST = cairo-perf-diff Makefile.win32
+EXTRA_DIST = cairo-perf-diff COPYING Makefile.win32
 EXTRA_LTLIBRARIES = libcairoperf.la
 MAINTAINERCLEANFILES = Makefile.in
 TESTS = cairo-perf$(EXEEXT)
@@ -337,9 +372,11 @@ AM_CPPFLAGS = \
 	-I$(srcdir)				\
 	-I$(top_srcdir)/boilerplate		\
 	-I$(top_srcdir)/src			\
+	-I$(top_srcdir)/util/cairo-script	\
 	-I$(top_builddir)/src			\
 	$(CAIRO_CFLAGS)
 
+AM_LDFLAGS = $(CAIRO_LDFLAGS)
 LDADD = $(top_builddir)/boilerplate/libcairoboilerplate.la \
 	$(top_builddir)/src/libcairo.la \
 	libcairoperf.la \
@@ -347,18 +384,41 @@ LDADD = $(top_builddir)/boilerplate/libcairoboilerplate.la \
 
 cairo_perf_SOURCES = cairo-perf.c cairo-perf.h cairo-perf-cover.c \
 	box-outline.c composite-checker.c fill.c long-lines.c mosaic.c \
-	mosaic.h paint.c paint-with-alpha.c pattern_create_radial.c \
-	rectangles.c rounded-rectangles.c stroke.c subimage_copy.c \
-	tessellate.c text.c unaligned-clip.c world-map.c world-map.h \
-	zrusin.c zrusin-another.h long-dashed-lines.c $(am__append_1) \
+	mosaic.h paint.c paint-with-alpha.c mask.c \
+	pattern_create_radial.c rectangles.c rounded-rectangles.c \
+	stroke.c subimage_copy.c tessellate.c text.c glyphs.c twin.c \
+	unaligned-clip.c world-map.c world-map.h zrusin.c \
+	zrusin-another.h long-dashed-lines.c dragon.c \
+	pythagoras-tree.c intersections.c spiral.c $(am__append_1) \
 	$(am__append_2) $(am__append_3)
+cairo_perf_LDADD = $(LDADD)
+cairo_perf_DEPENDENCIES = \
+        $(top_builddir)/boilerplate/libcairoboilerplate.la	\
+	$(top_builddir)/src/libcairo.la \
+	libcairoperf.la
+
 libcairoperf_la_SOURCES = \
 	cairo-perf-report.c	\
 	cairo-stats.c		\
 	cairo-stats.h
 
+cairo_perf_trace_SOURCES = cairo-perf-trace.c $(am__append_4) \
+	$(am__append_5) $(am__append_6)
+cairo_perf_trace_LDADD = \
+	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
+	$(LDADD)
+
+cairo_perf_trace_DEPENDENCIES = \
+	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
+        $(top_builddir)/boilerplate/libcairoboilerplate.la	\
+	$(top_builddir)/src/libcairo.la \
+	libcairoperf.la
+
 cairo_perf_diff_files_SOURCES = \
 	cairo-perf-diff-files.c
+
+cairo_perf_compare_backends_SOURCES = \
+	cairo-perf-compare-backends.c
 
 cairo_perf_graph_files_SOURCES = \
 	cairo-perf-graph.h \
@@ -433,12 +493,18 @@ clean-checkPROGRAMS:
 cairo-perf$(EXEEXT): $(cairo_perf_OBJECTS) $(cairo_perf_DEPENDENCIES) 
 	@rm -f cairo-perf$(EXEEXT)
 	$(LINK) $(cairo_perf_OBJECTS) $(cairo_perf_LDADD) $(LIBS)
+cairo-perf-compare-backends$(EXEEXT): $(cairo_perf_compare_backends_OBJECTS) $(cairo_perf_compare_backends_DEPENDENCIES) 
+	@rm -f cairo-perf-compare-backends$(EXEEXT)
+	$(LINK) $(cairo_perf_compare_backends_OBJECTS) $(cairo_perf_compare_backends_LDADD) $(LIBS)
 cairo-perf-diff-files$(EXEEXT): $(cairo_perf_diff_files_OBJECTS) $(cairo_perf_diff_files_DEPENDENCIES) 
 	@rm -f cairo-perf-diff-files$(EXEEXT)
 	$(LINK) $(cairo_perf_diff_files_OBJECTS) $(cairo_perf_diff_files_LDADD) $(LIBS)
 cairo-perf-graph-files$(EXEEXT): $(cairo_perf_graph_files_OBJECTS) $(cairo_perf_graph_files_DEPENDENCIES) 
 	@rm -f cairo-perf-graph-files$(EXEEXT)
 	$(cairo_perf_graph_files_LINK) $(cairo_perf_graph_files_OBJECTS) $(cairo_perf_graph_files_LDADD) $(LIBS)
+cairo-perf-trace$(EXEEXT): $(cairo_perf_trace_OBJECTS) $(cairo_perf_trace_DEPENDENCIES) 
+	@rm -f cairo-perf-trace$(EXEEXT)
+	$(LINK) $(cairo_perf_trace_OBJECTS) $(cairo_perf_trace_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -447,30 +513,39 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/box-outline.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-compare-backends.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-cover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-diff-files.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-os2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-posix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-report.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-trace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf-win32.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-perf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-stats.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite-checker.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dragon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fill.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glyphs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/intersections.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/long-dashed-lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/long-lines.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mosaic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint-with-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pattern_create_radial.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pythagoras-tree.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rectangles.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rounded-rectangles.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spiral.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stroke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/subimage_copy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tessellate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/twin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unaligned-clip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/world-map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zrusin.Po@am__quote@
@@ -803,14 +878,19 @@ uninstall-am:
 	tags uninstall uninstall-am
 
 
+# Install rules to rebuild the libraries and add explicit dependencies
 $(top_builddir)/boilerplate/libcairoboilerplate.la: $(top_builddir)/src/libcairo.la
 	cd $(top_builddir)/boilerplate && $(MAKE) $(AM_MAKEFLAGS) libcairoboilerplate.la
 
 $(top_builddir)/src/libcairo.la:
 	cd $(top_builddir)/src && $(MAKE) $(AM_MAKEFLAGS) libcairo.la
 
-perf: cairo-perf$(EXEEXT)
-	$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf$(EXEEXT)
+$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la: $(top_builddir)/src/libcairo.la
+	cd $(top_builddir)/util/cairo-script && $(MAKE) $(AM_MAKEFLAGS) libcairo-script-interpreter.la
+
+perf: cairo-perf$(EXEEXT) cairo-perf-trace$(EXEEXT)
+	-$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf$(EXEEXT)
+	-$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf-trace$(EXEEXT)
 
 html-local: index.html
 

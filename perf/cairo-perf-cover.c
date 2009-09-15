@@ -35,9 +35,6 @@ init_and_set_source_surface (cairo_t		*cr,
 
     /* Fill it with something known */
     cr2 = cairo_create (source);
-    cairo_set_operator (cr2, CAIRO_OPERATOR_CLEAR);
-    cairo_paint (cr2);
-
     cairo_set_operator (cr2, CAIRO_OPERATOR_SOURCE);
     cairo_set_source_rgb (cr2, 0, 0, 1); /* blue */
     cairo_paint (cr2);
@@ -47,9 +44,9 @@ init_and_set_source_surface (cairo_t		*cr,
     cairo_rectangle (cr2, 0, 0, width/2.0, height/2.0);
     cairo_rectangle (cr2, width/2.0, height/2.0, width/2.0, height/2.0);
     cairo_fill (cr2);
-    cairo_destroy (cr2);
 
-    cairo_set_source_surface (cr, source, 0, 0);
+    cairo_set_source_surface (cr, cairo_get_target (cr2), 0, 0);
+    cairo_destroy (cr2);
 }
 
 static void
@@ -98,8 +95,8 @@ set_source_image_surface_rgba (cairo_t	*cr,
 
 static void
 set_source_image_surface_rgba_mag (cairo_t	*cr,
-				   int	 	width,
-				   int	 	height)
+				   int		width,
+				   int		height)
 {
     cairo_surface_t *source;
 
@@ -114,8 +111,8 @@ set_source_image_surface_rgba_mag (cairo_t	*cr,
 
 static void
 set_source_image_surface_rgba_min (cairo_t	*cr,
-				   int	 	width,
-				   int	 	height)
+				   int		width,
+				   int		height)
 {
     cairo_surface_t *source;
 
@@ -159,6 +156,40 @@ set_source_similar_surface_rgba (cairo_t	*cr,
 }
 
 static void
+set_source_similar_surface_rgba_mag (cairo_t	*cr,
+				     int	width,
+				     int	height)
+{
+    cairo_surface_t *source;
+
+    source = cairo_surface_create_similar (cairo_get_group_target (cr),
+					   CAIRO_CONTENT_COLOR_ALPHA,
+					   width/2, height/2);
+    cairo_scale(cr, 2.1, 2.1);
+    init_and_set_source_surface (cr, source, width/2, height/2);
+    cairo_scale(cr, 1/2.1, 1/2.1);
+
+    cairo_surface_destroy (source);
+}
+
+static void
+set_source_similar_surface_rgba_min (cairo_t	*cr,
+				     int	width,
+				     int	height)
+{
+    cairo_surface_t *source;
+
+    source = cairo_surface_create_similar (cairo_get_group_target (cr),
+					   CAIRO_CONTENT_COLOR_ALPHA,
+					   width*2, height*2);
+    cairo_scale(cr, 1/1.9, 1/1.9);
+    init_and_set_source_surface (cr, source, width*2, height*2);
+    cairo_scale(cr, 1.9, 1.9);
+
+    cairo_surface_destroy (source);
+}
+
+static void
 set_source_linear_rgb (cairo_t *cr,
 		       int	width,
 		       int	height)
@@ -184,6 +215,40 @@ set_source_linear_rgba (cairo_t *cr,
     linear = cairo_pattern_create_linear (0.0, 0.0, width, height);
     cairo_pattern_add_color_stop_rgba (linear, 0.0, 1, 0, 0, 0.5); /* 50% red */
     cairo_pattern_add_color_stop_rgba (linear, 1.0, 0, 0, 1, 0.0); /*  0% blue */
+
+    cairo_set_source (cr, linear);
+
+    cairo_pattern_destroy (linear);
+}
+
+static void
+set_source_linear3_rgb (cairo_t *cr,
+		       int	width,
+		       int	height)
+{
+    cairo_pattern_t *linear;
+
+    linear = cairo_pattern_create_linear (0.0, 0.0, width, height);
+    cairo_pattern_add_color_stop_rgb (linear, 0.0, 1, 0, 0); /* red */
+    cairo_pattern_add_color_stop_rgb (linear, 0.5, 0, 1, 0); /* green */
+    cairo_pattern_add_color_stop_rgb (linear, 1.0, 0, 0, 1); /* blue */
+
+    cairo_set_source (cr, linear);
+
+    cairo_pattern_destroy (linear);
+}
+
+static void
+set_source_linear3_rgba (cairo_t *cr,
+			int	width,
+			int	height)
+{
+    cairo_pattern_t *linear;
+
+    linear = cairo_pattern_create_linear (0.0, 0.0, width, height);
+    cairo_pattern_add_color_stop_rgba (linear, 0.0, 1, 0, 0, 0.5); /* 50% red */
+    cairo_pattern_add_color_stop_rgba (linear, 0.5, 0, 1, 0, 0.0); /*  0% green */
+    cairo_pattern_add_color_stop_rgba (linear, 1.0, 0, 0, 1, 0.5); /*  50% blue */
 
     cairo_set_source (cr, linear);
 
@@ -236,18 +301,22 @@ cairo_perf_cover_sources_and_operators (cairo_perf_t		*perf,
     char *expanded_name;
 
     struct { set_source_func_t set_source; const char *name; } sources[] = {
-	{ set_source_solid_rgb, "solid_rgb" },
-	{ set_source_solid_rgba, "solid_rgba" },
-	{ set_source_image_surface_rgb, "image_rgb" },
-	{ set_source_image_surface_rgba, "image_rgba" },
-	{ set_source_image_surface_rgba_mag, "image_rgba_mag" },
-	{ set_source_image_surface_rgba_min, "image_rgba_min" },
-	{ set_source_similar_surface_rgb, "similar_rgb" },
-	{ set_source_similar_surface_rgba, "similar_rgba" },
-	{ set_source_linear_rgb, "linear_rgb" },
-	{ set_source_linear_rgba, "linear_rgba" },
-	{ set_source_radial_rgb, "radial_rgb" },
-	{ set_source_radial_rgba, "radial_rgba" }
+	{ set_source_solid_rgb, "solid-rgb" },
+	{ set_source_solid_rgba, "solid-rgba" },
+	{ set_source_image_surface_rgb, "image-rgb" },
+	{ set_source_image_surface_rgba, "image-rgba" },
+	{ set_source_image_surface_rgba_mag, "image-rgba-mag" },
+	{ set_source_image_surface_rgba_min, "image-rgba-min" },
+	{ set_source_similar_surface_rgb, "similar-rgb" },
+	{ set_source_similar_surface_rgba, "similar-rgba" },
+	{ set_source_similar_surface_rgba_mag, "similar-rgba-mag" },
+	{ set_source_similar_surface_rgba_min, "similar-rgba-min" },
+	{ set_source_linear_rgb, "linear-rgb" },
+	{ set_source_linear_rgba, "linear-rgba" },
+	{ set_source_linear3_rgb, "linear3-rgb" },
+	{ set_source_linear3_rgba, "linear3-rgba" },
+	{ set_source_radial_rgb, "radial-rgb" },
+	{ set_source_radial_rgba, "radial-rgba" }
     };
 
     struct { cairo_operator_t op; const char *name; } operators[] = {

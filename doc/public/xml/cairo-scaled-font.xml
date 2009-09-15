@@ -581,7 +581,9 @@ set on <parameter>scaled_font</parameter>.
 <title>cairo_scaled_font_get_font_face ()</title>
 <indexterm zone="cairo-scaled-font-get-font-face" role="1.2"><primary sortas="cairo_scaled_font_get_font_face">cairo_scaled_font_get_font_face</primary></indexterm><programlisting><link linkend="cairo-font-face-t">cairo_font_face_t</link> * cairo_scaled_font_get_font_face     (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);</programlisting>
 <para>
-Gets the font face that this scaled font was created for.</para>
+Gets the font face that this scaled font uses.  This is the
+font face passed to <link linkend="cairo-scaled-font-create"><function>cairo_scaled_font_create()</function></link> if that font face
+was not of type <link linkend="CAIRO-FONT-TYPE-TOY--CAPS"><literal>CAIRO_FONT_TYPE_TOY</literal></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
@@ -629,7 +631,10 @@ Stores the font matrix with which <parameter>scaled_font</parameter> was created
 <indexterm zone="cairo-scaled-font-get-ctm" role="1.2"><primary sortas="cairo_scaled_font_get_ctm">cairo_scaled_font_get_ctm</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_scaled_font_get_ctm           (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font,
                                                          <link linkend="cairo-matrix-t">cairo_matrix_t</link> *ctm);</programlisting>
 <para>
-Stores the CTM with which <parameter>scaled_font</parameter> was created into <parameter>ctm</parameter>.</para>
+Stores the CTM with which <parameter>scaled_font</parameter> was created into <parameter>ctm</parameter>.
+Note that the translation offsets (x0, y0) of the CTM are ignored
+by <link linkend="cairo-scaled-font-create"><function>cairo_scaled_font_create()</function></link>.  So, the matrix this
+function returns always has 0,0 as x0,y0.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
@@ -662,7 +667,8 @@ font space to device space.</para>
 <indexterm zone="cairo-scaled-font-get-type" role="1.2"><primary sortas="cairo_scaled_font_get_type">cairo_scaled_font_get_type</primary></indexterm><programlisting><link linkend="cairo-font-type-t">cairo_font_type_t</link>   cairo_scaled_font_get_type          (<link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link> *scaled_font);</programlisting>
 <para>
 This function returns the type of the backend used to create
-a scaled font. See <link linkend="cairo-font-type-t"><type>cairo_font_type_t</type></link> for available types.</para>
+a scaled font. See <link linkend="cairo-font-type-t"><type>cairo_font_type_t</type></link> for available types.
+However, this function never returns <link linkend="CAIRO-FONT-TYPE-TOY--CAPS"><literal>CAIRO_FONT_TYPE_TOY</literal></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>

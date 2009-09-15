@@ -154,25 +154,33 @@ check_PROGRAMS =
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__append_50 = $(cairo_directfb_private)
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__append_51 = $(cairo_directfb_sources)
 @CAIRO_HAS_DIRECTFB_SURFACE_TRUE@am__append_52 = cairo-directfb.pc
-@CAIRO_HAS_FT_FONT_TRUE@am__append_53 = $(cairo_ft_headers)
-@CAIRO_HAS_FT_FONT_TRUE@am__append_54 = $(cairo_ft_private)
-@CAIRO_HAS_FT_FONT_TRUE@am__append_55 = $(cairo_ft_sources)
-@CAIRO_HAS_FT_FONT_TRUE@am__append_56 = cairo-ft.pc
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_57 = $(cairo_ps_headers)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_58 = $(cairo_ps_private)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_59 = $(cairo_ps_sources)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_60 = cairo-ps.pc
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_61 = $(cairo_pdf_headers)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_62 = $(cairo_pdf_private)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_63 = $(cairo_pdf_sources)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_64 = cairo-pdf.pc
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_65 = $(cairo_svg_headers)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_66 = $(cairo_svg_private)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_67 = $(cairo_svg_sources)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_68 = cairo-svg.pc
-@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_69 = $(cairo_test_surfaces_private) $(cairo_test_surfaces_headers)
-@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_70 = $(cairo_test_surfaces_sources)
-@ENABLE_GTK_DOC_TRUE@am__append_71 = check-doc-coverage.sh
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_53 = $(cairo_script_headers)
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_54 = $(cairo_script_private)
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_55 = $(cairo_script_sources)
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_56 = cairo-script.pc
+@CAIRO_HAS_FT_FONT_TRUE@am__append_57 = $(cairo_ft_headers)
+@CAIRO_HAS_FT_FONT_TRUE@am__append_58 = $(cairo_ft_private)
+@CAIRO_HAS_FT_FONT_TRUE@am__append_59 = $(cairo_ft_sources)
+@CAIRO_HAS_FT_FONT_TRUE@am__append_60 = cairo-ft.pc
+@CAIRO_HAS_FC_FONT_TRUE@am__append_61 = $(cairo_fc_headers)
+@CAIRO_HAS_FC_FONT_TRUE@am__append_62 = $(cairo_fc_private)
+@CAIRO_HAS_FC_FONT_TRUE@am__append_63 = $(cairo_fc_sources)
+@CAIRO_HAS_FC_FONT_TRUE@am__append_64 = cairo-fc.pc
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_65 = $(cairo_ps_headers)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_66 = $(cairo_ps_private)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_67 = $(cairo_ps_sources)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_68 = cairo-ps.pc
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_69 = $(cairo_pdf_headers)
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_70 = $(cairo_pdf_private)
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_71 = $(cairo_pdf_sources)
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_72 = cairo-pdf.pc
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_73 = $(cairo_svg_headers)
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_74 = $(cairo_svg_private)
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_75 = $(cairo_svg_sources)
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_76 = cairo-svg.pc
+@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_77 = $(cairo_test_surfaces_private) $(cairo_test_surfaces_headers)
+@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_78 = $(cairo_test_surfaces_sources)
+@ENABLE_GTK_DOC_TRUE@am__append_79 = check-doc-coverage.sh
 subdir = doc/public
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
@@ -183,6 +191,7 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
 	$(top_srcdir)/build/aclocal.pkg.m4 \
+	$(top_srcdir)/build/aclocal.shave.m4 \
 	$(top_srcdir)/build/libtool.m4 \
 	$(top_srcdir)/build/ltoptions.m4 \
 	$(top_srcdir)/build/ltsugar.m4 \
@@ -191,10 +200,11 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/cairo-version.h \
 	$(top_srcdir)/build/configure.ac.version \
 	$(top_srcdir)/build/configure.ac.tools \
-	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.features \
 	$(top_srcdir)/build/configure.ac.warnings \
+	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.analysis \
+	$(top_srcdir)/build/configure.ac.noversion \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -206,20 +216,24 @@ DIST_SOURCES =
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BFD_LIBS = @BFD_LIBS@
 CAIROPERF_LIBS = @CAIROPERF_LIBS@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
+CAIRO_LDFLAGS = @CAIRO_LDFLAGS@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_LIBTOOL_VERSION_INFO = @CAIRO_LIBTOOL_VERSION_INFO@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
 CAIRO_RELEASE_STATUS = @CAIRO_RELEASE_STATUS@
 CAIRO_REQUIRES = @CAIRO_REQUIRES@
+CAIRO_TEST_MODE = @CAIRO_TEST_MODE@
 CAIRO_TEST_UNDEFINED_LDFLAGS = @CAIRO_TEST_UNDEFINED_LDFLAGS@
 CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
 CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
@@ -246,6 +260,8 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+FC = @FC@
 FGREP = @FGREP@
 FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
@@ -287,10 +303,12 @@ LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
+MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -306,12 +324,14 @@ PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
+Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
+V = @V@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VERSION = @VERSION@
@@ -379,6 +399,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+shavedir = @shavedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -401,22 +422,23 @@ EXTRA_DIST = $(content_files) $(HTML_IMAGES) $(DOC_MAIN_SGML_FILE) \
 	check-doc-coverage.sh check-doc-syntax.sh
 EXTRA_LTLIBRARIES = 
 MAINTAINERCLEANFILES = Makefile.in
-TESTS = $(am__append_71) check-doc-syntax.sh
+TESTS = $(am__append_79) check-doc-syntax.sh
 cairo_headers = cairo.h cairo-deprecated.h
 cairo_private = cairoint.h cairo-analysis-surface-private.h \
 	cairo-arc-private.h cairo-atomic-private.h \
 	cairo-cache-private.h cairo-clip-private.h \
-	cairo-compiler-private.h cairo-fixed-private.h \
-	cairo-fixed-type-private.h cairo-freelist-private.h \
-	cairo-gstate-private.h cairo-hash-private.h \
+	cairo-combsort-private.h cairo-compiler-private.h \
+	cairo-fixed-private.h cairo-fixed-type-private.h \
+	cairo-freelist-private.h cairo-gstate-private.h \
+	cairo-hash-private.h cairo-image-info-private.h \
 	cairo-malloc-private.h cairo-meta-surface-private.h \
 	cairo-mutex-impl-private.h cairo-mutex-list-private.h \
 	cairo-mutex-private.h cairo-mutex-type-private.h \
 	cairo-output-stream-private.h cairo-paginated-private.h \
 	cairo-paginated-surface-private.h cairo-path-fixed-private.h \
 	cairo-path-private.h cairo-private.h \
-	cairo-reference-count-private.h cairo-region-private.h \
-	cairo-scaled-font-private.h cairo-skiplist-private.h \
+	cairo-reference-count-private.h cairo-scaled-font-private.h \
+	cairo-skiplist-private.h cairo-spans-private.h \
 	cairo-surface-fallback-private.h cairo-surface-private.h \
 	cairo-types-private.h cairo-user-font-private.h \
 	cairo-wideint-private.h cairo-wideint-type-private.h $(NULL) \
@@ -427,18 +449,19 @@ cairo_sources = cairo-analysis-surface.c cairo-arc.c cairo-array.c \
 	cairo-fixed.c cairo-font-face.c cairo-font-face-twin.c \
 	cairo-font-face-twin-data.c cairo-font-options.c \
 	cairo-freelist.c cairo-gstate.c cairo-hash.c cairo-hull.c \
-	cairo-image-surface.c cairo-lzw.c cairo-matrix.c \
-	cairo-meta-surface.c cairo-misc.c cairo-mutex.c \
+	cairo-image-info.c cairo-image-surface.c cairo-lzw.c \
+	cairo-matrix.c cairo-meta-surface.c cairo-misc.c cairo-mutex.c \
 	cairo-output-stream.c cairo-paginated-surface.c \
 	cairo-path-bounds.c cairo-path.c cairo-path-fill.c \
-	cairo-path-fixed.c cairo-path-stroke.c cairo-pattern.c \
-	cairo-pen.c cairo-polygon.c cairo-rectangle.c cairo-region.c \
-	cairo-scaled-font.c cairo-skiplist.c cairo-slope.c \
-	cairo-spline.c cairo-stroke-style.c cairo-surface.c \
-	cairo-surface-fallback.c cairo-system.c cairo-traps.c \
-	cairo-unicode.c cairo-user-font.c cairo-version.c \
-	cairo-wideint.c $(NULL) $(_cairo_font_subset_sources) \
-	$(_cairo_pdf_operators_sources)
+	cairo-path-fixed.c cairo-path-in-fill.c cairo-path-stroke.c \
+	cairo-pattern.c cairo-pen.c cairo-polygon.c cairo-rectangle.c \
+	cairo-region.c cairo-scaled-font.c cairo-skiplist.c \
+	cairo-slope.c cairo-spans.c cairo-spline.c \
+	cairo-stroke-style.c cairo-surface.c cairo-surface-fallback.c \
+	cairo-tor-scan-converter.c cairo-system.c cairo-traps.c \
+	cairo-toy-font-face.c cairo-unicode.c cairo-user-font.c \
+	cairo-version.c cairo-wideint.c $(NULL) \
+	$(_cairo_font_subset_sources) $(_cairo_pdf_operators_sources)
 _cairo_font_subset_private = \
 	cairo-scaled-font-subsets-private.h \
 	cairo-truetype-subset-private.h \
@@ -474,12 +497,14 @@ cairo_ft_sources = cairo-ft-font.c
 # These are private, even though they look like public headers
 cairo_test_surfaces_private = \
 	test-fallback-surface.h \
+	test-fallback16-surface.h \
 	test-meta-surface.h \
 	test-paginated-surface.h \
 	$(NULL)
 
 cairo_test_surfaces_sources = \
 	test-fallback-surface.c \
+	test-fallback16-surface.c \
 	test-meta-surface.c \
 	test-paginated-surface.c \
 	$(NULL)
@@ -527,17 +552,19 @@ cairo_glitz_private = cairo-glitz-private.h
 cairo_glitz_sources = cairo-glitz-surface.c
 cairo_directfb_headers = cairo-directfb.h
 cairo_directfb_sources = cairo-directfb-surface.c
+cairo_script_headers = cairo-script.h
+cairo_script_sources = cairo-script-surface.c
 supported_cairo_headers = $(cairo_headers) $(cairo_xlib_headers) \
 	$(cairo_xlib_xrender_headers) $(cairo_quartz_headers) \
 	$(cairo_quartz_font_headers) $(cairo_win32_headers) \
 	$(cairo_win32_font_headers) $(cairo_png_headers) \
-	$(cairo_ft_headers) $(cairo_ps_headers) $(cairo_pdf_headers) \
-	$(cairo_svg_headers) $(cairo_image_headers) \
-	$(cairo_user_headers)
+	$(cairo_ft_headers) $(cairo_fc_headers) $(cairo_ps_headers) \
+	$(cairo_pdf_headers) $(cairo_svg_headers) \
+	$(cairo_image_headers) $(cairo_user_headers)
 unsupported_cairo_headers = $(cairo_xcb_headers) \
 	$(cairo_quartz_image_headers) $(cairo_os2_headers) \
 	$(cairo_beos_headers) $(cairo_glitz_headers) \
-	$(cairo_directfb_headers)
+	$(cairo_directfb_headers) $(cairo_script_headers)
 all_cairo_files = $(all_cairo_headers) $(all_cairo_private) $(all_cairo_sources)
 all_cairo_headers = $(cairo_headers) $(cairo_xlib_headers) \
 	$(cairo_xlib_xrender_headers) $(cairo_xcb_headers) \
@@ -546,7 +573,8 @@ all_cairo_headers = $(cairo_headers) $(cairo_xlib_headers) \
 	$(cairo_win32_font_headers) $(cairo_os2_headers) \
 	$(cairo_beos_headers) $(cairo_png_headers) \
 	$(cairo_glitz_headers) $(cairo_directfb_headers) \
-	$(cairo_ft_headers) $(cairo_ps_headers) $(cairo_pdf_headers) \
+	$(cairo_script_headers) $(cairo_ft_headers) \
+	$(cairo_fc_headers) $(cairo_ps_headers) $(cairo_pdf_headers) \
 	$(cairo_svg_headers) $(cairo_image_headers) \
 	$(cairo_user_headers)
 all_cairo_private = $(cairo_private) $(cairo_xlib_private) \
@@ -556,7 +584,8 @@ all_cairo_private = $(cairo_private) $(cairo_xlib_private) \
 	$(cairo_win32_font_private) $(cairo_os2_private) \
 	$(cairo_beos_private) $(cairo_png_private) \
 	$(cairo_glitz_private) $(cairo_directfb_private) \
-	$(cairo_ft_private) $(cairo_ps_private) $(cairo_pdf_private) \
+	$(cairo_script_private) $(cairo_ft_private) \
+	$(cairo_fc_private) $(cairo_ps_private) $(cairo_pdf_private) \
 	$(cairo_svg_private) $(cairo_test_surfaces_private) \
 	$(cairo_test_surfaces_headers) $(cairo_image_private) \
 	$(cairo_user_private)
@@ -567,7 +596,8 @@ all_cairo_sources = $(cairo_sources) $(cairo_xlib_sources) \
 	$(cairo_win32_font_sources) $(cairo_os2_sources) \
 	$(cairo_beos_sources) $(cairo_png_sources) \
 	$(cairo_glitz_sources) $(cairo_directfb_sources) \
-	$(cairo_ft_sources) $(cairo_ps_sources) $(cairo_pdf_sources) \
+	$(cairo_script_sources) $(cairo_ft_sources) \
+	$(cairo_fc_sources) $(cairo_ps_sources) $(cairo_pdf_sources) \
 	$(cairo_svg_sources) $(cairo_test_surfaces_sources) \
 	$(cairo_image_sources) $(cairo_user_sources)
 enabled_cairo_files = $(enabled_cairo_headers) $(enabled_cairo_private) $(enabled_cairo_sources)
@@ -577,35 +607,37 @@ enabled_cairo_headers = $(cairo_headers) $(am__append_1) \
 	$(am__append_29) $(am__append_33) $(am__append_37) \
 	$(am__append_41) $(am__append_45) $(am__append_49) \
 	$(am__append_53) $(am__append_57) $(am__append_61) \
-	$(am__append_65) $(cairo_image_headers) $(cairo_user_headers)
+	$(am__append_65) $(am__append_69) $(am__append_73) \
+	$(cairo_image_headers) $(cairo_user_headers)
 enabled_cairo_private = $(cairo_private) $(am__append_2) \
 	$(am__append_6) $(am__append_10) $(am__append_14) \
 	$(am__append_18) $(am__append_22) $(am__append_26) \
 	$(am__append_30) $(am__append_34) $(am__append_38) \
 	$(am__append_42) $(am__append_46) $(am__append_50) \
 	$(am__append_54) $(am__append_58) $(am__append_62) \
-	$(am__append_66) $(am__append_69) $(cairo_image_private) \
-	$(cairo_user_private)
+	$(am__append_66) $(am__append_70) $(am__append_74) \
+	$(am__append_77) $(cairo_image_private) $(cairo_user_private)
 enabled_cairo_sources = $(cairo_sources) $(am__append_3) \
 	$(am__append_7) $(am__append_11) $(am__append_15) \
 	$(am__append_19) $(am__append_23) $(am__append_27) \
 	$(am__append_31) $(am__append_35) $(am__append_39) \
 	$(am__append_43) $(am__append_47) $(am__append_51) \
 	$(am__append_55) $(am__append_59) $(am__append_63) \
-	$(am__append_67) $(am__append_70) $(cairo_image_sources) \
-	$(cairo_user_sources)
+	$(am__append_67) $(am__append_71) $(am__append_75) \
+	$(am__append_78) $(cairo_image_sources) $(cairo_user_sources)
 all_cairo_pkgconf = cairo.pc cairo-xlib.pc cairo-xlib-xrender.pc \
 	cairo-xcb.pc cairo-quartz.pc cairo-quartz-font.pc \
 	cairo-quartz-image.pc cairo-win32.pc cairo-win32-font.pc \
 	cairo-os2.pc cairo-beos.pc cairo-png.pc cairo-glitz.pc \
-	cairo-directfb.pc cairo-ft.pc cairo-ps.pc cairo-pdf.pc \
-	cairo-svg.pc
+	cairo-directfb.pc cairo-script.pc cairo-ft.pc cairo-fc.pc \
+	cairo-ps.pc cairo-pdf.pc cairo-svg.pc
 enabled_cairo_pkgconf = cairo.pc $(am__append_4) $(am__append_8) \
 	$(am__append_12) $(am__append_16) $(am__append_20) \
 	$(am__append_24) $(am__append_28) $(am__append_32) \
 	$(am__append_36) $(am__append_40) $(am__append_44) \
 	$(am__append_48) $(am__append_52) $(am__append_56) \
-	$(am__append_60) $(am__append_64) $(am__append_68)
+	$(am__append_60) $(am__append_64) $(am__append_68) \
+	$(am__append_72) $(am__append_76)
 
 # The name of the module.
 DOC_MODULE = cairo
@@ -616,12 +648,13 @@ DOC_MAIN_SGML_FILE = cairo-docs.xml
 # Extra options to supply to gtkdoc-scan
 SCAN_OPTIONS = --deprecated-guards="CAIRO_DISABLE_DEPRECATED" --ignore-decorators="cairo_public|cairo_private"
 
-# The directory containing the source code. Relative to $(srcdir)
-DOC_SOURCE_DIR = ../../src
+# The directory containing the source code.
+DOC_SOURCE_DIR = $(top_srcdir)/src
 
 # Used for dependencies
 HFILE_GLOB = $(top_srcdir)/src/cairo*.h
 CFILE_GLOB = $(top_srcdir)/src/cairo*.c
+EXTRA_HFILES = $(top_builddir)/src/cairo-supported-features.h
 
 # Headers to ignore
 IGNORE_HFILES = \
@@ -651,9 +684,9 @@ HTML_IMAGES =
 # Extra options to supply to gtkdoc-fixref
 FIXXREF_OPTIONS = 
 @GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_CC = $(CC) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_CC = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 @GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_LD = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS)
-@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_LD = $(LIBTOOL) --mode=link $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS)
+@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_LD = $(LIBTOOL) --tag=CC --mode=link $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS)
 
 # We set GPATH here; this gives us semantics for GNU make
 # which are more like other make's VPATH, when it comes to
@@ -960,18 +993,17 @@ version.xml: $(top_srcdir)/cairo-version.h
 
 @ENABLE_GTK_DOC_TRUE@doc: html-build.stamp
 @ENABLE_GTK_DOC_FALSE@doc:
-@ENABLE_GTK_DOC_FALSE@	@echo "*** gtk-doc must be installed and enabled in order to make doc"
+@ENABLE_GTK_DOC_FALSE@	@echo "*** gtk-doc must be installed (and --enable-gtk-doc) in order to make doc"
 @ENABLE_GTK_DOC_FALSE@	@false
 
 docs: html-build.stamp
 
 #### scan ####
 
-scan-build.stamp: $(HFILE_GLOB) $(CFILE_GLOB)
+scan-build.stamp: $(HFILE_GLOB) $(CFILE_GLOB) $(EXTRA_HFILES)
 	@echo 'gtk-doc: Scanning header files'
 	@-chmod -R u+w $(srcdir)
-	cd $(srcdir) && \
-	  gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="$(IGNORE_HFILES)" $(SCAN_OPTIONS) $(EXTRA_HFILES)
+	gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="$(IGNORE_HFILES)" $(SCAN_OPTIONS) $(EXTRA_HFILES) --output-dir=$(srcdir)
 	if grep -l '^..*$$' $(srcdir)/$(DOC_MODULE).types > /dev/null 2>&1 ; then \
 	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scangobj $(SCANGOBJ_OPTIONS) --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
 	else \
@@ -1001,11 +1033,13 @@ tmpl/*.sgml:
 
 #### xml ####
 
+# gtkdoc-mkdb is broken and requires a --root-dir=$(srcdir) option
+# The _srcdir diversion is fragile but works for make check; make distcheck
 sgml-build.stamp: tmpl.stamp $(HFILE_GLOB) $(CFILE_GLOB) $(DOC_MODULE)-sections.txt $(srcdir)/tmpl/*.sgml $(expand_content_files)
 	@echo 'gtk-doc: Building XML'
 	@-chmod -R u+w $(srcdir)
-	cd $(srcdir) && \
-	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --output-format=xml --expand-content-files="$(expand_content_files)" --main-sgml-file=$(DOC_MAIN_SGML_FILE) $(MKDB_OPTIONS)
+	_srcdir="`pwd`/$(DOC_SOURCE_DIR)"; \
+	cd $(srcdir) && gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$$_srcdir --output-format=xml --expand-content-files="$(expand_content_files)" --main-sgml-file=$(DOC_MAIN_SGML_FILE) $(MKDB_OPTIONS)
 	touch sgml-build.stamp
 
 sgml.stamp: sgml-build.stamp
@@ -1062,7 +1096,7 @@ uninstall-local:
 #
 @ENABLE_GTK_DOC_TRUE@dist-check-gtkdoc:
 @ENABLE_GTK_DOC_FALSE@dist-check-gtkdoc:
-@ENABLE_GTK_DOC_FALSE@	@echo "*** gtk-doc must be installed and enabled in order to make dist"
+@ENABLE_GTK_DOC_FALSE@	@echo "*** gtk-doc must be installed (and --enable-gtk-doc) in order to make dist"
 @ENABLE_GTK_DOC_FALSE@	@false
 
 dist-hook: dist-check-gtkdoc dist-hook-local

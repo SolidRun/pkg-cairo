@@ -449,7 +449,7 @@ main (int argc, const char *argv[])
     reports = xmalloc (args.num_filenames * sizeof (cairo_perf_report_t));
 
     for (i = 0; i < args.num_filenames; i++ )
-	cairo_perf_report_load (&reports[i], args.filenames[i]);
+	cairo_perf_report_load (&reports[i], args.filenames[i], NULL);
 
     cairo_perf_reports_compare (reports, args.num_filenames, &args.options);
 

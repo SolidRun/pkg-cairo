@@ -46,6 +46,7 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
 	$(top_srcdir)/build/aclocal.pkg.m4 \
+	$(top_srcdir)/build/aclocal.shave.m4 \
 	$(top_srcdir)/build/libtool.m4 \
 	$(top_srcdir)/build/ltoptions.m4 \
 	$(top_srcdir)/build/ltsugar.m4 \
@@ -54,10 +55,11 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/cairo-version.h \
 	$(top_srcdir)/build/configure.ac.version \
 	$(top_srcdir)/build/configure.ac.tools \
-	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.features \
 	$(top_srcdir)/build/configure.ac.warnings \
+	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.analysis \
+	$(top_srcdir)/build/configure.ac.noversion \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -81,20 +83,24 @@ DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BFD_LIBS = @BFD_LIBS@
 CAIROPERF_LIBS = @CAIROPERF_LIBS@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
+CAIRO_LDFLAGS = @CAIRO_LDFLAGS@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_LIBTOOL_VERSION_INFO = @CAIRO_LIBTOOL_VERSION_INFO@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
 CAIRO_RELEASE_STATUS = @CAIRO_RELEASE_STATUS@
 CAIRO_REQUIRES = @CAIRO_REQUIRES@
+CAIRO_TEST_MODE = @CAIRO_TEST_MODE@
 CAIRO_TEST_UNDEFINED_LDFLAGS = @CAIRO_TEST_UNDEFINED_LDFLAGS@
 CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
 CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
@@ -121,6 +127,8 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+FC = @FC@
 FGREP = @FGREP@
 FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
@@ -162,10 +170,12 @@ LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
+MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -181,12 +191,14 @@ PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
+Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
+V = @V@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VERSION = @VERSION@
@@ -254,6 +266,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+shavedir = @shavedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@

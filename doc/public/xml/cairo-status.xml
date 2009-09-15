@@ -56,6 +56,7 @@ code is required before or after each individual cairo function call.
 <title>enum cairo_status_t</title>
 <indexterm zone="cairo-status-t"><primary sortas="cairo_status_t">cairo_status_t</primary></indexterm><programlisting>typedef enum _cairo_status {
     CAIRO_STATUS_SUCCESS = 0,
+
     CAIRO_STATUS_NO_MEMORY,
     CAIRO_STATUS_INVALID_RESTORE,
     CAIRO_STATUS_INVALID_POP_GROUP,
@@ -86,8 +87,11 @@ code is required before or after each individual cairo function call.
     CAIRO_STATUS_NEGATIVE_COUNT,
     CAIRO_STATUS_INVALID_CLUSTERS,
     CAIRO_STATUS_INVALID_SLANT,
-    CAIRO_STATUS_INVALID_WEIGHT
-    /* after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairoint.h */
+    CAIRO_STATUS_INVALID_WEIGHT,
+    CAIRO_STATUS_INVALID_SIZE,
+    CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED,
+
+    CAIRO_STATUS_LAST_STATUS
 } cairo_status_t;
 </programlisting>
 <para>
@@ -118,7 +122,7 @@ to get a human-readable representation of an error message.</para>
 </varlistentry>
 <varlistentry id="CAIRO-STATUS-INVALID-POP-GROUP--CAPS" role="constant">
 <term><literal>CAIRO_STATUS_INVALID_POP_GROUP</literal></term>
-<listitem><simpara> no saved group to pop
+<listitem><simpara> no saved group to pop, i.e. <link linkend="cairo-pop-group"><function>cairo_pop_group()</function></link> without matching <link linkend="cairo-push-group"><function>cairo_push_group()</function></link>
 </simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-STATUS-NO-CURRENT-POINT--CAPS" role="constant">
@@ -259,6 +263,24 @@ to get a human-readable representation of an error message.</para>
 <varlistentry id="CAIRO-STATUS-INVALID-WEIGHT--CAPS" role="constant">
 <term><literal>CAIRO_STATUS_INVALID_WEIGHT</literal></term>
 <listitem><simpara> invalid value for an input <link linkend="cairo-font-weight-t"><type>cairo_font_weight_t</type></link> (Since 1.8)
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-STATUS-INVALID-SIZE--CAPS" role="constant">
+<term><literal>CAIRO_STATUS_INVALID_SIZE</literal></term>
+<listitem><simpara> invalid value (typically too big) for the size of the input (surface, pattern, etc.) (Since 1.10)
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS" role="constant">
+<term><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></term>
+<listitem><simpara> user-font method not implemented (Since 1.10)
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-STATUS-LAST-STATUS--CAPS" role="constant">
+<term><literal>CAIRO_STATUS_LAST_STATUS</literal></term>
+<listitem><simpara> this is a special value indicating the number of
+  status values defined in this enumeration.  When using this value, note
+  that the version of cairo at run-time may have additional status values
+  defined than the value of this symbol at compile-time. (Since 1.10)
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>

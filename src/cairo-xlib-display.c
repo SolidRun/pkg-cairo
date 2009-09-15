@@ -38,8 +38,6 @@
 #include "cairo-xlib-private.h"
 #include "cairo-xlib-xrender-private.h"
 
-#include <fontconfig/fontconfig.h>
-
 #include <X11/Xlibint.h>	/* For XESetCloseDisplay */
 
 typedef int (*cairo_xlib_error_func_t) (Display     *display,
@@ -208,13 +206,15 @@ _cairo_xlib_close_display (Display *dpy, XExtCodes *codes)
     return 0;
 }
 
-cairo_xlib_display_t *
-_cairo_xlib_display_get (Display *dpy)
+cairo_status_t
+_cairo_xlib_display_get (Display *dpy,
+			 cairo_xlib_display_t **out)
 {
     cairo_xlib_display_t *display;
     cairo_xlib_display_t **prev;
     XExtCodes *codes;
-    int major_unused, minor_unused;
+    int render_major, render_minor;
+    cairo_status_t status = CAIRO_STATUS_SUCCESS;
 
     /* There is an apparent deadlock between this mutex and the
      * mutex for the display, but it's actually safe. For the
@@ -246,8 +246,8 @@ _cairo_xlib_display_get (Display *dpy)
     }
 
     display = malloc (sizeof (cairo_xlib_display_t));
-    if (display == NULL) {
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
+    if (unlikely (display == NULL)) {
+	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	goto UNLOCK;
     }
 
@@ -257,11 +257,11 @@ _cairo_xlib_display_get (Display *dpy)
      * add our hook. For now, that means Render, so we call into its
      * QueryVersion function to ensure it gets initialized.
      */
-    XRenderQueryVersion (dpy, &major_unused, &minor_unused);
+    XRenderQueryVersion (dpy, &render_major, &render_minor);
 
     codes = XAddExtension (dpy);
-    if (codes == NULL) {
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
+    if (unlikely (codes == NULL)) {
+	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	free (display);
 	display = NULL;
 	goto UNLOCK;
@@ -279,10 +279,13 @@ _cairo_xlib_display_get (Display *dpy)
     display->close_display_hooks = NULL;
     display->closed = FALSE;
 
+    display->render_major = render_major;
+    display->render_minor = render_minor;
     memset (display->cached_xrender_formats, 0,
 	    sizeof (display->cached_xrender_formats));
 
     display->buggy_repeat = FALSE;
+    display->buggy_pad_reflect = TRUE;
 
     /* This buggy_repeat condition is very complicated because there
      * are multiple X server code bases (with multiple versioning
@@ -329,13 +332,19 @@ _cairo_xlib_display_get (Display *dpy)
      *    (just using VendorRelase < 70000000), as buggy_repeat=TRUE.
      */
     if (strstr (ServerVendor (dpy), "X.Org") != NULL) {
-	if (VendorRelease (dpy) >= 60700000 && VendorRelease (dpy) < 70000000)
-	    display->buggy_repeat = TRUE;
-	if (VendorRelease (dpy) < 10400000)
-	    display->buggy_repeat = TRUE;
+	if (VendorRelease (dpy) >= 60700000) {
+	    if (VendorRelease (dpy) < 70000000)
+		display->buggy_repeat = TRUE;
+	} else {
+	    if (VendorRelease (dpy) < 10400000)
+		display->buggy_repeat = TRUE;
+	    if (VendorRelease (dpy) >= 10699000)
+		display->buggy_pad_reflect = FALSE;
+	}
     } else if (strstr (ServerVendor (dpy), "XFree86") != NULL) {
 	if (VendorRelease (dpy) <= 40500000)
 	    display->buggy_repeat = TRUE;
+
     }
 
     display->next = _cairo_xlib_display_list;
@@ -343,7 +352,8 @@ _cairo_xlib_display_get (Display *dpy)
 
 UNLOCK:
     CAIRO_MUTEX_UNLOCK (_cairo_xlib_display_mutex);
-    return display;
+    *out = display;
+    return status;
 }
 
 void

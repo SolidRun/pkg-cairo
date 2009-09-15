@@ -70,8 +70,8 @@
 # define UINT16_MAX	(65535)
 #endif
 
-#ifndef CAIRO_BOILERPLATE_LOG
-#define CAIRO_BOILERPLATE_LOG(...) fprintf(stderr, __VA_ARGS__)
+#ifndef CAIRO_BOILERPLATE_DEBUG
+#define CAIRO_BOILERPLATE_DEBUG(x)
 #endif
 
 #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
@@ -149,6 +149,7 @@ typedef void
 typedef struct _cairo_boilerplate_target
 {
     const char					*name;
+    const char					*basename;
     const char					*file_extension;
     cairo_surface_type_t			 expected_type;
     cairo_content_t				 content;
@@ -161,6 +162,7 @@ typedef struct _cairo_boilerplate_target
     cairo_boilerplate_cleanup_t			 cleanup;
     cairo_boilerplate_wait_t			 synchronize;
     cairo_bool_t				 is_vector;
+    cairo_bool_t				 is_meta;
 } cairo_boilerplate_target_t;
 
 cairo_boilerplate_target_t **

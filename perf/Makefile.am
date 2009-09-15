@@ -4,11 +4,18 @@ AM_CPPFLAGS =					\
 	-I$(srcdir)				\
 	-I$(top_srcdir)/boilerplate		\
 	-I$(top_srcdir)/src			\
+	-I$(top_srcdir)/util/cairo-script	\
 	-I$(top_builddir)/src			\
 	$(CAIRO_CFLAGS)
 
-EXTRA_PROGRAMS += cairo-perf cairo-perf-diff-files cairo-perf-graph-files
-EXTRA_DIST += cairo-perf-diff
+AM_LDFLAGS = $(CAIRO_LDFLAGS)
+
+EXTRA_PROGRAMS += cairo-perf \
+		  cairo-perf-trace \
+		  cairo-perf-diff-files \
+		  cairo-perf-compare-backends \
+		  cairo-perf-graph-files
+EXTRA_DIST += cairo-perf-diff COPYING
 EXTRA_LTLIBRARIES += libcairoperf.la
 
 LDADD = $(top_builddir)/boilerplate/libcairoboilerplate.la \
@@ -28,6 +35,7 @@ cairo_perf_SOURCES =		\
 	mosaic.h		\
 	paint.c			\
 	paint-with-alpha.c	\
+	mask.c			\
 	pattern_create_radial.c \
 	rectangles.c		\
 	rounded-rectangles.c	\
@@ -35,12 +43,18 @@ cairo_perf_SOURCES =		\
 	subimage_copy.c		\
 	tessellate.c		\
 	text.c			\
+	glyphs.c		\
+	twin.c			\
 	unaligned-clip.c	\
 	world-map.c		\
 	world-map.h		\
 	zrusin.c		\
 	zrusin-another.h	\
-	long-dashed-lines.c
+	long-dashed-lines.c	\
+	dragon.c		\
+	pythagoras-tree.c	\
+	intersections.c		\
+	spiral.c
 
 if CAIRO_HAS_WIN32_SURFACE
 cairo_perf_SOURCES += cairo-perf-win32.c
@@ -51,14 +65,42 @@ else
 cairo_perf_SOURCES += cairo-perf-posix.c
 endif
 endif
+cairo_perf_LDADD = $(LDADD)
+cairo_perf_DEPENDENCIES = \
+        $(top_builddir)/boilerplate/libcairoboilerplate.la	\
+	$(top_builddir)/src/libcairo.la \
+	libcairoperf.la
 
 libcairoperf_la_SOURCES = \
 	cairo-perf-report.c	\
 	cairo-stats.c		\
 	cairo-stats.h
 
+cairo_perf_trace_SOURCES =		\
+	cairo-perf-trace.c
+if CAIRO_HAS_WIN32_SURFACE
+cairo_perf_trace_SOURCES += cairo-perf-win32.c
+else
+if CAIRO_HAS_OS2_SURFACE
+cairo_perf_trace_SOURCES += cairo-perf-os2.c
+else
+cairo_perf_trace_SOURCES += cairo-perf-posix.c
+endif
+endif
+cairo_perf_trace_LDADD =		\
+	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
+	$(LDADD)
+cairo_perf_trace_DEPENDENCIES = \
+	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
+        $(top_builddir)/boilerplate/libcairoboilerplate.la	\
+	$(top_builddir)/src/libcairo.la \
+	libcairoperf.la
+
 cairo_perf_diff_files_SOURCES =	\
 	cairo-perf-diff-files.c
+
+cairo_perf_compare_backends_SOURCES =	\
+	cairo-perf-compare-backends.c
 
 cairo_perf_graph_files_SOURCES = \
 	cairo-perf-graph.h \
@@ -67,11 +109,15 @@ cairo_perf_graph_files_SOURCES = \
 cairo_perf_graph_files_CFLAGS = @gtk_CFLAGS@
 cairo_perf_graph_files_LDADD = @gtk_LIBS@ $(LDADD)
 
+# Install rules to rebuild the libraries and add explicit dependencies
 $(top_builddir)/boilerplate/libcairoboilerplate.la: $(top_builddir)/src/libcairo.la
 	cd $(top_builddir)/boilerplate && $(MAKE) $(AM_MAKEFLAGS) libcairoboilerplate.la
 
 $(top_builddir)/src/libcairo.la:
 	cd $(top_builddir)/src && $(MAKE) $(AM_MAKEFLAGS) libcairo.la
+
+$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la: $(top_builddir)/src/libcairo.la
+	cd $(top_builddir)/util/cairo-script && $(MAKE) $(AM_MAKEFLAGS) libcairo-script-interpreter.la
 
 
 # Do a funny transition of CAIRO_TEST_TARGET through TARGETS such that
@@ -88,8 +134,9 @@ TESTS_ENVIRONMENT = CAIRO_TEST_TARGET="$(TARGETS)" CAIRO_PERF_ITERATIONS="10"
 
 TESTS += cairo-perf$(EXEEXT)
 
-perf: cairo-perf$(EXEEXT)
-	$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf$(EXEEXT)
+perf: cairo-perf$(EXEEXT) cairo-perf-trace$(EXEEXT)
+	-$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf$(EXEEXT)
+	-$(CAIRO_PERF_ENVIRONMENT) ./cairo-perf-trace$(EXEEXT)
 
 html-local: index.html
 
