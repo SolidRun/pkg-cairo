@@ -319,7 +319,7 @@ gv_report_selected (GraphView *gv, int i, struct _app_data *app)
 	argv[4] = NULL;
 
 	do_git (app, argv);
-	free (id);
+	g_free (id);
     }
 }
 
@@ -565,7 +565,7 @@ main (int argc, char *argv[])
 
     reports = xmalloc ((argc-1) * sizeof (cairo_perf_report_t));
     for (i = 1; i < argc; i++ )
-	cairo_perf_report_load (&reports[i-1], argv[i]);
+	cairo_perf_report_load (&reports[i-1], argv[i], NULL);
 
     cases = test_cases_from_reports (reports, argc-1);
 

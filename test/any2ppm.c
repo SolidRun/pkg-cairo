@@ -62,6 +62,7 @@
 #include <string.h>
 
 #include <cairo.h>
+#include <cairo-script-interpreter.h>
 
 #if CAIRO_CAN_TEST_PDF_SURFACE
 #include <poppler.h>
@@ -76,7 +77,7 @@
 #include <libspectre/spectre.h>
 #endif
 
-#if HAVE_FCNTL_H && HAVE_SIGNAL_H && HAVE_SYS_STAT_H && HAVE_SYS_SOCKET_H && HAVE_SYS_POLL_H && HAVE_SYS_UN_H
+#if HAVE_UNISTD_H && HAVE_FCNTL_H && HAVE_SIGNAL_H && HAVE_SYS_STAT_H && HAVE_SYS_SOCKET_H && HAVE_SYS_POLL_H && HAVE_SYS_UN_H
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/stat.h>
@@ -88,7 +89,11 @@
 #define SOCKET_PATH "./.any2ppm"
 #define TIMEOUT 60000 /* 60 seconds */
 
+#if _BSD_SOURCE || (_XOPEN_SOURCE && _XOPEN_SOURCE < 500)
 #define CAN_RUN_AS_DAEMON 1
+#else
+#define CAN_RUN_AS_DAEMON 0
+#endif
 #endif
 
 #define ARRAY_LENGTH(A) (sizeof (A) / sizeof (A[0]))
@@ -230,6 +235,64 @@ write_ppm (cairo_surface_t *surface, int fd)
 	return "write failed";
 
     return NULL;
+}
+
+static cairo_surface_t *
+_create_image (void *closure,
+	       cairo_content_t content,
+	       double width, double height)
+	       //csi_object_t *dictionary)
+{
+    cairo_surface_t **out = closure;
+    *out = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
+    return cairo_surface_reference (*out);
+}
+
+static const char *
+_cairo_script_render_page (const char *filename,
+			   cairo_surface_t **surface_out)
+{
+    cairo_script_interpreter_t *csi;
+    cairo_surface_t *surface = NULL;
+    cairo_status_t status;
+    const cairo_script_interpreter_hooks_t hooks = {
+	.closure = &surface,
+	.surface_create = _create_image,
+    };
+
+    csi = cairo_script_interpreter_create ();
+    cairo_script_interpreter_install_hooks (csi, &hooks);
+    cairo_script_interpreter_run (csi, filename);
+    status = cairo_script_interpreter_destroy (csi);
+    if (surface == NULL) {
+	return "cairo-script interpreter failed";
+    }
+
+    if (status == CAIRO_STATUS_SUCCESS)
+	status = cairo_surface_status (surface);
+    if (status) {
+	cairo_surface_destroy (surface);
+	return cairo_status_to_string (status);
+    }
+
+    *surface_out = surface;
+    return NULL;
+}
+
+static const char *
+cs_convert (char **argv, int fd)
+{
+    const char *err;
+    cairo_surface_t *surface = NULL; /* silence compiler warning */
+
+    err = _cairo_script_render_page (argv[0], &surface);
+    if (err != NULL)
+	return err;
+
+    err = write_ppm (surface, fd);
+    cairo_surface_destroy (surface);
+
+    return err;
 }
 
 #if CAIRO_CAN_TEST_PDF_SURFACE
@@ -465,6 +528,7 @@ convert (char **argv, int fd)
 	const char *type;
 	const char *(*func) (char **, int);
     } converters[] = {
+	{ "cs", cs_convert },
 	{ "pdf", pdf_convert },
 	{ "ps", ps_convert },
 	{ "svg", svg_convert },
@@ -707,7 +771,9 @@ main (int argc, char **argv)
 {
     const char *err;
 
+#if CAIRO_CAN_TEST_PDF_SURFACE || CAIRO_CAN_TEST_SVG_SURFACE
     g_type_init ();
+#endif
 
 #if CAIRO_CAN_TEST_SVG_SURFACE
     rsvg_init ();

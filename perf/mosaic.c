@@ -161,8 +161,11 @@ mosaic_tessellate_curves (cairo_t *cr, int width, int height)
 void
 mosaic (cairo_perf_t *perf, cairo_t *cr, int width, int height)
 {
-    cairo_perf_run (perf, "mosaic_fill_curves", mosaic_fill_curves);
-    cairo_perf_run (perf, "mosaic_fill_lines", mosaic_fill_lines);
-    cairo_perf_run (perf, "mosaic_tessellate_curves", mosaic_tessellate_curves);
-    cairo_perf_run (perf, "mosaic_tessellate_lines", mosaic_tessellate_lines);
+    if (! cairo_perf_can_run (perf, "mosaic"))
+	return;
+
+    cairo_perf_run (perf, "mosaic-fill-curves", mosaic_fill_curves);
+    cairo_perf_run (perf, "mosaic-fill-lines", mosaic_fill_lines);
+    cairo_perf_run (perf, "mosaic-tessellate-curves", mosaic_tessellate_curves);
+    cairo_perf_run (perf, "mosaic-tessellate-lines", mosaic_tessellate_lines);
 }

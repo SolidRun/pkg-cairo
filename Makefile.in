@@ -51,13 +51,14 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/build/Makefile.am.analysis \
 	$(srcdir)/build/Makefile.am.changelog \
 	$(srcdir)/build/Makefile.am.releasing $(srcdir)/config.h.in \
-	$(top_srcdir)/build/Makefile.am.common $(top_srcdir)/configure \
+	$(top_srcdir)/build/Makefile.am.common \
+	$(top_srcdir)/build/shave-libtool.in \
+	$(top_srcdir)/build/shave.in $(top_srcdir)/configure \
 	$(top_srcdir)/src/cairo-features-uninstalled.pc.in \
 	$(top_srcdir)/src/cairo-uninstalled.pc.in AUTHORS COPYING \
 	ChangeLog INSTALL NEWS build/compile build/config.guess \
 	build/config.sub build/depcomp build/install-sh \
-	build/ltmain.sh build/missing config.guess config.sub depcomp \
-	install-sh ltmain.sh missing
+	build/ltmain.sh build/missing
 EXTRA_PROGRAMS =
 TESTS =
 check_PROGRAMS =
@@ -73,6 +74,7 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
 	$(top_srcdir)/build/aclocal.pkg.m4 \
+	$(top_srcdir)/build/aclocal.shave.m4 \
 	$(top_srcdir)/build/libtool.m4 \
 	$(top_srcdir)/build/ltoptions.m4 \
 	$(top_srcdir)/build/ltsugar.m4 \
@@ -81,10 +83,11 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/cairo-version.h \
 	$(top_srcdir)/build/configure.ac.version \
 	$(top_srcdir)/build/configure.ac.tools \
-	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.features \
 	$(top_srcdir)/build/configure.ac.warnings \
+	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.analysis \
+	$(top_srcdir)/build/configure.ac.noversion \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -99,8 +102,10 @@ CONFIG_CLEAN_FILES = cairo-uninstalled.pc cairo-xlib-uninstalled.pc \
 	cairo-win32-font-uninstalled.pc cairo-os2-uninstalled.pc \
 	cairo-beos-uninstalled.pc cairo-png-uninstalled.pc \
 	cairo-glitz-uninstalled.pc cairo-directfb-uninstalled.pc \
-	cairo-ft-uninstalled.pc cairo-ps-uninstalled.pc \
-	cairo-pdf-uninstalled.pc cairo-svg-uninstalled.pc
+	cairo-script-uninstalled.pc cairo-ft-uninstalled.pc \
+	cairo-fc-uninstalled.pc cairo-ps-uninstalled.pc \
+	cairo-pdf-uninstalled.pc cairo-svg-uninstalled.pc build/shave \
+	build/shave-libtool
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -127,20 +132,24 @@ distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BFD_LIBS = @BFD_LIBS@
 CAIROPERF_LIBS = @CAIROPERF_LIBS@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
+CAIRO_LDFLAGS = @CAIRO_LDFLAGS@
 CAIRO_LIBS = @CAIRO_LIBS@
 CAIRO_LIBTOOL_VERSION_INFO = @CAIRO_LIBTOOL_VERSION_INFO@
 CAIRO_NONPKGCONFIG_CFLAGS = @CAIRO_NONPKGCONFIG_CFLAGS@
 CAIRO_NONPKGCONFIG_LIBS = @CAIRO_NONPKGCONFIG_LIBS@
 CAIRO_RELEASE_STATUS = @CAIRO_RELEASE_STATUS@
 CAIRO_REQUIRES = @CAIRO_REQUIRES@
+CAIRO_TEST_MODE = @CAIRO_TEST_MODE@
 CAIRO_TEST_UNDEFINED_LDFLAGS = @CAIRO_TEST_UNDEFINED_LDFLAGS@
 CAIRO_VERSION_MAJOR = @CAIRO_VERSION_MAJOR@
 CAIRO_VERSION_MICRO = @CAIRO_VERSION_MICRO@
@@ -167,6 +176,8 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+FC = @FC@
 FGREP = @FGREP@
 FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
@@ -208,10 +219,12 @@ LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
+MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -227,12 +240,14 @@ PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
+Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
+V = @V@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VERSION = @VERSION@
@@ -300,6 +315,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+shavedir = @shavedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -324,22 +340,25 @@ EXTRA_DIST = README.win32 Makefile.win32 build/Makefile.win32.common \
 	PORTING_GUIDE README RELEASING autogen.sh cairo-version.h \
 	$(NULL)
 EXTRA_LTLIBRARIES = 
-MAINTAINERCLEANFILES = Makefile.in \
-	$(srcdir)/build/Makefile.win32.features \
-	$(srcdir)/build/Makefile.win32.features-h $(NULL) \
-	$(srcdir)/aclocal.m4 $(srcdir)/autoscan.log \
-	$(srcdir)/build/compile $(srcdir)/build/config.guess \
-	$(srcdir)/build/config.sub $(srcdir)/build/depcomp \
-	$(srcdir)/build/install-sh $(srcdir)/build/ltmain.sh \
-	$(srcdir)/build/missing $(srcdir)/build/mkinstalldirs \
-	$(srcdir)/config.h.in $(srcdir)/configure.scan $(NULL) \
-	$(srcdir)/ChangeLog $(srcdir)/ChangeLog.pre-*
+MAINTAINERCLEANFILES = Makefile.in $(srcdir)/aclocal.m4 \
+	$(srcdir)/autoscan.log $(srcdir)/build/compile \
+	$(srcdir)/build/config.guess $(srcdir)/build/config.sub \
+	$(srcdir)/build/depcomp $(srcdir)/build/install-sh \
+	$(srcdir)/build/ltmain.sh $(srcdir)/build/missing \
+	$(srcdir)/build/mkinstalldirs $(srcdir)/config.h.in \
+	$(srcdir)/configure.scan $(NULL) $(srcdir)/ChangeLog \
+	$(srcdir)/ChangeLog.pre-*
+#MAINTAINERCLEANFILES += \
+#	$(srcdir)/build/Makefile.win32.features \
+#	$(srcdir)/build/Makefile.win32.features-h \
+#	$(NULL)
 ACLOCAL_AMFLAGS = -I build
 DIST_SUBDIRS = src doc util boilerplate test perf
 SUBDIRS = src doc util $(am__append_1)
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--enable-test-surfaces \
+	--enable-full-testing \
 	$(NULL)
 
 CURR_CHANGELOG_VERSION = $(CAIRO_VERSION_MAJOR).$$(echo "($(CAIRO_VERSION_MINOR)+1)/2*2" | bc)
@@ -364,10 +383,8 @@ RELEASE_UPLOAD_BASE = /srv/cairo.freedesktop.org/www
 RELEASE_UPLOAD_DIR = $(RELEASE_UPLOAD_BASE)/$(RELEASE_OR_SNAPSHOT)s
 RELEASE_URL_BASE = http://cairographics.org/$(RELEASE_OR_SNAPSHOT)s
 RELEASE_ANNOUNCE_LIST = cairo-announce@cairographics.org (and CC gnome-announce-list@gnome.org)
-MANUAL_DATED = cairo-manual-`date +%Y%m%d`
-MANUAL_TAR_FILE = $(MANUAL_DATED).tar.gz
 MANUAL_VERSIONED = manual-$(VERSION)
-MANUAL_VERSIONED_TAR_FILE = $(MANUAL_VERSIONED).tar.gz
+MANUAL_TAR_FILE = $(MANUAL_VERSIONED).tar.gz
 MANUAL_UPLOAD_DIR = $(RELEASE_UPLOAD_BASE)
 tar_file = $(PACKAGE)-$(VERSION).tar.gz
 sha1_file = $(tar_file).sha1
@@ -458,13 +475,21 @@ cairo-glitz-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cair
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-directfb-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-script-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-ft-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-fc-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-ps-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-pdf-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-svg-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+build/shave: $(top_builddir)/config.status $(top_srcdir)/build/shave.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+build/shave-libtool: $(top_builddir)/config.status $(top_srcdir)/build/shave-libtool.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 clean-checkPROGRAMS:
@@ -1026,7 +1051,7 @@ $(srcdir)/ChangeLog.cache-% $(srcdir)/ChangeLog.pre-%:
 		test "x$$from" = xinitial || from=$$from.0; \
 		spec=$$from..$$to; \
 	  fi; \
-	  $(srcdir)/build/missing --run git log --stat "$$spec") > $@.tmp \
+	  $(top_srcdir)/build/missing --run git log --stat "$$spec") > $@.tmp \
 	  && mv -f $@.tmp $@ \
 	  || ($(RM) $@.tmp; \
 	      echo Failed to generate $@, your $@ may be outdated >&2); \
@@ -1143,24 +1168,24 @@ release-publish-message: releases/$(sha1_file)
 	@echo ""
 	@echo "============================== CUT HERE =============================="
 
-doc-publish: doc
-	rm -rf ./$(MANUAL_DATED)
-	cp -a doc/public/html $(MANUAL_DATED)
-	tar czf $(MANUAL_TAR_FILE) $(MANUAL_DATED)
-	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
-	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && rm -f manual && ln -s $(MANUAL_DATED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
-
 doc-publish-versioned: doc
 	rm -rf ./$(MANUAL_VERSIONED)
 	cp -a doc/public/html $(MANUAL_VERSIONED)
-	tar czf $(MANUAL_VERSIONED_TAR_FILE) $(MANUAL_VERSIONED)
-	scp $(MANUAL_VERSIONED_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
-	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_VERSIONED_TAR_FILE)"
+	tar czf $(MANUAL_TAR_FILE) $(MANUAL_VERSIONED)
+	scp $(MANUAL_TAR_FILE) $(RELEASE_UPLOAD_HOST):$(MANUAL_UPLOAD_DIR)
+	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && tar xzf $(MANUAL_TAR_FILE) && ln -sf $(MANUAL_TAR_FILE) cairo-$(MANUAL_TAR_FILE"
+
+doc-publish-symlinks:
+	ssh $(RELEASE_UPLOAD_HOST) "cd $(MANUAL_UPLOAD_DIR) && rm -f manual && ln -s $(MANUAL_VERSIONED) manual && ln -sf $(MANUAL_TAR_FILE) cairo-manual.tar.gz"
+
+doc-publish:
+	$(MAKE) $(AM_MAKEFLAGS) doc-publish-versioned
+	@if test "$(RELEASE_OR_SNAPSHOT)" = release; then $(MAKE) $(AM_MAKEFLAGS) doc-publish-symliks; fi
 
 # Strict ordering enforced for parallel make to work
 release-publish: release-check
 	$(MAKE) $(AM_MAKEFLAGS) release-upload
-	$(MAKE) $(AM_MAKEFLAGS) doc-publish-versioned
+	$(MAKE) $(AM_MAKEFLAGS) doc-publish
 	$(MAKE) $(AM_MAKEFLAGS) release-publish-message
 
 @OS_WIN32_TRUE@$(runtime_zip_file): install
@@ -1178,6 +1203,7 @@ release-publish: release-check
 .PHONY: \
 	dist-clear-sticky-bits \
 	doc-publish \
+	doc-publish-symlinks \
 	doc-publish-versioned \
 	release-check \
 	release-publish \

@@ -32,6 +32,9 @@
    */
 #undef CAIRO_CAN_TEST_WIN32_PRINTING_SURFACE
 
+/* Define to 1 if your compiler supports __attribute__(constructor) */
+#undef CAIRO_HAS_CONSTRUCTOR_ATTRIBUTE
+
 /* Define to 1 if libspectre is available */
 #undef CAIRO_HAS_SPECTRE
 
@@ -46,8 +49,14 @@
    significant word first */
 #undef FLOAT_WORDS_BIGENDIAN
 
+/* Define to 1 if you have the binutils development files installed */
+#undef HAVE_BFD
+
 /* Define to 1 if you have the <byteswap.h> header file. */
 #undef HAVE_BYTESWAP_H
+
+/* Define to 1 if you have the `clock_gettime' function. */
+#undef HAVE_CLOCK_GETTIME
 
 /* Define to 1 if you have the `ctime_r' function. */
 #undef HAVE_CTIME_R
@@ -61,8 +70,14 @@
 /* Define to 1 if you have the `FcFini' function. */
 #undef HAVE_FCFINI
 
+/* Define to 1 if you have the `FcInit' function. */
+#undef HAVE_FCINIT
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `feclearexcept' function. */
+#undef HAVE_FECLEAREXCEPT
 
 /* Define to 1 if you have the `fedisableexcept' function. */
 #undef HAVE_FEDISABLEEXCEPT
@@ -70,8 +85,14 @@
 /* Define to 1 if you have the `feenableexcept' function. */
 #undef HAVE_FEENABLEEXCEPT
 
+/* Define to 1 if you have the `ffs' function. */
+#undef HAVE_FFS
+
 /* Define to 1 if you have the `flockfile' function. */
 #undef HAVE_FLOCKFILE
+
+/* Define to 1 if you have the `fork' function. */
+#undef HAVE_FORK
 
 /* FT_Bitmap_Size structure includes y_ppem field */
 #undef HAVE_FT_BITMAP_SIZE_Y_PPEM
@@ -94,6 +115,9 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the <io.h> header file. */
+#undef HAVE_IO_H
+
 /* Define to 1 if you have the <libgen.h> header file. */
 #undef HAVE_LIBGEN_H
 
@@ -109,11 +133,21 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* Define to non-zero if your system has mkdir, and to 2 if your version of
+   mkdir requires a mode parameter */
+#undef HAVE_MKDIR
+
+/* Define to 1 if you have the `mmap' function. */
+#undef HAVE_MMAP
+
 /* Define to 1 if you have the `poppler_page_render' function. */
 #undef HAVE_POPPLER_PAGE_RENDER
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
+
+/* Define to 1 if you have the `raise' function. */
+#undef HAVE_RAISE
 
 /* Define to 1 if you have the `rsvg_pixbuf_from_file' function. */
 #undef HAVE_RSVG_PIXBUF_FROM_FILE
@@ -145,6 +179,9 @@
 /* Define to 1 if you have the <sys/int_types.h> header file. */
 #undef HAVE_SYS_INT_TYPES_H
 
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#undef HAVE_SYS_MMAN_H
+
 /* Define to 1 if you have the <sys/poll.h> header file. */
 #undef HAVE_SYS_POLL_H
 
@@ -159,6 +196,9 @@
 
 /* Define to 1 if you have the <sys/un.h> header file. */
 #undef HAVE_SYS_UN_H
+
+/* Define to 1 if you have the <time.h> header file. */
+#undef HAVE_TIME_H
 
 /* Define to 1 if the system has the type `uint128_t'. */
 #undef HAVE_UINT128_T
@@ -175,8 +215,14 @@
 /* Define to 1 if you have the `vasnprintf' function. */
 #undef HAVE_VASNPRINTF
 
+/* Define to 1 if you have the `waitpid' function. */
+#undef HAVE_WAITPID
+
 /* Define to 1 if you have the <windows.h> header file. */
 #undef HAVE_WINDOWS_H
+
+/* Define to 1 if you have zlib available */
+#undef HAVE_ZLIB
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -199,6 +245,12 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* The size of `size_t', as computed by sizeof. */
+#undef SIZEOF_SIZE_T
+
+/* The size of `void *', as computed by sizeof. */
+#undef SIZEOF_VOID_P
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

@@ -7,10 +7,10 @@ EXTRA_DIST += \
 	build/Makefile.win32.features \
 	build/Makefile.win32.features-h \
 	$(NULL)
-MAINTAINERCLEANFILES += \
-	$(srcdir)/build/Makefile.win32.features \
-	$(srcdir)/build/Makefile.win32.features-h \
-	$(NULL)
+#MAINTAINERCLEANFILES += \
+#	$(srcdir)/build/Makefile.win32.features \
+#	$(srcdir)/build/Makefile.win32.features-h \
+#	$(NULL)
 
 ACLOCAL_AMFLAGS = -I build
 
@@ -74,6 +74,7 @@ MAINTAINERCLEANFILES += \
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--enable-test-surfaces \
+	--enable-full-testing \
 	$(NULL)
 
 include $(srcdir)/build/Makefile.am.changelog

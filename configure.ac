@@ -19,16 +19,20 @@ dnl The order of the includes here is rather important
 dnl
 m4_include(build/configure.ac.version)	dnl macros setting up various version declares
 m4_include(build/configure.ac.tools)	dnl checks for tools we use
-m4_include(build/configure.ac.system)	dnl checks for system functions, headers, libs
 m4_include(build/configure.ac.features)	dnl macros for backend/feature handling
 m4_include(build/configure.ac.warnings)	dnl checks for compiler warning
+m4_include(build/configure.ac.system)	dnl checks for system functions, headers, libs
 m4_include(build/configure.ac.analysis)	dnl checks for analysis tools (lcov, etc)
+m4_include(build/configure.ac.noversion) dnl disable builtin libtool versioning
 AC_CACHE_SAVE
 
 dnl ===========================================================================
 
 AC_CHECK_LIB(z, compress,
-	 [AC_CHECK_HEADER(zlib.h, [have_libz=yes],
+	 [AC_CHECK_HEADER(zlib.h, [
+	  have_libz=yes
+	  AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if you have zlib available])
+	 ],
 	 [have_libz="no (requires zlib http://www.gzip.org/zlib/)"])],
 	 [have_libz="no (requires zlib http://www.gzip.org/zlib/)"])
 
@@ -227,6 +231,13 @@ CAIRO_ENABLE_SURFACE_BACKEND(directfb, directfb, no, [
 
 dnl ===========================================================================
 
+any2ppm_cs=no
+CAIRO_ENABLE_SURFACE_BACKEND(script, script, no, [
+  any2ppm_cs=yes
+])
+
+dnl ===========================================================================
+
 # We use pkg-config to look for freetype2, but fall back to
 # freetype-config if it fails.  We prefer pkg-config, since we can
 # then just put freetype2 >= $FREETYPE_MIN_VERSION in
@@ -248,13 +259,6 @@ FREETYPE_MIN_RELEASE=2.1.9
 FREETYPE_MIN_VERSION=9.7.3
 
 CAIRO_ENABLE_FONT_BACKEND(ft, FreeType, auto, [
-  ft_REQUIRES="fontconfig"
-  PKG_CHECK_MODULES(FONTCONFIG, $ft_REQUIRES,,
-		    [AC_MSG_RESULT(no); use_ft="no (requires $ft_REQUIRES)"])
-
-  if test "x$use_ft" = "xyes"; then
-
-    CAIRO_CHECK_FUNCS_WITH_FLAGS(FcFini, [$FONTCONFIG_CFLAGS], [$FONTCONFIG_LIBS])
 
     PKG_CHECK_MODULES(FREETYPE, freetype2 >= $FREETYPE_MIN_VERSION,
                       [freetype_pkgconfig=yes],
@@ -282,9 +286,20 @@ CAIRO_ENABLE_FONT_BACKEND(ft, FreeType, auto, [
 			   use_ft="no ($FREETYPE_VERSION found; version $FREETYPE_MIN_VERSION from release $FREETYPE_MIN_RELEASE required)"])
       fi
     fi
+
+  ft_CFLAGS="$FREETYPE_CFLAGS"
+  ft_LIBS="$FREETYPE_LIBS"
+])
+
+CAIRO_ENABLE_FONT_BACKEND(fc, Fontconfig, auto, [
+  use_fc=$use_ft
+  if test "x$use_fc" = "xyes"; then
+    fc_REQUIRES="fontconfig"
+    PKG_CHECK_MODULES(FONTCONFIG, $fc_REQUIRES,,
+		      [AC_MSG_RESULT(no); use_fc="no (requires $fc_REQUIRES)"])
   fi
-  ft_CFLAGS="$FREETYPE_CFLAGS $FONTCONFIG_CFLAGS"
-  ft_LIBS="$FREETYPE_LIBS $FONTCONFIG_LIBS"
+  fc_CFLAGS="$FONTCONFIG_CFLAGS"
+  fc_LIBS="$FONTCONFIG_LIBS"
 ])
 
 if test "x$use_ft" = "xyes"; then
@@ -304,6 +319,10 @@ if test "x$use_ft" = "xyes"; then
 
   LIBS="$_save_libs"
   CFLAGS="$_save_cflags"
+fi
+
+if test "x$use_fc" = "xyes"; then
+  CAIRO_CHECK_FUNCS_WITH_FLAGS(FcInit FcFini, [$FONTCONFIG_CFLAGS], [$FONTCONFIG_LIBS])
 fi
 
 dnl ===========================================================================
@@ -376,7 +395,7 @@ test_pdf=no
 any2ppm_pdf=no
 if test "x$use_pdf" = "xyes"; then
   poppler_DEPENDENCY="poppler-glib >= $POPPLER_VERSION_REQUIRED"
-  PKG_CHECK_MODULES(POPPLER, $poppler_DEPENDENCY pango gtk+-2.0,
+  PKG_CHECK_MODULES(POPPLER, $poppler_DEPENDENCY,
 		    [CAIRO_CHECK_FUNCS_WITH_FLAGS(poppler_page_render, [$POPPLER_CFLAGS], [$POPPLER_LIBS],
                     [test_pdf=yes; any2ppm_pdf=yes],
 		    [AC_MSG_RESULT(no); test_pdf="no (requires $poppler_DEPENDENCY)"])],
@@ -431,7 +450,7 @@ CAIRO_ENABLE(test_surfaces, test surfaces, no)
 dnl ===========================================================================
 
 CAIRO_ENABLE_SURFACE_BACKEND(image, image, always, [
-  pixman_REQUIRES="pixman-1 >= 0.12.0"
+  pixman_REQUIRES="pixman-1 >= 0.15.0"
   PKG_CHECK_MODULES(pixman, $pixman_REQUIRES, , [AC_MSG_RESULT(no)
   use_image="no (requires $pixman_REQUIRES http://cairographics.org/releases/)"])
   image_REQUIRES=$pixman_REQUIRES
@@ -444,11 +463,53 @@ dnl ===========================================================================
 CAIRO_ENABLE_FONT_BACKEND(user, user, always)
 
 dnl ===========================================================================
+dnl Default to quick testing during development, but force a full test before
+dnl release
+
+AC_ARG_ENABLE(full-testing,
+  AS_HELP_STRING([--enable-full-testing],
+                 [Sets the test suite to perform full testing by default, which
+		  will dramatically slow down make check, but is a
+		  *requirement* before release.]), [
+if test "x$enableval" = "xyes"; then
+    CAIRO_TEST_MODE=full
+    AC_SUBST(CAIRO_TEST_MODE)
+fi
+])
+
+dnl ===========================================================================
 dnl Build the external converter if we have any of the test backends
 AM_CONDITIONAL(BUILD_ANY2PPM,
 	       test "x$any2ppm_svg" = "xyes" \
 	         -o "x$any2ppm_pdf" = "xyes" \
-		 -o "x$any2ppm_ps"  = "xyes")
+		 -o "x$any2ppm_ps"  = "xyes" \
+		 -o "x$any2ppm_cs"  = "xyes")
+
+dnl ===========================================================================
+dnl The tracing utility requires LD_PRELOAD, so only build it for systems
+dnl that are known to work.
+
+case $host in
+*-linux*|*-*bsd*)
+	have_ld_preload="yes"
+	;;
+*)
+	have_ld_preload="no"
+	;;
+esac
+
+AM_CONDITIONAL(BUILD_TRACE,
+	       test "x$have_ld_preload" = "xyes" \
+	       -a "x$have_libz" = "xyes")
+
+AC_CHECK_LIB(bfd, bfd_openr,
+	 [AC_CHECK_HEADER(bfd.h, [have_bfd=yes],
+	 [have_bfd=no])], [have_bfd=no])
+if test "x$have_bfd" = "xyes"; then
+    AC_DEFINE([HAVE_BFD], [1], [Define to 1 if you have the binutils development files installed])
+    BFD_LIBS=-lbfd
+    AC_SUBST(BFD_LIBS)
+fi
 
 dnl ===========================================================================
 
@@ -476,9 +537,14 @@ fi
 dnl ===========================================================================
 
 # We use GTK+ for some utility/debugging tools
-PKG_CHECK_MODULES(gtk, "gtk+-2.0",, AC_MSG_RESULT(no))
+PKG_CHECK_MODULES(gtk, "gtk+-2.0",have_gtk=yes, have_gtk=no)
+AM_CONDITIONAL(HAVE_GTK, test "x$have_gtk" = "xyes")
+
+SHAVE_INIT([build], [enable]) # dnl Make the output pretty
 
 AC_CONFIG_FILES([
+build/shave
+build/shave-libtool
 Makefile
 boilerplate/Makefile
 src/Makefile
@@ -486,6 +552,10 @@ test/Makefile
 test/pdiff/Makefile
 perf/Makefile
 util/Makefile
+util/cairo-script/Makefile
+util/cairo-script/examples/Makefile
+util/cairo-trace/Makefile
+util/cairo-trace/cairo-trace
 doc/Makefile
 doc/public/Makefile
 ])

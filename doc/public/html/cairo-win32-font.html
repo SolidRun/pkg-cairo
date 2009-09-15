@@ -80,7 +80,8 @@ Microsoft Windows systems.
 <a name="cairo-win32-font.details"></a><h2>Details</h2>
 <div class="refsect2" title="CAIRO_HAS_WIN32_FONT">
 <a name="CAIRO-HAS-WIN32-FONT--CAPS"></a><h3>CAIRO_HAS_WIN32_FONT</h3>
-<pre class="programlisting">#define             CAIRO_HAS_WIN32_FONT</pre>
+<pre class="programlisting">#define CAIRO_HAS_WIN32_FONT 1
+</pre>
 <p>
 Defined if the Microsoft Windows font backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -171,7 +172,7 @@ and can be used with functions such as <a class="link" href="cairo-win32-font.ht
 <tr>
 <td><p><span class="term"><em class="parameter"><code>logfont</code></em> :</span></p></td>
 <td> A <span class="type">LOGFONTW</span> structure specifying the font to use.
-  If hfont is null then the lfHeight, lfWidth, lfOrientation and lfEscapement
+  If <em class="parameter"><code>font</code></em> is <code class="literal">NULL</code> then the lfHeight, lfWidth, lfOrientation and lfEscapement
   fields of this structure are ignored. Otherwise lfWidth, lfOrientation and
   lfEscapement must be zero.
 </td>

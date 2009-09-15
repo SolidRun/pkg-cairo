@@ -203,6 +203,20 @@ ifeq ($(CAIRO_HAS_DIRECTFB_SURFACE),1)
 enabled_cairo_pkgconf += cairo-directfb.pc
 endif
 
+unsupported_cairo_headers += $(cairo_script_headers)
+all_cairo_headers += $(cairo_script_headers)
+all_cairo_private += $(cairo_script_private)
+all_cairo_sources += $(cairo_script_sources)
+ifeq ($(CAIRO_HAS_SCRIPT_SURFACE),1)
+enabled_cairo_headers += $(cairo_script_headers)
+enabled_cairo_private += $(cairo_script_private)
+enabled_cairo_sources += $(cairo_script_sources)
+endif
+all_cairo_pkgconf += cairo-script.pc
+ifeq ($(CAIRO_HAS_SCRIPT_SURFACE),1)
+enabled_cairo_pkgconf += cairo-script.pc
+endif
+
 supported_cairo_headers += $(cairo_ft_headers)
 all_cairo_headers += $(cairo_ft_headers)
 all_cairo_private += $(cairo_ft_private)
@@ -215,6 +229,20 @@ endif
 all_cairo_pkgconf += cairo-ft.pc
 ifeq ($(CAIRO_HAS_FT_FONT),1)
 enabled_cairo_pkgconf += cairo-ft.pc
+endif
+
+supported_cairo_headers += $(cairo_fc_headers)
+all_cairo_headers += $(cairo_fc_headers)
+all_cairo_private += $(cairo_fc_private)
+all_cairo_sources += $(cairo_fc_sources)
+ifeq ($(CAIRO_HAS_FC_FONT),1)
+enabled_cairo_headers += $(cairo_fc_headers)
+enabled_cairo_private += $(cairo_fc_private)
+enabled_cairo_sources += $(cairo_fc_sources)
+endif
+all_cairo_pkgconf += cairo-fc.pc
+ifeq ($(CAIRO_HAS_FC_FONT),1)
+enabled_cairo_pkgconf += cairo-fc.pc
 endif
 
 supported_cairo_headers += $(cairo_ps_headers)

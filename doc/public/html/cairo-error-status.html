@@ -75,6 +75,7 @@ code is required before or after each individual cairo function call.
 <a name="cairo-status-t"></a><h3>enum cairo_status_t</h3>
 <pre class="programlisting">typedef enum _cairo_status {
     CAIRO_STATUS_SUCCESS = 0,
+
     CAIRO_STATUS_NO_MEMORY,
     CAIRO_STATUS_INVALID_RESTORE,
     CAIRO_STATUS_INVALID_POP_GROUP,
@@ -105,8 +106,11 @@ code is required before or after each individual cairo function call.
     CAIRO_STATUS_NEGATIVE_COUNT,
     CAIRO_STATUS_INVALID_CLUSTERS,
     CAIRO_STATUS_INVALID_SLANT,
-    CAIRO_STATUS_INVALID_WEIGHT
-    /* after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairoint.h */
+    CAIRO_STATUS_INVALID_WEIGHT,
+    CAIRO_STATUS_INVALID_SIZE,
+    CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED,
+
+    CAIRO_STATUS_LAST_STATUS
 } cairo_status_t;
 </pre>
 <p>
@@ -140,7 +144,7 @@ to get a human-readable representation of an error message.</p>
 </tr>
 <tr>
 <td><p><a name="CAIRO-STATUS-INVALID-POP-GROUP--CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_INVALID_POP_GROUP</code></span></p></td>
-<td> no saved group to pop
+<td> no saved group to pop, i.e. <a class="link" href="cairo-context.html#cairo-pop-group" title="cairo_pop_group ()"><code class="function">cairo_pop_group()</code></a> without matching <a class="link" href="cairo-context.html#cairo-push-group" title="cairo_push_group ()"><code class="function">cairo_push_group()</code></a>
 </td>
 </tr>
 <tr>
@@ -160,9 +164,7 @@ to get a human-readable representation of an error message.</p>
 </tr>
 <tr>
 <td><p><a name="CAIRO-STATUS-NULL-POINTER--CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_NULL_POINTER</code></span></p></td>
-<td> <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> pointer
+<td> <code class="literal">NULL</code> pointer
 </td>
 </tr>
 <tr>
@@ -283,6 +285,24 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NUL
 <tr>
 <td><p><a name="CAIRO-STATUS-INVALID-WEIGHT--CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_INVALID_WEIGHT</code></span></p></td>
 <td> invalid value for an input <a class="link" href="cairo-text.html#cairo-font-weight-t" title="enum cairo_font_weight_t"><span class="type">cairo_font_weight_t</span></a> (Since 1.8)
+</td>
+</tr>
+<tr>
+<td><p><a name="CAIRO-STATUS-INVALID-SIZE--CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_INVALID_SIZE</code></span></p></td>
+<td> invalid value (typically too big) for the size of the input (surface, pattern, etc.) (Since 1.10)
+</td>
+</tr>
+<tr>
+<td><p><a name="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</code></span></p></td>
+<td> user-font method not implemented (Since 1.10)
+</td>
+</tr>
+<tr>
+<td><p><a name="CAIRO-STATUS-LAST-STATUS--CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_LAST_STATUS</code></span></p></td>
+<td> this is a special value indicating the number of
+  status values defined in this enumeration.  When using this value, note
+  that the version of cairo at run-time may have additional status values
+  defined than the value of this symbol at compile-time. (Since 1.10)
 </td>
 </tr>
 </tbody>

@@ -29,6 +29,7 @@
 #define _CAIRO_PERF_H_
 
 #include "cairo-boilerplate.h"
+#include <stdio.h>
 
 typedef uint64_t cairo_perf_ticks_t;
 
@@ -68,6 +69,9 @@ cairo_perf_yield (void);
 
 /* running a test case */
 typedef struct _cairo_perf {
+    FILE *summary;
+    cairo_bool_t summary_continuous;
+
     /* Options from command-line */
     unsigned int iterations;
     cairo_bool_t exact_iterations;
@@ -75,6 +79,8 @@ typedef struct _cairo_perf {
     cairo_bool_t list_only;
     char **names;
     unsigned int num_names;
+    char **exclude_names;
+    unsigned int num_exclude_names;
 
     /* Stuff used internally */
     cairo_perf_ticks_t *times;
@@ -88,6 +94,10 @@ typedef struct _cairo_perf {
 
 typedef cairo_perf_ticks_t
 (*cairo_perf_func_t) (cairo_t *cr, int width, int height);
+
+cairo_bool_t
+cairo_perf_can_run (cairo_perf_t	*perf,
+		    const char		*name);
 
 void
 cairo_perf_run (cairo_perf_t		*perf,
@@ -144,23 +154,30 @@ typedef enum {
 
 void
 cairo_perf_report_load (cairo_perf_report_t *report,
-	                const char *filename);
+	                const char *filename,
+			int (*cmp) (const void *, const void *));
 
 void
-cairo_perf_report_sort_and_compute_stats (cairo_perf_report_t *report);
+cairo_perf_report_sort_and_compute_stats (cairo_perf_report_t *report,
+	                                  int (*cmp) (const void *, const void *));
 
 int
 test_report_cmp_backend_then_name (const void *a, const void *b);
+
+int
+test_report_cmp_name (const void *a, const void *b);
 
 #define CAIRO_PERF_DECL(func) void (func) (cairo_perf_t *perf, cairo_t *cr, int width, int height)
 
 CAIRO_PERF_DECL (fill);
 CAIRO_PERF_DECL (paint);
 CAIRO_PERF_DECL (paint_with_alpha);
+CAIRO_PERF_DECL (mask);
 CAIRO_PERF_DECL (stroke);
 CAIRO_PERF_DECL (subimage_copy);
 CAIRO_PERF_DECL (tessellate);
 CAIRO_PERF_DECL (text);
+CAIRO_PERF_DECL (glyphs);
 CAIRO_PERF_DECL (pattern_create_radial);
 CAIRO_PERF_DECL (zrusin);
 CAIRO_PERF_DECL (world_map);
@@ -172,5 +189,10 @@ CAIRO_PERF_DECL (rectangles);
 CAIRO_PERF_DECL (rounded_rectangles);
 CAIRO_PERF_DECL (long_dashed_lines);
 CAIRO_PERF_DECL (composite_checker);
+CAIRO_PERF_DECL (twin);
+CAIRO_PERF_DECL (dragon);
+CAIRO_PERF_DECL (pythagoras_tree);
+CAIRO_PERF_DECL (intersections);
+CAIRO_PERF_DECL (spiral);
 
 #endif

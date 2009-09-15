@@ -26,15 +26,6 @@
 #include "cairo-test.h"
 #include <stddef.h>
 
-static cairo_test_draw_function_t draw;
-
-static const cairo_test_t test = {
-    "get-clip",
-    "Test cairo_copy_clip_rectangle_list and cairo_clip_extents",
-    0, 0,
-    draw
-};
-
 static cairo_bool_t
 check_count (const cairo_test_context_t *ctx,
 	     const char *message, cairo_bool_t uses_clip_rects,
@@ -283,8 +274,9 @@ FAIL:
     return cairo_test_status_from_status (ctx, status);
 }
 
-int
-main (void)
-{
-    return cairo_test (&test);
-}
+CAIRO_TEST (get_clip,
+	    "Test cairo_copy_clip_rectangle_list and cairo_clip_extents",
+	    "clip, extents", /* keywords */
+	    NULL, /* requirements */
+	    0, 0,
+	    NULL, draw)
