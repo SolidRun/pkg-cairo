@@ -93,10 +93,13 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+CAIRO_BEGIN_DECLS
 
 /* A fake format we use for the flattened ARGB output of the PS and
  * PDF surfaces. */
 #define CAIRO_TEST_CONTENT_COLOR_ALPHA_FLATTENED ((unsigned int) -1)
+
+extern const cairo_user_data_key_t cairo_boilerplate_output_basename_key;
 
 cairo_content_t
 cairo_boilerplate_content (cairo_content_t content);
@@ -115,10 +118,10 @@ typedef enum {
 typedef cairo_surface_t *
 (*cairo_boilerplate_create_surface_t) (const char		 *name,
 				       cairo_content_t		  content,
-				       int			  width,
-				       int			  height,
-				       int			  max_width,
-				       int			  max_height,
+				       double			  width,
+				       double			  height,
+				       double			  max_width,
+				       double			  max_height,
 				       cairo_boilerplate_mode_t	  mode,
 				       int                        id,
 				       void			**closure);
@@ -146,14 +149,15 @@ typedef void
 typedef void
 (*cairo_boilerplate_wait_t) (void *closure);
 
-typedef struct _cairo_boilerplate_target
-{
+typedef struct _cairo_boilerplate_target {
     const char					*name;
     const char					*basename;
     const char					*file_extension;
+    const char                                  *reference_target;
     cairo_surface_type_t			 expected_type;
     cairo_content_t				 content;
     unsigned int				 error_tolerance;
+    const char					*probe; /* runtime dl check */
     cairo_boilerplate_create_surface_t		 create_surface;
     cairo_boilerplate_force_fallbacks_t		 force_fallbacks;
     cairo_boilerplate_finish_surface_t		 finish_surface;
@@ -165,11 +169,18 @@ typedef struct _cairo_boilerplate_target
     cairo_bool_t				 is_meta;
 } cairo_boilerplate_target_t;
 
-cairo_boilerplate_target_t **
+const cairo_boilerplate_target_t *
+cairo_boilerplate_get_image_target (cairo_content_t content);
+
+const cairo_boilerplate_target_t *
+cairo_boilerplate_get_target_by_name (const char *name,
+				      cairo_content_t content);
+
+const cairo_boilerplate_target_t **
 cairo_boilerplate_get_targets (int *num_targets, cairo_bool_t *limited_targets);
 
 void
-cairo_boilerplate_free_targets (cairo_boilerplate_target_t **targets);
+cairo_boilerplate_free_targets (const cairo_boilerplate_target_t **targets);
 
 cairo_surface_t *
 _cairo_boilerplate_get_image_surface (cairo_surface_t *src,
@@ -206,5 +217,7 @@ const char*
 cairo_boilerplate_version_string (void);
 
 #include "cairo-boilerplate-system.h"
+
+CAIRO_END_DECLS
 
 #endif

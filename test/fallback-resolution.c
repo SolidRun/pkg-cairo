@@ -190,12 +190,14 @@ check_result (cairo_test_context_t *ctx,
     }
 
     format = cairo_boilerplate_content_name (target->content);
-    ref_name = cairo_test_reference_image_filename (ctx,
-	                                            base_name,
-						    test_name,
-						    target->name,
-						    target->basename,
-						    format);
+    ref_name = cairo_test_reference_filename (ctx,
+					      base_name,
+					      test_name,
+					      target->name,
+					      target->basename,
+					      format,
+					      CAIRO_TEST_REF_SUFFIX,
+					      CAIRO_TEST_PNG_EXTENSION);
     if (ref_name == NULL) {
 	cairo_test_log (ctx, "Error: Cannot find reference image for %s\n",
 		        base_name);
@@ -352,6 +354,9 @@ preamble (cairo_test_context_t *ctx)
 	cairo_status_t status;
 
 	if (! target->is_vector)
+	    continue;
+
+	if (! cairo_test_is_target_enabled (ctx, target->name))
 	    continue;
 
 	format = cairo_boilerplate_content_name (target->content);

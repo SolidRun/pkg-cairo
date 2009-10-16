@@ -41,6 +41,7 @@
 
 #include "cairo.h"
 #include "cairo-fixed-type-private.h"
+#include "cairo-list-private.h"
 #include "cairo-reference-count-private.h"
 
 typedef struct _cairo_array cairo_array_t;
@@ -63,6 +64,7 @@ typedef struct _cairo_scaled_font_backend   cairo_scaled_font_backend_t;
 typedef struct _cairo_scaled_font_subsets cairo_scaled_font_subsets_t;
 typedef struct _cairo_solid_pattern cairo_solid_pattern_t;
 typedef struct _cairo_surface_backend cairo_surface_backend_t;
+typedef struct _cairo_surface_wrapper cairo_surface_wrapper_t;
 typedef struct _cairo_unscaled_font_backend cairo_unscaled_font_backend_t;
 typedef struct _cairo_xlib_screen_info cairo_xlib_screen_info_t;
 
@@ -162,23 +164,20 @@ typedef enum _cairo_int_status {
 } cairo_int_status_t;
 
 typedef enum _cairo_internal_surface_type {
-    CAIRO_INTERNAL_SURFACE_TYPE_META = 0x1000,
-    CAIRO_INTERNAL_SURFACE_TYPE_PAGINATED,
+    CAIRO_INTERNAL_SURFACE_TYPE_PAGINATED = 0x1000,
     CAIRO_INTERNAL_SURFACE_TYPE_ANALYSIS,
-    CAIRO_INTERNAL_SURFACE_TYPE_TEST_META,
     CAIRO_INTERNAL_SURFACE_TYPE_TEST_FALLBACK,
     CAIRO_INTERNAL_SURFACE_TYPE_TEST_PAGINATED,
+    CAIRO_INTERNAL_SURFACE_TYPE_TEST_WRAPPING,
     CAIRO_INTERNAL_SURFACE_TYPE_NULL,
     CAIRO_INTERNAL_SURFACE_TYPE_TYPE3_GLYPH
 } cairo_internal_surface_type_t;
 
-typedef struct _cairo_point {
-    cairo_fixed_t x;
-    cairo_fixed_t y;
-} cairo_point_t;
+#define CAIRO_HAS_TEST_PAGINATED_SURFACE 1
+#define CAIRO_HAS_TEST_NULL_SURFACE 1
+#define CAIRO_HAS_TEST_WRAPPING_SURFACE 1
 
-typedef struct _cairo_slope
-{
+typedef struct _cairo_slope {
     cairo_fixed_t dx;
     cairo_fixed_t dy;
 } cairo_slope_t, cairo_distance_t;
@@ -238,14 +237,9 @@ typedef enum _cairo_direction {
     CAIRO_DIRECTION_REVERSE
 } cairo_direction_t;
 
-typedef enum _cairo_clip_mode {
-    CAIRO_CLIP_MODE_PATH,
-    CAIRO_CLIP_MODE_REGION,
-    CAIRO_CLIP_MODE_MASK
-} cairo_clip_mode_t;
-
 typedef struct _cairo_edge {
-    cairo_line_t edge;
+    cairo_line_t line;
+    int top, bottom;
     int dir;
 } cairo_edge_t;
 
@@ -253,8 +247,16 @@ typedef struct _cairo_polygon {
     cairo_status_t status;
 
     cairo_point_t first_point;
+    cairo_point_t last_point;
     cairo_point_t current_point;
+    cairo_slope_t current_edge;
     cairo_bool_t has_current_point;
+    cairo_bool_t has_current_edge;
+
+    cairo_box_t extents;
+    cairo_box_t limit;
+    const cairo_box_t *limits;
+    int num_limits;
 
     int num_edges;
     int edges_size;

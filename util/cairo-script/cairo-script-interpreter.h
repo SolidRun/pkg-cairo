@@ -37,6 +37,7 @@
 #define CAIRO_SCRIPT_INTERPRETER_H
 
 #include <cairo.h>
+#include <stdio.h>
 
 CAIRO_BEGIN_DECLS
 
@@ -45,7 +46,8 @@ typedef struct _cairo_script_interpreter cairo_script_interpreter_t;
 /* XXX expose csi_dictionary_t and pass to hooks */
 typedef void
 (*csi_destroy_func_t) (void *closure,
-			       void *ptr);
+		       void *ptr);
+
 typedef cairo_surface_t *
 (*csi_surface_create_func_t) (void *closure,
 			      cairo_content_t content,
@@ -84,9 +86,16 @@ cairo_script_interpreter_run (cairo_script_interpreter_t *ctx,
 			      const char *filename);
 
 cairo_public cairo_status_t
+cairo_script_interpreter_feed_stream (cairo_script_interpreter_t *ctx,
+				      FILE *stream);
+
+cairo_public cairo_status_t
 cairo_script_interpreter_feed_string (cairo_script_interpreter_t *ctx,
 				      const char *line,
 				      int len);
+
+cairo_public unsigned int
+cairo_script_interpreter_get_line_number (cairo_script_interpreter_t *ctx);
 
 cairo_public cairo_script_interpreter_t *
 cairo_script_interpreter_reference (cairo_script_interpreter_t *ctx);
@@ -96,6 +105,11 @@ cairo_script_interpreter_finish (cairo_script_interpreter_t *ctx);
 
 cairo_public cairo_status_t
 cairo_script_interpreter_destroy (cairo_script_interpreter_t *ctx);
+
+cairo_public cairo_status_t
+cairo_script_interpreter_translate_stream (FILE *stream,
+	                                   cairo_write_func_t write_func,
+					   void *closure);
 
 CAIRO_END_DECLS
 

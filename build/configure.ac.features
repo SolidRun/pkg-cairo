@@ -319,7 +319,7 @@ CAIRO_FEATURE_HOOK_REGISTER(yes,no,!,
 dnl Collect warning message for disabled recommended features
 CAIRO_FEATURE_HOOK_REGISTER(no,yes,*,
 [dnl
-	CAIRO_ACCUMULATE([WARNING_MESSAGE], CAIRO_TEXT_WRAP([It is strictly recommended that you do NOT disable the ]cr_feature_name[ feature.], [+++ ]))
+	CAIRO_ACCUMULATE([WARNING_MESSAGE], CAIRO_TEXT_WRAP([It is strongly recommended that you do NOT disable the ]cr_feature_name[ feature.], [+++ ]))
 ])dnl
 
 
@@ -340,29 +340,30 @@ AC_CONFIG_COMMANDS_PRE(dnl
 [dnl
 	AS_IF([test -z "$CAIRO_NATIVE_SURFACE_BACKENDS"],dnl
 	[dnl
-		CAIRO_ACCUMULATE([WARNING_MESSAGE], CAIRO_TEXT_WRAP([It is strictly recommended that you enable the native surface backend feature for your platform.], [*** ]))
+		CAIRO_ACCUMULATE([WARNING_MESSAGE], CAIRO_TEXT_WRAP([No native surface backends enabled for your platform. It is strongly recommended that you enable the native surface backend feature for your platform.], [*** ]))
 	])
 	AS_IF([test -z "$CAIRO_NATIVE_FONT_BACKENDS"],dnl
 	[dnl
-		CAIRO_ACCUMULATE([WARNING_MESSAGE], CAIRO_TEXT_WRAP([It is strictly recommended that you enable the native font backend feature for your platform.], [*** ]))
+		CAIRO_ACCUMULATE([WARNING_MESSAGE], CAIRO_TEXT_WRAP([No native font backends enabled for your platform. It is strongly recommended that you enable the native font backend feature for your platform.], [*** ]))
 	])
 ])dnl
 
 
 AC_DEFUN([CAIRO_REPORT],
 [dnl
-	if test -z "$CAIRO_NATIVE_FONT_BACKENDS"; then
-	   AC_MSG_ERROR([Cairo requires at least one native font backend.  Please install FreeType and fontconfig and try again.])
-	fi
-
 	V="$CAIRO_VERSION_MAJOR.$CAIRO_VERSION_MINOR.$CAIRO_VERSION_MICRO"
 	echo ""
 	echo "cairo (version $V [[$CAIRO_RELEASE_STATUS]]) will be compiled with:"
 	echo ""
 	echo "The following surface backends:"
 	echo "  Image:         yes (always builtin)"
+	echo "  Meta:          yes (always builtin)"
+	echo "  Tee:           yes (always builtin)"
+	echo "  XML:           $use_xml"
+	echo "  Skia:          $use_skia"
 	echo "  Xlib:          $use_xlib"
 	echo "  Xlib Xrender:  $use_xlib_xrender"
+	echo "  Qt:            $use_qt"
 	echo "  Quartz:        $use_quartz"
 	echo "  Quartz-image:  $use_quartz_image"
 	echo "  XCB:           $use_xcb"
@@ -372,9 +373,12 @@ AC_DEFUN([CAIRO_REPORT],
 	echo "  PostScript:    $use_ps"
 	echo "  PDF:           $use_pdf"
 	echo "  SVG:           $use_svg"
+	echo "  OpenGL:        $use_gl"
 	echo "  glitz:         $use_glitz"
 	echo "  BeOS:          $use_beos"
 	echo "  DirectFB:      $use_directfb"
+	echo "  OpenVG:        $use_vg"
+	echo "  DRM:           $use_drm"
 	echo ""
 	echo "The following font backends:"
 	echo "  User:          yes (always builtin)"
@@ -384,11 +388,21 @@ AC_DEFUN([CAIRO_REPORT],
 	echo "  Quartz:        $use_quartz_font"
 	echo ""
 	echo "The following functions:"
-	echo "  PNG functions: $use_png"
+	echo "  PNG functions:   $use_png"
+	echo "  GLEW functions:  $use_glew"
+	echo "  GLX functions:   $use_glx"
+	echo "  EGL functions:   $use_egl"
+	echo "  Eagle functions: $use_eagle"
+	echo ""
+	echo "The following features and utilies:"
+	echo "  cairo-trace:                $use_trace"
+	echo "  cairo-script-interpreter:   $use_interpreter"
 	echo ""
 	echo "And the following internal features:"
+	echo "  pthread:       $use_pthread"
 	echo "  gtk-doc:       $enable_gtk_doc"
 	echo "  gcov support:  $use_gcov"
+	echo "  symbol-lookup: $use_symbol_lookup"
 	echo "  test surfaces: $use_test_surfaces"
 	echo "  ps testing:    $test_ps"
 	echo "  pdf testing:   $test_pdf"

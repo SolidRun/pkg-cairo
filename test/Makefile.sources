@@ -12,18 +12,29 @@ test_sources = \
 	caps-joins-alpha.c				\
 	caps-joins-curve.c				\
 	caps-sub-paths.c				\
+	clear.c						\
 	clip-all.c					\
+	clip-disjoint.c					\
+	clip-device-offset.c				\
 	clip-empty.c					\
+	clip-fill.c					\
 	clip-fill-rule.c				\
 	clip-fill-rule-pixel-aligned.c			\
+	clip-fill-unbounded.c				\
+	clip-image.c					\
 	clip-nesting.c					\
 	clip-operator.c					\
 	clip-push-group.c				\
+	clip-stroke.c					\
+	clip-stroke-unbounded.c				\
+	clip-text.c					\
 	clip-twice.c					\
+	clip-unbounded.c				\
 	clip-zero.c					\
 	clipped-group.c					\
 	clipped-surface.c				\
 	close-path.c					\
+	close-path-current-point.c			\
 	composite-integer-translate-source.c		\
 	composite-integer-translate-over.c		\
 	composite-integer-translate-over-repeat.c	\
@@ -32,17 +43,21 @@ test_sources = \
 	create-from-png.c				\
 	create-from-png-stream.c			\
 	culled-glyphs.c					\
+	curve-to-as-line-to.c				\
 	dash-caps-joins.c				\
 	dash-curve.c					\
+	dash-infinite-loop.c				\
 	dash-no-dash.c					\
 	dash-offset-negative.c				\
 	dash-scale.c					\
 	dash-state.c					\
 	dash-zero-length.c				\
 	degenerate-arc.c				\
+	degenerate-curve-to.c				\
 	degenerate-dash.c				\
 	degenerate-path.c				\
 	degenerate-pen.c				\
+	degenerate-rel-curve-to.c			\
 	device-offset.c					\
 	device-offset-fractional.c			\
 	device-offset-positive.c			\
@@ -54,12 +69,15 @@ test_sources = \
 	extend-reflect-similar.c			\
 	extend-repeat.c					\
 	extend-repeat-similar.c				\
+	extended-blend.c				\
+	extended-blend-alpha.c				\
 	fill-alpha.c					\
 	fill-alpha-pattern.c				\
 	fill-and-stroke.c				\
 	fill-and-stroke-alpha.c				\
 	fill-and-stroke-alpha-add.c			\
 	fill-degenerate-sort-order.c			\
+	fill-empty.c					\
 	fill-image.c				        \
 	fill-missed-stop.c				\
 	fill-rule.c					\
@@ -78,10 +96,13 @@ test_sources = \
 	gradient-alpha.c				\
 	gradient-constant-alpha.c			\
 	gradient-zero-stops.c				\
+	group-clip.c					\
 	group-paint.c					\
+	group-unaligned.c				\
 	huge-linear.c					\
 	huge-radial.c					\
 	image-surface-source.c				\
+	implicit-close.c				\
 	infinite-join.c					\
 	in-fill-empty-trapezoid.c			\
 	in-fill-trapezoid.c				\
@@ -91,6 +112,7 @@ test_sources = \
 	large-font.c					\
 	large-source.c					\
 	large-source-roi.c				\
+	large-twin-antialias-mixed.c			\
 	leaky-dash.c					\
 	leaky-dashed-rectangle.c			\
 	leaky-dashed-stroke.c				\
@@ -123,6 +145,7 @@ test_sources = \
 	over-around-source.c				\
 	over-below-source.c				\
 	over-between-source.c				\
+	overlapping-glyphs.c				\
 	paint.c						\
 	paint-repeat.c					\
 	paint-source-alpha.c				\
@@ -134,8 +157,12 @@ test_sources = \
 	pixman-rotate.c					\
 	png.c						\
 	push-group.c					\
+	push-group-color.c				\
 	radial-gradient.c				\
-	random-intersections.c				\
+	random-intersections-eo.c			\
+	random-intersections-nonzero.c			\
+	random-intersections-curves-eo.c		\
+	random-intersections-curves-nz.c		\
 	rectangle-rounding-error.c			\
 	rectilinear-fill.c				\
 	rectilinear-miter-limit.c			\
@@ -145,6 +172,7 @@ test_sources = \
 	rel-path.c					\
 	rgb24-ignore-alpha.c				\
 	rotate-image-surface-paint.c			\
+	rotated-clip.c					\
 	scale-down-source-surface-paint.c		\
 	scale-offset-image.c				\
 	scale-offset-similar.c				\
@@ -192,6 +220,10 @@ test_sources = \
 	translate-show-surface.c			\
 	trap-clip.c					\
 	twin.c						\
+	twin-antialias-gray.c				\
+	twin-antialias-mixed.c				\
+	twin-antialias-none.c				\
+	twin-antialias-subpixel.c			\
 	unantialiased-shapes.c				\
 	unbounded-operator.c				\
 	user-data.c					\
@@ -222,6 +254,7 @@ pdf_surface_test_sources = \
 	pdf-surface-source.c
 
 ps_surface_test_sources = \
+	ps-eps.c \
 	ps-features.c \
 	ps-surface-source.c
 

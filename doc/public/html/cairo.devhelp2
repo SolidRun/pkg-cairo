@@ -406,11 +406,11 @@
     <keyword type="function" name="cairo_matrix_multiply ()" link="cairo-matrix.html#cairo-matrix-multiply"/>
     <keyword type="function" name="cairo_matrix_transform_distance ()" link="cairo-matrix.html#cairo-matrix-transform-distance"/>
     <keyword type="function" name="cairo_matrix_transform_point ()" link="cairo-matrix.html#cairo-matrix-transform-point"/>
-    <keyword type="enum" name="enum cairo_status_t" link="cairo-error-status.html#cairo-status-t"/>
+    <keyword type="function" name="cairo_status_t ()" link="cairo-error-status.html#cairo-status-t"/>
     <keyword type="function" name="cairo_status_to_string ()" link="cairo-error-status.html#cairo-status-to-string"/>
     <keyword type="function" name="cairo_debug_reset_static_data ()" link="cairo-error-status.html#cairo-debug-reset-static-data"/>
-    <keyword type="" name="Compatibility" link="cairo-version-info.html#id2887362"/>
-    <keyword type="" name="Examining the version" link="cairo-version-info.html#id2887400"/>
+    <keyword type="" name="Compatibility" link="cairo-version-info.html#id3079082"/>
+    <keyword type="" name="Examining the version" link="cairo-version-info.html#id3079121"/>
     <keyword type="macro" name="CAIRO_VERSION" link="cairo-version-info.html#CAIRO-VERSION--CAPS"/>
     <keyword type="macro" name="CAIRO_VERSION_MAJOR" link="cairo-version-info.html#CAIRO-VERSION-MAJOR--CAPS"/>
     <keyword type="macro" name="CAIRO_VERSION_MINOR" link="cairo-version-info.html#CAIRO-VERSION-MINOR--CAPS"/>
@@ -449,6 +449,21 @@
     <keyword type="constant" name="CAIRO_OPERATOR_XOR" link="cairo-context.html#CAIRO-OPERATOR-XOR--CAPS"/>
     <keyword type="constant" name="CAIRO_OPERATOR_ADD" link="cairo-context.html#CAIRO-OPERATOR-ADD--CAPS"/>
     <keyword type="constant" name="CAIRO_OPERATOR_SATURATE" link="cairo-context.html#CAIRO-OPERATOR-SATURATE--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_MULTIPLY" link="cairo-context.html#CAIRO-OPERATOR-MULTIPLY--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_SCREEN" link="cairo-context.html#CAIRO-OPERATOR-SCREEN--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_OVERLAY" link="cairo-context.html#CAIRO-OPERATOR-OVERLAY--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_DARKEN" link="cairo-context.html#CAIRO-OPERATOR-DARKEN--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_LIGHTEN" link="cairo-context.html#CAIRO-OPERATOR-LIGHTEN--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_COLOR_DODGE" link="cairo-context.html#CAIRO-OPERATOR-COLOR-DODGE--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_COLOR_BURN" link="cairo-context.html#CAIRO-OPERATOR-COLOR-BURN--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_HARD_LIGHT" link="cairo-context.html#CAIRO-OPERATOR-HARD-LIGHT--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_SOFT_LIGHT" link="cairo-context.html#CAIRO-OPERATOR-SOFT-LIGHT--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_DIFFERENCE" link="cairo-context.html#CAIRO-OPERATOR-DIFFERENCE--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_EXCLUSION" link="cairo-context.html#CAIRO-OPERATOR-EXCLUSION--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_HSL_HUE" link="cairo-context.html#CAIRO-OPERATOR-HSL-HUE--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_HSL_SATURATION" link="cairo-context.html#CAIRO-OPERATOR-HSL-SATURATION--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_HSL_COLOR" link="cairo-context.html#CAIRO-OPERATOR-HSL-COLOR--CAPS"/>
+    <keyword type="constant" name="CAIRO_OPERATOR_HSL_LUMINOSITY" link="cairo-context.html#CAIRO-OPERATOR-HSL-LUMINOSITY--CAPS"/>
     <keyword type="constant" name="CAIRO_PATH_MOVE_TO" link="cairo-paths.html#CAIRO-PATH-MOVE-TO--CAPS"/>
     <keyword type="constant" name="CAIRO_PATH_LINE_TO" link="cairo-paths.html#CAIRO-PATH-LINE-TO--CAPS"/>
     <keyword type="constant" name="CAIRO_PATH_CURVE_TO" link="cairo-paths.html#CAIRO-PATH-CURVE-TO--CAPS"/>
@@ -509,6 +524,14 @@
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_WIN32_PRINTING" link="cairo-surface.html#CAIRO-SURFACE-TYPE-WIN32-PRINTING--CAPS"/>
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_QUARTZ_IMAGE" link="cairo-surface.html#CAIRO-SURFACE-TYPE-QUARTZ-IMAGE--CAPS"/>
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_SCRIPT" link="cairo-surface.html#CAIRO-SURFACE-TYPE-SCRIPT--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_QT" link="cairo-surface.html#CAIRO-SURFACE-TYPE-QT--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_META" link="cairo-surface.html#CAIRO-SURFACE-TYPE-META--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_VG" link="cairo-surface.html#CAIRO-SURFACE-TYPE-VG--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_GL" link="cairo-surface.html#CAIRO-SURFACE-TYPE-GL--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_DRM" link="cairo-surface.html#CAIRO-SURFACE-TYPE-DRM--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_TEE" link="cairo-surface.html#CAIRO-SURFACE-TYPE-TEE--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_XML" link="cairo-surface.html#CAIRO-SURFACE-TYPE-XML--CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_SKIA" link="cairo-surface.html#CAIRO-SURFACE-TYPE-SKIA--CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_ARGB32" link="cairo-image-surface.html#CAIRO-FORMAT-ARGB32--CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_RGB24" link="cairo-image-surface.html#CAIRO-FORMAT-RGB24--CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_A8" link="cairo-image-surface.html#CAIRO-FORMAT-A8--CAPS"/>
@@ -519,40 +542,5 @@
     <keyword type="constant" name="CAIRO_PS_LEVEL_3" link="cairo-ps-surface.html#CAIRO-PS-LEVEL-3--CAPS"/>
     <keyword type="constant" name="CAIRO_SVG_VERSION_1_1" link="cairo-svg-surface.html#CAIRO-SVG-VERSION-1-1--CAPS"/>
     <keyword type="constant" name="CAIRO_SVG_VERSION_1_2" link="cairo-svg-surface.html#CAIRO-SVG-VERSION-1-2--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_SUCCESS" link="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_NO_MEMORY" link="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_RESTORE" link="cairo-error-status.html#CAIRO-STATUS-INVALID-RESTORE--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_POP_GROUP" link="cairo-error-status.html#CAIRO-STATUS-INVALID-POP-GROUP--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_NO_CURRENT_POINT" link="cairo-error-status.html#CAIRO-STATUS-NO-CURRENT-POINT--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_MATRIX" link="cairo-error-status.html#CAIRO-STATUS-INVALID-MATRIX--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_STATUS" link="cairo-error-status.html#CAIRO-STATUS-INVALID-STATUS--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_NULL_POINTER" link="cairo-error-status.html#CAIRO-STATUS-NULL-POINTER--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_STRING" link="cairo-error-status.html#CAIRO-STATUS-INVALID-STRING--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_PATH_DATA" link="cairo-error-status.html#CAIRO-STATUS-INVALID-PATH-DATA--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_READ_ERROR" link="cairo-error-status.html#CAIRO-STATUS-READ-ERROR--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_WRITE_ERROR" link="cairo-error-status.html#CAIRO-STATUS-WRITE-ERROR--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_SURFACE_FINISHED" link="cairo-error-status.html#CAIRO-STATUS-SURFACE-FINISHED--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_SURFACE_TYPE_MISMATCH" link="cairo-error-status.html#CAIRO-STATUS-SURFACE-TYPE-MISMATCH--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_PATTERN_TYPE_MISMATCH" link="cairo-error-status.html#CAIRO-STATUS-PATTERN-TYPE-MISMATCH--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_CONTENT" link="cairo-error-status.html#CAIRO-STATUS-INVALID-CONTENT--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_FORMAT" link="cairo-error-status.html#CAIRO-STATUS-INVALID-FORMAT--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_VISUAL" link="cairo-error-status.html#CAIRO-STATUS-INVALID-VISUAL--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_FILE_NOT_FOUND" link="cairo-error-status.html#CAIRO-STATUS-FILE-NOT-FOUND--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_DASH" link="cairo-error-status.html#CAIRO-STATUS-INVALID-DASH--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_DSC_COMMENT" link="cairo-error-status.html#CAIRO-STATUS-INVALID-DSC-COMMENT--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_INDEX" link="cairo-error-status.html#CAIRO-STATUS-INVALID-INDEX--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_CLIP_NOT_REPRESENTABLE" link="cairo-error-status.html#CAIRO-STATUS-CLIP-NOT-REPRESENTABLE--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_TEMP_FILE_ERROR" link="cairo-error-status.html#CAIRO-STATUS-TEMP-FILE-ERROR--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_STRIDE" link="cairo-error-status.html#CAIRO-STATUS-INVALID-STRIDE--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_FONT_TYPE_MISMATCH" link="cairo-error-status.html#CAIRO-STATUS-FONT-TYPE-MISMATCH--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_USER_FONT_IMMUTABLE" link="cairo-error-status.html#CAIRO-STATUS-USER-FONT-IMMUTABLE--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_USER_FONT_ERROR" link="cairo-error-status.html#CAIRO-STATUS-USER-FONT-ERROR--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_NEGATIVE_COUNT" link="cairo-error-status.html#CAIRO-STATUS-NEGATIVE-COUNT--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_CLUSTERS" link="cairo-error-status.html#CAIRO-STATUS-INVALID-CLUSTERS--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_SLANT" link="cairo-error-status.html#CAIRO-STATUS-INVALID-SLANT--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_WEIGHT" link="cairo-error-status.html#CAIRO-STATUS-INVALID-WEIGHT--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_INVALID_SIZE" link="cairo-error-status.html#CAIRO-STATUS-INVALID-SIZE--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED" link="cairo-error-status.html#CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS"/>
-    <keyword type="constant" name="CAIRO_STATUS_LAST_STATUS" link="cairo-error-status.html#CAIRO-STATUS-LAST-STATUS--CAPS"/>
   </functions>
 </book>

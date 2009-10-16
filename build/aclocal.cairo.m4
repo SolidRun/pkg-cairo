@@ -75,31 +75,73 @@ AC_DEFUN([CAIRO_CONFIG_COMMANDS],
 	], $3)
 ])
 
-dnl check compiler flags
-AC_DEFUN([CAIRO_CC_TRY_FLAG],
-[dnl
-	AC_MSG_CHECKING([whether $CC supports $1])
+dnl check compiler flags with a program and no muttering.
+AC_DEFUN([CAIRO_CC_TRY_FLAG_SILENT],
+[dnl     (flags..., optional program, true-action, false-action)
+
+	# AC_LANG_PROGRAM() produces a main() w/o args,
+	# but -Wold-style-definition doesn't like that.
+	# We need _some_ program so that we don't get
+	# warnings about empty compilation units, so always
+	# append a reasonable main().
+	_compile_program="$2"'
+		int main(int c, char **v) { (void)c; (void)v; return 0; }'
 
 	_save_cflags="$CFLAGS"
-	CFLAGS="$CFLAGS -Werror $1"
-	AC_COMPILE_IFELSE([ ], [cairo_cc_flag=yes], [cairo_cc_flag=no])
+	CFLAGS="$CFLAGS $1"
+	AC_LINK_IFELSE(
+		[$_compile_program],
+		[cairo_cc_stderr=`test -f conftest.err && cat conftest.err`
+		 cairo_cc_flag=yes],
+		[cairo_cc_stderr=`test -f conftest.err && cat conftest.err`
+		 cairo_cc_flag=no])
 	CFLAGS="$_save_cflags"
 
-	if test "x$cairo_cc_flag" = "xyes"; then
-		ifelse([$2], , :, [$2])
-	else
-		ifelse([$3], , :, [$3])
+	if test "x$cairo_cc_stderr" != "x"; then
+		cairo_cc_flag=no
 	fi
+
+	if test "x$cairo_cc_flag" = "xyes"; then
+		ifelse([$3], , :, [$3])
+	else
+		ifelse([$4], , :, [$4])
+	fi
+])
+
+dnl find a -Werror equivalent
+AC_DEFUN([CAIRO_CC_CHECK_WERROR],
+[dnl
+	_test_WERROR=${WERROR+set}
+	if test "z$_test_WERROR" != zset; then
+		WERROR=""
+		for _werror in -Werror -errwarn; do
+			AC_MSG_CHECKING([whether $CC supports $_werror])
+			CAIRO_CC_TRY_FLAG_SILENT(
+				[$_werror],,
+				[WERROR="$WERROR $_werror"],
+				[:])
+			AC_MSG_RESULT($cairo_cc_flag)
+		done
+	fi
+])
+
+dnl check compiler flags possibly using -Werror if available.
+AC_DEFUN([CAIRO_CC_TRY_FLAG],
+[dnl     (flags..., optional program, true-action, false-action)
+	CAIRO_CC_CHECK_WERROR
+	AC_MSG_CHECKING([whether $CC supports $1])
+	CAIRO_CC_TRY_FLAG_SILENT([$WERROR $1], [$2], [$3], [$4])
 	AC_MSG_RESULT([$cairo_cc_flag])
 ])
 
 dnl check compiler/ld flags
 AC_DEFUN([CAIRO_CC_TRY_LINK_FLAG],
 [dnl
+	CAIRO_CC_CHECK_WERROR
 	AC_MSG_CHECKING([whether $CC supports $1])
 
 	_save_cflags="$CFLAGS"
-	CFLAGS="$CFLAGS -Werror $1"
+	CFLAGS="$CFLAGS $WERROR $1"
 	AC_LINK_IFELSE([int main(void){ return 0;} ],
                        [cairo_cc_flag=yes],
                        [cairo_cc_flag=no])
@@ -127,10 +169,20 @@ int atomic_cmpxchg(int i, int j, int k) { return __sync_val_compare_and_swap (&i
 ], [],
 		  cairo_cv_atomic_primitives="Intel"
 		  )
+
+		if test "x$cairo_cv_atomic_primitives" = "xnone"; then
+			AC_CHECK_HEADER([atomic_ops.h],
+					cairo_cv_atomic_primitives="libatomic-ops")
+		fi
 	])
 	if test "x$cairo_cv_atomic_primitives" = xIntel; then
 		AC_DEFINE(HAVE_INTEL_ATOMIC_PRIMITIVES, 1,
 			  [Enable if your compiler supports the Intel __sync_* atomic primitives])
+	fi
+
+	if test "x$cairo_cv_atomic_primitives" = "xlibatomic-ops"; then
+		AC_DEFINE(HAVE_LIB_ATOMIC_OPS, 1,
+			  [Enable if you have libatomic-ops-dev installed])
 	fi
 ])
 

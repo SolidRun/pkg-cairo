@@ -40,6 +40,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 
 #ifndef MAX
 #define MAX(a,b) (((a)>=(b))?(a):(b))
@@ -214,9 +215,7 @@ _add_operator (csi_t *ctx,
     if (status)
 	return status;
 
-    status = csi_operator_new (ctx, &operator, def->op);
-    if (status)
-	return status;
+    csi_operator_new (&operator, def->op);
 
     return csi_dictionary_put (ctx, dict, name.datum.name, &operator);
 }
@@ -234,9 +233,7 @@ _add_integer_constant (csi_t *ctx,
     if (status)
 	return status;
 
-    status = csi_integer_new (ctx, &constant, def->value);
-    if (status)
-	return status;
+    csi_integer_new (&constant, def->value);
 
     return csi_dictionary_put (ctx, dict, name.datum.name, &constant);
 }
@@ -254,9 +251,7 @@ _add_real_constant (csi_t *ctx,
     if (status)
 	return status;
 
-    status = csi_real_new (ctx, &constant, def->value);
-    if (status)
-	return status;
+    csi_real_new (&constant, def->value);
 
     return csi_dictionary_put (ctx, dict, name.datum.name, &constant);
 }
@@ -267,10 +262,11 @@ _init_dictionaries (csi_t *ctx)
     csi_status_t status;
     csi_stack_t *stack;
     csi_object_t obj;
-    csi_dictionary_t *dict;
+    csi_dictionary_t *dict, *opcodes;
     const csi_operator_def_t *odef;
     const csi_integer_constant_def_t *idef;
     const csi_real_constant_def_t *rdef;
+    unsigned n;
 
     stack = &ctx->dstack;
 
@@ -289,12 +285,37 @@ _init_dictionaries (csi_t *ctx)
 
     dict = obj.datum.dictionary;
 
+    status = csi_dictionary_new (ctx, &obj);
+    if (_csi_unlikely (status))
+	return status;
+
+    opcodes = obj.datum.dictionary;
+
+    n = 0;
+    csi_integer_new (&obj, n);
+    status = csi_dictionary_put (ctx, opcodes, 0, &obj);
+    if (_csi_unlikely (status))
+	return status;
+    ctx->opcode[n++] = NULL;
+
     /* fill systemdict with operators */
     for (odef = _csi_operators (); odef->name != NULL; odef++) {
 	status = _add_operator (ctx, dict, odef);
 	if (_csi_unlikely (status))
 	    return status;
+
+	if (! csi_dictionary_has (opcodes, (csi_name_t) odef->op)) {
+	    csi_integer_new (&obj, n);
+	    status = csi_dictionary_put (ctx,
+		                         opcodes, (csi_name_t) odef->op, &obj);
+	    if (_csi_unlikely (status))
+		return status;
+
+	    assert (n < sizeof (ctx->opcode) / sizeof (ctx->opcode[0]));
+	    ctx->opcode[n++] = odef->op;
+	}
     }
+    csi_dictionary_free (ctx, opcodes);
 
     /* add constants */
     for (idef = _csi_integer_constants (); idef->name != NULL; idef++) {
@@ -371,6 +392,8 @@ _csi_init (csi_t *ctx)
 {
     csi_status_t status;
 
+    memset (ctx, 0, sizeof (*ctx));
+
     ctx->status = CSI_STATUS_SUCCESS;
     ctx->ref_count = 1;
 
@@ -397,7 +420,7 @@ FAIL:
 }
 
 static void
-_csi_fini (csi_t *ctx)
+_csi_finish (csi_t *ctx)
 {
     _csi_stack_fini (ctx, &ctx->ostack);
     _csi_stack_fini (ctx, &ctx->dstack);
@@ -462,8 +485,6 @@ _csi_intern_string (csi_t *ctx, const char **str_inout, int len)
     csi_intern_string_t tmpl, *istring;
     csi_status_t status = CSI_STATUS_SUCCESS;
 
-    if (len < 0)
-	len = strlen (str);
     tmpl.hash_entry.hash = _intern_string_hash (str, len);
     tmpl.len = len;
     tmpl.string = (char *) str;
@@ -502,7 +523,7 @@ cairo_script_interpreter_create (void)
 {
     csi_t *ctx;
 
-    ctx = calloc (1, sizeof (csi_t));
+    ctx = malloc (sizeof (csi_t));
     if (ctx == NULL)
 	return (csi_t *) &_csi_nil;
 
@@ -544,6 +565,28 @@ cairo_script_interpreter_run (csi_t *ctx, const char *filename)
 }
 
 cairo_status_t
+cairo_script_interpreter_feed_stream (csi_t *ctx, FILE *stream)
+{
+    csi_object_t file;
+
+    if (ctx->status)
+	return ctx->status;
+    if (ctx->finished)
+	return ctx->status = CSI_STATUS_INTERPRETER_FINISHED;
+
+    ctx->status = csi_file_new_for_stream (ctx, &file, stream);
+    if (ctx->status)
+	return ctx->status;
+
+    file.type |= CSI_OBJECT_ATTR_EXECUTABLE;
+
+    ctx->status = csi_object_execute (ctx, &file);
+    csi_object_free (ctx, &file);
+
+    return ctx->status;
+}
+
+cairo_status_t
 cairo_script_interpreter_feed_string (csi_t *ctx, const char *line, int len)
 {
     csi_object_t file;
@@ -567,6 +610,12 @@ cairo_script_interpreter_feed_string (csi_t *ctx, const char *line, int len)
     return ctx->status;
 }
 
+unsigned int
+cairo_script_interpreter_get_line_number (csi_t *ctx)
+{
+    return ctx->scanner.line_number + 1; /* 1 index based */
+}
+
 csi_t *
 cairo_script_interpreter_reference (csi_t *ctx)
 {
@@ -582,13 +631,30 @@ cairo_script_interpreter_finish (csi_t *ctx)
 
     status = ctx->status;
     if (! ctx->finished) {
-	_csi_fini (ctx);
+	_csi_finish (ctx);
 	ctx->finished = 1;
     } else if (status == CAIRO_STATUS_SUCCESS) {
 	status = ctx->status = CSI_STATUS_INTERPRETER_FINISHED;
     }
 
     return status;
+}
+
+static void
+_csi_fini (csi_t *ctx)
+{
+    if (! ctx->finished)
+	_csi_finish (ctx);
+
+    if (ctx->free_array != NULL)
+	csi_array_free (ctx, ctx->free_array);
+    if (ctx->free_dictionary != NULL)
+	csi_dictionary_free (ctx, ctx->free_dictionary);
+    if (ctx->free_string != NULL)
+	csi_string_free (ctx, ctx->free_string);
+
+    _csi_slab_fini (ctx);
+    _csi_perm_fini (ctx);
 }
 
 cairo_status_t
@@ -600,20 +666,33 @@ cairo_script_interpreter_destroy (csi_t *ctx)
     if (--ctx->ref_count)
 	return status;
 
-    if (! ctx->finished)
-	_csi_fini (ctx);
-
-    if (ctx->free_array != NULL)
-	csi_array_free (ctx, ctx->free_array);
-    if (ctx->free_dictionary != NULL)
-	csi_dictionary_free (ctx, ctx->free_dictionary);
-    if (ctx->free_string != NULL)
-	csi_string_free (ctx, ctx->free_string);
-
-    _csi_slab_fini (ctx);
-    _csi_perm_fini (ctx);
+    _csi_fini (ctx);
     free (ctx);
 
     return status;
 }
 slim_hidden_def (cairo_script_interpreter_destroy);
+
+cairo_status_t
+cairo_script_interpreter_translate_stream (FILE *stream,
+	                                   cairo_write_func_t write_func,
+					   void *closure)
+{
+    csi_t ctx;
+    csi_object_t src;
+    csi_status_t status;
+
+    _csi_init (&ctx);
+
+    status = csi_file_new_for_stream (&ctx, &src, stream);
+    if (status)
+	goto BAIL;
+
+    status = _csi_translate_file (&ctx, src.datum.file, write_func, closure);
+
+BAIL:
+    csi_object_free (&ctx, &src);
+    _csi_fini (&ctx);
+
+    return status;
+}

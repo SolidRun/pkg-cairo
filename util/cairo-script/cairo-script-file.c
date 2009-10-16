@@ -37,8 +37,11 @@
 #include <stdio.h>
 #include <limits.h> /* INT_MAX */
 #include <string.h>
+#include <zlib.h>
 
 #define CHUNK_SIZE 32768
+
+#define OWN_STREAM 0x1
 
 csi_status_t
 csi_file_new (csi_t *ctx,
@@ -56,7 +59,44 @@ csi_file_new (csi_t *ctx,
 
     file->data = NULL;
     file->type = STDIO;
+    file->flags = OWN_STREAM;
     file->src = fopen (path, mode);
+    if (file->src == NULL) {
+	_csi_slab_free (ctx, file, sizeof (csi_file_t));
+	return _csi_error (CAIRO_STATUS_FILE_NOT_FOUND);
+    }
+
+    file->data = _csi_alloc (ctx, CHUNK_SIZE);
+    if (file->data == NULL) {
+	_csi_slab_free (ctx, file, sizeof (csi_file_t));
+	return _csi_error (CAIRO_STATUS_NO_MEMORY);
+    }
+    file->bp = file->data;
+    file->rem = 0;
+
+    obj->type = CSI_OBJECT_TYPE_FILE;
+    obj->datum.file = file;
+    return CAIRO_STATUS_SUCCESS;
+}
+
+csi_status_t
+csi_file_new_for_stream (csi_t *ctx,
+	                 csi_object_t *obj,
+			 FILE *stream)
+{
+    csi_file_t *file;
+
+    file = _csi_slab_alloc (ctx, sizeof (csi_file_t));
+    if (file == NULL)
+	return _csi_error (CAIRO_STATUS_NO_MEMORY);
+
+    file->base.type = CSI_OBJECT_TYPE_FILE;
+    file->base.ref = 1;
+
+    file->data = NULL;
+    file->type = STDIO;
+    file->flags = 0;
+    file->src = stream;
     if (file->src == NULL) {
 	_csi_slab_free (ctx, file, sizeof (csi_file_t));
 	return _csi_error (CAIRO_STATUS_FILE_NOT_FOUND);
@@ -109,17 +149,41 @@ csi_file_new_from_string (csi_t *ctx,
     csi_file_t *file;
 
     file = _csi_slab_alloc (ctx, sizeof (csi_file_t));
-    if (file == NULL)
+    if (_csi_unlikely (file == NULL))
 	return _csi_error (CAIRO_STATUS_NO_MEMORY);
 
     file->base.type = CSI_OBJECT_TYPE_FILE;
     file->base.ref = 1;
 
+    if (src->deflate) {
+	uLongf len = src->deflate;
+	csi_object_t tmp_obj;
+	csi_string_t *tmp_str;
+	csi_status_t status;
+
+	status = csi_string_new (ctx, &tmp_obj,  NULL, src->deflate);
+	if (_csi_unlikely (status))
+	    return status;
+
+	tmp_str = tmp_obj.datum.string;
+	if (uncompress ((Bytef *) tmp_str->string, &len,
+			(Bytef *) src->string, src->len) != Z_OK)
+	{
+	    csi_string_free (ctx, tmp_str);
+	    _csi_slab_free (ctx, file, sizeof (csi_file_t));
+	    return _csi_error (CAIRO_STATUS_NO_MEMORY);
+	}
+
+	file->src  = tmp_str;
+	file->data = tmp_str->string;
+	file->rem  = tmp_str->len;
+    } else {
+	file->src  = src; src->base.ref++;
+	file->data = src->string;
+	file->rem  = src->len;
+    }
     file->type = BYTES;
-    file->src = src; src->base.ref++;
-    file->data = src->string;
     file->bp   = file->data;
-    file->rem  = src->len;
 
     obj->type = CSI_OBJECT_TYPE_FILE;
     obj->datum.file = file;
@@ -252,8 +316,7 @@ _ascii85_decode (csi_file_t *file)
 	    data->buf[n+2] = 0;
 	    data->buf[n+3] = 0;
 	} else if (v == '~') {
-	    v = _getc_skip_whitespace (file->src);
-	    /* c == '>' || IO_ERROR */
+	    _getc_skip_whitespace (file->src); /* == '>' || IO_ERROR */
 	    data->eod = TRUE;
 	    break;
 	} else if (v < '!' || v > 'u') {
@@ -267,8 +330,7 @@ _ascii85_decode (csi_file_t *file)
 	    for (i = 1; i < 5; i++) {
 		int c = _getc_skip_whitespace (file->src);
 		if (c == '~') { /* short tuple */
-		    c = _getc_skip_whitespace (file->src);
-		    /* c == '>' || IO_ERROR */
+		    _getc_skip_whitespace (file->src); /* == '>' || IO_ERROR */
 		    data->eod = TRUE;
 		    switch (i) {
 		    case 0:
@@ -727,7 +789,7 @@ csi_file_new_decrypt (csi_t *ctx, csi_object_t *src, int salt, int discard)
 csi_status_t
 _csi_file_execute (csi_t *ctx, csi_file_t *obj)
 {
-    return _csi_scan_file (ctx, &ctx->scanner, obj);
+    return _csi_scan_file (ctx, obj);
 }
 
 int
@@ -894,14 +956,12 @@ csi_file_putc (csi_file_t *file, int c)
 void
 csi_file_flush (csi_file_t *file)
 {
-    int c;
-
     if (file->src == NULL)
 	return;
 
     switch ((int) file->type) {
     case FILTER: /* need to eat EOD */
-	while ((c = csi_file_getc (file)) != EOF)
+	while (csi_file_getc (file) != EOF)
 	    ;
 	break;
     default:
@@ -917,7 +977,8 @@ csi_file_close (csi_t *ctx, csi_file_t *file)
 
     switch (file->type) {
     case STDIO:
-	fclose (file->src);
+	if (file->flags & OWN_STREAM)
+	    fclose (file->src);
 	break;
     case BYTES:
 	if (file->src != file->data) {

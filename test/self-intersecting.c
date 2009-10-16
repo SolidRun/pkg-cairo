@@ -47,6 +47,9 @@
 static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
+    cairo_set_source_rgb (cr, 1, 1, 1);
+    cairo_paint (cr);
+
     cairo_translate (cr, 1.0, 1.0);
 
     cairo_set_source_rgb (cr, 1, 0, 0); /* red */
@@ -78,7 +81,7 @@ draw (cairo_t *cr, int width, int height)
 CAIRO_TEST (self_intersecting,
 	    "Test strokes of self-intersecting paths"
 	    "\nSelf-intersecting strokes are wrong due to incremental trapezoidization.",
-	    "XFAIL stroke, trap", /* keywords */
+	    "stroke, trap", /* keywords */
 	    NULL, /* requirements */
 	    10, 20,
 	    NULL, draw)

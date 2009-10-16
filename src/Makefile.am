@@ -6,6 +6,8 @@ include $(srcdir)/Makefile.am.features
 EXTRA_DIST += Makefile.win32      Makefile.win32.features
 #MAINTAINERCLEANFILES += $(srcdir)/Makefile.win32.features
 
+EXTRA_DIST += glew/LICENSE.txt
+
 AM_CPPFLAGS = -I$(srcdir) $(CAIRO_CFLAGS)
 AM_LDFLAGS = $(CAIRO_LDFLAGS)
 
@@ -50,7 +52,7 @@ cairo.def: cairo-features.h $(enabled_cairo_headers)
 	@(echo EXPORTS; \
 	(cd $(srcdir); cat $(enabled_cairo_headers) || echo 'cairo_ERROR ()' ) | \
 	grep -v -E '^# *include' | \
-	( cat cairo-features.h - | $(CPP) - || echo 'cairo_ERROR ()' ) | \
+	( cat cairo-features.h - | $(CPP) -D__cplusplus - || echo 'cairo_ERROR ()' ) | \
 	grep -E '^cairo_.* \(' | \
 	sed -e 's/[ 	].*//' | \
 	sort; \
@@ -84,11 +86,8 @@ TESTS += check-link$(EXEEXT)
 endif
 
 EXTRA_DIST += $(TESTS_SH) check-has-hidden-symbols.c
-check_PROGRAMS += check-link check-skiplist
+check_PROGRAMS += check-link
 check_link_LDADD = libcairo.la
-
-check_skiplist_SOURCES = cairo-skiplist.c
-check_skiplist_CPPFLAGS = -DMAIN $(AM_CPPFLAGS)
 
 check: headers-standalone
 
@@ -99,5 +98,7 @@ COMPILE_ARGS = $(PREPROCESS_ARGS) $(AM_CFLAGS) $(CFLAGS)
 # cairo has been compiled with symbol hiding.
 .c.i: $(cairoinclude_HEADERS) $(nodist_cairoinclude_HEADERS) cairoint.h $(top_builddir)/config.h
 	$(CPP) $(PREPROCESS_ARGS) $< -o $@
+.c.s: $(cairoinclude_HEADERS) $(nodist_cairoinclude_HEADERS) cairoint.h $(top_builddir)/config.h
+	$(CC) $(COMPILE_ARGS) $< -S -o $@
 
 include $(srcdir)/Makefile.am.analysis

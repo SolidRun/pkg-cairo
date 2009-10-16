@@ -1141,7 +1141,23 @@ Gets the current miter limit, as set by <link linkend="cairo-set-miter-limit"><f
 
     CAIRO_OPERATOR_XOR,
     CAIRO_OPERATOR_ADD,
-    CAIRO_OPERATOR_SATURATE
+    CAIRO_OPERATOR_SATURATE,
+
+    CAIRO_OPERATOR_MULTIPLY,
+    CAIRO_OPERATOR_SCREEN,
+    CAIRO_OPERATOR_OVERLAY,
+    CAIRO_OPERATOR_DARKEN,
+    CAIRO_OPERATOR_LIGHTEN,
+    CAIRO_OPERATOR_COLOR_DODGE,
+    CAIRO_OPERATOR_COLOR_BURN,
+    CAIRO_OPERATOR_HARD_LIGHT,
+    CAIRO_OPERATOR_SOFT_LIGHT,
+    CAIRO_OPERATOR_DIFFERENCE,
+    CAIRO_OPERATOR_EXCLUSION,
+    CAIRO_OPERATOR_HSL_HUE,
+    CAIRO_OPERATOR_HSL_SATURATION,
+    CAIRO_OPERATOR_HSL_COLOR,
+    CAIRO_OPERATOR_HSL_LUMINOSITY
 } cairo_operator_t;
 </programlisting>
 <para>
@@ -1244,6 +1260,101 @@ one of them
 <term><literal>CAIRO_OPERATOR_SATURATE</literal></term>
 <listitem><simpara> like over, but assuming source and dest are
 disjoint geometries
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-MULTIPLY--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_MULTIPLY</literal></term>
+<listitem><simpara> source and destination layers are multiplied.
+This causes the result to be at least as dark as the darker inputs.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-SCREEN--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_SCREEN</literal></term>
+<listitem><simpara> source and destination are complemented and
+multiplied. This causes the result to be at least as light as the lighter
+inputs.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-OVERLAY--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_OVERLAY</literal></term>
+<listitem><simpara> multiplies or screens, depending on the
+lightness of the destination color.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-DARKEN--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_DARKEN</literal></term>
+<listitem><simpara> replaces the destination with the source if it
+is darker, otherwise keeps the source.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-LIGHTEN--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_LIGHTEN</literal></term>
+<listitem><simpara> replaces the destination with the source if it
+is lighter, otherwise keeps the source.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-COLOR-DODGE--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_COLOR_DODGE</literal></term>
+<listitem><simpara> brightens the destination color to reflect
+the source color.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-COLOR-BURN--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_COLOR_BURN</literal></term>
+<listitem><simpara> darkens the destination color to reflect
+the source color.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-HARD-LIGHT--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_HARD_LIGHT</literal></term>
+<listitem><simpara> Multiplies or screens, dependant on source
+color.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-SOFT-LIGHT--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_SOFT_LIGHT</literal></term>
+<listitem><simpara> Darkens or lightens, dependant on source
+color.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-DIFFERENCE--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_DIFFERENCE</literal></term>
+<listitem><simpara> Takes the difference of the source and
+destination color.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-EXCLUSION--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_EXCLUSION</literal></term>
+<listitem><simpara> Produces an effect similar to difference, but
+with lower contrast.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-HSL-HUE--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_HSL_HUE</literal></term>
+<listitem><simpara> Creates a color with the hue of the source
+and the saturation and luminosity of the target.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-HSL-SATURATION--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_HSL_SATURATION</literal></term>
+<listitem><simpara> Creates a color with the saturation
+of the source and the hue and luminosity of the target. Painting with
+this mode onto a gray area prduces no change.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-HSL-COLOR--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_HSL_COLOR</literal></term>
+<listitem><simpara> Creates a color with the hue and saturation
+of the source and the luminosity of the target. This preserves the gray
+levels of the target and is useful for coloring monochrome images or
+tinting color images.
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-OPERATOR-HSL-LUMINOSITY--CAPS" role="constant">
+<term><literal>CAIRO_OPERATOR_HSL_LUMINOSITY</literal></term>
+<listitem><simpara> Creates a color with the luminosity of
+the source and the hue and saturation of the target. This produces an
+inverse effect to <parameter>CAIRO_OPERATOR_HSL_COLOR</parameter>.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>

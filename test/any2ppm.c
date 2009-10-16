@@ -89,11 +89,7 @@
 #define SOCKET_PATH "./.any2ppm"
 #define TIMEOUT 60000 /* 60 seconds */
 
-#if _BSD_SOURCE || (_XOPEN_SOURCE && _XOPEN_SOURCE < 500)
 #define CAN_RUN_AS_DAEMON 1
-#else
-#define CAN_RUN_AS_DAEMON 0
-#endif
 #endif
 
 #define ARRAY_LENGTH(A) (sizeof (A) / sizeof (A[0]))
@@ -244,10 +240,24 @@ _create_image (void *closure,
 	       //csi_object_t *dictionary)
 {
     cairo_surface_t **out = closure;
-    *out = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
+    cairo_format_t format;
+    switch (content) {
+    case CAIRO_CONTENT_ALPHA:
+	format = CAIRO_FORMAT_A8;
+	break;
+    case CAIRO_CONTENT_COLOR:
+	format = CAIRO_FORMAT_RGB24;
+	break;
+    default:
+    case CAIRO_CONTENT_COLOR_ALPHA:
+	format = CAIRO_FORMAT_ARGB32;
+	break;
+    }
+    *out = cairo_image_surface_create (format, width, height);
     return cairo_surface_reference (*out);
 }
 
+#if CAIRO_HAS_INTERPRETER
 static const char *
 _cairo_script_render_page (const char *filename,
 			   cairo_surface_t **surface_out)
@@ -294,6 +304,13 @@ cs_convert (char **argv, int fd)
 
     return err;
 }
+#else
+static const char *
+cs_convert (char **argv, int fd)
+{
+    return "compiled without CairoScript support.";
+}
+#endif
 
 #if CAIRO_CAN_TEST_PDF_SURFACE
 /* adapted from pdf2png.c */
@@ -336,14 +353,15 @@ _poppler_render_page (const char *filename,
 
     poppler_page_get_size (page, &width, &height);
 
-    surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, width, height);
+    surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
     cr = cairo_create (surface);
-
-    cairo_set_source_rgb (cr, 1., 1., 1.);
-    cairo_paint (cr);
 
     poppler_page_render (page, cr);
     g_object_unref (page);
+
+    cairo_set_operator (cr, CAIRO_OPERATOR_DEST_OVER);
+    cairo_set_source_rgb (cr, 1., 1., 1.);
+    cairo_paint (cr);
 
     status = cairo_status (cr);
     cairo_destroy (cr);
@@ -662,6 +680,62 @@ write_pid_file (void)
     return ret;
 }
 
+static int
+open_devnull_to_fd (int want_fd, int flags)
+{
+    int error;
+    int got_fd;
+
+    close (want_fd);
+
+    got_fd = open("/dev/null", flags | O_CREAT, 0700);
+    if (got_fd == -1)
+        return -1;
+
+    error = dup2 (got_fd, want_fd);
+    close (got_fd);
+
+    return error;
+}
+
+static int
+daemonize (void)
+{
+    void (*oldhup) (int);
+
+    /* Let the parent go. */
+    switch (fork ()) {
+    case -1: return -1;
+    case 0: break;
+    default: _exit (0);
+    }
+
+    /* Become session leader. */
+    if (setsid () == -1)
+	return -1;
+
+    /* Refork to yield session leadership. */
+    oldhup = signal (SIGHUP, SIG_IGN);
+
+    switch (fork ()) {		/* refork to yield session leadership. */
+    case -1: return -1;
+    case 0: break;
+    default: _exit (0);
+    }
+
+    signal (SIGHUP, oldhup);
+
+    /* Establish stdio. */
+    if (open_devnull_to_fd (0, O_RDONLY) == -1)
+	return -1;
+    if (open_devnull_to_fd (1, O_WRONLY | O_APPEND) == -1)
+	return -1;
+    if (dup2 (1, 2) == -1)
+	return -1;
+
+    return 0;
+}
+
 static const char *
 any2ppm_daemon (void)
 {
@@ -707,7 +781,7 @@ any2ppm_daemon (void)
     }
 
     /* ready for client connection - detach from parent/terminal */
-    if (getenv ("ANY2PPM_NODAEMON") == NULL && daemon (1, 0) == -1) {
+    if (getenv ("ANY2PPM_NODAEMON") == NULL && daemonize () == -1) {
 	close (sk);
 	return "unable to detach from parent";
     }

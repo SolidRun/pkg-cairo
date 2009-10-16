@@ -4,8 +4,6 @@ include $(top_srcdir)/test/Makefile.sources
 
 SUBDIRS=pdiff .
 
-CLEANFILES += have-similar.*
-
 # Then we have a collection of tests that are only run if certain
 # features are compiled into cairo
 if HAVE_PTHREAD
@@ -13,7 +11,9 @@ test_sources += $(pthread_test_sources)
 endif
 
 if CAIRO_HAS_FT_FONT
+if CAIRO_HAS_FC_FONT
 test_sources += $(ft_font_test_sources)
+endif
 endif
 
 # Need to add quartz-surface-source
@@ -54,6 +54,7 @@ test_sources += $(multi_page_surface_test_sources)
 endif
 
 # Include fallback-resolution (once!) if we have any of the vector surfaces
+if BUILD_ANY2PPM
 if CAIRO_HAS_SVG_SURFACE
 test = $(fallback_resolution_test_sources)
 endif
@@ -63,21 +64,20 @@ endif
 if CAIRO_HAS_PS_SURFACE
 test = $(fallback_resolution_test_sources)
 endif
+endif
 test_sources += $(test)
 
 TESTS += cairo-test-suite$(EXEEXT)
 
-cairo-test-constructors.c: Makefile $(test_sources) make-cairo-test-constructors.pl
-	@(cd $(srcdir) && ./make-cairo-test-constructors.pl $(test_sources)) > $@
+cairo-test-constructors.c: Makefile $(test_sources) make-cairo-test-constructors.sh
+	(cd $(srcdir) && sh ./make-cairo-test-constructors.sh $(test_sources)) > $@
 
 cairo_test_suite_SOURCES = 		\
 	$(cairo_test_suite_sources)	\
 	$(cairo_test_suite_headers)	\
-	$(test_sources)
-if CAIRO_HAS_CONSTRUCTOR_ATTRIBUTE
-else
-cairo_test_suite_SOURCES += cairo-test-constructors.c
-endif
+	$(test_sources)			\
+	cairo-test-constructors.c
+cairo_test_suite_CFLAGS = $(AM_CFLAGS)
 cairo_test_suite_LDADD = 					\
 	$(top_builddir)/test/pdiff/libpdiff.la 			\
         $(top_builddir)/boilerplate/libcairoboilerplate.la	\
@@ -92,58 +92,108 @@ cairo_test_suite_DEPENDENCIES += \
 	any2ppm
 endif
 if HAVE_PTHREAD
+cairo_test_suite_CFLAGS += -pthread
 cairo_test_suite_LDADD += -lpthread
 endif
 
+if HAVE_SHM
+EXTRA_PROGRAMS += cairo-test-trace
+cairo_test_trace_SOURCES =		\
+	cairo-test-trace.c		\
+	buffer-diff.c			\
+	buffer-diff.h
+cairo_test_trace_CFLAGS = $(AM_CFLAGS)
+cairo_test_trace_LDADD =		\
+	$(top_builddir)/test/pdiff/libpdiff.la 			\
+	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
+        $(top_builddir)/boilerplate/libcairoboilerplate.la	\
+	$(top_builddir)/src/libcairo.la 			\
+	$(CAIRO_LDADD) \
+	$(SHM_LIBS)
+if HAVE_PTHREAD
+cairo_test_trace_CFLAGS += -pthread
+cairo_test_trace_LDADD += -lpthread
+endif
+cairo_test_trace_DEPENDENCIES = \
+	$(top_builddir)/test/pdiff/libpdiff.la 			\
+	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
+        $(top_builddir)/boilerplate/libcairoboilerplate.la	\
+	$(top_builddir)/src/libcairo.la
+endif
+
 BUILT_SOURCES += cairo-test-constructors.c
-noinst_SCRIPTS = make-cairo-test-constructors.pl
-EXTRA_DIST += $(BUILT_SOURCES) $(noinst_SCRIPTS) COPYING
+EXTRA_DIST += $(BUILT_SOURCES) $(noinst_SCRIPTS) COPYING make-cairo-test-constructors.sh
 CLEANFILES += $(BUILT_SOURCES)
 
 # All tests which have a reference image go here.
 REFERENCE_IMAGES = \
 	a1-image-sample.ref.png \
+	a1-image-sample.gl.xfail.png \
 	a1-mask.ref.png \
 	a1-traps-sample.ref.png \
 	a8-mask.ref.png \
+	alpha-similar.gl.argb32.xfail.png \
+	alpha-similar.gl.rgb24.xfail.png \
+	alpha-similar.pdf.argb32.xfail.png \
+	alpha-similar.pdf.rgb24.xfail.png \
+	alpha-similar.ps.argb32.xfail.png \
+	alpha-similar.ps.rgb24.xfail.png \
 	alpha-similar.ref.png \
 	alpha-similar.rgb24.ref.png \
-	big-line.ps2.ref.png \
-	big-line.ps2.rgb24.ref.png \
-	big-line.ps3.ref.png \
-	big-line.ps3.rgb24.ref.png \
-	big-line.quartz.ref.png \
-	big-line.quartz.rgb24.ref.png \
+	alpha-similar.svg.argb32.xfail.png \
+	alpha-similar.svg.rgb24.xfail.png \
 	big-line.ref.png \
-	big-line.rgb24.ref.png \
+	big-line.xlib-fallback.ref.png \
+	big-line.xlib.ref.png \
 	bilevel-image.ref.png \
 	bitmap-font.ref.png \
 	bitmap-font.rgb24.ref.png \
 	caps-joins-alpha.quartz.ref.png \
 	caps-joins-alpha.ref.png \
-	caps-joins-alpha.svg11.ref.png \
-	caps-joins-alpha.svg12.ref.png \
+	caps-joins-alpha.xlib.ref.png \
 	caps-joins-curve.ps.ref.png \
 	caps-joins-curve.ref.png \
+	caps-joins-curve.xlib.ref.png \
 	caps-joins.ps.ref.png \
 	caps-joins.ref.png \
+	caps-sub-paths.ref.png \
 	caps.ps.ref.png \
 	caps.ref.png \
-	caps-sub-paths.ref.png \
+	clear.argb32.ref.png \
+	clear.rgb24.ref.png \
+	clear.pdf.argb32.ref.png \
+	clear.ps.argb32.ref.png \
+	clear.svg12.argb32.xfail.png \
+	clear.svg12.rgb24.xfail.png \
 	clip-all.ref.png \
+	clip-device-offset.argb32.ref.png \
+	clip-device-offset.rgb24.ref.png \
+	clip-disjoint.ref.png \
+	clip-disjoint.xlib.ref.png \
 	clip-empty.ref.png \
-	clip-fill-rule.pdf.argb32.ref.png \
+	clip-fill.ref.png \
+	clip-fill.ps.xfail.png \
+	clip-fill.xlib.ref.png \
+	clip-fill.xlib-fallback.ref.png \
 	clip-fill-rule-pixel-aligned.ref.png \
 	clip-fill-rule-pixel-aligned.rgb24.ref.png \
+	clip-fill-rule.pdf.argb32.ref.png \
 	clip-fill-rule.ps2.argb32.ref.png \
 	clip-fill-rule.ps2.rgb24.ref.png \
 	clip-fill-rule.ps3.argb32.ref.png \
 	clip-fill-rule.ps3.rgb24.ref.png \
 	clip-fill-rule.ref.png \
 	clip-fill-rule.rgb24.ref.png \
-	clip-fill-rule.test-fallback.rgb24.ref.png \
 	clip-fill-rule.test-paginated.rgb24.ref.png \
 	clip-fill-rule.xlib.rgb24.ref.png \
+	clip-fill-unbounded.argb32.ref.png \
+	clip-fill-unbounded.rgb24.ref.png \
+	clip-fill-unbounded.svg12.argb32.xfail.png \
+	clip-fill-unbounded.svg12.rgb24.xfail.png \
+	clip-fill-unbounded.xlib.argb32.ref.png \
+	clip-fill-unbounded.xlib.rgb24.ref.png \
+	clip-fill-unbounded.xlib-fallback.rgb24.ref.png \
+	clip-image.ref.png \
 	clip-nesting.pdf.argb32.ref.png \
 	clip-nesting.ps2.argb32.ref.png \
 	clip-nesting.ps2.rgb24.ref.png \
@@ -153,9 +203,9 @@ REFERENCE_IMAGES = \
 	clip-nesting.quartz.rgb24.ref.png \
 	clip-nesting.ref.png \
 	clip-nesting.rgb24.ref.png \
-	clip-nesting.test-fallback.rgb24.ref.png \
 	clip-nesting.test-paginated.rgb24.ref.png \
 	clip-nesting.xlib.rgb24.ref.png \
+	clip-operator.gl.argb32.ref.png \
 	clip-operator.pdf.argb32.ref.png \
 	clip-operator.pdf.rgb24.ref.png \
 	clip-operator.ps2.rgb24.ref.png \
@@ -166,24 +216,39 @@ REFERENCE_IMAGES = \
 	clip-operator.quartz.rgb24.ref.png \
 	clip-operator.ref.png \
 	clip-operator.rgb24.ref.png \
-	clip-operator.test-fallback.argb32.ref.png \
-	clip-operator.test-fallback.rgb24.ref.png \
+	clip-operator.svg12.argb32.xfail.png \
+	clip-operator.svg12.rgb24.xfail.png \
 	clip-operator.test-paginated.argb32.ref.png \
-	clip-operator.xlib-fallback.rgb24.ref.png \
+	clip-operator.xlib-fallback.ref.png \
 	clip-operator.xlib.ref.png \
 	clip-operator.xlib.rgb24.ref.png \
-	clipped-group.pdf.argb32.ref.png \
-	clipped-group.pdf.rgb24.ref.png \
-	clipped-group.ps2.ref.png \
-	clipped-group.ps3.ref.png \
-	clipped-group.ref.png \
+	clip-unbounded.ref.png \
+	clip-unbounded.rgb24.ref.png \
+	clip-unbounded.svg12.rgb24.xfail.png \
 	clipped-surface.ref.png \
+	clip-push-group.pdf.ref.png \
 	clip-push-group.ps2.argb32.ref.png \
 	clip-push-group.ps2.rgb24.ref.png \
 	clip-push-group.ps3.argb32.ref.png \
 	clip-push-group.ps3.rgb24.ref.png \
 	clip-push-group.quartz.ref.png \
 	clip-push-group.ref.png \
+	clip-push-group.svg.ref.png \
+	clip-push-group.xlib.ref.png \
+	clip-stroke.ref.png \
+	clip-stroke.xlib.ref.png \
+	clip-stroke.xlib-fallback.ref.png \
+	clip-stroke-unbounded.argb32.ref.png \
+	clip-stroke-unbounded.rgb24.ref.png \
+	clip-stroke-unbounded.svg12.argb32.xfail.png \
+	clip-stroke-unbounded.svg12.rgb24.xfail.png \
+	clip-stroke-unbounded.xlib.argb32.ref.png \
+	clip-stroke-unbounded.xlib.rgb24.ref.png \
+	clip-stroke-unbounded.xlib-fallback.rgb24.ref.png \
+	clip-text.ref.png \
+	clip-text.ps.xfail.png \
+	clip-text.svg.ref.png \
+	clip-text.xlib.ref.png \
 	clip-twice.pdf.argb32.ref.png \
 	clip-twice.ps2.argb32.ref.png \
 	clip-twice.ps2.rgb24.ref.png \
@@ -193,36 +258,47 @@ REFERENCE_IMAGES = \
 	clip-twice.quartz.rgb24.ref.png \
 	clip-twice.ref.png \
 	clip-twice.rgb24.ref.png \
-	clip-twice.test-fallback.argb32.ref.png \
-	clip-twice.test-fallback.rgb24.ref.png \
 	clip-twice.test-paginated.argb32.ref.png \
 	clip-twice.test-paginated.rgb24.ref.png \
 	clip-twice.xlib.ref.png \
 	clip-twice.xlib.rgb24.ref.png \
+	clipped-group.pdf.ref.png \
+	clipped-group.ps2.ref.png \
+	clipped-group.ps3.ref.png \
+	clipped-group.svg.ref.png \
+	clipped-group.ref.png \
+	clipped-surface.ref.png \
+	clipped-trapezoids.ref.png \
+	close-path-current-point.ps.ref.png \
+	close-path-current-point.ref.png \
 	close-path.ps2.ref.png \
 	close-path.ps3.ref.png \
 	close-path.ref.png \
-	composite-integer-translate-over.ps2.ref.png \
-	composite-integer-translate-over.ps3.ref.png \
-	composite-integer-translate-over.ref.png \
 	composite-integer-translate-over-repeat.ps2.ref.png \
 	composite-integer-translate-over-repeat.ps3.ref.png \
 	composite-integer-translate-over-repeat.ref.png \
+	composite-integer-translate-over.ps2.ref.png \
+	composite-integer-translate-over.ps3.ref.png \
+	composite-integer-translate-over.ref.png \
 	composite-integer-translate-source.ps2.ref.png \
 	composite-integer-translate-source.ps3.ref.png \
 	composite-integer-translate-source.ref.png \
+	composite-integer-translate-source.svg12.argb32.xfail.png \
+	composite-integer-translate-source.svg12.rgb24.xfail.png \
 	copy-path.ps2.ref.png \
 	copy-path.ps3.ref.png \
 	copy-path.ref.png \
+	create-from-png-stream.ref.png \
 	create-from-png.alpha.ref.png \
 	create-from-png.gray-alpha.ref.png \
 	create-from-png.gray.ref.png \
 	create-from-png.indexed-alpha.ref.png \
 	create-from-png.indexed.ref.png \
 	create-from-png.ref.png \
-	create-from-png-stream.ref.png \
 	culled-glyphs.ps.ref.png \
 	culled-glyphs.ref.png \
+	curve-to-as-line-to.ps.xfail.png \
+	curve-to-as-line-to.ref.png \
 	dash-caps-joins.ps2.argb32.ref.png \
 	dash-caps-joins.ps2.rgb24.ref.png \
 	dash-caps-joins.ps3.argb32.ref.png \
@@ -233,6 +309,8 @@ REFERENCE_IMAGES = \
 	dash-curve.ps3.ref.png \
 	dash-curve.quartz.ref.png \
 	dash-curve.ref.png \
+	dash-curve.xlib.ref.png \
+	dash-infinite-loop.ref.png \
 	dash-no-dash.ref.png \
 	dash-offset-negative.ref.png \
 	dash-scale.ps2.argb32.ref.png \
@@ -254,48 +332,64 @@ REFERENCE_IMAGES = \
 	degenerate-arc.ps2.ref.png \
 	degenerate-arc.ps3.ref.png \
 	degenerate-arc.ref.png \
-	degenerate-arc.test-fallback.argb32.ref.png \
-	degenerate-arc.test-fallback.rgb24.ref.png \
 	degenerate-arc.xlib.ref.png \
+	degenerate-curve-to.ref.png \
+	degenerate-curve-to.ps.xfail.png \
+	degenerate-dash.ps.xfail.png \
 	degenerate-dash.ref.png \
-	degenerate-path.ps2.argb32.ref.png \
-	degenerate-path.ps2.rgb24.ref.png \
-	degenerate-path.ps3.argb32.ref.png \
-	degenerate-path.ps3.rgb24.ref.png \
+	degenerate-dash.xlib.ref.png \
+	degenerate-path.ps.argb32.xfail.png \
+	degenerate-path.ps.rgb24.xfail.png \
 	degenerate-path.quartz.ref.png \
 	degenerate-path.quartz.rgb24.ref.png \
-	degenerate-path.ref.png \
+	degenerate-path.argb32.ref.png \
 	degenerate-path.rgb24.ref.png \
 	degenerate-pen.ps2.ref.png \
 	degenerate-pen.ps3.ref.png \
 	degenerate-pen.quartz.ref.png \
 	degenerate-pen.ref.png \
-	device-offset-fractional.pdf.argb32.ref.png \
-	device-offset-fractional.pdf.ref.png \
-	device-offset-fractional.pdf.rgb24.ref.png \
+	degenerate-pen.xlib.ref.png \
+	degenerate-rel-curve-to.ref.png \
+	degenerate-rel-curve-to.ps.xfail.png \
+	device-offset-fractional.gl.xfail.png \
+	device-offset-fractional.pdf.xfail.png \
 	device-offset-fractional.ps2.ref.png \
 	device-offset-fractional.ps3.ref.png \
 	device-offset-fractional.ref.png \
 	device-offset-positive.ref.png \
 	device-offset-positive.rgb24.ref.png \
+	device-offset-scale.ref.png \
+	device-offset-scale.svg.xfail.png \
 	device-offset.ref.png \
 	device-offset.rgb24.ref.png \
-	device-offset-scale.ref.png \
+	extended-blend.argb32.ref.png \
+	extended-blend.rgb24.ref.png \
+	extended-blend.svg12.argb32.xfail.png \
+	extended-blend.svg12.rgb24.xfail.png \
+	extended-blend-alpha.argb32.ref.png \
+	extended-blend-alpha.rgb24.ref.png \
+	extended-blend-alpha.svg12.argb32.xfail.png \
+	extended-blend-alpha.svg12.rgb24.xfail.png \
+	extend-pad-border.ps.ref.png \
 	extend-pad-border.ref.png \
-	extend-pad.ref.png \
+	extend-pad-border.svg.xfail.png \
 	extend-pad-similar.ref.png \
-	extend-reflect.ps2.ref.png \
-	extend-reflect.ps3.ref.png \
-	extend-reflect.ref.png \
+	extend-pad-similar.svg.xfail.png \
+	extend-pad.ps.ref.png \
+	extend-pad.ref.png \
+	extend-pad.svg.xfail.png \
 	extend-reflect-similar.ps2.ref.png \
 	extend-reflect-similar.ps3.ref.png \
 	extend-reflect-similar.ref.png \
-	extend-repeat.ps2.ref.png \
-	extend-repeat.ps3.ref.png \
-	extend-repeat.ref.png \
+	extend-reflect.ps2.ref.png \
+	extend-reflect.ps3.ref.png \
+	extend-reflect.ref.png \
 	extend-repeat-similar.ps2.ref.png \
 	extend-repeat-similar.ps3.ref.png \
 	extend-repeat-similar.ref.png \
+	extend-repeat.ps2.ref.png \
+	extend-repeat.ps3.ref.png \
+	extend-repeat.ref.png \
 	fallback-resolution.ppi150x150.ref.png \
 	fallback-resolution.ppi150x72.ref.png \
 	fallback-resolution.ppi300x300.ref.png \
@@ -312,21 +406,16 @@ REFERENCE_IMAGES = \
 	fallback-resolution.ppi72x75.ref.png \
 	fallback-resolution.ppi75x72.ref.png \
 	fallback-resolution.ppi75x75.ref.png \
-	fill-alpha-pattern.pdf.argb32.ref.png \
-	fill-alpha-pattern.pdf.rgb24.ref.png \
 	fill-alpha-pattern.ps3.argb32.ref.png \
 	fill-alpha-pattern.ps3.ref.png \
 	fill-alpha-pattern.ps3.rgb24.ref.png \
 	fill-alpha-pattern.ref.png \
-	fill-alpha-pattern.test-fallback.argb32.ref.png \
-	fill-alpha-pattern.test-fallback.rgb24.ref.png \
 	fill-alpha-pattern.xlib.ref.png \
 	fill-alpha.ref.png \
-	fill-alpha.test-fallback.argb32.ref.png \
-	fill-alpha.test-fallback.rgb24.ref.png \
 	fill-alpha.xlib.ref.png \
 	fill-and-stroke-alpha-add.quartz.ref.png \
 	fill-and-stroke-alpha-add.ref.png \
+	fill-and-stroke-alpha-add.svg12.xfail.png \
 	fill-and-stroke-alpha.quartz.ref.png \
 	fill-and-stroke-alpha.ref.png \
 	fill-and-stroke.ps2.argb32.ref.png \
@@ -335,17 +424,24 @@ REFERENCE_IMAGES = \
 	fill-and-stroke.ps3.rgb24.ref.png \
 	fill-and-stroke.quartz.ref.png \
 	fill-and-stroke.quartz.rgb24.ref.png \
-	fill-and-stroke.ref.png \
+	fill-and-stroke.argb32.ref.png \
 	fill-and-stroke.rgb24.ref.png \
+	fill-and-stroke.xlib.argb32.ref.png \
+	fill-and-stroke.xlib.rgb24.ref.png \
+	fill-degenerate-sort-order.ps.argb32.xfail.png \
+	fill-degenerate-sort-order.ps.rgb24.xfail.png \
 	fill-degenerate-sort-order.quartz.ref.png \
 	fill-degenerate-sort-order.quartz.rgb24.ref.png \
 	fill-degenerate-sort-order.ref.png \
 	fill-degenerate-sort-order.rgb24.ref.png \
-	fill-degenerate-sort-order.test-fallback.argb32.ref.png \
-	fill-degenerate-sort-order.test-fallback.rgb24.ref.png \
 	fill-degenerate-sort-order.xlib.ref.png \
 	fill-degenerate-sort-order.xlib.rgb24.ref.png \
+	fill-empty.argb32.ref.png \
+	fill-empty.rgb24.ref.png \
+	fill-empty.svg12.rgb24.xfail.png \
+	fill-image.ps.ref.png \
 	fill-image.ref.png \
+	fill-image.xlib.ref.png \
 	fill-missed-stop.pdf.argb32.ref.png \
 	fill-missed-stop.ps2.argb32.ref.png \
 	fill-missed-stop.ps2.rgb24.ref.png \
@@ -361,28 +457,23 @@ REFERENCE_IMAGES = \
 	fill-rule.quartz.rgb24.ref.png \
 	fill-rule.ref.png \
 	fill-rule.rgb24.ref.png \
-	fill-rule.test-fallback.argb32.ref.png \
-	fill-rule.test-fallback.rgb24.ref.png \
 	fill-rule.xlib.ref.png \
 	fill-rule.xlib.rgb24.ref.png \
-	filter-bilinear-extents.pdf.ref.png \
+	filter-bilinear-extents.pdf.xfail.png \
 	filter-bilinear-extents.ps2.ref.png \
 	filter-bilinear-extents.ps3.ref.png \
 	filter-bilinear-extents.ref.png \
-	filter-nearest-offset.pdf.argb32.ref.png \
-	filter-nearest-offset.pdf.ref.png \
-	filter-nearest-offset.pdf.rgb24.ref.png \
+	filter-nearest-offset.gl.xfail.png \
+	filter-nearest-offset.pdf.xfail.png \
 	filter-nearest-offset.ps2.ref.png \
 	filter-nearest-offset.ps3.ref.png \
 	filter-nearest-offset.ref.png \
-	filter-nearest-offset.svg11.ref.png \
-	filter-nearest-offset.svg12.ref.png \
-	filter-nearest-transformed.pdf.argb32.ref.png \
-	filter-nearest-transformed.pdf.ref.png \
-	filter-nearest-transformed.pdf.rgb24.ref.png \
+	filter-nearest-offset.svg.xfail.png \
+	filter-nearest-transformed.gl.xfail.png \
+	filter-nearest-transformed.pdf.xfail.png \
 	filter-nearest-transformed.ref.png \
-	filter-nearest-transformed.svg11.ref.png \
-	filter-nearest-transformed.svg12.ref.png \
+	filter-nearest-transformed.svg.xfail.png \
+	finer-grained-fallbacks.gl.argb32.ref.png \
 	finer-grained-fallbacks.ps2.argb32.ref.png \
 	finer-grained-fallbacks.ps2.ref.png \
 	finer-grained-fallbacks.ps2.rgb24.ref.png \
@@ -391,8 +482,8 @@ REFERENCE_IMAGES = \
 	finer-grained-fallbacks.ps3.rgb24.ref.png \
 	finer-grained-fallbacks.ref.png \
 	finer-grained-fallbacks.rgb24.ref.png \
-	finer-grained-fallbacks.test-fallback.argb32.ref.png \
-	finer-grained-fallbacks.test-fallback.rgb24.ref.png \
+	finer-grained-fallbacks.svg12.argb32.ref.png \
+	finer-grained-fallbacks.svg12.rgb24.ref.png \
 	finer-grained-fallbacks.xlib.ref.png \
 	finer-grained-fallbacks.xlib.rgb24.ref.png \
 	font-matrix-translation.ps2.argb32.ref.png \
@@ -401,90 +492,73 @@ REFERENCE_IMAGES = \
 	font-matrix-translation.ps3.rgb24.ref.png \
 	font-matrix-translation.quartz.ref.png \
 	font-matrix-translation.ref.png \
-	font-matrix-translation.svg11.argb32.ref.png \
-	font-matrix-translation.svg11.ref.png \
-	font-matrix-translation.svg11.rgb24.ref.png \
-	font-matrix-translation.svg12.argb32.ref.png \
-	font-matrix-translation.svg12.ref.png \
-	font-matrix-translation.svg12.rgb24.ref.png \
+	font-matrix-translation.svg.ref.png \
 	ft-show-glyphs-positioning.pdf.ref.png \
 	ft-show-glyphs-positioning.ps2.ref.png \
 	ft-show-glyphs-positioning.ps3.ref.png \
 	ft-show-glyphs-positioning.ref.png \
-	ft-show-glyphs-positioning.svg11.ref.png \
-	ft-show-glyphs-positioning.svg12.ref.png \
+	ft-show-glyphs-positioning.svg.ref.png \
 	ft-show-glyphs-table.ps2.ref.png \
 	ft-show-glyphs-table.ps3.ref.png \
 	ft-show-glyphs-table.ref.png \
-	ft-show-glyphs-table.svg11.argb32.ref.png \
-	ft-show-glyphs-table.svg11.rgb24.ref.png \
-	ft-show-glyphs-table.svg12.argb32.ref.png \
-	ft-show-glyphs-table.svg12.rgb24.ref.png \
+	ft-show-glyphs-table.svg.ref.png \
 	ft-text-antialias-none.ps2.argb32.ref.png \
 	ft-text-antialias-none.ps3.argb32.ref.png \
 	ft-text-antialias-none.ref.png \
-	ft-text-vertical-layout-type1.pdf.argb32.ref.png \
 	ft-text-vertical-layout-type1.pdf.ref.png \
-	ft-text-vertical-layout-type1.pdf.rgb24.ref.png \
-	ft-text-vertical-layout-type1.ps2.ref.png \
-	ft-text-vertical-layout-type1.ps3.ref.png \
+	ft-text-vertical-layout-type1.ps.ref.png \
 	ft-text-vertical-layout-type1.ref.png \
-	ft-text-vertical-layout-type1.svg11.argb32.ref.png \
-	ft-text-vertical-layout-type1.svg11.ref.png \
-	ft-text-vertical-layout-type1.svg11.rgb24.ref.png \
-	ft-text-vertical-layout-type1.svg12.argb32.ref.png \
-	ft-text-vertical-layout-type1.svg12.ref.png \
-	ft-text-vertical-layout-type1.svg12.rgb24.ref.png \
-	ft-text-vertical-layout-type1.test-fallback.argb32.ref.png \
-	ft-text-vertical-layout-type1.test-fallback.rgb24.ref.png \
+	ft-text-vertical-layout-type1.svg.ref.png \
 	ft-text-vertical-layout-type1.xlib.ref.png \
-	ft-text-vertical-layout-type3.pdf.argb32.ref.png \
 	ft-text-vertical-layout-type3.pdf.ref.png \
-	ft-text-vertical-layout-type3.pdf.rgb24.ref.png \
-	ft-text-vertical-layout-type3.ps2.ref.png \
-	ft-text-vertical-layout-type3.ps3.ref.png \
+	ft-text-vertical-layout-type3.ps.ref.png \
 	ft-text-vertical-layout-type3.ref.png \
-	ft-text-vertical-layout-type3.svg11.argb32.ref.png \
-	ft-text-vertical-layout-type3.svg11.ref.png \
-	ft-text-vertical-layout-type3.svg11.rgb24.ref.png \
-	ft-text-vertical-layout-type3.svg12.argb32.ref.png \
-	ft-text-vertical-layout-type3.svg12.ref.png \
-	ft-text-vertical-layout-type3.svg12.rgb24.ref.png \
-	ft-text-vertical-layout-type3.test-fallback.argb32.ref.png \
-	ft-text-vertical-layout-type3.test-fallback.rgb24.ref.png \
+	ft-text-vertical-layout-type3.svg.ref.png \
 	ft-text-vertical-layout-type3.xlib.ref.png \
 	get-group-target.ref.png \
+	glitz-surface-source.argb32.ref.png \
+	glitz-surface-source.rgb24.ref.png \
 	glitz-surface-source.ps2.ref.png \
 	glitz-surface-source.ps3.ref.png \
-	glitz-surface-source.ref.png \
 	glyph-cache-pressure.ps2.ref.png \
 	glyph-cache-pressure.ps3.ref.png \
 	glyph-cache-pressure.quartz.ref.png \
 	glyph-cache-pressure.ref.png \
-	gradient-alpha.pdf.argb32.ref.png \
-	gradient-alpha.pdf.rgb24.ref.png \
 	gradient-alpha.ps2.argb32.ref.png \
 	gradient-alpha.ps2.rgb24.ref.png \
 	gradient-alpha.ps3.argb32.ref.png \
 	gradient-alpha.ps3.rgb24.ref.png \
 	gradient-alpha.ref.png \
 	gradient-alpha.rgb24.ref.png \
-	gradient-constant-alpha.pdf.argb32.ref.png \
-	gradient-constant-alpha.pdf.rgb24.ref.png \
 	gradient-constant-alpha.ps3.ref.png \
 	gradient-constant-alpha.ps3.rgb24.ref.png \
 	gradient-constant-alpha.ref.png \
 	gradient-constant-alpha.rgb24.ref.png \
 	gradient-zero-stops.ref.png \
 	gradient-zero-stops.rgb24.ref.png \
+	group-clip.ref.png \
 	group-paint.ref.png \
+	group-unaligned.pdf.new.png \
+	group-unaligned.ps.ref.png \
+	group-unaligned.ref.png \
+	group-unaligned.svg.argb32.xfail.png \
+	group-unaligned.svg.rgb24.xfail.png \
+	group-unaligned.xlib-fallback.ref.png \
+	group-unaligned.xlib.ref.png \
+	huge-linear.pdf.ref.png \
 	huge-linear.ps3.ref.png \
 	huge-linear.ref.png \
+	huge-radial.pdf.argb32.ref.png \
+	huge-radial.pdf.rgb24.ref.png \
 	huge-radial.ps3.ref.png \
 	huge-radial.ref.png \
 	image-surface-source.ps2.ref.png \
 	image-surface-source.ps3.ref.png \
-	image-surface-source.ref.png \
+	image-surface-source.rgb24.ref.png \
+	image-surface-source.argb32.ref.png \
+	image-surface-source.svg12.argb32.xfail.png \
+	image-surface-source.svg12.rgb24.xfail.png \
+	implicit-close.ref.png \
 	infinite-join.ps2.ref.png \
 	infinite-join.ps3.ref.png \
 	infinite-join.ref.png \
@@ -494,92 +568,74 @@ REFERENCE_IMAGES = \
 	large-font.ref.png \
 	large-source.ref.png \
 	large-source-roi.ref.png \
-	leaky-dashed-rectangle.pdf.ref.png \
-	leaky-dashed-rectangle.ps.ref.png \
-	leaky-dashed-rectangle.ref.png \
-	leaky-dashed-stroke.ps2.ref.png \
-	leaky-dashed-stroke.ps3.ref.png \
-	leaky-dashed-stroke.ref.png \
+	large-twin-antialias-mixed.ref.png \
+	large-twin-antialias-mixed.xlib.ref.png \
 	leaky-dash.ps2.argb32.ref.png \
 	leaky-dash.ps2.rgb24.ref.png \
 	leaky-dash.ps3.argb32.ref.png \
 	leaky-dash.ps3.rgb24.ref.png \
 	leaky-dash.quartz.ref.png \
 	leaky-dash.ref.png \
+	leaky-dashed-rectangle.pdf.ref.png \
+	leaky-dashed-rectangle.ps.ref.png \
+	leaky-dashed-rectangle.ref.png \
+	leaky-dashed-rectangle.xlib.ref.png \
+	leaky-dashed-stroke.ps2.ref.png \
+	leaky-dashed-stroke.ps3.ref.png \
+	leaky-dashed-stroke.ref.png \
+	leaky-dashed-stroke.xlib.ref.png \
 	leaky-polygon.ps2.ref.png \
 	leaky-polygon.ps3.ref.png \
 	leaky-polygon.ref.png \
-	linear-gradient.pdf.argb32.ref.png \
-	linear-gradient.pdf.ref.png \
-	linear-gradient.pdf.rgb24.ref.png \
-	linear-gradient.ps3.ref.png \
-	linear-gradient.quartz.ref.png \
+	line-width-scale.ps2.ref.png \
+	line-width-scale.ps3.ref.png \
+	line-width-scale.quartz.ref.png \
+	line-width-scale.ref.png \
+	line-width.ref.png \
 	linear-gradient-reflect.pdf.argb32.ref.png \
 	linear-gradient-reflect.pdf.rgb24.ref.png \
 	linear-gradient-reflect.ps3.ref.png \
 	linear-gradient-reflect.quartz.ref.png \
 	linear-gradient-reflect.ref.png \
+	linear-gradient.ps3.ref.png \
+	linear-gradient.quartz.ref.png \
 	linear-gradient.ref.png \
-	linear-gradient.svg11.argb32.ref.png \
-	linear-gradient.svg11.ref.png \
-	linear-gradient.svg11.rgb24.ref.png \
-	linear-gradient.svg12.argb32.ref.png \
-	linear-gradient.svg12.ref.png \
-	linear-gradient.svg12.rgb24.ref.png \
-	linear-gradient.test-fallback.argb32.ref.png \
-	linear-gradient.test-fallback.rgb24.ref.png \
 	linear-gradient.xlib.ref.png \
-	line-width.ref.png \
-	line-width-scale.ps2.ref.png \
-	line-width-scale.ps3.ref.png \
-	line-width-scale.quartz.ref.png \
-	line-width-scale.ref.png \
 	long-dashed-lines.ps2.ref.png \
 	long-dashed-lines.ps3.ref.png \
 	long-dashed-lines.quartz.ref.png \
 	long-dashed-lines.ref.png \
-	long-lines.ref.png \
 	mask-alpha.quartz.argb32.ref.png \
 	mask-alpha.ref.png \
 	mask-alpha.rgb24.ref.png \
-	mask-alpha.svg11.argb32.ref.png \
-	mask-alpha.svg11.rgb24.ref.png \
-	mask-alpha.svg12.argb32.ref.png \
-	mask-alpha.svg12.rgb24.ref.png \
-	mask-alpha.test-fallback.argb32.ref.png \
+	mask-alpha.svg.rgb24.xfail.png \
 	mask-alpha.xlib.ref.png \
 	mask-alpha.xlib.rgb24.ref.png \
 	mask-ctm.ref.png \
 	mask-ctm.rgb24.ref.png \
-	mask-ctm.svg11.argb32.ref.png \
-	mask-ctm.svg12.argb32.ref.png \
+	mask-glyphs.gl.ref.png \
+	mask-glyphs.pdf.ref.png \
 	mask-glyphs.ref.png \
+	mask-glyphs.svg.ref.png \
+	mask-surface-ctm.ref.png \
+	mask-surface-ctm.rgb24.ref.png \
+	mask-transformed-image.pdf.ref.png \
+	mask-transformed-image.ref.png \
+	mask-transformed-similar.pdf.ref.png \
+	mask-transformed-similar.ref.png \
+	mask-transformed-similar.svg.ref.png \
 	mask.pdf.argb32.ref.png \
 	mask.pdf.rgb24.ref.png \
 	mask.quartz.ref.png \
 	mask.quartz.rgb24.ref.png \
 	mask.ref.png \
 	mask.rgb24.ref.png \
-	mask-surface-ctm.ref.png \
-	mask-surface-ctm.rgb24.ref.png \
-	mask-surface-ctm.svg11.argb32.ref.png \
-	mask-surface-ctm.svg12.argb32.ref.png \
-	mask.svg11.argb32.ref.png \
-	mask.svg11.rgb24.ref.png \
-	mask.svg12.argb32.ref.png \
-	mask.svg12.rgb24.ref.png \
-	mask.test-fallback.argb32.ref.png \
-	mask.test-fallback.rgb24.ref.png \
-	mask-transformed-image.ref.png \
-	mask-transformed-similar.pdf.ref.png \
-	mask-transformed-similar.ref.png \
-	mask-transformed-similar.svg11.ref.png \
-	mask-transformed-similar.svg12.ref.png \
-	mask.xlib-fallback.rgb24.ref.png \
+	mask.svg.argb32.xfail.png \
+	mask.svg.rgb24.xfail.png \
 	mask.xlib.ref.png \
 	mask.xlib.rgb24.ref.png \
+	meta-surface-pattern.gl.argb32.ref.png \
 	meta-surface-pattern.pdf.argb32.ref.png \
-	meta-surface-pattern.pdf.ref.png \
 	meta-surface-pattern.pdf.rgb24.ref.png \
 	meta-surface-pattern.ps2.argb32.ref.png \
 	meta-surface-pattern.ps2.rgb24.ref.png \
@@ -589,10 +645,8 @@ REFERENCE_IMAGES = \
 	meta-surface-pattern.quartz.rgb24.ref.png \
 	meta-surface-pattern.ref.png \
 	meta-surface-pattern.rgb24.ref.png \
-	meta-surface-pattern.svg11.argb32.ref.png \
-	meta-surface-pattern.svg11.rgb24.ref.png \
-	meta-surface-pattern.svg12.argb32.ref.png \
-	meta-surface-pattern.svg12.rgb24.ref.png \
+	meta-surface-pattern.svg.argb32.ref.png \
+	meta-surface-pattern.svg.rgb24.ref.png \
 	mime-data.pdf.ref.png \
 	mime-data.ps.ref.png \
 	mime-data.ref.png \
@@ -602,47 +656,52 @@ REFERENCE_IMAGES = \
 	miter-precision.ps3.ref.png \
 	miter-precision.ref.png \
 	move-to-show-surface.ref.png \
+	new-sub-path.pdf.argb32.ref.png \
 	new-sub-path.ps2.argb32.ref.png \
 	new-sub-path.ps2.rgb24.ref.png \
 	new-sub-path.ps3.argb32.ref.png \
 	new-sub-path.ps3.rgb24.ref.png \
 	new-sub-path.quartz.ref.png \
 	new-sub-path.quartz.rgb24.ref.png \
-	new-sub-path.ref.png \
+	new-sub-path.argb32.ref.png \
 	new-sub-path.rgb24.ref.png \
 	nil-surface.ref.png \
 	nil-surface.rgb24.ref.png \
 	operator-alpha.ref.png \
 	operator-alpha.rgb24.ref.png \
-	operator-clear.pdf.argb32.ref.png \
-	operator-clear.pdf.rgb24.ref.png \
+	operator-alpha.svg12.argb32.xfail.png \
+	operator-alpha.svg12.rgb24.xfail.png \
 	operator-clear.ps2.argb32.ref.png \
 	operator-clear.ps3.argb32.ref.png \
 	operator-clear.quartz.ref.png \
 	operator-clear.quartz.rgb24.ref.png \
 	operator-clear.ref.png \
 	operator-clear.rgb24.ref.png \
-	operator.ref.png \
-	operator.rgb24.ref.png \
-	operator-source.pdf.argb32.ref.png \
+	operator-clear.svg12.argb32.xfail.png \
+	operator-clear.svg12.rgb24.xfail.png \
+	operator-clear.xlib.argb32.ref.png \
+	operator-clear.xlib.rgb24.ref.png \
 	operator-source.pdf.rgb24.ref.png \
 	operator-source.quartz.ref.png \
 	operator-source.quartz.rgb24.ref.png \
 	operator-source.ref.png \
 	operator-source.rgb24.ref.png \
-	operator-source.test-fallback.argb32.ref.png \
-	operator-source.test-fallback.rgb24.ref.png \
-	operator-source.xlib-fallback.rgb24.ref.png \
+	operator-source.svg12.argb32.xfail.png \
+	operator-source.svg12.rgb24.xfail.png \
+	operator-source.xlib-fallback.ref.png \
 	operator-source.xlib.ref.png \
 	operator-source.xlib.rgb24.ref.png \
+	operator.ref.png \
+	operator.rgb24.ref.png \
+	operator.svg12.argb32.xfail.png \
+	operator.svg12.rgb24.xfail.png \
 	over-above-source.ps2.argb32.ref.png \
 	over-above-source.ps3.argb32.ref.png \
 	over-above-source.quartz.ref.png \
 	over-above-source.quartz.rgb24.ref.png \
 	over-above-source.ref.png \
 	over-above-source.rgb24.ref.png \
-	over-above-source.test-fallback.argb32.ref.png \
-	over-above-source.test-fallback.rgb24.ref.png \
+	over-above-source.svg12.rgb24.xfail.png \
 	over-above-source.xlib.ref.png \
 	over-above-source.xlib.rgb24.ref.png \
 	over-around-source.pdf.argb32.ref.png \
@@ -654,7 +713,8 @@ REFERENCE_IMAGES = \
 	over-around-source.quartz.rgb24.ref.png \
 	over-around-source.ref.png \
 	over-around-source.rgb24.ref.png \
-	over-around-source.test-fallback.argb32.ref.png \
+	over-around-source.svg12.argb32.xfail.png \
+	over-around-source.svg12.rgb24.xfail.png \
 	over-around-source.xlib.ref.png \
 	over-around-source.xlib.rgb24.ref.png \
 	over-below-source.pdf.argb32.ref.png \
@@ -662,26 +722,30 @@ REFERENCE_IMAGES = \
 	over-below-source.ps3.argb32.ref.png \
 	over-below-source.ref.png \
 	over-below-source.rgb24.ref.png \
+	over-below-source.svg12.argb32.xfail.png \
+	over-below-source.svg12.rgb24.xfail.png \
 	over-between-source.ps2.argb32.ref.png \
 	over-between-source.ps3.argb32.ref.png \
 	over-between-source.quartz.ref.png \
 	over-between-source.quartz.rgb24.ref.png \
 	over-between-source.ref.png \
 	over-between-source.rgb24.ref.png \
-	over-between-source.test-fallback.argb32.ref.png \
+	over-between-source.svg12.argb32.xfail.png \
+	over-between-source.svg12.rgb24.xfail.png \
 	over-between-source.xlib.ref.png \
 	over-between-source.xlib.rgb24.ref.png \
-	paint.ref.png \
+	overlapping-glyphs.argb32.ref.png \
+	overlapping-glyphs.rgb24.ref.png \
+	overlapping-glyphs.pdf.argb32.xfail.png \
+	overlapping-glyphs.pdf.rgb24.xfail.png \
+	overlapping-glyphs.svg.rgb24.ref.png \
+	overlapping-glyphs.svg.argb32.ref.png \
 	paint-repeat.ref.png \
-	paint-source-alpha.pdf.argb32.ref.png \
-	paint-source-alpha.pdf.ref.png \
 	paint-source-alpha.ref.png \
-	paint-source-alpha.svg11.ref.png \
-	paint-source-alpha.svg12.ref.png \
-	paint-with-alpha.pdf.ref.png \
+	paint-source-alpha.svg.ref.png \
 	paint-with-alpha.ref.png \
-	paint-with-alpha.svg11.ref.png \
-	paint-with-alpha.svg12.ref.png \
+	paint-with-alpha.svg.ref.png \
+	paint.ref.png \
 	pass-through.ref.png \
 	pass-through.rgb24.ref.png \
 	path-append.ps.ref.png \
@@ -690,39 +754,47 @@ REFERENCE_IMAGES = \
 	path-append.xlib-fallback.ref.png \
 	path-append.xlib.ref.png \
 	pattern-getters.ref.png \
-	pdf-surface-source.ref.png \
+	pdf-surface-source.rgb24.ref.png \
+	pdf-surface-source.argb32.ref.png \
+	pdf-surface-source.svg12.argb32.xfail.png \
+	pdf-surface-source.svg12.rgb24.xfail.png \
 	pixman-rotate.ref.png \
 	pixman-rotate.rgb24.ref.png \
-	ps-surface-source.ref.png \
-	push-group.pdf.argb32.ref.png \
-	push-group.pdf.ref.png \
-	push-group.pdf.rgb24.ref.png \
+	ps-surface-source.rgb24.ref.png \
+	ps-surface-source.argb32.ref.png \
+	ps-surface-source.svg12.argb32.xfail.png \
+	ps-surface-source.svg12.rgb24.xfail.png \
 	push-group.ref.png \
 	push-group.rgb24.ref.png \
-	push-group.svg11.argb32.ref.png \
-	push-group.svg12.argb32.ref.png \
-	push-group.test-fallback.argb32.ref.png \
-	push-group.test-fallback.rgb24.ref.png \
-	push-group.xlib-fallback.rgb24.ref.png \
 	push-group.xlib.ref.png \
 	push-group.xlib.rgb24.ref.png \
+	push-group-color.ref.png \
+	push-group-color.xlib.ref.png \
+	quartz-surface-source.rgb24.ref.png \
+	quartz-surface-source.argb32.ref.png \
 	quartz-surface-source.ps2.ref.png \
 	quartz-surface-source.ps3.ref.png \
-	quartz-surface-source.ref.png \
-	radial-gradient.pdf.argb32.ref.png \
 	radial-gradient.pdf.ref.png \
-	radial-gradient.pdf.rgb24.ref.png \
 	radial-gradient.quartz.ref.png \
 	radial-gradient.ref.png \
-	radial-gradient.svg11.ref.png \
-	radial-gradient.svg12.ref.png \
-	random-intersections.ps2.ref.png \
-	random-intersections.ps3.ref.png \
-	random-intersections.quartz.ref.png \
-	random-intersections.ref.png \
-	random-intersections.test-fallback.argb32.ref.png \
-	random-intersections.test-fallback.rgb24.ref.png \
-	random-intersections.xlib.ref.png \
+	radial-gradient.svg.xfail.png \
+	random-intersections-eo.ps.ref.png \
+	random-intersections-eo.quartz.ref.png \
+	random-intersections-eo.ref.png \
+	random-intersections-eo.xlib.ref.png \
+	random-intersections-nonzero.ref.png \
+	random-intersections-nonzero.ps.ref.png \
+	random-intersections-nonzero.xlib.ref.png \
+	random-intersections-curves-eo.ps.ref.png \
+	random-intersections-curves-eo.pdf.ref.png \
+	random-intersections-curves-eo.ref.png \
+	random-intersections-curves-eo.xlib.ref.png \
+	random-intersections-curves-eo.xlib-fallback.ref.png \
+	random-intersections-curves-nz.ps.ref.png \
+	random-intersections-curves-nz.pdf.ref.png \
+	random-intersections-curves-nz.ref.png \
+	random-intersections-curves-nz.xlib.ref.png \
+	random-intersections-curves-nz.xlib-fallback.ref.png \
 	rectangle-rounding-error.ref.png \
 	rectilinear-dash.ref.png \
 	rectilinear-fill.ref.png \
@@ -741,42 +813,51 @@ REFERENCE_IMAGES = \
 	rel-path.ref.png \
 	rel-path.rgb24.ref.png \
 	rgb24-ignore-alpha.ref.png \
-	rotate-image-surface-paint.pdf.argb32.ref.png \
-	rotate-image-surface-paint.pdf.rgb24.ref.png \
+	rotate-image-surface-paint.pdf.xfail.png \
 	rotate-image-surface-paint.ps2.ref.png \
 	rotate-image-surface-paint.ps3.ref.png \
 	rotate-image-surface-paint.quartz.ref.png \
 	rotate-image-surface-paint.ref.png \
-	rotate-image-surface-paint.svg11.ref.png \
-	rotate-image-surface-paint.svg12.ref.png \
+	rotate-image-surface-paint.svg.ref.png \
+	rotated-clip.ref.png \
+	rotated-clip.ps.ref.png \
+	rotated-clip.xlib.ref.png \
 	scale-down-source-surface-paint.ref.png \
+	scale-offset-image.gl.ref.png \
+	scale-offset-image.pdf.argb32.ref.png \
+	scale-offset-image.pdf.rgb24.ref.png \
 	scale-offset-image.ps.ref.png \
 	scale-offset-image.ref.png \
+	scale-offset-image.xfail.png \
+	scale-offset-image.script.xfail.png \
+	scale-offset-image.xlib.xfail.png \
+	scale-offset-image.xlib-fallback.xfail.png \
+	scale-offset-similar.gl.ref.png \
+	scale-offset-similar.pdf.argb32.ref.png \
+	scale-offset-similar.pdf.rgb24.ref.png \
 	scale-offset-similar.ps.ref.png \
 	scale-offset-similar.ref.png \
-	scale-source-surface-paint.pdf.argb32.ref.png \
-	scale-source-surface-paint.pdf.rgb24.ref.png \
+	scale-offset-similar.xfail.png \
+	scale-offset-similar.meta.xfail.png \
+	scale-offset-similar.script.xfail.png \
+	scale-offset-similar.xlib.xfail.png \
+	scale-offset-similar.xlib-fallback.xfail.png \
 	scale-source-surface-paint.ref.png \
 	scale-source-surface-paint.rgb24.ref.png \
-	scale-source-surface-paint.svg11.argb32.ref.png \
-	scale-source-surface-paint.svg11.rgb24.ref.png \
-	scale-source-surface-paint.svg12.argb32.ref.png \
-	scale-source-surface-paint.svg12.rgb24.ref.png \
+	scale-source-surface-paint.svg.argb32.xfail.png \
+	scale-source-surface-paint.svg.rgb24.xfail.png \
 	select-font-face.ps2.ref.png \
 	select-font-face.ps3.ref.png \
 	select-font-face.quartz.ref.png \
 	select-font-face.ref.png \
-	self-copy-overlap.ref.png \
-	self-copy-overlap.rgb24.ref.png \
 	self-copy.ps2.ref.png \
 	self-copy.ps3.ref.png \
 	self-copy.ref.png \
+	self-intersecting.ps.ref.png \
 	self-intersecting.ref.png \
-	self-intersecting.rgb24.ref.png \
+	self-intersecting.xlib.ref.png \
 	set-source.ref.png \
 	set-source.rgb24.ref.png \
-	set-source.svg11.argb32.ref.png \
-	set-source.svg12.argb32.ref.png \
 	show-glyphs-many.ref.png \
 	show-text-current-point.ps2.ref.png \
 	show-text-current-point.ps3.ref.png \
@@ -785,60 +866,34 @@ REFERENCE_IMAGES = \
 	skew-extreme.ps2.ref.png \
 	skew-extreme.ps3.ref.png \
 	skew-extreme.ref.png \
-	smask-fill.pdf.argb32.ref.png \
-	smask-fill.pdf.ref.png \
-	smask-fill.pdf.rgb24.ref.png \
 	smask-fill.ref.png \
-	smask-fill.svg11.argb32.ref.png \
-	smask-fill.svg11.ref.png \
-	smask-fill.svg11.rgb24.ref.png \
-	smask-fill.svg12.argb32.ref.png \
-	smask-fill.svg12.ref.png \
-	smask-fill.svg12.rgb24.ref.png \
-	smask-fill.test-fallback.argb32.ref.png \
-	smask-fill.test-fallback.rgb24.ref.png \
-	smask-fill.xlib-fallback.ref.png \
+	smask-fill.svg.ref.png \
 	smask-fill.xlib.ref.png \
-	smask-image-mask.pdf.argb32.ref.png \
-	smask-image-mask.pdf.ref.png \
-	smask-image-mask.pdf.rgb24.ref.png \
 	smask-image-mask.ref.png \
-	smask-mask.pdf.argb32.ref.png \
-	smask-mask.pdf.ref.png \
-	smask-mask.pdf.rgb24.ref.png \
+	smask-mask.pdf.xfail.png \
 	smask-mask.ref.png \
-	smask-mask.svg11.ref.png \
-	smask-mask.svg12.ref.png \
-	smask-paint.pdf.argb32.ref.png \
-	smask-paint.pdf.ref.png \
-	smask-paint.pdf.rgb24.ref.png \
+	smask-mask.svg.ref.png \
+	smask-paint.pdf.xfail.png \
 	smask-paint.ref.png \
-	smask-paint.svg11.ref.png \
-	smask-paint.svg12.ref.png \
-	smask.pdf.argb32.ref.png \
-	smask.pdf.ref.png \
-	smask.pdf.rgb24.ref.png \
-	smask.ps2.ref.png \
-	smask.ps3.ref.png \
-	smask.ref.png \
-	smask-stroke.pdf.argb32.ref.png \
-	smask-stroke.pdf.ref.png \
-	smask-stroke.pdf.rgb24.ref.png \
+	smask-paint.svg.ref.png \
+	smask-stroke.pdf.xfail.png \
 	smask-stroke.ref.png \
-	smask.svg11.ref.png \
-	smask.svg12.ref.png \
+	smask-stroke.xlib.ref.png \
 	smask-text.pdf.ref.png \
 	smask-text.ps2.ref.png \
 	smask-text.ps3.ref.png \
 	smask-text.ref.png \
-	smask-text.svg11.argb32.ref.png \
-	smask-text.svg11.ref.png \
-	smask-text.svg11.rgb24.ref.png \
-	smask-text.svg12.argb32.ref.png \
-	smask-text.svg12.ref.png \
-	smask-text.svg12.rgb24.ref.png \
+	smask-text.svg.ref.png \
+	smask-text.script.ref.png \
+	smask-text.xlib.ref.png \
+	smask.pdf.xfail.png \
+	smask.ps.ref.png \
+	smask.ref.png \
+	smask.svg.ref.png \
+	smask.script.ref.png \
+	smask.xlib.ref.png \
 	solid-pattern-cache-stress.ref.png \
-	source-clip.ref.png \
+	source-clip-scale.gl.ref.png \
 	source-clip-scale.pdf.ref.png \
 	source-clip-scale.ps2.argb32.ref.png \
 	source-clip-scale.ps2.rgb24.ref.png \
@@ -846,44 +901,46 @@ REFERENCE_IMAGES = \
 	source-clip-scale.ps3.rgb24.ref.png \
 	source-clip-scale.quartz.ref.png \
 	source-clip-scale.ref.png \
-	source-clip-scale.svg11.ref.png \
-	source-clip-scale.svg12.ref.png \
+	source-clip-scale.svg.ref.png \
+	source-clip.ref.png \
 	source-surface-scale-paint.ref.png \
 	source-surface-scale-paint.rgb24.ref.png \
 	spline-decomposition.pdf.ref.png \
 	spline-decomposition.ps.ref.png \
 	spline-decomposition.ref.png \
 	spline-decomposition.svg.ref.png \
+	spline-decomposition.xlib.ref.png \
 	stroke-ctm-caps.ps2.ref.png \
 	stroke-ctm-caps.ps3.ref.png \
 	stroke-ctm-caps.quartz.ref.png \
 	stroke-ctm-caps.ref.png \
 	stroke-image.pdf.ref.png \
-	stroke-image.ps2.ref.png \
-	stroke-image.ps3.ref.png \
+	stroke-image.ps.ref.png \
 	stroke-image.quartz.ref.png \
 	stroke-image.ref.png \
+	stroke-image.xlib.ref.png \
 	surface-pattern-big-scale-down.ref.png \
-	surface-pattern.pdf.argb32.ref.png \
-	surface-pattern.pdf.ref.png \
-	surface-pattern.pdf.rgb24.ref.png \
-	surface-pattern.ps2.ref.png \
-	surface-pattern.ps3.ref.png \
-	surface-pattern.ref.png \
-	surface-pattern-scale-down.pdf.argb32.ref.png \
-	surface-pattern-scale-down.pdf.rgb24.ref.png \
+	surface-pattern-big-scale-down.ps.xfail.png \
+	surface-pattern-scale-down.pdf.ref.png \
 	surface-pattern-scale-down.ps2.ref.png \
 	surface-pattern-scale-down.ps3.ref.png \
 	surface-pattern-scale-down.quartz.ref.png \
 	surface-pattern-scale-down.ref.png \
-	surface-pattern-scale-up.pdf.argb32.ref.png \
-	surface-pattern-scale-up.pdf.rgb24.ref.png \
+	surface-pattern-scale-up.pdf.ref.png \
 	surface-pattern-scale-up.ps2.ref.png \
 	surface-pattern-scale-up.ps3.ref.png \
 	surface-pattern-scale-up.ref.png \
-	surface-pattern.svg.ref.png \
-	svg-surface-source.ref.png \
-	test-fallback16-surface-source.ref.png \
+	surface-pattern.pdf.xfail.png \
+	surface-pattern.ps.xfail.png \
+	surface-pattern.ref.png \
+	surface-pattern.svg.xfail.png \
+	svg-surface-source.rgb24.ref.png \
+	svg-surface-source.argb32.ref.png \
+	svg-surface-source.svg12.argb32.xfail.png \
+	svg-surface-source.svg12.rgb24.xfail.png \
+	test-fallback16-surface-source.ps.ref.png \
+	test-fallback16-surface-source.svg12.argb32.xfail.png \
+	test-fallback16-surface-source.svg12.rgb24.xfail.png \
 	text-antialias-gray.quartz.ref.png \
 	text-antialias-gray.ref.png \
 	text-antialias-none.quartz.ref.png \
@@ -901,35 +958,24 @@ REFERENCE_IMAGES = \
 	text-pattern.quartz.rgb24.ref.png \
 	text-pattern.ref.png \
 	text-pattern.rgb24.ref.png \
-	text-pattern.svg11.argb32.ref.png \
-	text-pattern.svg11.rgb24.ref.png \
-	text-pattern.svg12.argb32.ref.png \
-	text-pattern.svg12.rgb24.ref.png \
+	text-pattern.svg.argb32.ref.png \
+	text-pattern.svg.rgb24.ref.png \
 	text-rotate.pdf.ref.png \
 	text-rotate.ps2.ref.png \
 	text-rotate.ps3.ref.png \
 	text-rotate.quartz.ref.png \
 	text-rotate.ref.png \
-	text-rotate.svg11.argb32.ref.png \
-	text-rotate.svg11.ref.png \
-	text-rotate.svg11.rgb24.ref.png \
-	text-rotate.svg12.argb32.ref.png \
-	text-rotate.svg12.ref.png \
-	text-rotate.svg12.rgb24.ref.png \
+	text-rotate.svg.ref.png \
+	text-rotate.xlib.ref.png \
 	text-transform.pdf.ref.png \
 	text-transform.ps2.ref.png \
 	text-transform.ps3.ref.png \
 	text-transform.ref.png \
-	text-transform.svg11.argb32.ref.png \
-	text-transform.svg11.rgb24.ref.png \
-	text-transform.svg12.argb32.ref.png \
-	text-transform.svg12.rgb24.ref.png \
+	text-transform.svg.ref.png \
 	transforms.ps2.ref.png \
 	transforms.ps3.ref.png \
 	transforms.ref.png \
 	translate-show-surface.ref.png \
-	trap-clip.pdf.argb32.ref.png \
-	trap-clip.pdf.rgb24.ref.png \
 	trap-clip.ps2.argb32.ref.png \
 	trap-clip.ps2.rgb24.ref.png \
 	trap-clip.ps3.argb32.ref.png \
@@ -938,16 +984,25 @@ REFERENCE_IMAGES = \
 	trap-clip.quartz.rgb24.ref.png \
 	trap-clip.ref.png \
 	trap-clip.rgb24.ref.png \
-	trap-clip.test-fallback.argb32.ref.png \
-	trap-clip.test-fallback.rgb24.ref.png \
 	trap-clip.test-paginated.argb32.ref.png \
 	trap-clip.xlib.ref.png \
 	trap-clip.xlib.rgb24.ref.png \
 	twin.ps.ref.png \
 	twin.ref.png \
 	twin.svg.ref.png \
+	twin.xlib.ref.png \
+	twin-antialias-gray.ref.png \
+	twin-antialias-gray.xlib.ref.png \
+	twin-antialias-none.ref.png \
+	twin-antialias-none.xlib.ref.png \
+	twin-antialias-mixed.ref.png \
+	twin-antialias-mixed.xlib.ref.png \
+	twin-antialias-subpixel.ref.png \
+	twin-antialias-subpixel.xlib.ref.png \
 	unantialiased-shapes.quartz.ref.png \
 	unantialiased-shapes.ref.png \
+	unbounded-operator.gl.argb32.xfail.png \
+	unbounded-operator.gl.rgb24.xfail.png \
 	unbounded-operator.pdf.argb32.ref.png \
 	unbounded-operator.ps2.argb32.ref.png \
 	unbounded-operator.ps3.argb32.ref.png \
@@ -955,49 +1010,37 @@ REFERENCE_IMAGES = \
 	unbounded-operator.quartz.rgb24.ref.png \
 	unbounded-operator.ref.png \
 	unbounded-operator.rgb24.ref.png \
-	unbounded-operator.test-fallback.rgb24.ref.png \
+	unbounded-operator.svg12.argb32.ref.png \
+	unbounded-operator.svg12.rgb24.xfail.png \
 	unbounded-operator.xlib.rgb24.ref.png \
 	user-font-mask.pdf.ref.png \
 	user-font-mask.ps2.ref.png \
 	user-font-mask.ps3.ref.png \
 	user-font-mask.ref.png \
-	user-font-mask.svg11.ref.png \
+	user-font-mask.svg.ref.png \
 	user-font-proxy.pdf.argb32.ref.png \
 	user-font-proxy.pdf.ref.png \
 	user-font-proxy.pdf.rgb24.ref.png \
-	user-font-proxy.ps2.ref.png \
-	user-font-proxy.ps3.ref.png \
+	user-font-proxy.ps.ref.png \
 	user-font-proxy.ref.png \
-	user-font-proxy.svg11.argb32.ref.png \
-	user-font-proxy.svg11.ref.png \
-	user-font-proxy.svg11.rgb24.ref.png \
-	user-font-proxy.svg12.argb32.ref.png \
-	user-font-proxy.svg12.ref.png \
-	user-font-proxy.svg12.rgb24.ref.png \
-	user-font-proxy.test-fallback.argb32.ref.png \
-	user-font-proxy.test-fallback.rgb24.ref.png \
+	user-font-proxy.svg.ref.png \
 	user-font-proxy.xlib.ref.png \
-	user-font.ps2.ref.png \
-	user-font.ps3.ref.png \
-	user-font.ref.png \
 	user-font-rescale.ps2.ref.png \
 	user-font-rescale.ps3.ref.png \
 	user-font-rescale.ref.png \
-	user-font-rescale.svg11.ref.png \
-	user-font-rescale.svg12.ref.png \
-	user-font.svg11.argb32.ref.png \
-	user-font.svg11.ref.png \
-	user-font.svg11.rgb24.ref.png \
-	user-font.svg12.argb32.ref.png \
-	user-font.svg12.ref.png \
-	user-font.svg12.rgb24.ref.png \
-	user-font.test-fallback.argb32.ref.png \
-	user-font.test-fallback.rgb24.ref.png \
+	user-font-rescale.svg.ref.png \
+	user-font.pdf.ref.png \
+	user-font.ps.ref.png \
+	user-font.ref.png \
+	user-font.svg.ref.png \
 	user-font.xlib.ref.png \
 	xlib-expose-event.ref.png \
+	xlib-surface-source.rgb24.ref.png \
+	xlib-surface-source.argb32.ref.png \
 	xlib-surface-source.ps2.ref.png \
 	xlib-surface-source.ps3.ref.png \
-	xlib-surface-source.ref.png \
+	xlib-surface-source.svg12.argb32.xfail.png \
+	xlib-surface-source.svg12.rgb24.xfail.png \
 	zero-alpha.ref.png
 
 EXTRA_DIST +=		\
@@ -1051,7 +1094,13 @@ $(REFERENCE_IMAGES)
 #                         room, with Carl as a moderator and not let them out
 #                         until they have come up with an interface and
 #                         semantics that actually work. :-)
+# in-fill-empty-trapezoid The cairo_in_fill () function can sometimes
+#                         produce false positives when the tessellator
+#                         produces empty trapezoids and the query
+#                         point lands exactly on a trapezoid edge.
 # long-lines            - range overflow of fixed-point
+# scale-offset-image    - loss of precision converting a cairo matrix to
+# scale-offset-similar    pixman's fixed point format.
 # self-copy-overlap     - vector surfaces take snapshot of patterns in contrast
 #                         to the raster backends which don't. One solution
 #                         would be to clone overlapping areas of dst/source, so
@@ -1072,6 +1121,7 @@ degenerate-path$(EXEEXT)			\
 device-offset-scale$(EXEEXT)			\
 extend-pad$(EXEEXT)				\
 fallback-resolution$(EXEEXT)			\
+in-fill-empty-trapezoid$(EXEEXT)		\
 long-lines$(EXEEXT)				\
 self-copy-overlap$(EXEEXT)			\
 self-intersecting$(EXEEXT)			\
@@ -1085,6 +1135,7 @@ font-options			\
 multi-page			\
 pdf-features			\
 png				\
+ps-eps                          \
 ps-features			\
 svg-clip			\
 svg-surface			\
@@ -1164,14 +1215,22 @@ imagediff_LDADD = \
 	$(top_builddir)/src/libcairo.la
 
 png_flatten_SOURCES = png-flatten.c
-png_flatten_LDADD = $(top_builddir)/src/libcairo.la $(CAIRO_LDADD)
+png_flatten_LDADD = $(top_builddir)/src/libcairo.la \
+		    $(CAIRO_LDADD)
 
 if BUILD_ANY2PPM
 check_PROGRAMS += any2ppm
 any2ppm_CFLAGS = $(AM_CFLAGS) $(POPPLER_CFLAGS) $(LIBRSVG_CFLAGS) $(LIBSPECTRE_CFLAGS)
 # add LDADD, so poppler/librsvg uses "our" cairo
 any2ppm_LDFLAGS = $(AM_LDFLAGS) $(CAIRO_TEST_UNDEFINED_LDFLAGS)
-any2ppm_LDADD = $(top_builddir)/util/cairo-script/libcairo-script-interpreter.la $(top_builddir)/src/libcairo.la $(CAIRO_LDADD) $(POPPLER_LIBS) $(LIBRSVG_LIBS) $(LIBSPECTRE_LIBS)
+any2ppm_LDADD = \
+		$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
+		$(top_builddir)/src/libcairo.la \
+		$(CAIRO_LDADD) \
+		$(CAIROBOILERPLATE_LIBS) \
+		$(POPPLER_LIBS) \
+		$(LIBRSVG_LIBS) \
+		$(LIBSPECTRE_LIBS)
 endif
 
 if CAIRO_CAN_TEST_PDF_SURFACE
@@ -1179,7 +1238,9 @@ check_PROGRAMS += pdf2png
 pdf2png_CFLAGS = $(AM_CFLAGS) $(POPPLER_CFLAGS)
 # add LDADD, so poppler uses "our" cairo
 pdf2png_LDFLAGS = $(AM_LDFLAGS) $(CAIRO_TEST_UNDEFINED_LDFLAGS)
-pdf2png_LDADD  = $(top_builddir)/src/libcairo.la $(CAIRO_LDADD) $(POPPLER_LIBS)
+pdf2png_LDADD  = $(top_builddir)/src/libcairo.la \
+		 $(CAIRO_LDADD) \
+		 $(POPPLER_LIBS)
 endif
 
 if CAIRO_CAN_TEST_SVG_SURFACE
@@ -1187,7 +1248,9 @@ check_PROGRAMS += svg2png
 svg2png_CFLAGS = $(AM_CFLAGS) $(LIBRSVG_CFLAGS)
 # add LDADD, so librsvg uses "our" cairo
 svg2png_LDFLAGS = $(AM_LDFLAGS) $(CAIRO_TEST_UNDEFINED_LDFLAGS)
-svg2png_LDADD  = $(top_builddir)/src/libcairo.la $(CAIRO_LDADD) $(LIBRSVG_LIBS)
+svg2png_LDADD  = $(top_builddir)/src/libcairo.la \
+		 $(CAIRO_LDADD) \
+		 $(LIBRSVG_LIBS)
 endif
 
 if CAIRO_HAS_SPECTRE
@@ -1195,7 +1258,9 @@ check_PROGRAMS += ps2png
 ps2png_CFLAGS = $(AM_CFLAGS) $(LIBSPECTRE_CFLAGS)
 # add LDADD, so ps2png uses "our" cairo
 ps2png_LDFLAGS = $(AM_LDFLAGS) $(CAIRO_TEST_UNDEFINED_LDFLAGS)
-ps2png_LDADD  = $(top_builddir)/src/libcairo.la $(CAIRO_LDADD) $(LIBSPECTRE_LIBS)
+ps2png_LDADD  = $(top_builddir)/src/libcairo.la \
+		$(CAIRO_LDADD) \
+		$(LIBSPECTRE_LIBS)
 endif
 
 EXTRA_PROGRAMS += $(TESTS)
@@ -1232,6 +1297,7 @@ CLEANFILES +=					\
 	ps-surface-source.out.ps		\
 	pdf-features.pdf			\
 	pdf-mime-data.out*			\
+	ps-eps.eps				\
 	ps-features.ps				\
 	svg-clip.svg				\
 	svg-surface.svg				\
@@ -1289,9 +1355,8 @@ run:
 	$(MAKE) $(AM_MAKEFLAGS) check TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) $(top_builddir)/libtool --mode=execute env $(TOOL)'
 
 # Check tests under valgrind.  Saves log to valgrind-log
-check-valgrind: MODE+=,foreground
 check-valgrind:
-	$(MAKE) $(AM_MAKEFLAGS) check TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) $(top_builddir)/libtool --mode=execute valgrind $(VALGRIND_FLAGS)' 2>&1 | tee valgrind-log
+	$(MAKE) $(AM_MAKEFLAGS) check TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) CAIRO_TEST_MODE="$(MODE),foreground CAIRO_TEST_TIMEOUT=0" $(top_builddir)/libtool --mode=execute valgrind $(VALGRIND_FLAGS)' 2>&1 | tee valgrind-log
 
 %.log: %.c cairo-test-suite
 	-./cairo-test-suite $(<:.c=)
@@ -1315,7 +1380,7 @@ check-ref-dups:
 # Not exactly the best script in the world...
 check-ref-missing:
 	@cd "$(srcdir)"; \
-	REFS=`git ls-files "*.ref.png"`; \
+	REFS=`git ls-files "*.ref.png" "*.xfail.png" "*.new.png"`; \
 	ret=true; \
 	missing=""; \
 	for i in $$REFS; do \
@@ -1329,7 +1394,7 @@ check-ref-missing:
 		ret=false; \
 	fi >&2; \
 	if $$ret; then \
-	    REFS=`ls *.ref.png`; \
+	    REFS=`ls *.ref.png *.xfail.png *.new.png`; \
 	    for i in $$REFS; do \
 		echo "" $(REFERENCE_IMAGES) "" | grep -sq " $$i " || missing="$$missing $$i" ; \
 	    done ; \

@@ -19,7 +19,7 @@
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-enum                <link linkend="cairo-status-t">cairo_status_t</link>;
+<link linkend="typedef">typedef</link>             <link linkend="cairo-status-t">cairo_status_t</link>                      ();
 const <link linkend="char">char</link> *        <link linkend="cairo-status-to-string">cairo_status_to_string</link>              (<link linkend="cairo-status-t">cairo_status_t</link> status);
 <link linkend="void">void</link>                <link linkend="cairo-debug-reset-static-data">cairo_debug_reset_static_data</link>       (void);
 </synopsis>
@@ -52,48 +52,9 @@ code is required before or after each individual cairo function call.
 
 <refsect1 id="cairo-error-status.details" role="details">
 <title role="details.title">Details</title>
-<refsect2 id="cairo-status-t" role="enum">
-<title>enum cairo_status_t</title>
-<indexterm zone="cairo-status-t"><primary sortas="cairo_status_t">cairo_status_t</primary></indexterm><programlisting>typedef enum _cairo_status {
-    CAIRO_STATUS_SUCCESS = 0,
-
-    CAIRO_STATUS_NO_MEMORY,
-    CAIRO_STATUS_INVALID_RESTORE,
-    CAIRO_STATUS_INVALID_POP_GROUP,
-    CAIRO_STATUS_NO_CURRENT_POINT,
-    CAIRO_STATUS_INVALID_MATRIX,
-    CAIRO_STATUS_INVALID_STATUS,
-    CAIRO_STATUS_NULL_POINTER,
-    CAIRO_STATUS_INVALID_STRING,
-    CAIRO_STATUS_INVALID_PATH_DATA,
-    CAIRO_STATUS_READ_ERROR,
-    CAIRO_STATUS_WRITE_ERROR,
-    CAIRO_STATUS_SURFACE_FINISHED,
-    CAIRO_STATUS_SURFACE_TYPE_MISMATCH,
-    CAIRO_STATUS_PATTERN_TYPE_MISMATCH,
-    CAIRO_STATUS_INVALID_CONTENT,
-    CAIRO_STATUS_INVALID_FORMAT,
-    CAIRO_STATUS_INVALID_VISUAL,
-    CAIRO_STATUS_FILE_NOT_FOUND,
-    CAIRO_STATUS_INVALID_DASH,
-    CAIRO_STATUS_INVALID_DSC_COMMENT,
-    CAIRO_STATUS_INVALID_INDEX,
-    CAIRO_STATUS_CLIP_NOT_REPRESENTABLE,
-    CAIRO_STATUS_TEMP_FILE_ERROR,
-    CAIRO_STATUS_INVALID_STRIDE,
-    CAIRO_STATUS_FONT_TYPE_MISMATCH,
-    CAIRO_STATUS_USER_FONT_IMMUTABLE,
-    CAIRO_STATUS_USER_FONT_ERROR,
-    CAIRO_STATUS_NEGATIVE_COUNT,
-    CAIRO_STATUS_INVALID_CLUSTERS,
-    CAIRO_STATUS_INVALID_SLANT,
-    CAIRO_STATUS_INVALID_WEIGHT,
-    CAIRO_STATUS_INVALID_SIZE,
-    CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED,
-
-    CAIRO_STATUS_LAST_STATUS
-} cairo_status_t;
-</programlisting>
+<refsect2 id="cairo-status-t" role="function">
+<title>cairo_status_t ()</title>
+<indexterm zone="cairo-status-t"><primary sortas="cairo_status_t">cairo_status_t</primary></indexterm><programlisting><link linkend="typedef">typedef</link>             cairo_status_t                      ();</programlisting>
 <para>
 <link linkend="cairo-status-t"><type>cairo_status_t</type></link> is used to indicate errors that can occur when
 using Cairo. In some cases it is returned directly by functions.
@@ -104,185 +65,115 @@ the context and can be retrieved with <link linkend="cairo-status"><function>cai
 New entries may be added in future versions.  Use <link linkend="cairo-status-to-string"><function>cairo_status_to_string()</function></link>
 to get a human-readable representation of an error message.</para>
 <para>
-</para><variablelist role="enum">
-<varlistentry id="CAIRO-STATUS-SUCCESS--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_SUCCESS</literal></term>
+</para><variablelist role="params">
+<varlistentry><term><parameter>CAIRO_STATUS_SUCCESS</parameter>&#160;:</term>
 <listitem><simpara> no error has occurred
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-NO-MEMORY--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_NO_MEMORY</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_NO_MEMORY</parameter>&#160;:</term>
 <listitem><simpara> out of memory
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-RESTORE--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_RESTORE</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_RESTORE</parameter>&#160;:</term>
 <listitem><simpara> <link linkend="cairo-restore"><function>cairo_restore()</function></link> called without matching <link linkend="cairo-save"><function>cairo_save()</function></link>
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-POP-GROUP--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_POP_GROUP</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_POP_GROUP</parameter>&#160;:</term>
 <listitem><simpara> no saved group to pop, i.e. <link linkend="cairo-pop-group"><function>cairo_pop_group()</function></link> without matching <link linkend="cairo-push-group"><function>cairo_push_group()</function></link>
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-NO-CURRENT-POINT--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_NO_CURRENT_POINT</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_NO_CURRENT_POINT</parameter>&#160;:</term>
 <listitem><simpara> no current point defined
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-MATRIX--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_MATRIX</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_MATRIX</parameter>&#160;:</term>
 <listitem><simpara> invalid matrix (not invertible)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-STATUS--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_STATUS</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_STATUS</parameter>&#160;:</term>
 <listitem><simpara> invalid value for an input <link linkend="cairo-status-t"><type>cairo_status_t</type></link>
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-NULL-POINTER--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_NULL_POINTER</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_NULL_POINTER</parameter>&#160;:</term>
 <listitem><simpara> <link linkend="NULL--CAPS"><literal>NULL</literal></link> pointer
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-STRING--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_STRING</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_STRING</parameter>&#160;:</term>
 <listitem><simpara> input string not valid UTF-8
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-PATH-DATA--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_PATH_DATA</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_PATH_DATA</parameter>&#160;:</term>
 <listitem><simpara> input path data not valid
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-READ-ERROR--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_READ_ERROR</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_READ_ERROR</parameter>&#160;:</term>
 <listitem><simpara> error while reading from input stream
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-WRITE-ERROR--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_WRITE_ERROR</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_WRITE_ERROR</parameter>&#160;:</term>
 <listitem><simpara> error while writing to output stream
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-SURFACE-FINISHED--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_SURFACE_FINISHED</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_SURFACE_FINISHED</parameter>&#160;:</term>
 <listitem><simpara> target surface has been finished
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-SURFACE-TYPE-MISMATCH--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_SURFACE_TYPE_MISMATCH</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_SURFACE_TYPE_MISMATCH</parameter>&#160;:</term>
 <listitem><simpara> the surface type is not appropriate for the operation
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-PATTERN-TYPE-MISMATCH--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_PATTERN_TYPE_MISMATCH</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_PATTERN_TYPE_MISMATCH</parameter>&#160;:</term>
 <listitem><simpara> the pattern type is not appropriate for the operation
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-CONTENT--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_CONTENT</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_CONTENT</parameter>&#160;:</term>
 <listitem><simpara> invalid value for an input <link linkend="cairo-content-t"><type>cairo_content_t</type></link>
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-FORMAT--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_FORMAT</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_FORMAT</parameter>&#160;:</term>
 <listitem><simpara> invalid value for an input <link linkend="cairo-format-t"><type>cairo_format_t</type></link>
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-VISUAL--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_VISUAL</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_VISUAL</parameter>&#160;:</term>
 <listitem><simpara> invalid value for an input Visual*
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-FILE-NOT-FOUND--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_FILE_NOT_FOUND</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_FILE_NOT_FOUND</parameter>&#160;:</term>
 <listitem><simpara> file not found
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-DASH--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_DASH</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_DASH</parameter>&#160;:</term>
 <listitem><simpara> invalid value for a dash setting
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-DSC-COMMENT--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_DSC_COMMENT</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_DSC_COMMENT</parameter>&#160;:</term>
 <listitem><simpara> invalid value for a DSC comment (Since 1.2)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-INDEX--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_INDEX</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_INDEX</parameter>&#160;:</term>
 <listitem><simpara> invalid index passed to getter (Since 1.4)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-CLIP-NOT-REPRESENTABLE--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_CLIP_NOT_REPRESENTABLE</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_CLIP_NOT_REPRESENTABLE</parameter>&#160;:</term>
 <listitem><simpara> clip region not representable in desired format (Since 1.4)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-TEMP-FILE-ERROR--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_TEMP_FILE_ERROR</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_TEMP_FILE_ERROR</parameter>&#160;:</term>
 <listitem><simpara> error creating or writing to a temporary file (Since 1.6)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-STRIDE--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_STRIDE</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_STRIDE</parameter>&#160;:</term>
 <listitem><simpara> invalid value for stride (Since 1.6)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-FONT-TYPE-MISMATCH--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_FONT_TYPE_MISMATCH</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_FONT_TYPE_MISMATCH</parameter>&#160;:</term>
 <listitem><simpara> the font type is not appropriate for the operation (Since 1.8)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-USER-FONT-IMMUTABLE--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_USER_FONT_IMMUTABLE</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_USER_FONT_IMMUTABLE</parameter>&#160;:</term>
 <listitem><simpara> the user-font is immutable (Since 1.8)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-USER-FONT-ERROR--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_USER_FONT_ERROR</parameter>&#160;:</term>
 <listitem><simpara> error occurred in a user-font callback function (Since 1.8)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-NEGATIVE-COUNT--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_NEGATIVE_COUNT</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_NEGATIVE_COUNT</parameter>&#160;:</term>
 <listitem><simpara> negative number used where it is not allowed (Since 1.8)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-CLUSTERS--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_CLUSTERS</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_CLUSTERS</parameter>&#160;:</term>
 <listitem><simpara> input clusters do not represent the accompanying text and glyph array (Since 1.8)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-SLANT--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_SLANT</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_SLANT</parameter>&#160;:</term>
 <listitem><simpara> invalid value for an input <link linkend="cairo-font-slant-t"><type>cairo_font_slant_t</type></link> (Since 1.8)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-WEIGHT--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_WEIGHT</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_WEIGHT</parameter>&#160;:</term>
 <listitem><simpara> invalid value for an input <link linkend="cairo-font-weight-t"><type>cairo_font_weight_t</type></link> (Since 1.8)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-INVALID-SIZE--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_INVALID_SIZE</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_INVALID_SIZE</parameter>&#160;:</term>
 <listitem><simpara> invalid value (typically too big) for the size of the input (surface, pattern, etc.) (Since 1.10)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</parameter>&#160;:</term>
 <listitem><simpara> user-font method not implemented (Since 1.10)
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-STATUS-LAST-STATUS--CAPS" role="constant">
-<term><literal>CAIRO_STATUS_LAST_STATUS</literal></term>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CAIRO_STATUS_LAST_STATUS</parameter>&#160;:</term>
 <listitem><simpara> this is a special value indicating the number of
   status values defined in this enumeration.  When using this value, note
   that the version of cairo at run-time may have additional status values
   defined than the value of this symbol at compile-time. (Since 1.10)
-</simpara></listitem>
-</varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-status-to-string" role="function">
 <title>cairo_status_to_string ()</title>

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>FreeType Fonts</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-font-options.html" title="cairo_font_options_t">
@@ -72,8 +72,7 @@ systems, but can be used on other platforms too.
 <a name="cairo-ft-font.details"></a><h2>Details</h2>
 <div class="refsect2" title="CAIRO_HAS_FT_FONT">
 <a name="CAIRO-HAS-FT-FONT--CAPS"></a><h3>CAIRO_HAS_FT_FONT</h3>
-<pre class="programlisting">#define CAIRO_HAS_FT_FONT 1
-</pre>
+<pre class="programlisting">#define             CAIRO_HAS_FT_FONT</pre>
 <p>
 Defined if the FreeType font backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -82,8 +81,7 @@ This macro can be used to conditionally compile backend-specific code.
 <hr>
 <div class="refsect2" title="CAIRO_HAS_FC_FONT">
 <a name="CAIRO-HAS-FC-FONT--CAPS"></a><h3>CAIRO_HAS_FC_FONT</h3>
-<pre class="programlisting">#define CAIRO_HAS_FC_FONT 1
-</pre>
+<pre class="programlisting">#define             CAIRO_HAS_FC_FONT</pre>
 <p>
 Defined if the Fontconfig-specific functions of the FreeType font backend
 are available.
@@ -288,7 +286,9 @@ might result in a call into the freetype library).</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The <span class="type">FT_Face</span> object for <em class="parameter"><code>font</code></em>, scaled appropriately,
-or <code class="literal">NULL</code> if <em class="parameter"><code>scaled_font</code></em> is in an error state (see
+or <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> if <em class="parameter"><code>scaled_font</code></em> is in an error state (see
 <a class="link" href="cairo-scaled-font.html#cairo-scaled-font-status" title="cairo_scaled_font_status ()"><code class="function">cairo_scaled_font_status()</code></a>) or there is insufficient memory.
 </td>
 </tr>
