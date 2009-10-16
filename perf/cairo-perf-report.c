@@ -49,7 +49,7 @@
 typedef ptrdiff_t ssize_t;
 #endif
 
-#ifndef __USE_GNU
+#if !defined (__USE_GNU) && !defined(__USE_XOPEN2K8)
 static ssize_t
 getline (char **lineptr, size_t *n, FILE *stream);
 
@@ -149,17 +149,17 @@ test_report_parse (test_report_t *report, char *line, char *configuration)
     report->configuration = configuration;
     parse_string (report->backend);
     end = strrchr (report->backend, '.');
-    if (*end)
+    if (end)
 	*end++ = '\0';
-    report->content = end;
+    report->content = end ? end : xstrdup ("???");
 
     skip_space ();
 
     parse_string (report->name);
     end = strrchr (report->name, '.');
-    if (*end)
+    if (end)
 	*end++ = '\0';
-    report->size = atoi (end);
+    report->size = end ? atoi (end) : 0;
 
     skip_space ();
 
@@ -227,7 +227,7 @@ test_report_parse (test_report_t *report, char *line, char *configuration)
  * as needed. These aren't necessary full-fledged general purpose
  * implementations. They just get the job done for our purposes.
  */
-#ifndef __USE_GNU
+#if !defined (__USE_GNU) && !defined(__USE_XOPEN2K8)
 #define POORMANS_GETLINE_BUFFER_SIZE (65536)
 static ssize_t
 getline (char **lineptr, size_t *n, FILE *stream)
@@ -437,9 +437,14 @@ cairo_perf_report_load (cairo_perf_report_t *report,
     char *configuration;
     char *dot;
     char *baseName;
+    const char *name;
 
-    configuration = xmalloc (strlen (filename) * sizeof (char) + 1);
-    strcpy (configuration, filename);
+    name = filename;
+    if (name == NULL)
+	name = "stdin";
+
+    configuration = xmalloc (strlen (name) * sizeof (char) + 1);
+    strcpy (configuration, name);
     baseName = basename (configuration);
     report->configuration = xmalloc (strlen (baseName) * sizeof (char) + 1);
     strcpy (report->configuration, baseName);
@@ -449,16 +454,20 @@ cairo_perf_report_load (cairo_perf_report_t *report,
     if (dot)
 	*dot = '\0';
 
-    report->name = filename;
+    report->name = name;
     report->tests_size = 16;
     report->tests = xmalloc (report->tests_size * sizeof (test_report_t));
     report->tests_count = 0;
 
-    file = fopen (filename, "r");
-    if (file == NULL) {
-	fprintf (stderr, "Failed to open %s: %s\n",
-		 filename, strerror (errno));
-	exit (1);
+    if (filename == NULL) {
+	file = stdin;
+    } else {
+	file = fopen (filename, "r");
+	if (file == NULL) {
+	    fprintf (stderr, "Failed to open %s: %s\n",
+		     filename, strerror (errno));
+	    exit (1);
+	}
     }
 
     while (1) {
@@ -485,7 +494,8 @@ cairo_perf_report_load (cairo_perf_report_t *report,
     if (line)
 	free (line);
 
-    fclose (file);
+    if (filename != NULL)
+	fclose (file);
 
     cairo_perf_report_sort_and_compute_stats (report, cmp);
 
@@ -497,4 +507,3 @@ cairo_perf_report_load (cairo_perf_report_t *report,
     }
     report->tests[report->tests_count].name = NULL;
 }
-

@@ -24,16 +24,15 @@
  * Author: Carl D. Worth <cworth@cworth.org>
  */
 
-#include "cairo-boilerplate.h"
-#include "cairo-boilerplate-ps-private.h"
+#include "cairo-boilerplate-private.h"
 
 #include <cairo-ps.h>
+
 #include <cairo-ps-surface-private.h>
 #include <cairo-paginated-surface-private.h>
 
-#if HAVE_SIGNAL_H
-#include <stdlib.h>
-#include <signal.h>
+#if ! CAIRO_HAS_META_SURFACE
+#define CAIRO_SURFACE_TYPE_META CAIRO_INTERNAL_SURFACE_TYPE_META
 #endif
 
 static const cairo_user_data_key_t ps_closure_key;
@@ -68,10 +67,10 @@ static cairo_surface_t *
 _cairo_boilerplate_ps_create_surface (const char		 *name,
 				      cairo_content_t		  content,
 				      cairo_ps_level_t		  level,
-				      int			  width,
-				      int			  height,
-				      int			  max_width,
-				      int			  max_height,
+				      double			  width,
+				      double			  height,
+				      double			  max_width,
+				      double			  max_height,
 				      cairo_boilerplate_mode_t	  mode,
 				      int                         id,
 				      void			**closure)
@@ -90,8 +89,8 @@ _cairo_boilerplate_ps_create_surface (const char		 *name,
     xunlink (ptc->filename);
 
     ptc->level = level;
-    ptc->width = width;
-    ptc->height = height;
+    ptc->width = ceil (width);
+    ptc->height = ceil (height);
 
     surface = cairo_ps_surface_create (ptc->filename, width, height);
     if (cairo_surface_status (surface))
@@ -105,7 +104,7 @@ _cairo_boilerplate_ps_create_surface (const char		 *name,
 	ptc->target = surface;
 	surface = cairo_surface_create_similar (ptc->target,
 						CAIRO_CONTENT_COLOR,
-						width, height);
+						ptc->width, ptc->height);
 	if (cairo_surface_status (surface))
 	    goto CLEANUP_TARGET;
     } else {
@@ -127,13 +126,13 @@ _cairo_boilerplate_ps_create_surface (const char		 *name,
     return surface;
 }
 
-cairo_surface_t *
+static cairo_surface_t *
 _cairo_boilerplate_ps2_create_surface (const char		 *name,
 				       cairo_content_t		  content,
-				       int			  width,
-				       int			  height,
-				       int			  max_width,
-				       int			  max_height,
+				       double			  width,
+				       double			  height,
+				       double			  max_width,
+				       double			  max_height,
 				       cairo_boilerplate_mode_t	  mode,
 				       int                        id,
 				       void			**closure)
@@ -146,13 +145,13 @@ _cairo_boilerplate_ps2_create_surface (const char		 *name,
 						 closure);
 }
 
-cairo_surface_t *
+static cairo_surface_t *
 _cairo_boilerplate_ps3_create_surface (const char		 *name,
 				       cairo_content_t		  content,
-				       int			  width,
-				       int			  height,
-				       int			  max_width,
-				       int			  max_height,
+				       double			  width,
+				       double			  height,
+				       double			  max_width,
+				       double			  max_height,
 				       cairo_boilerplate_mode_t	  mode,
 				       int                        id,
 				       void			**closure)
@@ -165,7 +164,7 @@ _cairo_boilerplate_ps3_create_surface (const char		 *name,
 						 closure);
 }
 
-cairo_status_t
+static cairo_status_t
 _cairo_boilerplate_ps_finish_surface (cairo_surface_t		*surface)
 {
     ps_target_closure_t *ptc = cairo_surface_get_user_data (surface,
@@ -183,6 +182,7 @@ _cairo_boilerplate_ps_finish_surface (cairo_surface_t		*surface)
 
     if (ptc->target) {
 	cairo_t *cr;
+
 	cr = cairo_create (ptc->target);
 	cairo_set_source_surface (cr, surface, 0, 0);
 	cairo_paint (cr);
@@ -193,7 +193,6 @@ _cairo_boilerplate_ps_finish_surface (cairo_surface_t		*surface)
 	if (status)
 	    return status;
 
-	cairo_surface_finish (surface);
 	status = cairo_surface_status (surface);
 	if (status)
 	    return status;
@@ -202,14 +201,10 @@ _cairo_boilerplate_ps_finish_surface (cairo_surface_t		*surface)
     }
 
     cairo_surface_finish (surface);
-    status = cairo_surface_status (surface);
-    if (status)
-	return status;
-
-    return CAIRO_STATUS_SUCCESS;
+    return cairo_surface_status (surface);
 }
 
-cairo_status_t
+static cairo_status_t
 _cairo_boilerplate_ps_surface_write_to_png (cairo_surface_t *surface, const char *filename)
 {
     ps_target_closure_t *ptc = cairo_surface_get_user_data (surface,
@@ -232,7 +227,7 @@ _cairo_boilerplate_ps_surface_write_to_png (cairo_surface_t *surface, const char
     return CAIRO_STATUS_SUCCESS;
 }
 
-cairo_surface_t *
+static cairo_surface_t *
 _cairo_boilerplate_ps_get_image_surface (cairo_surface_t *surface,
 					 int page,
 					 int width,
@@ -266,7 +261,7 @@ _cairo_boilerplate_ps_get_image_surface (cairo_surface_t *surface,
     return surface;
 }
 
-void
+static void
 _cairo_boilerplate_ps_cleanup (void *closure)
 {
     ps_target_closure_t *ptc = closure;
@@ -276,7 +271,7 @@ _cairo_boilerplate_ps_cleanup (void *closure)
     free (ptc);
 }
 
-void
+static void
 _cairo_boilerplate_ps_force_fallbacks (cairo_surface_t *abstract_surface,
 	                               unsigned int flags)
 {
@@ -293,3 +288,59 @@ _cairo_boilerplate_ps_force_fallbacks (cairo_surface_t *abstract_surface,
     surface = (cairo_ps_surface_t*) paginated->target;
     surface->force_fallbacks = TRUE;
 }
+
+static const cairo_boilerplate_target_t targets[] = {
+#if CAIRO_CAN_TEST_PS_SURFACE
+    {
+	"ps2", "ps", ".ps", NULL,
+	CAIRO_SURFACE_TYPE_PS,
+	CAIRO_TEST_CONTENT_COLOR_ALPHA_FLATTENED, 0,
+	"cairo_ps_surface_create",
+	_cairo_boilerplate_ps2_create_surface,
+	_cairo_boilerplate_ps_force_fallbacks,
+	_cairo_boilerplate_ps_finish_surface,
+	_cairo_boilerplate_ps_get_image_surface,
+	_cairo_boilerplate_ps_surface_write_to_png,
+	_cairo_boilerplate_ps_cleanup,
+	NULL, TRUE, TRUE
+    },
+    {
+	"ps2", "ps", ".ps", NULL,
+	CAIRO_SURFACE_TYPE_META, CAIRO_CONTENT_COLOR, 0,
+	"cairo_ps_surface_create",
+	_cairo_boilerplate_ps2_create_surface,
+	_cairo_boilerplate_ps_force_fallbacks,
+	_cairo_boilerplate_ps_finish_surface,
+	_cairo_boilerplate_ps_get_image_surface,
+	_cairo_boilerplate_ps_surface_write_to_png,
+	_cairo_boilerplate_ps_cleanup,
+	NULL, TRUE, TRUE
+    },
+    {
+	"ps3", "ps", ".ps", NULL,
+	CAIRO_SURFACE_TYPE_PS,
+	CAIRO_TEST_CONTENT_COLOR_ALPHA_FLATTENED, 0,
+	"cairo_ps_surface_create",
+	_cairo_boilerplate_ps3_create_surface,
+	_cairo_boilerplate_ps_force_fallbacks,
+	_cairo_boilerplate_ps_finish_surface,
+	_cairo_boilerplate_ps_get_image_surface,
+	_cairo_boilerplate_ps_surface_write_to_png,
+	_cairo_boilerplate_ps_cleanup,
+	NULL, TRUE, TRUE
+    },
+    {
+	"ps3", "ps", ".ps", NULL,
+	CAIRO_SURFACE_TYPE_META, CAIRO_CONTENT_COLOR, 0,
+	"cairo_ps_surface_create",
+	_cairo_boilerplate_ps3_create_surface,
+	_cairo_boilerplate_ps_force_fallbacks,
+	_cairo_boilerplate_ps_finish_surface,
+	_cairo_boilerplate_ps_get_image_surface,
+	_cairo_boilerplate_ps_surface_write_to_png,
+	_cairo_boilerplate_ps_cleanup,
+	NULL, TRUE, TRUE
+    },
+#endif
+};
+CAIRO_BOILERPLATE (ps, targets)

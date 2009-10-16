@@ -81,23 +81,28 @@ typedef struct _cairo_perf {
     unsigned int num_names;
     char **exclude_names;
     unsigned int num_exclude_names;
+    cairo_bool_t exact_names;
+
+    double ms_per_iteration;
+    cairo_bool_t fast_and_sloppy;
 
     /* Stuff used internally */
     cairo_perf_ticks_t *times;
-    cairo_boilerplate_target_t **targets;
+    const cairo_boilerplate_target_t **targets;
     int num_targets;
-    cairo_boilerplate_target_t *target;
+    const cairo_boilerplate_target_t *target;
     unsigned int test_number;
     unsigned int size;
     cairo_t *cr;
 } cairo_perf_t;
 
 typedef cairo_perf_ticks_t
-(*cairo_perf_func_t) (cairo_t *cr, int width, int height);
+(*cairo_perf_func_t) (cairo_t *cr, int width, int height, int loops);
 
 cairo_bool_t
 cairo_perf_can_run (cairo_perf_t	*perf,
-		    const char		*name);
+		    const char		*name,
+		    cairo_bool_t	*is_explicit);
 
 void
 cairo_perf_run (cairo_perf_t		*perf,

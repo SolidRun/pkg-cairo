@@ -422,6 +422,41 @@ cairo_pop_group_to_source (cairo_t *cr);
  * @CAIRO_OPERATOR_ADD: source and destination layers are accumulated
  * @CAIRO_OPERATOR_SATURATE: like over, but assuming source and dest are
  * disjoint geometries
+ * @CAIRO_OPERATOR_MULTIPLY: source and destination layers are multiplied.
+ * This causes the result to be at least as dark as the darker inputs.
+ * @CAIRO_OPERATOR_SCREEN: source and destination are complemented and
+ * multiplied. This causes the result to be at least as light as the lighter
+ * inputs.
+ * @CAIRO_OPERATOR_OVERLAY: multiplies or screens, depending on the
+ * lightness of the destination color.
+ * @CAIRO_OPERATOR_DARKEN: replaces the destination with the source if it
+ * is darker, otherwise keeps the source.
+ * @CAIRO_OPERATOR_LIGHTEN: replaces the destination with the source if it
+ * is lighter, otherwise keeps the source.
+ * @CAIRO_OPERATOR_COLOR_DODGE: brightens the destination color to reflect
+ * the source color.
+ * @CAIRO_OPERATOR_COLOR_BURN: darkens the destination color to reflect
+ * the source color.
+ * @CAIRO_OPERATOR_HARD_LIGHT: Multiplies or screens, dependant on source
+ * color.
+ * @CAIRO_OPERATOR_SOFT_LIGHT: Darkens or lightens, dependant on source
+ * color.
+ * @CAIRO_OPERATOR_DIFFERENCE: Takes the difference of the source and
+ * destination color.
+ * @CAIRO_OPERATOR_EXCLUSION: Produces an effect similar to difference, but
+ * with lower contrast.
+ * @CAIRO_OPERATOR_HSL_HUE: Creates a color with the hue of the source
+ * and the saturation and luminosity of the target.
+ * @CAIRO_OPERATOR_HSL_SATURATION: Creates a color with the saturation
+ * of the source and the hue and luminosity of the target. Painting with
+ * this mode onto a gray area prduces no change.
+ * @CAIRO_OPERATOR_HSL_COLOR: Creates a color with the hue and saturation
+ * of the source and the luminosity of the target. This preserves the gray
+ * levels of the target and is useful for coloring monochrome images or
+ * tinting color images.
+ * @CAIRO_OPERATOR_HSL_LUMINOSITY: Creates a color with the luminosity of
+ * the source and the hue and saturation of the target. This produces an
+ * inverse effect to @CAIRO_OPERATOR_HSL_COLOR.
  *
  * #cairo_operator_t is used to set the compositing operator for all cairo
  * drawing operations.
@@ -458,7 +493,23 @@ typedef enum _cairo_operator {
 
     CAIRO_OPERATOR_XOR,
     CAIRO_OPERATOR_ADD,
-    CAIRO_OPERATOR_SATURATE
+    CAIRO_OPERATOR_SATURATE,
+
+    CAIRO_OPERATOR_MULTIPLY,
+    CAIRO_OPERATOR_SCREEN,
+    CAIRO_OPERATOR_OVERLAY,
+    CAIRO_OPERATOR_DARKEN,
+    CAIRO_OPERATOR_LIGHTEN,
+    CAIRO_OPERATOR_COLOR_DODGE,
+    CAIRO_OPERATOR_COLOR_BURN,
+    CAIRO_OPERATOR_HARD_LIGHT,
+    CAIRO_OPERATOR_SOFT_LIGHT,
+    CAIRO_OPERATOR_DIFFERENCE,
+    CAIRO_OPERATOR_EXCLUSION,
+    CAIRO_OPERATOR_HSL_HUE,
+    CAIRO_OPERATOR_HSL_SATURATION,
+    CAIRO_OPERATOR_HSL_COLOR,
+    CAIRO_OPERATOR_HSL_LUMINOSITY
 } cairo_operator_t;
 
 cairo_public void
@@ -736,6 +787,9 @@ cairo_in_stroke (cairo_t *cr, double x, double y);
 
 cairo_public cairo_bool_t
 cairo_in_fill (cairo_t *cr, double x, double y);
+
+cairo_public cairo_bool_t
+cairo_in_clip (cairo_t *cr, double x, double y);
 
 /* Rectangular extents */
 cairo_public void
@@ -1889,6 +1943,14 @@ cairo_surface_status (cairo_surface_t *surface);
  * @CAIRO_SURFACE_TYPE_WIN32_PRINTING: The surface is a win32 printing surface
  * @CAIRO_SURFACE_TYPE_QUARTZ_IMAGE: The surface is of type quartz_image
  * @CAIRO_SURFACE_TYPE_SCRIPT: The surface is of type script, since 1.10
+ * @CAIRO_SURFACE_TYPE_QT: The surface is of type Qt, since 1.10
+ * @CAIRO_SURFACE_TYPE_META: The surface is a meta-type, since 1.10
+ * @CAIRO_SURFACE_TYPE_VG: The surface is a OpenVG surface, since 1.10
+ * @CAIRO_SURFACE_TYPE_GL: The surface is of type OpenGL, since 1.10
+ * @CAIRO_SURFACE_TYPE_DRM: The surface is of type Direct Render Manager, since 1.10
+ * @CAIRO_SURFACE_TYPE_TEE: The surface is of type 'tee' (a multiplexing surface), since 1.10
+ * @CAIRO_SURFACE_TYPE_XML: The surface is of type XML (for debugging), since 1.10
+ * @CAIRO_SURFACE_TYPE_SKIA: The surface is of type Skia, since 1.10
  *
  * #cairo_surface_type_t is used to describe the type of a given
  * surface. The surface types are also known as "backends" or "surface
@@ -1928,7 +1990,15 @@ typedef enum _cairo_surface_type {
     CAIRO_SURFACE_TYPE_OS2,
     CAIRO_SURFACE_TYPE_WIN32_PRINTING,
     CAIRO_SURFACE_TYPE_QUARTZ_IMAGE,
-    CAIRO_SURFACE_TYPE_SCRIPT
+    CAIRO_SURFACE_TYPE_SCRIPT,
+    CAIRO_SURFACE_TYPE_QT,
+    CAIRO_SURFACE_TYPE_META,
+    CAIRO_SURFACE_TYPE_VG,
+    CAIRO_SURFACE_TYPE_GL,
+    CAIRO_SURFACE_TYPE_DRM,
+    CAIRO_SURFACE_TYPE_TEE,
+    CAIRO_SURFACE_TYPE_XML,
+    CAIRO_SURFACE_TYPE_SKIA
 } cairo_surface_type_t;
 
 cairo_public cairo_surface_type_t
@@ -2105,6 +2175,36 @@ cairo_image_surface_create_from_png_stream (cairo_read_func_t	read_func,
 					    void		*closure);
 
 #endif
+
+/* Meta-surface functions */
+
+cairo_public cairo_surface_t *
+cairo_meta_surface_create (cairo_content_t	content,
+			   const cairo_rectangle_t   *extents);
+
+cairo_public void
+cairo_meta_surface_ink_extents (cairo_surface_t *surface,
+				double *x0,
+				double *y0,
+				double *width,
+				double *height);
+
+/* Tee-surface functions */
+
+cairo_public cairo_surface_t *
+cairo_tee_surface_create (cairo_surface_t *master);
+
+cairo_public void
+cairo_tee_surface_add (cairo_surface_t *surface,
+		       cairo_surface_t *target);
+
+cairo_public void
+cairo_tee_surface_remove (cairo_surface_t *surface,
+			  cairo_surface_t *target);
+
+cairo_public cairo_surface_t *
+cairo_tee_surface_index (cairo_surface_t *surface,
+			 int index);
 
 /* Pattern creation functions */
 
@@ -2374,41 +2474,51 @@ cairo_public cairo_region_t *
 cairo_region_create_rectangle (const cairo_rectangle_int_t *rectangle);
 
 cairo_public cairo_region_t *
-cairo_region_copy (cairo_region_t *original);
+cairo_region_create_rectangles (const cairo_rectangle_int_t *rects,
+				int count);
+
+cairo_public cairo_region_t *
+cairo_region_copy (const cairo_region_t *original);
+
+cairo_public cairo_region_t *
+cairo_region_reference (cairo_region_t *);
 
 cairo_public void
 cairo_region_destroy (cairo_region_t *region);
 
+cairo_public cairo_bool_t
+cairo_region_equal (const cairo_region_t *a, const cairo_region_t *b);
+
 cairo_public cairo_status_t
-cairo_region_status (cairo_region_t *region);
+cairo_region_status (const cairo_region_t *region);
 
 cairo_public void
-cairo_region_get_extents (cairo_region_t        *region,
+cairo_region_get_extents (const cairo_region_t        *region,
 			  cairo_rectangle_int_t *extents);
 
 cairo_public int
-cairo_region_num_rectangles (cairo_region_t *region);
+cairo_region_num_rectangles (const cairo_region_t *region);
 
 cairo_public void
-cairo_region_get_rectangle (cairo_region_t        *region,
+cairo_region_get_rectangle (const cairo_region_t        *region,
 			    int                    nth_rectangle,
 			    cairo_rectangle_int_t *rectangle);
 
 cairo_public cairo_bool_t
-cairo_region_is_empty (cairo_region_t *region);
+cairo_region_is_empty (const cairo_region_t *region);
 
 cairo_public cairo_region_overlap_t
-cairo_region_contains_rectangle (cairo_region_t *region,
+cairo_region_contains_rectangle (const cairo_region_t *region,
 				 const cairo_rectangle_int_t *rectangle);
 
 cairo_public cairo_bool_t
-cairo_region_contains_point (cairo_region_t *region, int x, int y);
+cairo_region_contains_point (const cairo_region_t *region, int x, int y);
 
 cairo_public void
 cairo_region_translate (cairo_region_t *region, int dx, int dy);
 
 cairo_public cairo_status_t
-cairo_region_subtract (cairo_region_t *dst, cairo_region_t *other);
+cairo_region_subtract (cairo_region_t *dst, const cairo_region_t *other);
 
 cairo_public cairo_status_t
 cairo_region_subtract_rectangle (cairo_region_t *dst,

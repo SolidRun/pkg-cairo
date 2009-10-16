@@ -79,10 +79,51 @@ cairo_test_NaN (void)
 #endif
 }
 
+#define CAIRO_TEST_OUTPUT_DIR "output"
+
+#define CAIRO_TEST_LOG_SUFFIX ".log"
+
+/* What is a fail and what isn't?
+ * When running the test suite we want to detect unexpected output. This
+ * can be caused by a change we have made to cairo itself, or a change
+ * in our environment. To capture this we classify the expected output into 3
+ * classes:
+ *
+ *   REF  -- Perfect output.
+ *           Might be different for each backend, due to slight implementation
+ *           differences.
+ *
+ *   NEW  -- A new failure. We have uncovered a bug within cairo and have
+ *           recorded the current failure (along with the expected output
+ *           if possible!) so we can detect any changes in our attempt to
+ *           fix the bug.
+ *
+ *  XFAIL -- An external failure. We believe the cairo output is perfect,
+ *           but an external renderer is causing gross failure.
+ *           (We also use this to capture current WONTFIX issues within cairo,
+ *           such as overflow in internal coordinates, so as not to distract
+ *           us when regression testing.)
+ *
+ *  If no REF is given for a test, then it is assumed to be XFAIL.
+ */
+#define CAIRO_TEST_REF_SUFFIX ".ref"
+#define CAIRO_TEST_XFAIL_SUFFIX ".xfail"
+#define CAIRO_TEST_NEW_SUFFIX ".new"
+
+#define CAIRO_TEST_OUT_SUFFIX ".out"
+#define CAIRO_TEST_DIFF_SUFFIX ".diff"
+
+#define CAIRO_TEST_PNG_EXTENSION ".png"
+#define CAIRO_TEST_OUT_PNG CAIRO_TEST_OUT_SUFFIX CAIRO_TEST_PNG_EXTENSION
+#define CAIRO_TEST_REF_PNG CAIRO_TEST_REF_SUFFIX CAIRO_TEST_PNG_EXTENSION
+#define CAIRO_TEST_DIFF_PNG CAIRO_TEST_DIFF_SUFFIX CAIRO_TEST_PNG_EXTENSION
+
 typedef enum cairo_test_status {
     CAIRO_TEST_SUCCESS = 0,
     CAIRO_TEST_NO_MEMORY,
     CAIRO_TEST_FAILURE,
+    CAIRO_TEST_NEW,
+    CAIRO_TEST_XFAILURE,
     CAIRO_TEST_CRASHED,
     CAIRO_TEST_UNTESTED = 77 /* match automake's skipped exit status */
 } cairo_test_status_t;
@@ -101,8 +142,8 @@ struct _cairo_test {
     const char *description;
     const char *keywords;
     const char *requirements;
-    int width;
-    int height;
+    double width;
+    double height;
     cairo_test_preamble_function_t *preamble;
     cairo_test_draw_function_t *draw;
 };
@@ -133,19 +174,6 @@ struct _cairo_test {
  * one backend that is tested and if all tested backend pass according
  * to the four criteria above.
  */
-#if CAIRO_HAS_CONSTRUCTOR_ATTRIBUTE
-#define CAIRO_TEST(name, description, keywords, requirements, width, height, preamble, draw) \
-static void __attribute__((constructor)) _register_##name (void) \
-{\
-    static const cairo_test_t test = { \
-	#name, description, \
-	keywords, requirements, \
-	width, height, \
-	preamble, draw \
-    }; \
-    cairo_test_register (&test); \
-}
-#else
 #define CAIRO_TEST(name, description, keywords, requirements, width, height, preamble, draw) \
 void _register_##name (void); \
 void _register_##name (void) { \
@@ -157,7 +185,6 @@ void _register_##name (void) { \
     }; \
     cairo_test_register (&test); \
 }
-#endif
 
 void
 cairo_test_register (const cairo_test_t *test);
@@ -175,7 +202,6 @@ cairo_test_register (const cairo_test_t *test);
 struct _cairo_test_context {
     const cairo_test_t *test;
     const char *test_name;
-    cairo_test_status_t expectation;
 
     FILE *log_file;
     const char *srcdir; /* directory containing sources and input data */
@@ -187,11 +213,13 @@ struct _cairo_test_context {
 
     size_t num_targets;
     cairo_bool_t limited_targets;
-    cairo_boilerplate_target_t **targets_to_test;
+    const cairo_boilerplate_target_t **targets_to_test;
     cairo_bool_t own_targets;
 
     int malloc_failure;
     int last_fault_count;
+
+    int timeout;
 
     int thread;
 };
@@ -246,12 +274,14 @@ cairo_test_status_from_status (const cairo_test_context_t *ctx,
 			       cairo_status_t status);
 
 char *
-cairo_test_reference_image_filename (const cairo_test_context_t *ctx,
-	                             const char *base_name,
-				     const char *test_name,
-				     const char *target_name,
-				     const char *base_target_name,
-				     const char *format);
+cairo_test_reference_filename (const cairo_test_context_t *ctx,
+			       const char *base_name,
+			       const char *test_name,
+			       const char *target_name,
+			       const char *base_target_name,
+			       const char *format,
+			       const char *suffix,
+			       const char *extension);
 
 cairo_surface_t *
 cairo_test_get_reference_image (cairo_test_context_t *ctx,

@@ -65,6 +65,7 @@ cairo_private = \
 	cairo-gstate-private.h \
 	cairo-hash-private.h \
 	cairo-image-info-private.h \
+	cairo-list-private.h \
 	cairo-malloc-private.h \
 	cairo-meta-surface-private.h \
 	cairo-mutex-impl-private.h \
@@ -78,11 +79,16 @@ cairo_private = \
 	cairo-path-private.h \
 	cairo-private.h \
 	cairo-reference-count-private.h \
+	cairo-region-private.h \
+	cairo-rtree-private.h \
 	cairo-scaled-font-private.h \
-	cairo-skiplist-private.h \
+	cairo-slope-private.h \
 	cairo-spans-private.h \
 	cairo-surface-fallback-private.h \
 	cairo-surface-private.h \
+	cairo-surface-clipper-private.h \
+	cairo-surface-wrapper-private.h \
+	cairo-tee-surface-private.h \
 	cairo-types-private.h \
 	cairo-user-font-private.h \
 	cairo-wideint-private.h \
@@ -93,8 +99,11 @@ cairo_sources = \
 	cairo-arc.c \
 	cairo-array.c \
 	cairo-atomic.c \
+	cairo-base64-stream.c \
 	cairo-base85-stream.c \
 	cairo-bentley-ottmann.c \
+	cairo-bentley-ottmann-rectangular.c \
+	cairo-bentley-ottmann-rectilinear.c \
 	cairo.c \
 	cairo-cache.c \
 	cairo-clip.c \
@@ -129,18 +138,21 @@ cairo_sources = \
 	cairo-polygon.c \
 	cairo-rectangle.c \
 	cairo-region.c \
+	cairo-rtree.c \
 	cairo-scaled-font.c \
-	cairo-skiplist.c \
 	cairo-slope.c \
 	cairo-spans.c \
 	cairo-spline.c \
 	cairo-stroke-style.c \
 	cairo-surface.c \
 	cairo-surface-fallback.c \
-	cairo-tor-scan-converter.c \
+	cairo-surface-clipper.c \
+	cairo-surface-wrapper.c \
 	cairo-system.c \
-	cairo-traps.c \
+	cairo-tee-surface.c \
+	cairo-tor-scan-converter.c \
 	cairo-toy-font-face.c \
+	cairo-traps.c \
 	cairo-unicode.c \
 	cairo-user-font.c \
 	cairo-version.c \
@@ -164,6 +176,10 @@ _cairo_font_subset_sources = \
 cairo_private += $(_cairo_font_subset_private)
 cairo_sources += $(_cairo_font_subset_sources)
 
+cairo_glx_sources =
+cairo_egl_sources =
+cairo_eagle_sources =
+
 _cairo_pdf_operators_private = cairo-pdf-operators-private.h
 _cairo_pdf_operators_sources = cairo-pdf-operators.c
 cairo_private += $(_cairo_pdf_operators_private)
@@ -171,13 +187,21 @@ cairo_sources += $(_cairo_pdf_operators_sources)
 
 cairo_png_sources = cairo-png.c
 
+cairo_glew_sources = glew/glew.c
+cairo_glew_headers = glew/GL/glew.h glew/GL/glxew.h
+
 cairo_ps_headers = cairo-ps.h
 cairo_ps_private = cairo-ps-surface-private.h
 cairo_ps_sources = cairo-ps-surface.c
 
+cairo_deflate_stream_sources = cairo-deflate-stream.c
+
 cairo_pdf_headers = cairo-pdf.h
 cairo_pdf_private = cairo-pdf-surface-private.h
-cairo_pdf_sources = cairo-pdf-surface.c cairo-deflate-stream.c
+cairo_pdf_sources = cairo-pdf-surface.c
+if CAIRO_HAS_PDF_SURFACE
+req_cairo_deflate_stream_sources = $(cairo_deflate_stream_sources)
+endif
 
 cairo_svg_headers = cairo-svg.h
 cairo_svg_private = cairo-svg-surface-private.h
@@ -191,14 +215,16 @@ cairo_ft_sources = cairo-ft-font.c
 cairo_test_surfaces_private = \
 	test-fallback-surface.h \
 	test-fallback16-surface.h \
-	test-meta-surface.h \
+	test-null-surface.h \
 	test-paginated-surface.h \
+	test-wrapping-surface.h \
 	$(NULL)
 cairo_test_surfaces_sources = \
 	test-fallback-surface.c \
 	test-fallback16-surface.c \
-	test-meta-surface.c \
+	test-null-surface.c \
 	test-paginated-surface.c \
+	test-wrapping-surface.c \
 	$(NULL)
 
 cairo_xlib_headers = cairo-xlib.h
@@ -221,6 +247,9 @@ cairo_xlib_xrender_headers = cairo-xlib-xrender.h
 cairo_xcb_headers = cairo-xcb.h cairo-xcb-xrender.h
 cairo_xcb_sources = cairo-xcb-surface.c
 
+cairo_qt_headers = cairo-qt.h
+cairo_qt_sources = cairo-qt-surface.cpp
+
 cairo_quartz_headers = cairo-quartz.h
 cairo_quartz_private = cairo-quartz-private.h
 cairo_quartz_sources = cairo-quartz-surface.c
@@ -236,6 +265,9 @@ cairo_win32_sources = cairo-win32-surface.c cairo-win32-printing-surface.c
 
 cairo_win32_font_sources = cairo-win32-font.c
 
+cairo_skia_headers =
+cairo_skia_sources = cairo-skia-surface.cpp
+
 cairo_os2_headers = cairo-os2.h
 cairo_os2_private = cairo-os2-private.h
 cairo_os2_sources = cairo-os2-surface.c
@@ -245,6 +277,12 @@ cairo_os2_sources = cairo-os2-surface.c
 cairo_beos_headers = cairo-beos.h
 #cairo_beos_sources = cairo-beos-surface.cpp
 
+cairo_gl_headers = cairo-gl.h
+cairo_gl_private = cairo-gl-private.h
+cairo_gl_sources = cairo-gl-surface.c cairo-gl-glyphs.c
+cairo_glx_sources += cairo-glx-context.c
+cairo_eagle_sources += cairo-eagle-context.c
+
 cairo_glitz_headers = cairo-glitz.h
 cairo_glitz_private = cairo-glitz-private.h
 cairo_glitz_sources = cairo-glitz-surface.c
@@ -252,5 +290,31 @@ cairo_glitz_sources = cairo-glitz-surface.c
 cairo_directfb_headers = cairo-directfb.h
 cairo_directfb_sources = cairo-directfb-surface.c
 
+cairo_drm_headers = cairo-drm.h
+cairo_drm_private = drm/cairo-drm-private.h \
+		    drm/cairo-drm-intel-private.h \
+		    drm/cairo-drm-radeon-private.h
+cairo_drm_sources = drm/cairo-drm.c \
+		    drm/cairo-drm-bo.c \
+		    drm/cairo-drm-surface.c \
+		    drm/cairo-drm-intel.c \
+		    drm/cairo-drm-intel-surface.c \
+		    drm/cairo-drm-radeon.c \
+		    drm/cairo-drm-radeon-surface.c
+cairo_gallium_sources = drm/cairo-drm-gallium-surface.c
+
 cairo_script_headers = cairo-script.h
 cairo_script_sources = cairo-script-surface.c
+
+cairo_xml_headers = cairo-xml.h
+cairo_xml_sources = cairo-xml-surface.c
+if CAIRO_HAS_XML_SURFACE
+req_cairo_deflate_stream_sources = $(cairo_deflate_stream_sources)
+endif
+
+cairo_vg_headers = cairo-vg.h
+cairo_vg_sources = cairo-vg-surface.c
+
+cairo_sources += \
+		 $(req_cairo_deflate_stream_sources) \
+		 $(NULL)

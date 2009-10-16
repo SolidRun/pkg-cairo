@@ -32,14 +32,23 @@
    */
 #undef CAIRO_CAN_TEST_WIN32_PRINTING_SURFACE
 
-/* Define to 1 if your compiler supports __attribute__(constructor) */
-#undef CAIRO_HAS_CONSTRUCTOR_ATTRIBUTE
+/* Define to 1 to enable cairo's cairo-script-interpreter feature */
+#undef CAIRO_HAS_INTERPRETER
+
+/* Define to 1 if we have pthread support */
+#undef CAIRO_HAS_PTHREAD
 
 /* Define to 1 if libspectre is available */
 #undef CAIRO_HAS_SPECTRE
 
+/* Define to 1 to enable cairo's symbol-lookup feature */
+#undef CAIRO_HAS_SYMBOL_LOOKUP
+
 /* Define to 1 to enable cairo's test surfaces feature */
 #undef CAIRO_HAS_TEST_SURFACES
+
+/* Define to 1 to enable cairo's cairo-trace feature */
+#undef CAIRO_HAS_TRACE
 
 /* Define to 1 to disable certain code paths that rely heavily on double
    precision floating-point calculation */
@@ -49,8 +58,15 @@
    significant word first */
 #undef FLOAT_WORDS_BIGENDIAN
 
+/* Define to 1 if you have the `alarm' function. */
+#undef HAVE_ALARM
+
 /* Define to 1 if you have the binutils development files installed */
 #undef HAVE_BFD
+
+/* Define to 1 if your compiler supports the __builtin_return_address()
+   intrinsic. */
+#undef HAVE_BUILTIN_RETURN_ADDRESS
 
 /* Define to 1 if you have the <byteswap.h> header file. */
 #undef HAVE_BYTESWAP_H
@@ -84,6 +100,9 @@
 
 /* Define to 1 if you have the `feenableexcept' function. */
 #undef HAVE_FEENABLEEXCEPT
+
+/* Define to 1 if you have the <fenv.h> header file. */
+#undef HAVE_FENV_H
 
 /* Define to 1 if you have the `ffs' function. */
 #undef HAVE_FFS
@@ -120,6 +139,9 @@
 
 /* Define to 1 if you have the <libgen.h> header file. */
 #undef HAVE_LIBGEN_H
+
+/* Enable if you have libatomic-ops-dev installed */
+#undef HAVE_LIB_ATOMIC_OPS
 
 /* Define to 1 if you have the `link' function. */
 #undef HAVE_LINK
@@ -224,6 +246,9 @@
 /* Define to 1 if you have zlib available */
 #undef HAVE_ZLIB
 
+/* Define to 1 if the system has the type `__uint128_t'. */
+#undef HAVE___UINT128_T
+
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
@@ -243,8 +268,20 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* The size of `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of `long', as computed by sizeof. */
+#undef SIZEOF_LONG
+
+/* The size of `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
 
 /* The size of `size_t', as computed by sizeof. */
 #undef SIZEOF_SIZE_T

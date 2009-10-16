@@ -45,6 +45,7 @@
 #include "cairo-pdf.h"
 
 #include "cairo-surface-private.h"
+#include "cairo-surface-clipper-private.h"
 #include "cairo-pdf-operators-private.h"
 #include "cairo-path-fixed-private.h"
 
@@ -52,7 +53,10 @@ typedef struct _cairo_pdf_resource {
     unsigned int id;
 } cairo_pdf_resource_t;
 
+#define CAIRO_NUM_OPERATORS (CAIRO_OPERATOR_HSL_LUMINOSITY + 1)
+
 typedef struct _cairo_pdf_group_resources {
+    cairo_bool_t  operators[CAIRO_NUM_OPERATORS];
     cairo_array_t alphas;
     cairo_array_t smasks;
     cairo_array_t patterns;
@@ -60,19 +64,27 @@ typedef struct _cairo_pdf_group_resources {
     cairo_array_t fonts;
 } cairo_pdf_group_resources_t;
 
-typedef struct _cairo_pdf_pattern_entry {
+typedef struct _cairo_pdf_source_surface_entry {
     cairo_hash_entry_t base;
     unsigned int id;
-    cairo_pdf_resource_t pattern_res;
-    cairo_pdf_resource_t gstate_res;
-} cairo_pdf_pattern_entry_t;
+    cairo_bool_t interpolate;
+    cairo_pdf_resource_t surface_res;
+    int width;
+    int height;
+} cairo_pdf_source_surface_entry_t;
+
+typedef struct _cairo_pdf_source_surface {
+    cairo_surface_t *surface;
+    cairo_pdf_source_surface_entry_t *hash_entry;
+} cairo_pdf_source_surface_t;
 
 typedef struct _cairo_pdf_pattern {
     double width;
     double height;
     cairo_rectangle_int_t extents;
     cairo_pattern_t *pattern;
-    cairo_pdf_pattern_entry_t *hash_entry;
+    cairo_pdf_resource_t pattern_res;
+    cairo_pdf_resource_t gstate_res;
 } cairo_pdf_pattern_t;
 
 typedef enum _cairo_pdf_operation {
@@ -125,7 +137,8 @@ struct _cairo_pdf_surface {
     cairo_array_t rgb_linear_functions;
     cairo_array_t alpha_linear_functions;
     cairo_array_t page_patterns;
-    cairo_hash_table_t *all_patterns;
+    cairo_array_t page_surfaces;
+    cairo_hash_table_t *all_surfaces;
     cairo_array_t smask_groups;
     cairo_array_t knockout_group;
 
@@ -162,12 +175,15 @@ struct _cairo_pdf_surface {
 	cairo_bool_t is_knockout;
     } group_stream;
 
+    cairo_surface_clipper_t clipper;
+
     cairo_pdf_operators_t pdf_operators;
     cairo_paginated_mode_t paginated_mode;
     cairo_bool_t select_pattern_gstate_saved;
 
     cairo_bool_t force_fallbacks;
 
+    cairo_operator_t current_operator;
     cairo_bool_t current_pattern_is_solid_color;
     cairo_bool_t current_color_is_stroke;
     double current_color_red;

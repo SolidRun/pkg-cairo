@@ -30,11 +30,14 @@
 
 #define _GNU_SOURCE 1	/* for sched_getaffinity() and getline() */
 
+#include "../cairo-version.h" /* for the real version */
+
 #include "cairo-perf.h"
 #include "cairo-stats.h"
 
 #include "cairo-boilerplate-getopt.h"
 #include <cairo-script-interpreter.h>
+#include <cairo-types-private.h> /* for INTERNAL_SURFACE_TYPE */
 
 /* For basename */
 #ifdef HAVE_LIBGEN_H
@@ -43,16 +46,13 @@
 #include <ctype.h> /* isspace() */
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 
 #include <signal.h>
 
 #if HAVE_FCFINI
 #include <fontconfig/fontconfig.h>
-#endif
-
-#ifdef HAVE_SCHED_H
-#include <sched.h>
 #endif
 
 #define CAIRO_PERF_ITERATIONS_DEFAULT	15
@@ -66,12 +66,12 @@
  * loops wouldn't count the real work, just the recording by the
  * meta-surface. */
 static cairo_bool_t
-target_is_measurable (cairo_boilerplate_target_t *target)
+target_is_measurable (const cairo_boilerplate_target_t *target)
 {
     if (target->content != CAIRO_CONTENT_COLOR_ALPHA)
 	return FALSE;
 
-    switch (target->expected_type) {
+    switch ((int) target->expected_type) {
     case CAIRO_SURFACE_TYPE_IMAGE:
 	if (strcmp (target->name, "pdf") == 0 ||
 	    strcmp (target->name, "ps") == 0)
@@ -83,7 +83,8 @@ target_is_measurable (cairo_boilerplate_target_t *target)
 	    return TRUE;
 	}
     case CAIRO_SURFACE_TYPE_XLIB:
-	if (strcmp (target->name, "xlib-fallback") == 0)
+	if (strcmp (target->name, "xlib-fallback") == 0 ||
+	    strcmp (target->name, "xlib-reference") == 0)
 	{
 	    return FALSE;
 	}
@@ -97,8 +98,23 @@ target_is_measurable (cairo_boilerplate_target_t *target)
     case CAIRO_SURFACE_TYPE_WIN32:
     case CAIRO_SURFACE_TYPE_BEOS:
     case CAIRO_SURFACE_TYPE_DIRECTFB:
-#if CAIRO_VERSION_MAJOR > 1 || (CAIRO_VERSION_MAJOR == 1 && CAIRO_VERSION_MINOR > 2)
+#if CAIRO_VERSION > CAIRO_VERSION_ENCODE(1,1,2)
     case CAIRO_SURFACE_TYPE_OS2:
+#endif
+#if CAIRO_HAS_QT_SURFACE
+    case CAIRO_SURFACE_TYPE_QT:
+#endif
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,9,3)
+    case CAIRO_INTERNAL_SURFACE_TYPE_NULL:
+#endif
+#if CAIRO_HAS_GL_SURFACE
+    case CAIRO_SURFACE_TYPE_GL:
+#endif
+#if CAIRO_HAS_DRM_SURFACE
+    case CAIRO_SURFACE_TYPE_DRM:
+#endif
+#if CAIRO_HAS_SKIA_SURFACE
+    case CAIRO_SURFACE_TYPE_SKIA:
 #endif
 	return TRUE;
     case CAIRO_SURFACE_TYPE_PDF:
@@ -111,11 +127,21 @@ target_is_measurable (cairo_boilerplate_target_t *target)
 
 cairo_bool_t
 cairo_perf_can_run (cairo_perf_t	*perf,
-		    const char		*name)
+		    const char		*name,
+		    cairo_bool_t	*is_explicit)
 {
     unsigned int i;
     char *copy, *dot;
     cairo_bool_t ret;
+
+    if (is_explicit)
+	*is_explicit = FALSE;
+
+    if (perf->exact_names) {
+	if (is_explicit)
+	    *is_explicit = TRUE;
+	return TRUE;
+    }
 
     if (perf->num_names == 0 && perf->num_exclude_names == 0)
 	return TRUE;
@@ -128,8 +154,11 @@ cairo_perf_can_run (cairo_perf_t	*perf,
     if (perf->num_names) {
 	ret = TRUE;
 	for (i = 0; i < perf->num_names; i++)
-	    if (strstr (copy, perf->names[i]))
+	    if (strstr (copy, perf->names[i])) {
+		if (is_explicit)
+		    *is_explicit = strcmp (copy, perf->names[i]) == 0;
 		goto check_exclude;
+	    }
 
 	ret = FALSE;
 	goto done;
@@ -139,8 +168,11 @@ check_exclude:
     if (perf->num_exclude_names) {
 	ret = FALSE;
 	for (i = 0; i < perf->num_exclude_names; i++)
-	    if (strstr (copy, perf->exclude_names[i]))
+	    if (strstr (copy, perf->exclude_names[i])) {
+		if (is_explicit)
+		    *is_explicit = strcmp (copy, perf->exclude_names[i]) == 0;
 		goto done;
+	    }
 
 	ret = TRUE;
 	goto done;
@@ -239,6 +271,8 @@ execute (cairo_perf_t		 *perf,
     low_std_dev_count = 0;
     for (i = 0; i < perf->iterations && ! user_interrupt; i++) {
 	cairo_script_interpreter_t *csi;
+	cairo_status_t status;
+	unsigned int line_no;
 
 	csi = cairo_script_interpreter_create ();
 	cairo_script_interpreter_install_hooks (csi, &hooks);
@@ -253,7 +287,16 @@ execute (cairo_perf_t		 *perf,
 	times[i] = cairo_perf_timer_elapsed ();
 
 	cairo_script_interpreter_finish (csi);
-	cairo_script_interpreter_destroy (csi);
+	line_no = cairo_script_interpreter_get_line_number (csi);
+	status = cairo_script_interpreter_destroy (csi);
+	if (status) {
+	    if (perf->summary) {
+		fprintf (perf->summary, "Error during replay, line %d: %s\n",
+			 line_no,
+			 cairo_status_to_string (status));
+	    }
+	    goto out;
+	}
 
 	if (perf->raw) {
 	    if (i == 0)
@@ -287,11 +330,11 @@ execute (cairo_perf_t		 *perf,
 		     perf->target->name,
 		     name);
 	    fprintf (perf->summary,
-		     "%#8.3f %#8.3f %#5.2f%% %3d",
-		     stats.min_ticks / (double) cairo_perf_ticks_per_second (),
-		     stats.median_ticks / (double) cairo_perf_ticks_per_second (),
+		     "%#8.3f %#8.3f %#6.2f%% %4d/%d",
+		     (double) stats.min_ticks / cairo_perf_ticks_per_second (),
+		     (double) stats.median_ticks / cairo_perf_ticks_per_second (),
 		     stats.std_dev * 100.0,
-		     stats.iterations);
+		     stats.iterations, i+1);
 	    fflush (perf->summary);
 	}
     }
@@ -307,14 +350,15 @@ execute (cairo_perf_t		 *perf,
 		     name);
 	}
 	fprintf (perf->summary,
-		 "%#8.3f %#8.3f %#5.2f%% %3d\n",
-		 stats.min_ticks / (double) cairo_perf_ticks_per_second (),
-		 stats.median_ticks / (double) cairo_perf_ticks_per_second (),
+		 "%#8.3f %#8.3f %#6.2f%% %4d/%d\n",
+		 (double) stats.min_ticks / cairo_perf_ticks_per_second (),
+		 (double) stats.median_ticks / cairo_perf_ticks_per_second (),
 		 stats.std_dev * 100.0,
-		 stats.iterations);
+		 stats.iterations, i);
 	fflush (perf->summary);
     }
 
+out:
     if (perf->raw) {
 	printf ("\n");
 	fflush (stdout);
@@ -512,37 +556,6 @@ parse_options (cairo_perf_t *perf, int argc, char *argv[])
     }
 }
 
-static int
-check_cpu_affinity (void)
-{
-#ifdef HAVE_SCHED_GETAFFINITY
-    cpu_set_t affinity;
-    int i, cpu_count;
-
-    if (sched_getaffinity (0, sizeof (affinity), &affinity)) {
-        perror ("sched_getaffinity");
-        return -1;
-    }
-
-    for (i = 0, cpu_count = 0; i < CPU_SETSIZE; ++i) {
-        if (CPU_ISSET (i, &affinity))
-            ++cpu_count;
-    }
-
-    if (cpu_count > 1) {
-	fputs ("WARNING: cairo-perf has not been bound to a single CPU.\n",
-	       stderr);
-        return -1;
-    }
-
-    return 0;
-#else
-    fputs ("WARNING: Cannot check CPU affinity for this platform.\n",
-	   stderr);
-    return -1;
-#endif
-}
-
 static void
 cairo_perf_fini (cairo_perf_t *perf)
 {
@@ -571,7 +584,7 @@ have_trace_filenames (cairo_perf_t *perf)
 
 static void
 cairo_perf_trace (cairo_perf_t *perf,
-		  cairo_boilerplate_target_t *target,
+		  const cairo_boilerplate_target_t *target,
 		  const char *trace)
 {
     cairo_surface_t *surface;
@@ -599,6 +612,11 @@ cairo_perf_trace (cairo_perf_t *perf,
 
     if (target->cleanup)
 	target->cleanup (closure);
+
+    cairo_debug_reset_static_data ();
+#if HAVE_FCFINI
+    FcFini ();
+#endif
 }
 
 static void
@@ -613,28 +631,71 @@ warn_no_traces (const char *message, const char *trace_dir)
 	    message, trace_dir);
 }
 
+static int
+cairo_perf_trace_dir (cairo_perf_t *perf,
+		      const cairo_boilerplate_target_t *target,
+		      const char *dirname)
+{
+    DIR *dir;
+    struct dirent *de;
+    int num_traces = 0;
+    cairo_bool_t force;
+    cairo_bool_t is_explicit;
+
+    dir = opendir (dirname);
+    if (dir == NULL)
+	return 0;
+
+    force = FALSE;
+    if (cairo_perf_can_run (perf, dirname, &is_explicit))
+	force = is_explicit;
+
+    while ((de = readdir (dir)) != NULL) {
+	char *trace;
+	struct stat st;
+
+	if (de->d_name[0] == '.')
+	    continue;
+
+	xasprintf (&trace, "%s/%s", dirname, de->d_name);
+	if (stat (trace, &st) != 0)
+	    goto next;
+
+	if (S_ISDIR(st.st_mode)) {
+	    num_traces += cairo_perf_trace_dir (perf, target, trace);
+	} else {
+	    const char *dot;
+
+	    dot = strrchr (de->d_name, '.');
+	    if (dot == NULL)
+		goto next;
+	    if (strcmp (dot, ".trace"))
+		goto next;
+
+	    num_traces++;
+	    if (!force && ! cairo_perf_can_run (perf, de->d_name, NULL))
+		goto next;
+
+	    cairo_perf_trace (perf, target, trace);
+	}
+next:
+	free (trace);
+
+    }
+    closedir (dir);
+
+    return num_traces;
+}
+
 int
 main (int argc, char *argv[])
 {
     cairo_perf_t perf;
-    const char *trace_dir = "cairo-traces";
-    cairo_bool_t names_are_traces;
+    const char *trace_dir = "cairo-traces:/usr/src/cairo-traces:/usr/share/cairo-traces";
     unsigned int n;
     int i;
 
     parse_options (&perf, argc, argv);
-
-    if (! perf.list_only && check_cpu_affinity ()) {
-        fputs ("NOTICE: cairo-perf and the X server should be bound to CPUs (either the same\n"
-	       "or separate) on SMP systems. Not doing so causes random results when the X\n"
-	       "server is moved to or from cairo-perf's CPU during the benchmarks:\n"
-	       "\n"
-	       "    $ sudo taskset -cp 0 $(pidof X)\n"
-	       "    $ taskset -cp 1 $$\n"
-	       "\n"
-	       "See taskset(1) for information about changing CPU affinity.\n\n",
-	       stderr);
-    }
 
     signal (SIGINT, interrupt);
 
@@ -645,10 +706,10 @@ main (int argc, char *argv[])
     perf.times = xmalloc (perf.iterations * sizeof (cairo_perf_ticks_t));
 
     /* do we have a list of filenames? */
-    names_are_traces = have_trace_filenames (&perf);
+    perf.exact_names = have_trace_filenames (&perf);
 
     for (i = 0; i < perf.num_targets; i++) {
-        cairo_boilerplate_target_t *target = perf.targets[i];
+        const cairo_boilerplate_target_t *target = perf.targets[i];
 
 	if (! perf.list_only && ! target_is_measurable (target))
 	    continue;
@@ -656,42 +717,36 @@ main (int argc, char *argv[])
 	perf.target = target;
 	perf.test_number = 0;
 
-	if (names_are_traces) {
+	if (perf.exact_names) {
 	    for (n = 0; n < perf.num_names; n++) {
-		if (access (perf.names[n], R_OK) == 0)
-		    cairo_perf_trace (&perf, target, perf.names[n]);
+		struct stat st;
+
+		if (stat (perf.names[n], &st) == 0) {
+		    if (S_ISDIR (st.st_mode)) {
+			cairo_perf_trace_dir (&perf, target, perf.names[n]);
+		    } else
+			cairo_perf_trace (&perf, target, perf.names[n]);
+		}
 	    }
 	} else {
-	    DIR *dir;
-	    struct dirent *de;
 	    int num_traces = 0;
+	    const char *dir;
 
-	    dir = opendir (trace_dir);
-	    if (dir == NULL) {
-		warn_no_traces ("Failed to open directory", trace_dir);
-		return 1;
-	    }
+	    dir = trace_dir;
+	    do {
+		char buf[1024];
+		const char *end = strchr (dir, ':');
+		if (end != NULL) {
+		    memcpy (buf, dir, end-dir);
+		    buf[end-dir] = '\0';
+		    end++;
 
-	    while ((de = readdir (dir)) != NULL) {
-		char *trace;
-		const char *dot;
+		    dir = buf;
+		}
 
-		dot = strrchr (de->d_name, '.');
-		if (dot == NULL)
-		    continue;
-		if (strcmp (dot, ".trace"))
-		    continue;
-
-		num_traces++;
-		if (! cairo_perf_can_run (&perf, de->d_name))
-		    continue;
-
-		xasprintf (&trace, "%s/%s", trace_dir, de->d_name);
-		cairo_perf_trace (&perf, target, trace);
-		free (trace);
-
-	    }
-	    closedir (dir);
+		num_traces += cairo_perf_trace_dir (&perf, target, dir);
+		dir = end;
+	    } while (dir != NULL);
 
 	    if (num_traces == 0) {
 		warn_no_traces ("Found no traces in", trace_dir);

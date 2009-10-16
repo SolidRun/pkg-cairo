@@ -181,17 +181,6 @@ csi_array_free (csi_t *ctx, csi_array_t *array)
 #endif
 }
 
-csi_status_t
-csi_boolean_new (csi_t *ctx,
-		 csi_object_t *obj,
-		 csi_boolean_t v)
-{
-    obj->type = CSI_OBJECT_TYPE_BOOLEAN;
-    obj->datum.boolean = v;
-
-    return CSI_STATUS_SUCCESS;
-}
-
 static cairo_bool_t
 _dictionary_name_equal (const void *_a, const void *_b)
 {
@@ -351,17 +340,6 @@ csi_dictionary_remove (csi_t *ctx,
 }
 
 csi_status_t
-csi_integer_new (csi_t *ctx,
-		 csi_object_t *obj,
-		 csi_integer_t v)
-{
-    obj->type = CSI_OBJECT_TYPE_INTEGER;
-    obj->datum.integer = v;
-
-    return CSI_STATUS_SUCCESS;
-}
-
-csi_status_t
 csi_matrix_new (csi_t *ctx,
 		csi_object_t *obj)
 {
@@ -486,34 +464,12 @@ csi_name_new_static (csi_t *ctx,
 {
     csi_status_t status;
 
-    status = _csi_intern_string (ctx, &str, -1);
+    status = _csi_intern_string (ctx, &str, strlen (str));
     if (_csi_unlikely (status))
 	return status;
 
     obj->type = CSI_OBJECT_TYPE_NAME;
     obj->datum.name = (csi_name_t) str;
-
-    return CSI_STATUS_SUCCESS;
-}
-
-csi_status_t
-csi_operator_new (csi_t *ctx,
-		  csi_object_t *obj,
-		  csi_operator_t op)
-{
-    obj->type = CSI_OBJECT_TYPE_OPERATOR | CSI_OBJECT_ATTR_EXECUTABLE;
-    obj->datum.op = op;
-
-    return CSI_STATUS_SUCCESS;
-}
-
-csi_status_t
-csi_real_new (csi_t *ctx,
-	      csi_object_t *obj,
-	      csi_real_t v)
-{
-    obj->type = CSI_OBJECT_TYPE_REAL;
-    obj->datum.real = v;
 
     return CSI_STATUS_SUCCESS;
 }
@@ -546,15 +502,38 @@ csi_string_new (csi_t *ctx,
 	ctx->free_string = NULL;
     }
 
-    memcpy (string->string, str, len);
-    string->string[len] = '\0';
+    if (str != NULL) {
+	memcpy (string->string, str, len);
+	string->string[len] = '\0';
+    }
     string->len = len;
+    string->deflate = 0;
 
     string->base.type = CSI_OBJECT_TYPE_STRING;
     string->base.ref = 1;
 
     obj->type = CSI_OBJECT_TYPE_STRING;
     obj->datum.string = string;
+
+    return CSI_STATUS_SUCCESS;
+}
+
+csi_status_t
+csi_string_deflate_new (csi_t *ctx,
+			csi_object_t *obj,
+			void *bytes,
+			int in_len,
+			int out_len)
+{
+    csi_status_t status;
+    csi_string_t *string;
+
+    status = csi_string_new (ctx, obj, bytes, in_len);
+    if (_csi_unlikely (status))
+	return status;
+
+    string = obj->datum.string;
+    string->deflate = out_len;
 
     return CSI_STATUS_SUCCESS;
 }
@@ -576,6 +555,7 @@ csi_string_new_from_bytes (csi_t *ctx,
 
     string->string = bytes;
     string->len = len;
+    string->deflate = 0;
 
     string->base.type = CSI_OBJECT_TYPE_STRING;
     string->base.ref = 1;
@@ -599,7 +579,7 @@ _csi_string_execute (csi_t *ctx, csi_string_t *string)
     if (_csi_unlikely (status))
 	return status;
 
-    status = _csi_scan_file (ctx, &ctx->scanner, obj.datum.file);
+    status = _csi_scan_file (ctx, obj.datum.file);
     csi_object_free (ctx, &obj);
 
     return status;
@@ -740,8 +720,8 @@ csi_object_as_file (csi_t *ctx,
 		    csi_object_t *src,
 		    csi_object_t *file)
 {
-
-    switch ((int) csi_object_get_type (src)) {
+    int type = csi_object_get_type (src);
+    switch (type) {
     case CSI_OBJECT_TYPE_FILE:
 	*file = *csi_object_reference (src);
 	return CSI_STATUS_SUCCESS;

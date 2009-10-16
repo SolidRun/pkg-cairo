@@ -94,12 +94,15 @@ the software configuration used to generate the reference images.
 
 Here are some of the relevant details:
 
-  * Your system must have a copy of the Bitstream Vera font. These are
-      "Bitstream Vera Sans" (Vera.ttf);
-      "Bitstream Vera Sans Mono" (VeraMono.ttf);
-      "Bitstream Vera Serif" (VeraSe.ttf);
+  * Your system must have a copy of the Bitstream Vera font, the sha1sum of
+    the version used are listed in [...].  These are
+      "Bitstream Vera Sans" (Vera.ttf) [1d7f6fa0c34e3d50be52c16a0816bebac309fe41];
+      "Bitstream Vera Sans Mono" (VeraMono.ttf) [2c2e2ded3c903b5186f955871109f084edef4dbe];
+      "Bitstream Vera Serif" (VeraSe.ttf) [838645f09501d53647dd5edf5b961a8f8290613a];
+      [the Bitstream fonts can be installed from the ttf-dejavu Debian package]
     and also
-      "Nimbus Sans L" (n019003l.pfb).
+      "Nimbus Sans L" (n019003l.pfb)
+      [which can be found in the gsfonts Debian package].
 
   * Currently, you must be using a build of cairo using freetype
     (cairo-ft) as the default font backend. Otherwise all tests
@@ -114,7 +117,7 @@ Here are some of the relevant details:
     the fixes you will need to avoid false negatives from the test
     suite.
 
-  * To test the ps backend, you will need ghostscript version 8.62.
+  * To test the ps backend, you will need ghostscript version 8.64.
 
   * Testing the xlib backend is problematic since many X server
     drivers have bugs that are exercised by the test suite. (Or, if
@@ -291,6 +294,17 @@ Incorrect clipping of group object (regression?)
 https://bugs.freedesktop.org/show_bug.cgi?id=14580
 --------------------------------------------------
 push-group
+
+spurious horizontal stripes in color gradients
+https://bugs.freedesktop.org/show_bug.cgi?id=10942
+--------------------------------------------------
+smask 
+smask-fill 
+smask-image-mask 
+smask-mask 
+smask-paint 
+smask-stroke 
+smask-text
 
 Ghostscript does not correctly render small miters
 http://bugs.ghostscript.com/show_bug.cgi?id=690098

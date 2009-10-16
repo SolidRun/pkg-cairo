@@ -24,8 +24,7 @@
  * Author: Carl D. Worth <cworth@cworth.org>
  */
 
-#include "cairo-boilerplate.h"
-#include "cairo-boilerplate-glitz-private.h"
+#include "cairo-boilerplate-private.h"
 
 #if CAIRO_CAN_TEST_GLITZ_GLX_SURFACE
 #include <cairo-glitz.h>
@@ -34,7 +33,6 @@
 static const cairo_user_data_key_t glitz_closure_key;
 
 typedef struct _glitz_glx_target_closure {
-    glitz_target_closure_base_t base;
     Display        *dpy;
     int             scr;
     Window          win;
@@ -151,13 +149,13 @@ _cairo_boilerplate_glitz_glx_create_surface_internal (glitz_format_name_t		 form
     return NULL;
 }
 
-cairo_surface_t *
+static cairo_surface_t *
 _cairo_boilerplate_glitz_glx_create_surface (const char			 *name,
-					     cairo_content_t 		  content,
-					     int			  width,
-					     int			  height,
-					     int			  max_width,
-					     int			  max_height,
+					     cairo_content_t		  content,
+					     double			  width,
+					     double			  height,
+					     double			  max_width,
+					     double			  max_height,
 					     cairo_boilerplate_mode_t	  mode,
 					     int                          id,
 					     void			**closure)
@@ -207,9 +205,6 @@ _cairo_boilerplate_glitz_glx_create_surface (const char			 *name,
     if (cairo_surface_status (surface))
 	goto FAIL_CLOSE_DISPLAY;
 
-    gxtc->base.width = width;
-    gxtc->base.height = height;
-    gxtc->base.content = content;
     status = cairo_surface_set_user_data (surface,
 					  &glitz_closure_key, gxtc, NULL);
     if (status == CAIRO_STATUS_SUCCESS)
@@ -226,7 +221,7 @@ _cairo_boilerplate_glitz_glx_create_surface (const char			 *name,
     return surface;
 }
 
-void
+static void
 _cairo_boilerplate_glitz_glx_cleanup (void *closure)
 {
     glitz_glx_target_closure_t *gxtc = closure;
@@ -242,3 +237,29 @@ _cairo_boilerplate_glitz_glx_cleanup (void *closure)
 }
 
 #endif
+
+static const cairo_boilerplate_target_t targets[] = {
+#if CAIRO_CAN_TEST_GLITZ_GLX_SURFACE
+    {
+	"glitz-glx", "glitz", NULL, NULL,
+	CAIRO_SURFACE_TYPE_GLITZ,CAIRO_CONTENT_COLOR_ALPHA, 0,
+	"cairo_glitz_surface_create",
+	_cairo_boilerplate_glitz_glx_create_surface,
+	NULL, NULL,
+	_cairo_boilerplate_get_image_surface,
+	cairo_surface_write_to_png,
+	_cairo_boilerplate_glitz_glx_cleanup
+    },
+    {
+	"glitz-glx", "glitz", NULL, NULL,
+	CAIRO_SURFACE_TYPE_GLITZ, CAIRO_CONTENT_COLOR, 0,
+	"cairo_glitz_surface_create",
+	_cairo_boilerplate_glitz_glx_create_surface,
+	NULL, NULL,
+	_cairo_boilerplate_get_image_surface,
+	cairo_surface_write_to_png,
+	_cairo_boilerplate_glitz_glx_cleanup
+    },
+#endif
+};
+CAIRO_BOILERPLATE (glitz_glx, targets)

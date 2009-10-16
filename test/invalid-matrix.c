@@ -29,12 +29,12 @@
 
 #include "cairo-test.h"
 
-#if !defined(INFINITY) && defined(_MSC_VER)
+#if !defined(INFINITY)
 #define INFINITY HUGE_VAL
 #endif
 
-#if HAVE_FEDISABLEEXCEPT || HAVE_FECLEAREXCEPT
-#include <fenv.h>
+#if HAVE_FENV_H
+# include <fenv.h>
 #endif
 
 static cairo_test_status_t

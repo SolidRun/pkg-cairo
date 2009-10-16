@@ -41,6 +41,8 @@
 
 #include "cairo-script-interpreter.h"
 
+#include <setjmp.h>
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -81,14 +83,14 @@
 #ifndef bswap_16
 # define bswap_16(p) \
 	(((((uint16_t)(p)) & 0x00ff) << 8) | \
-	  (((uint16_t)(p))           >> 8));
+	  (((uint16_t)(p))           >> 8))
 #endif
 #ifndef bswap_32
 # define bswap_32(p) \
          (((((uint32_t)(p)) & 0x000000ff) << 24) | \
 	  ((((uint32_t)(p)) & 0x0000ff00) << 8)  | \
 	  ((((uint32_t)(p)) & 0x00ff0000) >> 8)  | \
-	  ((((uint32_t)(p)))              >> 24));
+	  ((((uint32_t)(p)))              >> 24))
 #endif
 
 
@@ -351,8 +353,6 @@ struct _csi_list {
 };
 
 struct _csi_buffer {
-    csi_status_t status;
-
     char *base, *ptr, *end;
     unsigned int size;
 };
@@ -386,6 +386,7 @@ struct _csi_matrix {
 struct _csi_string {
     csi_compound_object_t base;
     csi_integer_t len;
+    csi_integer_t deflate;
     char *string;
 };
 
@@ -404,6 +405,7 @@ struct _csi_file {
 	PROCEDURE,
 	FILTER
     } type;
+    unsigned int flags;
     void *src;
     void *data;
     uint8_t *bp;
@@ -423,24 +425,22 @@ union _csi_union_object {
 };
 
 struct _csi_scanner {
-    csi_status_t status;
+    jmp_buf jmpbuf;
+    int depth;
 
-    enum {
-	NONE,
-	TOKEN,
-	COMMENT,
-	STRING,
-	HEX,
-	BASE85
-    } state;
+    int bind;
+    csi_status_t (*push) (csi_t *ctx, csi_object_t *obj);
+    csi_status_t (*execute) (csi_t *ctx, csi_object_t *obj);
+    void *closure;
 
     csi_buffer_t buffer;
     csi_stack_t procedure_stack;
     csi_object_t build_procedure;
 
-    int string_p;
     unsigned int accumulator;
     unsigned int accumulator_count;
+
+    unsigned int line_number;
 };
 
 typedef cairo_script_interpreter_hooks_t csi_hooks_t;
@@ -475,6 +475,8 @@ struct _cairo_script_interpreter {
     csi_dictionary_t *free_dictionary;
     csi_string_t *free_string;
 
+    csi_operator_t opcode[256];
+
     /* caches of live data */
     csi_list_t *_images;
     csi_list_t *_faces;
@@ -501,6 +503,11 @@ csi_private csi_status_t
 csi_file_new (csi_t *ctx,
 	      csi_object_t *obj,
 	      const char *path, const char *mode);
+
+csi_private csi_status_t
+csi_file_new_for_stream (csi_t *ctx,
+	                 csi_object_t *obj,
+			 FILE *stream);
 
 csi_private csi_status_t
 csi_file_new_for_bytes (csi_t *ctx,
@@ -648,10 +655,13 @@ csi_array_append (csi_t *ctx,
 csi_private void
 csi_array_free (csi_t *ctx, csi_array_t *array);
 
-csi_private csi_status_t
-csi_boolean_new (csi_t *ctx,
-		 csi_object_t *obj,
-		 csi_boolean_t v);
+static inline void
+csi_boolean_new (csi_object_t *obj,
+		 csi_boolean_t v)
+{
+    obj->type = CSI_OBJECT_TYPE_BOOLEAN;
+    obj->datum.boolean = v;
+}
 
 csi_private csi_status_t
 csi_dictionary_new (csi_t *ctx,
@@ -682,10 +692,14 @@ csi_private void
 csi_dictionary_free (csi_t *ctx,
 		     csi_dictionary_t *dict);
 
-csi_private csi_status_t
-csi_integer_new (csi_t *ctx,
-		 csi_object_t *obj,
-		 csi_integer_t v);
+static inline void
+csi_integer_new (csi_object_t *obj,
+		 csi_integer_t v)
+{
+    obj->type = CSI_OBJECT_TYPE_INTEGER;
+    obj->datum.integer = v;
+}
+
 
 csi_private csi_status_t
 csi_matrix_new (csi_t *ctx,
@@ -721,21 +735,34 @@ csi_name_new_static (csi_t *ctx,
 		     csi_object_t *obj,
 		     const char *str);
 
-csi_private csi_status_t
-csi_operator_new (csi_t *ctx,
-		  csi_object_t *obj,
-		  csi_operator_t op);
+static inline void
+csi_operator_new (csi_object_t *obj,
+		  csi_operator_t op)
+{
+    obj->type = CSI_OBJECT_TYPE_OPERATOR | CSI_OBJECT_ATTR_EXECUTABLE;
+    obj->datum.op = op;
+}
 
-csi_private csi_status_t
-csi_real_new (csi_t *ctx,
-	      csi_object_t *obj,
-	      csi_real_t v);
+static inline void
+csi_real_new (csi_object_t *obj,
+	      csi_real_t v)
+{
+    obj->type = CSI_OBJECT_TYPE_REAL;
+    obj->datum.real = v;
+}
 
 csi_private csi_status_t
 csi_string_new (csi_t *ctx,
 		csi_object_t *obj,
 		const char *str,
 		int len);
+
+csi_private csi_status_t
+csi_string_deflate_new (csi_t *ctx,
+			csi_object_t *obj,
+			void *bytes,
+			int in_len,
+			int out_len);
 
 csi_private csi_status_t
 csi_string_new_from_bytes (csi_t *ctx,
@@ -787,10 +814,19 @@ csi_private csi_status_t
 _csi_scanner_init (csi_t *ctx, csi_scanner_t *scanner);
 
 csi_private csi_status_t
-_csi_scan_file (csi_t *ctx, csi_scanner_t *scan, csi_file_t *src);
+_csi_scan_file (csi_t *ctx, csi_file_t *src);
+
+csi_private csi_status_t
+_csi_translate_file (csi_t *ctx,
+	             csi_file_t *file,
+		     cairo_write_func_t write_func,
+		     void *closure);
 
 csi_private void
 _csi_scanner_fini (csi_t *ctx, csi_scanner_t *scanner);
+
+csi_private csi_boolean_t
+_csi_parse_number (csi_object_t *obj, const char *s, int len);
 
 /* cairo-script-stack.c */
 
@@ -837,7 +873,8 @@ csi_object_is_procedure (const csi_object_t *obj)
 static inline csi_boolean_t
 csi_object_is_number (const csi_object_t *obj)
 {
-    switch ((int) csi_object_get_type (obj)) {
+    int type = csi_object_get_type (obj);
+    switch (type) {
     case CSI_OBJECT_TYPE_BOOLEAN:
     case CSI_OBJECT_TYPE_INTEGER:
     case CSI_OBJECT_TYPE_REAL:
@@ -850,7 +887,8 @@ csi_object_is_number (const csi_object_t *obj)
 static inline double
 csi_number_get_value (const csi_object_t *obj)
 {
-    switch ((int) csi_object_get_type (obj)) {
+    int type = csi_object_get_type (obj);
+    switch (type) {
     case CSI_OBJECT_TYPE_BOOLEAN: return obj->datum.boolean;
     case CSI_OBJECT_TYPE_INTEGER: return obj->datum.integer;
     case CSI_OBJECT_TYPE_REAL: return obj->datum.real;

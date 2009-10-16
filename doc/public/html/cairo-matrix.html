@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cairo_matrix_t</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-support.html" title="Utilities">
 <link rel="prev" href="cairo-support.html" title="Utilities">
@@ -73,7 +73,7 @@ void                <a class="link" href="cairo-matrix.html#cairo-matrix-scale" 
                                                          double sy);
 void                <a class="link" href="cairo-matrix.html#cairo-matrix-rotate" title="cairo_matrix_rotate ()">cairo_matrix_rotate</a>                 (<a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *matrix,
                                                          double radians);
-<a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      <a class="link" href="cairo-matrix.html#cairo-matrix-invert" title="cairo_matrix_invert ()">cairo_matrix_invert</a>                 (<a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *matrix);
+<a class="link" href="cairo-error-status.html#cairo-status-t" title="cairo_status_t ()">cairo_status_t</a>      <a class="link" href="cairo-matrix.html#cairo-matrix-invert" title="cairo_matrix_invert ()">cairo_matrix_invert</a>                 (<a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *matrix);
 void                <a class="link" href="cairo-matrix.html#cairo-matrix-multiply" title="cairo_matrix_multiply ()">cairo_matrix_multiply</a>               (<a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *result,
                                                          const <a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *a,
                                                          const <a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *b);
@@ -436,7 +436,7 @@ direction.
 <hr>
 <div class="refsect2" title="cairo_matrix_invert ()">
 <a name="cairo-matrix-invert"></a><h3>cairo_matrix_invert ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_matrix_invert                 (<a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *matrix);</pre>
+<pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="cairo_status_t ()">cairo_status_t</a>      cairo_matrix_invert                 (<a class="link" href="cairo-matrix.html#cairo-matrix-t" title="cairo_matrix_t">cairo_matrix_t</a> *matrix);</pre>
 <p>
 Changes <em class="parameter"><code>matrix</code></em> to be the inverse of its original value. Not
 all transformation matrices have inverses; if the matrix
@@ -455,8 +455,8 @@ then it has no inverse and this function will fail.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> If <em class="parameter"><code>matrix</code></em> has an inverse, modifies <em class="parameter"><code>matrix</code></em> to
- be the inverse matrix and returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a>. Otherwise,
- returns <a class="link" href="cairo-error-status.html#CAIRO-STATUS-INVALID-MATRIX--CAPS"><code class="literal">CAIRO_STATUS_INVALID_MATRIX</code></a>.
+ be the inverse matrix and returns <code class="literal">CAIRO_STATUS_SUCCESS</code>. Otherwise,
+ returns <code class="literal">CAIRO_STATUS_INVALID_MATRIX</code>.
 </td>
 </tr>
 </tbody>

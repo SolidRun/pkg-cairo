@@ -49,6 +49,16 @@ enabled_cairo_boilerplate_private += $(cairo_boilerplate_xcb_private)
 enabled_cairo_boilerplate_sources += $(cairo_boilerplate_xcb_sources)
 endif
 
+unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_qt_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_qt_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_qt_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_qt_sources)
+ifeq ($(CAIRO_HAS_QT_SURFACE),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_qt_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_qt_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_qt_sources)
+endif
+
 supported_cairo_boilerplate_headers += $(cairo_boilerplate_quartz_headers)
 all_cairo_boilerplate_headers += $(cairo_boilerplate_quartz_headers)
 all_cairo_boilerplate_private += $(cairo_boilerplate_quartz_private)
@@ -99,6 +109,16 @@ enabled_cairo_boilerplate_private += $(cairo_boilerplate_win32_font_private)
 enabled_cairo_boilerplate_sources += $(cairo_boilerplate_win32_font_sources)
 endif
 
+unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_skia_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_skia_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_skia_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_skia_sources)
+ifeq ($(CAIRO_HAS_SKIA_SURFACE),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_skia_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_skia_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_skia_sources)
+endif
+
 unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_os2_headers)
 all_cairo_boilerplate_headers += $(cairo_boilerplate_os2_headers)
 all_cairo_boilerplate_private += $(cairo_boilerplate_os2_private)
@@ -119,6 +139,26 @@ enabled_cairo_boilerplate_private += $(cairo_boilerplate_beos_private)
 enabled_cairo_boilerplate_sources += $(cairo_boilerplate_beos_sources)
 endif
 
+unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_drm_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_drm_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_drm_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_drm_sources)
+ifeq ($(CAIRO_HAS_DRM_SURFACE),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_drm_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_drm_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_drm_sources)
+endif
+
+unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_gallium_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_gallium_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_gallium_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_gallium_sources)
+ifeq ($(CAIRO_HAS_GALLIUM_SURFACE),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_gallium_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_gallium_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_gallium_sources)
+endif
+
 supported_cairo_boilerplate_headers += $(cairo_boilerplate_png_headers)
 all_cairo_boilerplate_headers += $(cairo_boilerplate_png_headers)
 all_cairo_boilerplate_private += $(cairo_boilerplate_png_private)
@@ -127,6 +167,16 @@ ifeq ($(CAIRO_HAS_PNG_FUNCTIONS),1)
 enabled_cairo_boilerplate_headers += $(cairo_boilerplate_png_headers)
 enabled_cairo_boilerplate_private += $(cairo_boilerplate_png_private)
 enabled_cairo_boilerplate_sources += $(cairo_boilerplate_png_sources)
+endif
+
+unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_gl_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_gl_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_gl_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_gl_sources)
+ifeq ($(CAIRO_HAS_GL_SURFACE),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_gl_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_gl_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_gl_sources)
 endif
 
 unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_glitz_headers)
@@ -147,6 +197,46 @@ ifeq ($(CAIRO_HAS_DIRECTFB_SURFACE),1)
 enabled_cairo_boilerplate_headers += $(cairo_boilerplate_directfb_headers)
 enabled_cairo_boilerplate_private += $(cairo_boilerplate_directfb_private)
 enabled_cairo_boilerplate_sources += $(cairo_boilerplate_directfb_sources)
+endif
+
+unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_vg_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_vg_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_vg_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_vg_sources)
+ifeq ($(CAIRO_HAS_VG_SURFACE),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_vg_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_vg_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_vg_sources)
+endif
+
+supported_cairo_boilerplate_headers += $(cairo_boilerplate_eagle_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_eagle_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_eagle_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_eagle_sources)
+ifeq ($(CAIRO_HAS_EAGLE_FUNCTIONS),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_eagle_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_eagle_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_eagle_sources)
+endif
+
+supported_cairo_boilerplate_headers += $(cairo_boilerplate_egl_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_egl_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_egl_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_egl_sources)
+ifeq ($(CAIRO_HAS_EGL_FUNCTIONS),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_egl_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_egl_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_egl_sources)
+endif
+
+supported_cairo_boilerplate_headers += $(cairo_boilerplate_glx_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_glx_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_glx_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_glx_sources)
+ifeq ($(CAIRO_HAS_GLX_FUNCTIONS),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_glx_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_glx_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_glx_sources)
 endif
 
 unsupported_cairo_boilerplate_headers += $(cairo_boilerplate_script_headers)
@@ -224,6 +314,32 @@ enabled_cairo_boilerplate_headers += $(cairo_boilerplate_image_headers)
 enabled_cairo_boilerplate_private += $(cairo_boilerplate_image_private)
 enabled_cairo_boilerplate_sources += $(cairo_boilerplate_image_sources)
 
+supported_cairo_boilerplate_headers += $(cairo_boilerplate_meta_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_meta_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_meta_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_meta_sources)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_meta_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_meta_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_meta_sources)
+
+supported_cairo_boilerplate_headers += $(cairo_boilerplate_tee_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_tee_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_tee_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_tee_sources)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_tee_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_tee_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_tee_sources)
+
+supported_cairo_boilerplate_headers += $(cairo_boilerplate_xml_headers)
+all_cairo_boilerplate_headers += $(cairo_boilerplate_xml_headers)
+all_cairo_boilerplate_private += $(cairo_boilerplate_xml_private)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_xml_sources)
+ifeq ($(CAIRO_HAS_XML_SURFACE),1)
+enabled_cairo_boilerplate_headers += $(cairo_boilerplate_xml_headers)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_xml_private)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_xml_sources)
+endif
+
 supported_cairo_boilerplate_headers += $(cairo_boilerplate_user_headers)
 all_cairo_boilerplate_headers += $(cairo_boilerplate_user_headers)
 all_cairo_boilerplate_private += $(cairo_boilerplate_user_private)
@@ -231,3 +347,24 @@ all_cairo_boilerplate_sources += $(cairo_boilerplate_user_sources)
 enabled_cairo_boilerplate_headers += $(cairo_boilerplate_user_headers)
 enabled_cairo_boilerplate_private += $(cairo_boilerplate_user_private)
 enabled_cairo_boilerplate_sources += $(cairo_boilerplate_user_sources)
+
+all_cairo_boilerplate_private += $(cairo_boilerplate_trace_private) $(cairo_boilerplate_trace_headers)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_trace_sources)
+ifeq ($(CAIRO_HAS_TRACE),1)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_trace_private) $(cairo_boilerplate_trace_headers)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_trace_sources)
+endif
+
+all_cairo_boilerplate_private += $(cairo_boilerplate_interpreter_private) $(cairo_boilerplate_interpreter_headers)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_interpreter_sources)
+ifeq ($(CAIRO_HAS_INTERPRETER),1)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_interpreter_private) $(cairo_boilerplate_interpreter_headers)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_interpreter_sources)
+endif
+
+all_cairo_boilerplate_private += $(cairo_boilerplate_symbol_lookup_private) $(cairo_boilerplate_symbol_lookup_headers)
+all_cairo_boilerplate_sources += $(cairo_boilerplate_symbol_lookup_sources)
+ifeq ($(CAIRO_HAS_SYMBOL_LOOKUP),1)
+enabled_cairo_boilerplate_private += $(cairo_boilerplate_symbol_lookup_private) $(cairo_boilerplate_symbol_lookup_headers)
+enabled_cairo_boilerplate_sources += $(cairo_boilerplate_symbol_lookup_sources)
+endif

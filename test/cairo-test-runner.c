@@ -49,6 +49,15 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #endif
+#if HAVE_LIBGEN_H
+#include <libgen.h>
+#endif
+
+#if HAVE_VALGRIND
+#include <valgrind.h>
+#else
+#define RUNNING_ON_VALGRIND 0
+#endif
 
 #ifdef _MSC_VER
 #include <crtdbg.h>
@@ -66,21 +75,22 @@ typedef struct _cairo_test_runner {
 
     cairo_bool_t passed;
     int num_passed;
-    int num_xpassed;
     int num_skipped;
     int num_failed;
     int num_xfailed;
     int num_crashed;
 
+    cairo_test_list_t *crashes_preamble;
+    cairo_test_list_t *fails_preamble;
+
     cairo_test_list_t **crashes_per_target;
     cairo_test_list_t **fails_per_target;
-    cairo_test_list_t **xpasses_per_target;
 
     int *num_failed_per_target;
     int *num_crashed_per_target;
-    int *num_xpassed_per_target;
 
     cairo_bool_t foreground;
+    cairo_bool_t exit_on_failure;
     cairo_bool_t list_only;
     cairo_bool_t full_test;
 } cairo_test_runner_t;
@@ -143,6 +153,26 @@ _list_free (cairo_test_list_t *list)
 	free (list);
 	list = next;
     }
+}
+
+static cairo_bool_t
+is_running_under_debugger (void)
+{
+    char buf[1024];
+
+    if (RUNNING_ON_VALGRIND)
+	return TRUE;
+
+#if HAVE_UNISTD_H && HAVE_LIBGEN_H && __linux__
+    sprintf (buf, "/proc/%d/exe", getppid ());
+    if (readlink (buf, buf, sizeof (buf)) != -1 &&
+	strncmp (basename (buf), "gdb", 3) == 0)
+    {
+	return TRUE;
+    }
+#endif
+
+    return FALSE;
 }
 
 #if SHOULD_FORK
@@ -285,7 +315,7 @@ static void
 usage (const char *argv0)
 {
     fprintf (stderr,
-	     "Usage: %s [-af] [test-names|keywords ...]\n"
+	     "Usage: %s [-afx] [test-names|keywords ...]\n"
 	     "       %s -l\n"
 	     "\n"
 	     "Run the cairo conformance test suite over the given tests (all by default)\n"
@@ -294,6 +324,7 @@ usage (const char *argv0)
 	     "  -a	all; run the full set of tests. By default the test suite\n"
 	     "          skips similar surface and device offset testing.\n"
 	     "  -f	foreground; do not fork\n"
+	     "  -x	exit on first failure\n"
 	     "  -l	list only; just list selected test case names without executing\n"
 	     "\n"
 	     "If test names are given they are used as exact matches either to a specific\n"
@@ -308,7 +339,7 @@ _parse_cmdline (cairo_test_runner_t *runner, int *argc, char **argv[])
     int c;
 
     while (1) {
-	c = _cairo_getopt (*argc, *argv, ":afl");
+	c = _cairo_getopt (*argc, *argv, ":aflx");
 	if (c == -1)
 	    break;
 
@@ -321,6 +352,9 @@ _parse_cmdline (cairo_test_runner_t *runner, int *argc, char **argv[])
 	    break;
 	case 'f':
 	    runner->foreground = TRUE;
+	    break;
+	case 'x':
+	    runner->exit_on_failure = TRUE;
 	    break;
 	default:
 	    fprintf (stderr, "Internal error: unhandled option: %c\n", c);
@@ -342,14 +376,13 @@ _runner_init (cairo_test_runner_t *runner)
 
     runner->passed = TRUE;
 
-    runner->xpasses_per_target = xcalloc (sizeof (cairo_test_list_t *),
-					  runner->base.num_targets);
+    runner->fails_preamble = NULL;
+    runner->crashes_preamble = NULL;
+
     runner->fails_per_target = xcalloc (sizeof (cairo_test_list_t *),
 					runner->base.num_targets);
     runner->crashes_per_target = xcalloc (sizeof (cairo_test_list_t *),
 					  runner->base.num_targets);
-    runner->num_xpassed_per_target = xcalloc (sizeof (int),
-					      runner->base.num_targets);
     runner->num_failed_per_target = xcalloc (sizeof (int),
 					     runner->base.num_targets);
     runner->num_crashed_per_target = xcalloc (sizeof (int),
@@ -373,9 +406,8 @@ static void
 _runner_print_summary (cairo_test_runner_t *runner)
 {
     _log (&runner->base,
-	  "%d Passed [%d unexpectedly], %d Failed [%d crashed, %d expected], %d Skipped\n",
-	  runner->num_passed + runner->num_xpassed,
-	  runner->num_xpassed,
+	  "%d Passed, %d Failed [%d crashed, %d expected], %d Skipped\n",
+	  runner->num_passed,
 
 	  runner->num_failed + runner->num_crashed + runner->num_xfailed,
 	  runner->num_crashed,
@@ -387,11 +419,42 @@ _runner_print_summary (cairo_test_runner_t *runner)
 static void
 _runner_print_details (cairo_test_runner_t *runner)
 {
+    cairo_test_list_t *list;
     unsigned int n;
+
+    if (runner->crashes_preamble) {
+	int count = 0;
+
+	for (list = runner->crashes_preamble; list != NULL; list = list->next)
+	    count++;
+
+	_log (&runner->base, "Preamble: %d crashed! -", count);
+
+	for (list = runner->crashes_preamble; list != NULL; list = list->next) {
+	    char *name = cairo_test_get_name (list->test);
+	    _log (&runner->base, " %s", name);
+	    free (name);
+	}
+	_log (&runner->base, "\n");
+    }
+    if (runner->fails_preamble) {
+	int count = 0;
+
+	for (list = runner->fails_preamble; list != NULL; list = list->next)
+	    count++;
+
+	_log (&runner->base, "Preamble: %d failed -", count);
+
+	for (list = runner->fails_preamble; list != NULL; list = list->next) {
+	    char *name = cairo_test_get_name (list->test);
+	    _log (&runner->base, " %s", name);
+	    free (name);
+	}
+	_log (&runner->base, "\n");
+    }
 
     for (n = 0; n < runner->base.num_targets; n++) {
 	const cairo_boilerplate_target_t *target;
-	cairo_test_list_t *list;
 
 	target = runner->base.targets_to_test[n];
 	if (runner->num_crashed_per_target[n]) {
@@ -427,23 +490,6 @@ _runner_print_details (cairo_test_runner_t *runner)
 	    }
 	    _log (&runner->base, "\n");
 	}
-
-	if (runner->num_xpassed_per_target[n]) {
-	    _log (&runner->base, "%s (%s): %d unexpectedly passed -",
-		  target->name,
-		  cairo_boilerplate_content_name (target->content),
-		  runner->num_xpassed_per_target[n]);
-
-	    for (list = runner->xpasses_per_target[n];
-		 list != NULL;
-		 list = list->next)
-	    {
-		char *name = cairo_test_get_name (list->test);
-		_log (&runner->base, " %s", name);
-		free (name);
-	    }
-	    _log (&runner->base, "\n");
-	}
     }
 }
 
@@ -453,7 +499,7 @@ _runner_print_results (cairo_test_runner_t *runner)
     _runner_print_summary (runner);
     _runner_print_details (runner);
 
-    if (! runner->passed) {
+    if (! runner->passed && ! runner->num_crashed) {
 	_log (&runner->base,
 "\n"
 "Note: These failures may be due to external factors.\n"
@@ -466,24 +512,24 @@ _runner_fini (cairo_test_runner_t *runner)
 {
     unsigned int n;
 
+    _list_free (runner->crashes_preamble);
+    _list_free (runner->fails_preamble);
+
     for (n = 0; n < runner->base.num_targets; n++) {
 	_list_free (runner->crashes_per_target[n]);
 	_list_free (runner->fails_per_target[n]);
-	_list_free (runner->xpasses_per_target[n]);
     }
     free (runner->crashes_per_target);
     free (runner->fails_per_target);
-    free (runner->xpasses_per_target);
 
     free (runner->num_crashed_per_target);
     free (runner->num_failed_per_target);
-    free (runner->num_xpassed_per_target);
 
     cairo_test_fini (&runner->base);
 
     return runner->num_failed + runner->num_crashed ?
 	CAIRO_TEST_FAILURE :
-	runner->num_passed + runner->num_xpassed + runner->num_xfailed ?
+	runner->num_passed + runner->num_xfailed ?
 	CAIRO_TEST_SUCCESS : CAIRO_TEST_UNTESTED;
 }
 
@@ -599,12 +645,13 @@ main (int argc, char **argv)
     _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
 #endif
 
-#ifndef CAIRO_HAS_CONSTRUCTOR_ATTRIBUTE
     _cairo_test_runner_register_tests ();
-#endif
 
     memset (&runner, 0, sizeof (runner));
     runner.num_device_offsets = 1;
+
+    if (is_running_under_debugger ())
+	runner.foreground = TRUE;
 
     if (getenv ("CAIRO_TEST_MODE")) {
 	const char *env = getenv ("CAIRO_TEST_MODE");
@@ -614,6 +661,9 @@ main (int argc, char **argv)
 	}
 	if (strstr (env, "foreground")) {
 	    runner.foreground = TRUE;
+	}
+	if (strstr (env, "exit-on-failure")) {
+	    runner.exit_on_failure = TRUE;
 	}
     }
 
@@ -634,9 +684,9 @@ main (int argc, char **argv)
 
     for (list = tests; list != NULL; list = list->next) {
 	cairo_test_context_t ctx;
-	cairo_test_status_t status, expectation;
-	cairo_bool_t failed = FALSE, crashed = FALSE, skipped = TRUE;
-	const char *XFAIL = NULL;
+	cairo_test_status_t status;
+	cairo_bool_t failed = FALSE, xfailed = FALSE, crashed = FALSE, skipped = TRUE;
+	cairo_bool_t in_preamble = FALSE;
 	char *name = cairo_test_get_name (list->test);
 	int i;
 
@@ -659,7 +709,7 @@ main (int argc, char **argv)
 		    found = TRUE;
 		}
 
-		/* keyword match */
+		/* XXX keyword match */
 		if (keywords != NULL && strstr (keywords, match) != NULL) {
 		    found = ! invert;
 		    break;
@@ -717,20 +767,6 @@ main (int argc, char **argv)
 	    goto TEST_NEXT;
 	}
 
-	/* check for a failing test */
-	expectation = CAIRO_TEST_SUCCESS;
-	if (list->test->keywords != NULL &&
-	    (XFAIL = strstr (list->test->keywords, "XFAIL")) != NULL)
-	{
-	    if (XFAIL[5] == '=') {
-		/* backend specific expected failure */
-		XFAIL += 5;
-	    } else {
-		XFAIL = NULL;
-		expectation = CAIRO_TEST_FAILURE;
-	    }
-	}
-
 	_cairo_test_context_init_for_test (&ctx, &runner.base, list->test);
 	memset (target_status, 0,
 		sizeof (cairo_test_status_t) * ctx.num_targets);
@@ -739,15 +775,31 @@ main (int argc, char **argv)
 	    status = _cairo_test_runner_preamble (&runner, &ctx);
 	    switch (status) {
 	    case CAIRO_TEST_SUCCESS:
+		in_preamble = TRUE;
 		skipped = FALSE;
 		break;
-	    case CAIRO_TEST_NO_MEMORY:
+
+	    case CAIRO_TEST_XFAILURE:
+		in_preamble = TRUE;
+		xfailed = TRUE;
+		goto TEST_DONE;
+
+	    case CAIRO_TEST_NEW:
 	    case CAIRO_TEST_FAILURE:
+		runner.fails_preamble = _list_prepend (runner.fails_preamble,
+						       list->test);
+		in_preamble = TRUE;
 		failed = TRUE;
 		goto TEST_DONE;
+
+	    case CAIRO_TEST_NO_MEMORY:
 	    case CAIRO_TEST_CRASHED:
+		runner.crashes_preamble = _list_prepend (runner.crashes_preamble,
+							 list->test);
+		in_preamble = TRUE;
 		failed = TRUE;
 		goto TEST_DONE;
+
 	    case CAIRO_TEST_UNTESTED:
 		goto TEST_DONE;
 	    }
@@ -759,34 +811,12 @@ main (int argc, char **argv)
 	for (n = 0; n < ctx.num_targets; n++) {
 	    const cairo_boilerplate_target_t *target;
 	    cairo_bool_t target_failed = FALSE,
+			 target_xfailed = FALSE,
 			 target_crashed = FALSE,
 			 target_skipped = TRUE;
 	    int has_similar;
 
 	    target = ctx.targets_to_test[n];
-
-	    if (XFAIL != NULL) {
-		const char *target_XFAIL, *base_XFAIL = NULL;
-
-		if (((target_XFAIL = strstr (XFAIL, target->name)) != NULL ||
-		     (base_XFAIL = target_XFAIL = strstr (XFAIL, target->basename)) != NULL) &&
-		    target_XFAIL < strpbrk (XFAIL, " \t;:") &&
-		    target_XFAIL[-1] != '!')
-		{
-		    ctx.expectation = CAIRO_TEST_FAILURE;
-
-		    if (base_XFAIL != NULL) {
-			unsigned slen;
-
-			slen = strpbrk (base_XFAIL, " \t;:,") - base_XFAIL;
-			if (slen != strlen (target->basename))
-			    ctx.expectation = CAIRO_TEST_SUCCESS;
-		    }
-		}
-		else
-		    ctx.expectation = CAIRO_TEST_SUCCESS;
-	    } else
-		ctx.expectation = expectation;
 
 	    has_similar = runner.full_test ?
 			  cairo_test_target_has_similar (&ctx, target) :
@@ -802,7 +832,11 @@ main (int argc, char **argv)
 		    case CAIRO_TEST_SUCCESS:
 			target_skipped = FALSE;
 			break;
+		    case CAIRO_TEST_XFAILURE:
+			target_xfailed = TRUE;
+			break;
 		    case CAIRO_TEST_NO_MEMORY:
+		    case CAIRO_TEST_NEW:
 		    case CAIRO_TEST_FAILURE:
 			target_failed = TRUE;
 			break;
@@ -822,26 +856,19 @@ main (int argc, char **argv)
 							      list->test);
 		crashed = TRUE;
 	    } else if (target_failed) {
-		if (ctx.expectation == CAIRO_TEST_SUCCESS) {
-		    target_status[n] = CAIRO_TEST_FAILURE;
-		    runner.num_failed_per_target[n]++;
-		    runner.fails_per_target[n] = _list_prepend (runner.fails_per_target[n],
-								list->test);
-		} else
-		    target_status[n] = CAIRO_TEST_SUCCESS;
+		target_status[n] = CAIRO_TEST_FAILURE;
+		runner.num_failed_per_target[n]++;
+		runner.fails_per_target[n] = _list_prepend (runner.fails_per_target[n],
+							    list->test);
 
 		failed = TRUE;
+	    } else if (target_xfailed) {
+		target_status[n] = CAIRO_TEST_XFAILURE;
+		xfailed = TRUE;
 	    } else if (target_skipped) {
 		target_status[n] = CAIRO_TEST_UNTESTED;
 	    } else {
 		target_status[n] = CAIRO_TEST_SUCCESS;
-		/* An unexpected pass should also be flagged */
-		if (ctx.expectation != CAIRO_TEST_SUCCESS) {
-		    target_status[n] = CAIRO_TEST_FAILURE;
-		    runner.num_xpassed_per_target[n]++;
-		    runner.xpasses_per_target[n] = _list_prepend (runner.xpasses_per_target[n],
-								  list->test);
-		}
 		skipped = FALSE;
 	    }
 	}
@@ -851,24 +878,28 @@ main (int argc, char **argv)
   TEST_SKIPPED:
 	targets[0] = '\0';
 	if (crashed) {
-	    len = 0;
-	    for (n = 0 ; n < runner.base.num_targets; n++) {
-		if (target_status[n] == CAIRO_TEST_CRASHED) {
-		    if (strstr (targets,
-				runner.base.targets_to_test[n]->name) == NULL)
-		    {
-			len += snprintf (targets + len, sizeof (targets) - len,
-					 "%s, ",
-					 runner.base.targets_to_test[n]->name);
+	    if (! in_preamble) {
+		len = 0;
+		for (n = 0 ; n < runner.base.num_targets; n++) {
+		    if (target_status[n] == CAIRO_TEST_CRASHED) {
+			if (strstr (targets,
+				    runner.base.targets_to_test[n]->name) == NULL)
+			{
+			    len += snprintf (targets + len, sizeof (targets) - len,
+					     "%s, ",
+					     runner.base.targets_to_test[n]->name);
+			}
 		    }
 		}
+		targets[len-2] = '\0';
+		_log (&runner.base, "\n%s: CRASH! (%s)\n", name, targets);
+	    } else {
+		_log (&runner.base, "\n%s: CRASH!\n", name);
 	    }
-	    targets[len-2] = '\0';
-	    _log (&runner.base, "\n%s: CRASH! (%s)\n", name, targets);
 	    runner.num_crashed++;
 	    runner.passed = FALSE;
 	} else if (failed) {
-	    if (expectation == CAIRO_TEST_SUCCESS) {
+	    if (! in_preamble) {
 		len = 0;
 		for (n = 0 ; n < runner.base.num_targets; n++) {
 		    if (target_status[n] == CAIRO_TEST_FAILURE) {
@@ -882,35 +913,30 @@ main (int argc, char **argv)
 			}
 		    }
 		}
-		if (len == 0) {
-		    _log (&runner.base, "%s: XFAIL\n", name);
-		    runner.num_xfailed++;
-		} else {
-		    targets[len-2] = '\0';
-		    _log (&runner.base, "%s: FAIL (%s)\n", name, targets);
-		    runner.num_failed++;
-		    runner.passed = FALSE;
-		}
+		targets[len-2] = '\0';
+		_log (&runner.base, "%s: FAIL (%s)\n", name, targets);
 	    } else {
-		_log (&runner.base, "%s: XFAIL\n", name);
-		runner.num_xfailed++;
+		_log (&runner.base, "%s: FAIL\n", name);
 	    }
+	    runner.num_failed++;
+	    runner.passed = FALSE;
+	} else if (xfailed) {
+	    _log (&runner.base, "%s: XFAIL\n", name);
+	    runner.num_xfailed++;
 	} else if (skipped) {
 	    _log (&runner.base, "%s: UNTESTED\n", name);
 	    runner.num_skipped++;
 	} else {
-	    if (expectation == CAIRO_TEST_SUCCESS) {
-		_log (&runner.base, "%s: PASS\n", name);
-		runner.num_passed++;
-	    } else {
-		_log (&runner.base, "%s: XPASS\n", name);
-		runner.num_xpassed++;
-	    }
+	    _log (&runner.base, "%s: PASS\n", name);
+	    runner.num_passed++;
 	}
 	fflush (runner.base.log_file);
 
   TEST_NEXT:
 	free (name);
+	if (runner.exit_on_failure && ! runner.passed)
+	    break;
+
     }
 
     _list_free (tests);
@@ -923,7 +949,6 @@ main (int argc, char **argv)
     for (n = 0 ; n < runner.base.num_targets; n++) {
 	runner.crashes_per_target[n] = _list_reverse (runner.crashes_per_target[n]);
 	runner.fails_per_target[n] = _list_reverse (runner.fails_per_target[n]);
-	runner.xpasses_per_target[n] = _list_reverse (runner.xpasses_per_target[n]);
     }
 
     _runner_print_results (&runner);
