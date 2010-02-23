@@ -15,6 +15,14 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_curve_to@Base 1.2.4
  cairo_debug_reset_static_data@Base 1.2.4
  cairo_destroy@Base 1.2.4
+ cairo_device_acquire@Base 1.9.6
+ cairo_device_destroy@Base 1.9.6
+ cairo_device_finish@Base 1.9.6
+ cairo_device_flush@Base 1.9.6
+ cairo_device_get_type@Base 1.9.6
+ cairo_device_reference@Base 1.9.6
+ cairo_device_release@Base 1.9.6
+ cairo_device_status@Base 1.9.6
  cairo_device_to_user@Base 1.2.4
  cairo_device_to_user_distance@Base 1.2.4
  cairo_directfb_surface_create@Base 1.8.2-2~
@@ -104,8 +112,6 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_matrix_transform_distance@Base 1.2.4
  cairo_matrix_transform_point@Base 1.2.4
  cairo_matrix_translate@Base 1.2.4
- cairo_meta_surface_create@Base 1.9.4
- cairo_meta_surface_ink_extents@Base 1.9.4
  cairo_move_to@Base 1.2.4
  cairo_new_path@Base 1.2.4
  cairo_new_sub_path@Base 1.2.4
@@ -160,6 +166,8 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_ps_surface_set_size@Base 1.2.4
  cairo_push_group@Base 1.2.4
  cairo_push_group_with_content@Base 1.2.4
+ cairo_recording_surface_create@Base 1.9.6
+ cairo_recording_surface_ink_extents@Base 1.9.6
  cairo_rectangle@Base 1.2.4
  cairo_rectangle_list_destroy@Base 1.4.10
  cairo_reference@Base 1.2.4
@@ -240,11 +248,13 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_stroke_extents@Base 1.2.4
  cairo_stroke_preserve@Base 1.2.4
  cairo_surface_copy_page@Base 1.6.0
+ cairo_surface_create_for_region@Base 1.9.6
  cairo_surface_create_similar@Base 1.2.4
  cairo_surface_destroy@Base 1.2.4
  cairo_surface_finish@Base 1.2.4
  cairo_surface_flush@Base 1.2.4
  cairo_surface_get_content@Base 1.2.4
+ cairo_surface_get_device@Base 1.9.6
  cairo_surface_get_device_offset@Base 1.2.4
  cairo_surface_get_fallback_resolution@Base 1.7.2
  cairo_surface_get_font_options@Base 1.2.4
@@ -296,6 +306,8 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_user_to_device_distance@Base 1.2.4
  cairo_version@Base 1.2.4
  cairo_version_string@Base 1.2.4
+ cairo_xcb_device_debug_cap_xrender_version@Base 1.9.6
+ cairo_xcb_device_debug_cap_xshm_version@Base 1.9.6
  cairo_xcb_surface_create@Base 1.6.4-5~
  cairo_xcb_surface_create_for_bitmap@Base 1.6.4-5~
  cairo_xcb_surface_create_with_xrender_format@Base 1.6.4-5~
@@ -315,6 +327,5 @@ libcairo.so.2 libcairo2 #MINVER#
  cairo_xlib_surface_set_size@Base 1.2.4
  cairo_xml_create@Base 1.9.4
  cairo_xml_create_for_stream@Base 1.9.4
- cairo_xml_destroy@Base 1.9.4
- cairo_xml_for_meta_surface@Base 1.9.4
+ cairo_xml_for_recording_surface@Base 1.9.6
  cairo_xml_surface_create@Base 1.9.4
