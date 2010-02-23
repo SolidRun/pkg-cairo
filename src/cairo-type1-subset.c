@@ -235,7 +235,7 @@ cairo_type1_font_subset_find_segments (cairo_type1_font_subset_t *font)
 {
     unsigned char *p;
     const char *eexec_token;
-    int size;
+    int size, i;
 
     p = (unsigned char *) font->type1_data;
     font->type1_end = font->type1_data + font->type1_length;
@@ -266,6 +266,10 @@ cairo_type1_font_subset_find_segments (cairo_type1_font_subset_t *font)
 	font->eexec_segment_size = font->type1_length - font->header_segment_size;
 	font->eexec_segment = (char *) p + font->header_segment_size;
 	font->eexec_segment_is_ascii = TRUE;
+	for (i = 0; i < 4; i++) {
+	    if (!isxdigit(font->eexec_segment[i]))
+		font->eexec_segment_is_ascii = FALSE;
+	}
     }
 
     return CAIRO_STATUS_SUCCESS;
@@ -1100,7 +1104,8 @@ cairo_type1_font_subset_write_private_dict (cairo_type1_font_subset_t *font,
     if (status)
 	return status;
 
-    _cairo_output_stream_write (font->output, "\n", 1);
+    if (font->hex_encode)
+	_cairo_output_stream_write (font->output, "\n", 1);
 
     return CAIRO_STATUS_SUCCESS;
 }
@@ -1113,19 +1118,27 @@ cairo_type1_font_subset_write_trailer(cairo_type1_font_subset_t *font)
     static const char zeros[65] =
 	"0000000000000000000000000000000000000000000000000000000000000000\n";
 
-    /* Some fonts have conditional save/restore around the entire font
-     * dict, so we need to retain whatever postscript code that may
-     * come after 'cleartomark'. */
 
     for (i = 0; i < 8; i++)
 	_cairo_output_stream_write (font->output, zeros, sizeof zeros);
 
     cleartomark_token = find_token (font->type1_data, font->type1_end, "cleartomark");
-    if (cleartomark_token == NULL)
-	return CAIRO_INT_STATUS_UNSUPPORTED;
+    if (cleartomark_token) {
+	/* Some fonts have conditional save/restore around the entire
+	 * font dict, so we need to retain whatever postscript code
+	 * that may come after 'cleartomark'. */
 
-    _cairo_output_stream_write (font->output, cleartomark_token,
-				font->type1_end - cleartomark_token);
+	_cairo_output_stream_write (font->output, cleartomark_token,
+				    font->type1_end - cleartomark_token);
+    } else if (!font->eexec_segment_is_ascii) {
+	/* Fonts embedded in PDF may omit the fixed-content portion
+	 * that includes the 'cleartomark' operator. Type 1 in PDF is
+	 * always binary. */
+
+	_cairo_output_stream_printf (font->output, "cleartomark");
+    } else {
+	return CAIRO_INT_STATUS_UNSUPPORTED;
+    }
 
     /* some fonts do not have a newline at the end of the last line */
     _cairo_output_stream_printf (font->output, "\n");
