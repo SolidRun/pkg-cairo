@@ -76,9 +76,7 @@ CFLAGS_main += $(CFLAGS) -O2
 CFLAGS_udeb += $(CFLAGS) -Os
 endif
 
-include /usr/share/dpatch/dpatch.make
-
-configure-common-stamp: patch-stamp
+configure-common-stamp:
 	dh_testdir
 	# handle timestamp skew; advice from autotools-dev README.Debian
 	touch configure.in aclocal.m4 configure
@@ -103,7 +101,7 @@ build-stamp-%: configure-stamp-%
 	$(MAKE) -C $(builddir)
 	touch $@
 
-clean: unpatch
+clean:
 	dh_testdir
 	dh_testroot
 	# restore files from backup
@@ -172,4 +170,4 @@ binary-arch: build install
 
 binary: binary-indep binary-arch
 
-.PHONY: build clean binary-indep binary-arch binary install patch unpatch clean
+.PHONY: build clean binary-indep binary-arch binary install clean
