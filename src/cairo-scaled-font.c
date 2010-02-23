@@ -38,9 +38,8 @@
  *      Chris Wilson <chris@chris-wilson.co.uk>
  */
 
-#define _GNU_SOURCE
-
 #include "cairoint.h"
+#include "cairo-error-private.h"
 #include "cairo-scaled-font-private.h"
 
 #if _XOPEN_SOURCE >= 600 || defined (_ISOC99_SOURCE)
@@ -199,8 +198,8 @@ _cairo_scaled_glyph_fini (cairo_scaled_font_t *scaled_font,
     if (scaled_glyph->path != NULL)
 	_cairo_path_fixed_destroy (scaled_glyph->path);
 
-    if (scaled_glyph->meta_surface != NULL)
-	cairo_surface_destroy (scaled_glyph->meta_surface);
+    if (scaled_glyph->recording_surface != NULL)
+	cairo_surface_destroy (scaled_glyph->recording_surface);
 }
 
 #define ZOMBIE 0
@@ -1612,11 +1611,11 @@ slim_hidden_def (cairo_scaled_font_glyph_extents);
  * if (status == CAIRO_STATUS_SUCCESS) {
  *     cairo_show_text_glyphs (cr,
  *                             utf8, utf8_len,
- *                             *glyphs, *num_glyphs,
- *                             *clusters, *num_clusters, *cluster_flags);
+ *                             glyphs, num_glyphs,
+ *                             clusters, num_clusters, cluster_flags);
  *
- *     cairo_glyph_free (*glyphs);
- *     cairo_text_cluster_free (*clusters);
+ *     cairo_glyph_free (glyphs);
+ *     cairo_text_cluster_free (clusters);
  * }
  * </programlisting></informalexample>
  *
@@ -1635,8 +1634,8 @@ slim_hidden_def (cairo_scaled_font_glyph_extents);
  *                                            NULL);
  *
  * if (status == CAIRO_STATUS_SUCCESS) {
- *     cairo_show_glyphs (cr, *glyphs, *num_glyphs);
- *     cairo_glyph_free (*glyphs);
+ *     cairo_show_glyphs (cr, glyphs, num_glyphs);
+ *     cairo_glyph_free (glyphs);
  * }
  * </programlisting></informalexample>
  *
@@ -1662,13 +1661,13 @@ slim_hidden_def (cairo_scaled_font_glyph_extents);
  * if (status == CAIRO_STATUS_SUCCESS) {
  *     cairo_show_text_glyphs (cr,
  *                             utf8, utf8_len,
- *                             *glyphs, *num_glyphs,
- *                             *clusters, *num_clusters, *cluster_flags);
+ *                             glyphs, num_glyphs,
+ *                             clusters, num_clusters, cluster_flags);
  *
  *     if (glyphs != stack_glyphs)
- *         cairo_glyph_free (*glyphs);
+ *         cairo_glyph_free (glyphs);
  *     if (clusters != stack_clusters)
- *         cairo_text_cluster_free (*clusters);
+ *         cairo_text_cluster_free (clusters);
  * }
  * </programlisting></informalexample>
  *
@@ -1928,12 +1927,16 @@ cairo_scaled_font_text_to_glyphs (cairo_scaled_font_t   *scaled_font,
 slim_hidden_def (cairo_scaled_font_text_to_glyphs);
 
 static inline cairo_bool_t
-_range_contains_glyph (const cairo_point_int_t *min,
-		       const cairo_point_int_t *max,
-		       int left, int top,
-		       int right, int bottom)
+_range_contains_glyph (const cairo_box_t *extents,
+		       cairo_fixed_t left,
+		       cairo_fixed_t top,
+		       cairo_fixed_t right,
+		       cairo_fixed_t bottom)
 {
-    return right > min->x && left < max->x && bottom > min->y && top < max->y;
+    return right > extents->p1.x &&
+	   left < extents->p2.x &&
+	   bottom > extents->p1.y &&
+	   top < extents->p2.y;
 }
 
 /*
@@ -1947,8 +1950,7 @@ _cairo_scaled_font_glyph_device_extents (cairo_scaled_font_t	 *scaled_font,
 					 cairo_bool_t *overlap_out)
 {
     cairo_status_t status = CAIRO_STATUS_SUCCESS;
-    cairo_point_int_t min = { CAIRO_RECT_INT_MAX, CAIRO_RECT_INT_MAX };
-    cairo_point_int_t max = { CAIRO_RECT_INT_MIN, CAIRO_RECT_INT_MIN };
+    cairo_box_t box = { { INT_MAX, INT_MAX }, { INT_MIN, INT_MIN }};
     cairo_scaled_glyph_t *glyph_cache[64];
     cairo_bool_t overlap = overlap_out ? FALSE : TRUE;
     int i;
@@ -1962,9 +1964,7 @@ _cairo_scaled_font_glyph_device_extents (cairo_scaled_font_t	 *scaled_font,
 
     for (i = 0; i < num_glyphs; i++) {
 	cairo_scaled_glyph_t	*scaled_glyph;
-	int			left, top;
-	int			right, bottom;
-	int			x, y;
+	cairo_fixed_t x, y, x1, y1, x2, y2;
 	int cache_index = glyphs[i].index % ARRAY_LENGTH (glyph_cache);
 
 	scaled_glyph = glyph_cache[cache_index];
@@ -1981,35 +1981,29 @@ _cairo_scaled_font_glyph_device_extents (cairo_scaled_font_t	 *scaled_font,
 	    glyph_cache[cache_index] = scaled_glyph;
 	}
 
-	/* XXX glyph images are snapped to pixel locations */
-	x = _cairo_lround (glyphs[i].x);
-	y = _cairo_lround (glyphs[i].y);
+	x = _cairo_fixed_from_double (glyphs[i].x);
+	x1 = x + scaled_glyph->bbox.p1.x;
+	x2 = x + scaled_glyph->bbox.p2.x;
 
-	left   = x + _cairo_fixed_integer_floor (scaled_glyph->bbox.p1.x);
-	top    = y + _cairo_fixed_integer_floor (scaled_glyph->bbox.p1.y);
-	right  = x + _cairo_fixed_integer_ceil (scaled_glyph->bbox.p2.x);
-	bottom = y + _cairo_fixed_integer_ceil (scaled_glyph->bbox.p2.y);
+	y = _cairo_fixed_from_double (glyphs[i].y);
+	y1 = y + scaled_glyph->bbox.p1.y;
+	y2 = y + scaled_glyph->bbox.p2.y;
 
-	if (overlap == FALSE) {
-	    overlap = _range_contains_glyph (&min, &max,
-		                             left, top, right, bottom);
-	}
+	if (overlap == FALSE)
+	    overlap = _range_contains_glyph (&box, x1, y1, x2, y2);
 
-	if (left   < min.x) min.x = left;
-	if (right  > max.x) max.x = right;
-	if (top    < min.y) min.y = top;
-	if (bottom > max.y) max.y = bottom;
+	if (x1 < box.p1.x) box.p1.x = x1;
+	if (x2 > box.p2.x) box.p2.x = x2;
+	if (y1 < box.p1.y) box.p1.y = y1;
+	if (y2 > box.p2.y) box.p2.y = y2;
     }
 
     _cairo_scaled_font_thaw_cache (scaled_font);
     if (unlikely (status))
 	return _cairo_scaled_font_set_error (scaled_font, status);
 
-    if (min.x < max.x && min.y < max.y) {
-	extents->x = min.x;
-	extents->width = max.x - min.x;
-	extents->y = min.y;
-	extents->height = max.y - min.y;
+    if (box.p1.x < box.p2.x) {
+	_cairo_box_round_to_rectangle (&box, extents);
     } else {
 	extents->x = extents->y = 0;
 	extents->width = extents->height = 0;
@@ -2076,7 +2070,6 @@ _cairo_scaled_font_show_glyphs (cairo_scaled_font_t	*scaled_font,
     cairo_surface_t *mask = NULL;
     cairo_format_t mask_format = CAIRO_FORMAT_A1; /* shut gcc up */
     cairo_surface_pattern_t mask_pattern;
-    cairo_solid_pattern_t white_pattern;
     int i;
 
     /* These operators aren't interpreted the same way by the backends;
@@ -2110,8 +2103,6 @@ _cairo_scaled_font_show_glyphs (cairo_scaled_font_t	*scaled_font,
     }
 
     /* Font display routine either does not exist or failed. */
-
-    _cairo_pattern_init_solid (&white_pattern, CAIRO_COLOR_WHITE, CAIRO_CONTENT_COLOR);
 
     _cairo_scaled_font_freeze_cache (scaled_font);
 
@@ -2169,9 +2160,11 @@ _cairo_scaled_font_show_glyphs (cairo_scaled_font_t	*scaled_font,
 	    }
 
 	    _cairo_pattern_init_for_surface (&mask_pattern, mask);
-
-	    status = _cairo_surface_composite (CAIRO_OPERATOR_ADD,
-					       &white_pattern.base,
+	    /* Note that we only upgrade masks, i.e. A1 -> A8 -> ARGB32, so there is
+	     * never any component alpha here.
+	     */
+	    status = _cairo_surface_composite (CAIRO_OPERATOR_SOURCE,
+					       &_cairo_pattern_white.base,
 					       &mask_pattern.base,
 					       new_mask,
 					       0, 0,
@@ -2203,9 +2196,11 @@ _cairo_scaled_font_show_glyphs (cairo_scaled_font_t	*scaled_font,
 
 	    _cairo_pattern_init_for_surface (&glyph_pattern,
 					     &glyph_surface->base);
+	    if (mask_format == CAIRO_FORMAT_ARGB32)
+		glyph_pattern.base.has_component_alpha = TRUE;
 
 	    status = _cairo_surface_composite (CAIRO_OPERATOR_ADD,
-					       &white_pattern.base,
+					       &_cairo_pattern_white.base,
 					       &glyph_pattern.base,
 					       mask,
 					       0, 0,
@@ -2222,11 +2217,9 @@ _cairo_scaled_font_show_glyphs (cairo_scaled_font_t	*scaled_font,
 	}
     }
 
-    if (mask_format == CAIRO_FORMAT_ARGB32) {
-	pixman_image_set_component_alpha (((cairo_image_surface_t*) mask)->
-					  pixman_image, TRUE);
-    }
     _cairo_pattern_init_for_surface (&mask_pattern, mask);
+    if (mask_format == CAIRO_FORMAT_ARGB32)
+	mask_pattern.base.has_component_alpha = TRUE;
 
     status = _cairo_surface_composite (op, pattern, &mask_pattern.base,
 				       surface,
@@ -2240,8 +2233,6 @@ _cairo_scaled_font_show_glyphs (cairo_scaled_font_t	*scaled_font,
 
 CLEANUP_MASK:
     _cairo_scaled_font_thaw_cache (scaled_font);
-
-    _cairo_pattern_fini (&white_pattern.base);
 
     if (mask != NULL)
 	cairo_surface_destroy (mask);
@@ -2514,13 +2505,13 @@ _cairo_scaled_glyph_set_path (cairo_scaled_glyph_t *scaled_glyph,
 }
 
 void
-_cairo_scaled_glyph_set_meta_surface (cairo_scaled_glyph_t *scaled_glyph,
-				      cairo_scaled_font_t *scaled_font,
-				      cairo_surface_t *meta_surface)
+_cairo_scaled_glyph_set_recording_surface (cairo_scaled_glyph_t *scaled_glyph,
+					   cairo_scaled_font_t *scaled_font,
+					   cairo_surface_t *recording_surface)
 {
-    if (scaled_glyph->meta_surface != NULL)
-	cairo_surface_destroy (meta_surface);
-    scaled_glyph->meta_surface = meta_surface;
+    if (scaled_glyph->recording_surface != NULL)
+	cairo_surface_destroy (recording_surface);
+    scaled_glyph->recording_surface = recording_surface;
 }
 
 static cairo_bool_t
@@ -2701,10 +2692,10 @@ _cairo_scaled_glyph_lookup (cairo_scaled_font_t *scaled_font,
 	need_info |= CAIRO_SCALED_GLYPH_INFO_PATH;
     }
 
-    if ((info & CAIRO_SCALED_GLYPH_INFO_META_SURFACE) != 0 &&
-	scaled_glyph->meta_surface == NULL)
+    if ((info & CAIRO_SCALED_GLYPH_INFO_RECORDING_SURFACE) != 0 &&
+	scaled_glyph->recording_surface == NULL)
     {
-	need_info |= CAIRO_SCALED_GLYPH_INFO_META_SURFACE;
+	need_info |= CAIRO_SCALED_GLYPH_INFO_RECORDING_SURFACE;
     }
 
     if (need_info) {
@@ -2716,7 +2707,7 @@ _cairo_scaled_glyph_lookup (cairo_scaled_font_t *scaled_font,
 
 	/* Don't trust the scaled_glyph_init() return value, the font
 	 * backend may not even know about some of the info.  For example,
-	 * no backend other than the user-fonts knows about meta-surface
+	 * no backend other than the user-fonts knows about recording-surface
 	 * glyph info. */
 
 	if ((info & CAIRO_SCALED_GLYPH_INFO_SURFACE) != 0 &&
@@ -2733,8 +2724,8 @@ _cairo_scaled_glyph_lookup (cairo_scaled_font_t *scaled_font,
 	    goto CLEANUP;
 	}
 
-	if ((info & CAIRO_SCALED_GLYPH_INFO_META_SURFACE) != 0 &&
-	    scaled_glyph->meta_surface == NULL)
+	if ((info & CAIRO_SCALED_GLYPH_INFO_RECORDING_SURFACE) != 0 &&
+	    scaled_glyph->recording_surface == NULL)
 	{
 	    status = CAIRO_INT_STATUS_UNSUPPORTED;
 	    goto CLEANUP;

@@ -265,7 +265,7 @@ width*bytes_per_pixel to provide proper alignment for each pixel
 and row. This alignment is required to allow high-performance rendering
 within cairo. The correct way to obtain a legal stride value is to
 call <a class="link" href="cairo-image-surface.html#cairo-format-stride-for-width" title="cairo_format_stride_for_width ()"><code class="function">cairo_format_stride_for_width()</code></a> with the desired format and
-maximum image width value, and the use the resulting stride value
+maximum image width value, and then use the resulting stride value
 to allocate the data and to create the image surface. See
 <a class="link" href="cairo-image-surface.html#cairo-format-stride-for-width" title="cairo_format_stride_for_width ()"><code class="function">cairo_format_stride_for_width()</code></a> for example code.</p>
 <p>
@@ -342,9 +342,7 @@ inspection or modification.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a pointer to the image data of this surface or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> a pointer to the image data of this surface or <code class="literal">NULL</code>
 if <em class="parameter"><code>surface</code></em> is not an image surface, or if <a class="link" href="cairo-surface.html#cairo-surface-finish" title="cairo_surface_finish ()"><code class="function">cairo_surface_finish()</code></a>
 has been called.
 

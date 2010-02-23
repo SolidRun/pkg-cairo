@@ -207,7 +207,7 @@ width*bytes_per_pixel to provide proper alignment for each pixel
 and row. This alignment is required to allow high-performance rendering
 within cairo. The correct way to obtain a legal stride value is to
 call <link linkend="cairo-format-stride-for-width"><function>cairo_format_stride_for_width()</function></link> with the desired format and
-maximum image width value, and the use the resulting stride value
+maximum image width value, and then use the resulting stride value
 to allocate the data and to create the image surface. See
 <link linkend="cairo-format-stride-for-width"><function>cairo_format_stride_for_width()</function></link> for example code.</para>
 <para>

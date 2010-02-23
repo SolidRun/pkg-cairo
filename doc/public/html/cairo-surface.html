@@ -168,6 +168,16 @@ creates a bitmap image in memory.
 The type of a surface can be queried with <a class="link" href="cairo-surface.html#cairo-surface-get-type" title="cairo_surface_get_type ()"><code class="function">cairo_surface_get_type()</code></a>.
 </p>
 <p>
+The initial contents of a surface after creation depend upon the manner
+of its creation. If cairo creates the surface and backing storage for
+the user, it will be initially cleared; for example,
+<a class="link" href="cairo-image-surface.html#cairo-image-surface-create" title="cairo_image_surface_create ()"><code class="function">cairo_image_surface_create()</code></a> and <a class="link" href="cairo-surface.html#cairo-surface-create-similar" title="cairo_surface_create_similar ()"><code class="function">cairo_surface_create_similar()</code></a>.
+Alternatively, if the user passes in a reference to some backing storage
+and asks cairo to wrap that in a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a>, then the contents are
+not modified; for example, <a class="link" href="cairo-image-surface.html#cairo-image-surface-create-for-data" title="cairo_image_surface_create_for_data ()"><code class="function">cairo_image_surface_create_for_data()</code></a> and
+<a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-create" title="cairo_xlib_surface_create ()"><code class="function">cairo_xlib_surface_create()</code></a>.
+</p>
+<p>
 Memory management of <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> is done with
 <a class="link" href="cairo-surface.html#cairo-surface-reference" title="cairo_surface_reference ()"><code class="function">cairo_surface_reference()</code></a> and <a class="link" href="cairo-surface.html#cairo-surface-destroy" title="cairo_surface_destroy ()"><code class="function">cairo_surface_destroy()</code></a>.</p>
 <p>
@@ -719,7 +729,7 @@ resolution if never set.</p>
     CAIRO_SURFACE_TYPE_QUARTZ_IMAGE,
     CAIRO_SURFACE_TYPE_SCRIPT,
     CAIRO_SURFACE_TYPE_QT,
-    CAIRO_SURFACE_TYPE_META,
+    CAIRO_SURFACE_TYPE_RECORDING,
     CAIRO_SURFACE_TYPE_VG,
     CAIRO_SURFACE_TYPE_GL,
     CAIRO_SURFACE_TYPE_DRM,
@@ -840,33 +850,39 @@ New entries may be added in future versions.</p>
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SURFACE-TYPE-META--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_META</code></span></p></td>
-<td> The surface is a meta-type, since 1.10
+<td><p><a name="CAIRO-SURFACE-TYPE-RECORDING--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_RECORDING</code></span></p></td>
+<td> The surface is of type recording, since 1.10
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-SURFACE-TYPE-VG--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_VG</code></span></p></td>
-<td></td>
+<td> The surface is a OpenVG surface, since 1.10
+</td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-SURFACE-TYPE-GL--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_GL</code></span></p></td>
-<td></td>
+<td> The surface is of type OpenGL, since 1.10
+</td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-SURFACE-TYPE-DRM--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_DRM</code></span></p></td>
-<td></td>
+<td> The surface is of type Direct Render Manager, since 1.10
+</td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-SURFACE-TYPE-TEE--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_TEE</code></span></p></td>
-<td></td>
+<td> The surface is of type 'tee' (a multiplexing surface), since 1.10
+</td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-SURFACE-TYPE-XML--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_XML</code></span></p></td>
-<td></td>
+<td> The surface is of type XML (for debugging), since 1.10
+</td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-SURFACE-TYPE-SKIA--CAPS"></a><span class="term"><code class="literal">CAIRO_SURFACE_TYPE_SKIA</code></span></p></td>
-<td></td>
+<td> The surface is of type Skia, since 1.10
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -935,9 +951,7 @@ object is a nil object, 0 will be returned.
                                                          <a class="link" href="cairo-types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()">cairo_destroy_func_t</a> destroy);</pre>
 <p>
 Attach user data to <em class="parameter"><code>surface</code></em>.  To remove user data from a surface,
-call this function with the key that was used to set it and <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+call this function with the key that was used to set it and <code class="literal">NULL</code>
 for <em class="parameter"><code>data</code></em>.</p>
 <p>
 </p>
@@ -983,9 +997,7 @@ slot could not be allocated for the user data.
 <p>
 Return user data previously attached to <em class="parameter"><code>surface</code></em> using the specified
 key.  If no user data has been attached with the given key this
-function returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.</p>
+function returns <code class="literal">NULL</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1004,9 +1016,7 @@ attached to
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the user data previously attached or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.
+<td> the user data previously attached or <code class="literal">NULL</code>.
 </td>
 </tr>
 </tbody>
@@ -1071,9 +1081,7 @@ whether it actually uses the provided text and cluster data
 to a <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a> call.
 </p>
 <p>
-Note: Even if this function returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a>, a
+Note: Even if this function returns <code class="literal">FALSE</code>, a
 <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a> operation targeted at <em class="parameter"><code>surface</code></em> will
 still succeed.  It just will
 act like a <a class="link" href="cairo-text.html#cairo-show-glyphs" title="cairo_show_glyphs ()"><code class="function">cairo_show_glyphs()</code></a> operation.  Users can use this
@@ -1091,12 +1099,8 @@ target surface does not use it.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if <em class="parameter"><code>surface</code></em> supports
-              <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a>, <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise
+<td> <code class="literal">TRUE</code> if <em class="parameter"><code>surface</code></em> supports
+              <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a>, <code class="literal">FALSE</code> otherwise
 
 </td>
 </tr>
@@ -1116,9 +1120,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FAL
 <p>
 Attach an image in the format <em class="parameter"><code>mime_type</code></em> to <em class="parameter"><code>surface</code></em>. To remove
 the data from a surface, call this function with same mime type
-and <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> for <em class="parameter"><code>data</code></em>.</p>
+and <code class="literal">NULL</code> for <em class="parameter"><code>data</code></em>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1176,9 +1178,7 @@ slot could not be allocated for the user data.
 <p>
 Return mime data previously attached to <em class="parameter"><code>surface</code></em> using the
 specified mime type.  If no data has been attached with the given
-mime type, <em class="parameter"><code>data</code></em> is set <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.</p>
+mime type, <em class="parameter"><code>data</code></em> is set <code class="literal">NULL</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">

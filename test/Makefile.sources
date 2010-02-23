@@ -13,11 +13,14 @@ test_sources = \
 	caps-joins-curve.c				\
 	caps-sub-paths.c				\
 	clear.c						\
+	clear-source.c					\
 	clip-all.c					\
 	clip-disjoint.c					\
 	clip-device-offset.c				\
 	clip-empty.c					\
+	clip-empty-save.c				\
 	clip-fill.c					\
+	clip-fill-no-op.c				\
 	clip-fill-rule.c				\
 	clip-fill-rule-pixel-aligned.c			\
 	clip-fill-unbounded.c				\
@@ -26,9 +29,11 @@ test_sources = \
 	clip-operator.c					\
 	clip-push-group.c				\
 	clip-stroke.c					\
+	clip-stroke-no-op.c				\
 	clip-stroke-unbounded.c				\
 	clip-text.c					\
 	clip-twice.c					\
+	clip-twice-rectangle.c				\
 	clip-unbounded.c				\
 	clip-zero.c					\
 	clipped-group.c					\
@@ -48,11 +53,13 @@ test_sources = \
 	dash-curve.c					\
 	dash-infinite-loop.c				\
 	dash-no-dash.c					\
+	dash-offset.c					\
 	dash-offset-negative.c				\
 	dash-scale.c					\
 	dash-state.c					\
 	dash-zero-length.c				\
 	degenerate-arc.c				\
+	degenerate-arcs.c				\
 	degenerate-curve-to.c				\
 	degenerate-dash.c				\
 	degenerate-path.c				\
@@ -122,6 +129,9 @@ test_sources = \
 	line-width-zero.c				\
 	linear-gradient.c				\
 	linear-gradient-reflect.c			\
+	linear-gradient-subset.c			\
+	linear-step-function.c				\
+	linear-uniform.c				\
 	long-dashed-lines.c				\
 	long-lines.c					\
 	mask.c						\
@@ -131,7 +141,7 @@ test_sources = \
 	mask-surface-ctm.c				\
 	mask-transformed-image.c			\
 	mask-transformed-similar.c			\
-	meta-surface-pattern.c				\
+	recording-surface-pattern.c			\
 	mime-data.c					\
 	miter-precision.c				\
 	move-to-show-surface.c				\
@@ -139,6 +149,7 @@ test_sources = \
 	nil-surface.c					\
 	operator.c					\
 	operator-alpha.c				\
+	operator-alpha-alpha.c				\
 	operator-clear.c				\
 	operator-source.c				\
 	over-above-source.c				\
@@ -151,6 +162,7 @@ test_sources = \
 	paint-source-alpha.c				\
 	paint-with-alpha.c				\
 	path-append.c					\
+	path-stroke-twice.c				\
 	path-precision.c				\
 	pattern-get-type.c				\
 	pattern-getters.c				\
@@ -159,6 +171,7 @@ test_sources = \
 	push-group.c					\
 	push-group-color.c				\
 	radial-gradient.c				\
+	radial-gradient-source.c			\
 	random-intersections-eo.c			\
 	random-intersections-nonzero.c			\
 	random-intersections-curves-eo.c		\
@@ -173,6 +186,8 @@ test_sources = \
 	rgb24-ignore-alpha.c				\
 	rotate-image-surface-paint.c			\
 	rotated-clip.c					\
+	rounded-rectangle-fill.c			\
+	rounded-rectangle-stroke.c			\
 	scale-down-source-surface-paint.c		\
 	scale-offset-image.c				\
 	scale-offset-similar.c				\
@@ -201,9 +216,13 @@ test_sources = \
 	source-clip-scale.c				\
 	source-surface-scale-paint.c			\
 	spline-decomposition.c				\
+	subsurface.c                                    \
+	subsurface-repeat.c                             \
+	subsurface-similar-repeat.c                     \
 	surface-finish-twice.c				\
 	surface-pattern.c				\
 	surface-pattern-big-scale-down.c		\
+	surface-pattern-operator.c			\
 	surface-pattern-scale-down.c			\
 	surface-pattern-scale-up.c			\
 	text-antialias-gray.c				\
@@ -231,9 +250,14 @@ test_sources = \
 	user-font-mask.c				\
 	user-font-proxy.c				\
 	user-font-rescale.c				\
+	xcomposite-projection.c				\
 	zero-alpha.c
 
-pthread_test_sources = pthread-show-text.c
+pthread_test_sources =					\
+	pthread-same-source.c				\
+	pthread-show-text.c				\
+	pthread-similar.c				\
+	$(NULL)
 
 ft_font_test_sources = \
 	bitmap-font.c \
@@ -245,8 +269,6 @@ ft_font_test_sources = \
 	ft-text-antialias-none.c
 
 quartz_surface_test_sources = quartz-surface-source.c
-
-glitz_surface_test_sources = glitz-surface-source.c
 
 pdf_surface_test_sources = \
 	pdf-features.c \
@@ -265,6 +287,9 @@ svg_surface_test_sources = \
 
 test_fallback16_surface_test_sources = \
 	test-fallback16-surface-source.c
+
+xcb_surface_test_sources = \
+	xcb-surface-source.c
 
 xlib_surface_test_sources = \
 	xlib-expose-event.c \

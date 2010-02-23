@@ -99,20 +99,21 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = cairo-uninstalled.pc cairo-xlib-uninstalled.pc \
 	cairo-xlib-xrender-uninstalled.pc cairo-xcb-uninstalled.pc \
+	cairo-xlib-xcb-uninstalled.pc cairo-xcb-shm-uninstalled.pc \
 	cairo-qt-uninstalled.pc cairo-quartz-uninstalled.pc \
 	cairo-quartz-font-uninstalled.pc \
 	cairo-quartz-image-uninstalled.pc cairo-win32-uninstalled.pc \
 	cairo-win32-font-uninstalled.pc cairo-skia-uninstalled.pc \
 	cairo-os2-uninstalled.pc cairo-beos-uninstalled.pc \
 	cairo-drm-uninstalled.pc cairo-gallium-uninstalled.pc \
-	cairo-png-uninstalled.pc cairo-gl-uninstalled.pc \
-	cairo-glitz-uninstalled.pc cairo-directfb-uninstalled.pc \
-	cairo-vg-uninstalled.pc cairo-eagle-uninstalled.pc \
-	cairo-egl-uninstalled.pc cairo-glx-uninstalled.pc \
-	cairo-script-uninstalled.pc cairo-ft-uninstalled.pc \
-	cairo-fc-uninstalled.pc cairo-ps-uninstalled.pc \
-	cairo-pdf-uninstalled.pc cairo-svg-uninstalled.pc \
-	cairo-xml-uninstalled.pc build/shave build/shave-libtool
+	cairo-xcb-drm-uninstalled.pc cairo-png-uninstalled.pc \
+	cairo-gl-uninstalled.pc cairo-directfb-uninstalled.pc \
+	cairo-vg-uninstalled.pc cairo-egl-uninstalled.pc \
+	cairo-glx-uninstalled.pc cairo-script-uninstalled.pc \
+	cairo-ft-uninstalled.pc cairo-fc-uninstalled.pc \
+	cairo-ps-uninstalled.pc cairo-pdf-uninstalled.pc \
+	cairo-svg-uninstalled.pc cairo-xml-uninstalled.pc build/shave \
+	build/shave-libtool
 CONFIG_CLEAN_VPATH_FILES =
 SOURCES =
 DIST_SOURCES =
@@ -224,14 +225,6 @@ FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FREETYPE_LIBS = @FREETYPE_LIBS@
-GLITZ_AGL_CFLAGS = @GLITZ_AGL_CFLAGS@
-GLITZ_AGL_LIBS = @GLITZ_AGL_LIBS@
-GLITZ_EGL_CFLAGS = @GLITZ_EGL_CFLAGS@
-GLITZ_EGL_LIBS = @GLITZ_EGL_LIBS@
-GLITZ_GLX_CFLAGS = @GLITZ_GLX_CFLAGS@
-GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
-GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
-GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
 GREP = @GREP@
 GS = @GS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -285,6 +278,7 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHLIB_EXT = @SHLIB_EXT@
 SHM_LIBS = @SHM_LIBS@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
@@ -325,16 +319,12 @@ docdir = @docdir@
 drm_CFLAGS = @drm_CFLAGS@
 drm_LIBS = @drm_LIBS@
 dvidir = @dvidir@
-eagle_CFLAGS = @eagle_CFLAGS@
-eagle_LIBS = @eagle_LIBS@
 exec_prefix = @exec_prefix@
 gallium_DIR = @gallium_DIR@
 gl_CFLAGS = @gl_CFLAGS@
 gl_LIBS = @gl_LIBS@
 glib_CFLAGS = @glib_CFLAGS@
 glib_LIBS = @glib_LIBS@
-glitz_CFLAGS = @glitz_CFLAGS@
-glitz_LIBS = @glitz_LIBS@
 gtk_CFLAGS = @gtk_CFLAGS@
 gtk_LIBS = @gtk_LIBS@
 host = @host@
@@ -368,6 +358,8 @@ pthread_CFLAGS = @pthread_CFLAGS@
 pthread_LIBS = @pthread_LIBS@
 qt_CFLAGS = @qt_CFLAGS@
 qt_LIBS = @qt_LIBS@
+real_pthread_CFLAGS = @real_pthread_CFLAGS@
+real_pthread_LIBS = @real_pthread_LIBS@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 shavedir = @shavedir@
@@ -380,8 +372,14 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 xcb_CFLAGS = @xcb_CFLAGS@
 xcb_LIBS = @xcb_LIBS@
+xcb_drm_CFLAGS = @xcb_drm_CFLAGS@
+xcb_drm_LIBS = @xcb_drm_LIBS@
+xcb_shm_CFLAGS = @xcb_shm_CFLAGS@
+xcb_shm_LIBS = @xcb_shm_LIBS@
 xlib_CFLAGS = @xlib_CFLAGS@
 xlib_LIBS = @xlib_LIBS@
+xlib_xcb_CFLAGS = @xlib_xcb_CFLAGS@
+xlib_xcb_LIBS = @xlib_xcb_LIBS@
 xlib_xrender_CFLAGS = @xlib_xrender_CFLAGS@
 xlib_xrender_LIBS = @xlib_xrender_LIBS@
 BUILT_SOURCES = 
@@ -512,6 +510,10 @@ cairo-xlib-xrender-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/s
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-xcb-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-xlib-xcb-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-xcb-shm-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-qt-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-quartz-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
@@ -534,17 +536,15 @@ cairo-drm-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-gallium-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-xcb-drm-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-png-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-gl-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-cairo-glitz-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-directfb-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-vg-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-cairo-eagle-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-egl-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

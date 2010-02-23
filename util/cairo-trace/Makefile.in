@@ -100,17 +100,18 @@ LTLIBRARIES = $(cairolib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 @CAIRO_HAS_SYMBOL_LOOKUP_TRUE@am__DEPENDENCIES_2 =  \
 @CAIRO_HAS_SYMBOL_LOOKUP_TRUE@	$(am__DEPENDENCIES_1)
-cairo_trace_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libcairo_trace_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
-am__cairo_trace_la_SOURCES_DIST = trace.c lookup-symbol.c \
+am__libcairo_trace_la_SOURCES_DIST = trace.c lookup-symbol.c \
 	lookup-symbol.h
-@CAIRO_HAS_SYMBOL_LOOKUP_TRUE@am__objects_1 =  \
-@CAIRO_HAS_SYMBOL_LOOKUP_TRUE@	cairo_trace_la-lookup-symbol.lo
-am_cairo_trace_la_OBJECTS = cairo_trace_la-trace.lo $(am__objects_1)
-cairo_trace_la_OBJECTS = $(am_cairo_trace_la_OBJECTS)
-cairo_trace_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(cairo_trace_la_CFLAGS) \
-	$(CFLAGS) $(cairo_trace_la_LDFLAGS) $(LDFLAGS) -o $@
+@CAIRO_HAS_SYMBOL_LOOKUP_TRUE@am__objects_1 = libcairo_trace_la-lookup-symbol.lo
+am_libcairo_trace_la_OBJECTS = libcairo_trace_la-trace.lo \
+	$(am__objects_1)
+libcairo_trace_la_OBJECTS = $(am_libcairo_trace_la_OBJECTS)
+libcairo_trace_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libcairo_trace_la_CFLAGS) $(CFLAGS) \
+	$(libcairo_trace_la_LDFLAGS) $(LDFLAGS) -o $@
 SCRIPTS = $(bin_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/build/depcomp
@@ -122,8 +123,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(cairo_trace_la_SOURCES)
-DIST_SOURCES = $(am__cairo_trace_la_SOURCES_DIST)
+SOURCES = $(libcairo_trace_la_SOURCES)
+DIST_SOURCES = $(am__libcairo_trace_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -183,14 +184,6 @@ FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FREETYPE_LIBS = @FREETYPE_LIBS@
-GLITZ_AGL_CFLAGS = @GLITZ_AGL_CFLAGS@
-GLITZ_AGL_LIBS = @GLITZ_AGL_LIBS@
-GLITZ_EGL_CFLAGS = @GLITZ_EGL_CFLAGS@
-GLITZ_EGL_LIBS = @GLITZ_EGL_LIBS@
-GLITZ_GLX_CFLAGS = @GLITZ_GLX_CFLAGS@
-GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
-GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
-GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
 GREP = @GREP@
 GS = @GS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -244,6 +237,7 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHLIB_EXT = @SHLIB_EXT@
 SHM_LIBS = @SHM_LIBS@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
@@ -284,16 +278,12 @@ docdir = @docdir@
 drm_CFLAGS = @drm_CFLAGS@
 drm_LIBS = @drm_LIBS@
 dvidir = @dvidir@
-eagle_CFLAGS = @eagle_CFLAGS@
-eagle_LIBS = @eagle_LIBS@
 exec_prefix = @exec_prefix@
 gallium_DIR = @gallium_DIR@
 gl_CFLAGS = @gl_CFLAGS@
 gl_LIBS = @gl_LIBS@
 glib_CFLAGS = @glib_CFLAGS@
 glib_LIBS = @glib_LIBS@
-glitz_CFLAGS = @glitz_CFLAGS@
-glitz_LIBS = @glitz_LIBS@
 gtk_CFLAGS = @gtk_CFLAGS@
 gtk_LIBS = @gtk_LIBS@
 host = @host@
@@ -327,6 +317,8 @@ pthread_CFLAGS = @pthread_CFLAGS@
 pthread_LIBS = @pthread_LIBS@
 qt_CFLAGS = @qt_CFLAGS@
 qt_LIBS = @qt_LIBS@
+real_pthread_CFLAGS = @real_pthread_CFLAGS@
+real_pthread_LIBS = @real_pthread_LIBS@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 shavedir = @shavedir@
@@ -339,24 +331,30 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 xcb_CFLAGS = @xcb_CFLAGS@
 xcb_LIBS = @xcb_LIBS@
+xcb_drm_CFLAGS = @xcb_drm_CFLAGS@
+xcb_drm_LIBS = @xcb_drm_LIBS@
+xcb_shm_CFLAGS = @xcb_shm_CFLAGS@
+xcb_shm_LIBS = @xcb_shm_LIBS@
 xlib_CFLAGS = @xlib_CFLAGS@
 xlib_LIBS = @xlib_LIBS@
+xlib_xcb_CFLAGS = @xlib_xcb_CFLAGS@
+xlib_xcb_LIBS = @xlib_xcb_LIBS@
 xlib_xrender_CFLAGS = @xlib_xrender_CFLAGS@
 xlib_xrender_LIBS = @xlib_xrender_LIBS@
 cairolibdir = $(libdir)/cairo
 cairooutdir = $(localstatedir)/lib/cairo-trace
 bin_SCRIPTS = cairo-trace
-cairolib_LTLIBRARIES = cairo-trace.la
+cairolib_LTLIBRARIES = libcairo-trace.la
 AM_CPPFLAGS = -I$(top_srcdir)/src \
 	      -I$(top_builddir)/src
 
-cairo_trace_la_SOURCES = trace.c $(am__append_2)
-cairo_trace_la_CPPFLAGS = -DCAIRO_TRACE_OUTDIR="\"$(cairooutdir)\"" \
+libcairo_trace_la_SOURCES = trace.c $(am__append_2)
+libcairo_trace_la_CPPFLAGS = -DCAIRO_TRACE_OUTDIR="\"$(cairooutdir)\"" \
 			  $(AM_CPPFLAGS)
 
-cairo_trace_la_CFLAGS = $(CAIRO_CFLAGS)
-cairo_trace_la_LDFLAGS = -module -no-undefined
-cairo_trace_la_LIBADD = -lz $(pthread_LIBS) $(am__append_1) \
+libcairo_trace_la_CFLAGS = $(CAIRO_CFLAGS)
+libcairo_trace_la_LDFLAGS = -no-undefined
+libcairo_trace_la_LIBADD = -lz $(pthread_LIBS) $(am__append_1) \
 	$(am__append_3)
 EXTRA_DIST = \
 	COPYING \
@@ -430,8 +428,8 @@ clean-cairolibLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-cairo-trace.la: $(cairo_trace_la_OBJECTS) $(cairo_trace_la_DEPENDENCIES) 
-	$(cairo_trace_la_LINK) -rpath $(cairolibdir) $(cairo_trace_la_OBJECTS) $(cairo_trace_la_LIBADD) $(LIBS)
+libcairo-trace.la: $(libcairo_trace_la_OBJECTS) $(libcairo_trace_la_DEPENDENCIES) 
+	$(libcairo_trace_la_LINK) -rpath $(cairolibdir) $(libcairo_trace_la_OBJECTS) $(libcairo_trace_la_LIBADD) $(LIBS)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
@@ -473,8 +471,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_trace_la-lookup-symbol.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_trace_la-trace.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcairo_trace_la-lookup-symbol.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcairo_trace_la-trace.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -497,19 +495,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-cairo_trace_la-trace.lo: trace.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(cairo_trace_la_CFLAGS) $(CFLAGS) -MT cairo_trace_la-trace.lo -MD -MP -MF $(DEPDIR)/cairo_trace_la-trace.Tpo -c -o cairo_trace_la-trace.lo `test -f 'trace.c' || echo '$(srcdir)/'`trace.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_trace_la-trace.Tpo $(DEPDIR)/cairo_trace_la-trace.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='trace.c' object='cairo_trace_la-trace.lo' libtool=yes @AMDEPBACKSLASH@
+libcairo_trace_la-trace.lo: trace.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(libcairo_trace_la_CFLAGS) $(CFLAGS) -MT libcairo_trace_la-trace.lo -MD -MP -MF $(DEPDIR)/libcairo_trace_la-trace.Tpo -c -o libcairo_trace_la-trace.lo `test -f 'trace.c' || echo '$(srcdir)/'`trace.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcairo_trace_la-trace.Tpo $(DEPDIR)/libcairo_trace_la-trace.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='trace.c' object='libcairo_trace_la-trace.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(cairo_trace_la_CFLAGS) $(CFLAGS) -c -o cairo_trace_la-trace.lo `test -f 'trace.c' || echo '$(srcdir)/'`trace.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(libcairo_trace_la_CFLAGS) $(CFLAGS) -c -o libcairo_trace_la-trace.lo `test -f 'trace.c' || echo '$(srcdir)/'`trace.c
 
-cairo_trace_la-lookup-symbol.lo: lookup-symbol.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(cairo_trace_la_CFLAGS) $(CFLAGS) -MT cairo_trace_la-lookup-symbol.lo -MD -MP -MF $(DEPDIR)/cairo_trace_la-lookup-symbol.Tpo -c -o cairo_trace_la-lookup-symbol.lo `test -f 'lookup-symbol.c' || echo '$(srcdir)/'`lookup-symbol.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_trace_la-lookup-symbol.Tpo $(DEPDIR)/cairo_trace_la-lookup-symbol.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lookup-symbol.c' object='cairo_trace_la-lookup-symbol.lo' libtool=yes @AMDEPBACKSLASH@
+libcairo_trace_la-lookup-symbol.lo: lookup-symbol.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(libcairo_trace_la_CFLAGS) $(CFLAGS) -MT libcairo_trace_la-lookup-symbol.lo -MD -MP -MF $(DEPDIR)/libcairo_trace_la-lookup-symbol.Tpo -c -o libcairo_trace_la-lookup-symbol.lo `test -f 'lookup-symbol.c' || echo '$(srcdir)/'`lookup-symbol.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcairo_trace_la-lookup-symbol.Tpo $(DEPDIR)/libcairo_trace_la-lookup-symbol.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lookup-symbol.c' object='libcairo_trace_la-lookup-symbol.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(cairo_trace_la_CFLAGS) $(CFLAGS) -c -o cairo_trace_la-lookup-symbol.lo `test -f 'lookup-symbol.c' || echo '$(srcdir)/'`lookup-symbol.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcairo_trace_la_CPPFLAGS) $(CPPFLAGS) $(libcairo_trace_la_CFLAGS) $(CFLAGS) -c -o libcairo_trace_la-lookup-symbol.lo `test -f 'lookup-symbol.c' || echo '$(srcdir)/'`lookup-symbol.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -724,10 +722,10 @@ uninstall-am: uninstall-binSCRIPTS uninstall-cairolibLTLIBRARIES
 system-install: install
 	-mkdir -p $(cairooutdir)
 	-chmod 01777 $(cairooutdir)
-	grep -sq $(cairolibdir)/cairo-trace.so /etc/ld.so.preload || echo $(cairolibdir)/cairo-trace.so >> /etc/ld.so.preload
+	grep -sq $(cairolibdir)/libcairo-trace.so /etc/ld.so.preload || echo $(cairolibdir)/libcairo-trace.so >> /etc/ld.so.preload
 
 system-uninstall: uninstall
-	sed -e '/cairo-trace.so/d' < /etc/ld.so.preload > /tmp/ld.so.preload && mv /tmp/ld.so.preload /etc/ld.so.preload;
+	sed -e '/libcairo-trace.so/d' < /etc/ld.so.preload > /tmp/ld.so.preload && mv /tmp/ld.so.preload /etc/ld.so.preload;
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

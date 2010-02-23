@@ -45,6 +45,7 @@
 #include "cairoint.h"
 
 #include "cairo-win32-private.h"
+#include "cairo-error-private.h"
 
 #ifndef SPI_GETFONTSMOOTHINGTYPE
 #define SPI_GETFONTSMOOTHINGTYPE 0x200a
@@ -1437,10 +1438,6 @@ _cairo_win32_scaled_font_show_glyphs (void			*abstract_font,
 		_invert_argb32_mask (tmp_surface);
 
 	    mask_surface = &tmp_surface->base;
-
-	    /* XXX: Hacky, should expose this in cairo_image_surface */
-	    pixman_image_set_component_alpha (((cairo_image_surface_t *)tmp_surface->image)->pixman_image, TRUE);
-
 	} else {
 	    mask_surface = _compute_a8_mask (tmp_surface);
 	    cairo_surface_destroy (&tmp_surface->base);
@@ -1454,6 +1451,10 @@ _cairo_win32_scaled_font_show_glyphs (void			*abstract_font,
 	 * destination
 	 */
 	_cairo_pattern_init_for_surface (&mask, mask_surface);
+	cairo_surface_destroy (mask_surface);
+
+	if (scaled_font->quality == CLEARTYPE_QUALITY)
+	    mask.base.has_component_alpha = TRUE;
 
 	status = _cairo_surface_composite (op, pattern,
 					   &mask.base,
@@ -1465,8 +1466,6 @@ _cairo_win32_scaled_font_show_glyphs (void			*abstract_font,
 					   clip_region);
 
 	_cairo_pattern_fini (&mask.base);
-
-	cairo_surface_destroy (mask_surface);
 
 	return status;
     }

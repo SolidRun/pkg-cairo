@@ -39,6 +39,7 @@
 #include "cairo-directfb.h"
 
 #include "cairo-clip-private.h"
+#include "cairo-error-private.h"
 
 #include <pixman.h>
 
@@ -564,6 +565,7 @@ _cairo_directfb_surface_create_internal (IDirectFB *dfb,
 
     _cairo_surface_init (&surface->base,
 			 &_cairo_directfb_surface_backend,
+			 NULL, /* device */
 			 content);
     surface->pixman_format = _directfb_to_pixman_format (format);
     surface->supported_destination = pixman_format_supported_destination (surface->pixman_format);
@@ -706,7 +708,6 @@ _cairo_directfb_surface_release_dest_image (void                  *abstract_surf
 static cairo_status_t
 _cairo_directfb_surface_clone_similar (void             *abstract_surface,
                                        cairo_surface_t  *src,
-				       cairo_content_t	 content,
                                        int               src_x,
                                        int               src_y,
                                        int               width,
@@ -846,7 +847,6 @@ _directfb_prepare_composite (cairo_directfb_surface_t    *dst,
     }
 
     status = _cairo_pattern_acquire_surface (src_pattern, &dst->base,
-					     CAIRO_CONTENT_COLOR_ALPHA,
 					     *src_x, *src_y, width, height,
 					     CAIRO_PATTERN_ACQUIRE_NO_REFLECT,
 					     (cairo_surface_t **) &src,
@@ -1957,6 +1957,7 @@ cairo_directfb_surface_create (IDirectFB *dfb, IDirectFBSurface *dfbsurface)
 
     _cairo_surface_init (&surface->base,
                          &_cairo_directfb_surface_backend,
+			 NULL, /* device */
 			 _directfb_format_to_content (format));
 
     return &surface->base;

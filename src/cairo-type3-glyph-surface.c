@@ -40,8 +40,9 @@
 
 #include "cairo-type3-glyph-surface-private.h"
 #include "cairo-output-stream-private.h"
-#include "cairo-meta-surface-private.h"
+#include "cairo-recording-surface-private.h"
 #include "cairo-analysis-surface-private.h"
+#include "cairo-error-private.h"
 #include "cairo-surface-clipper-private.h"
 
 static const cairo_surface_backend_t cairo_type3_glyph_surface_backend;
@@ -83,7 +84,9 @@ _cairo_type3_glyph_surface_create (cairo_scaled_font_t			 *scaled_font,
     if (unlikely (surface == NULL))
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
-    _cairo_surface_init (&surface->base, &cairo_type3_glyph_surface_backend,
+    _cairo_surface_init (&surface->base,
+			 &cairo_type3_glyph_surface_backend,
+			 NULL, /* device */
 			 CAIRO_CONTENT_COLOR_ALPHA);
 
     surface->scaled_font = scaled_font;
@@ -232,9 +235,9 @@ _cairo_type3_glyph_surface_stroke (void			*abstract_surface,
 				   cairo_operator_t	 op,
 				   const cairo_pattern_t *source,
 				   cairo_path_fixed_t	*path,
-				   cairo_stroke_style_t	*style,
-				   cairo_matrix_t	*ctm,
-				   cairo_matrix_t	*ctm_inverse,
+				   const cairo_stroke_style_t	*style,
+				   const cairo_matrix_t	*ctm,
+				   const cairo_matrix_t	*ctm_inverse,
 				   double		 tolerance,
 				   cairo_antialias_t	 antialias,
 				   cairo_clip_t		*clip)
@@ -288,25 +291,15 @@ _cairo_type3_glyph_surface_show_glyphs (void		     *abstract_surface,
     cairo_type3_glyph_surface_t *surface = abstract_surface;
     cairo_int_status_t status;
     cairo_scaled_font_t *font;
-    cairo_matrix_t new_ctm, ctm_inverse;
-    int i;
+    cairo_matrix_t new_ctm, invert_y_axis;
 
     status = _cairo_surface_clipper_set_clip (&surface->clipper, clip);
     if (unlikely (status))
 	return status;
 
-    for (i = 0; i < num_glyphs; i++) {
-	cairo_matrix_transform_point (&surface->cairo_to_pdf,
-				      &glyphs[i].x, &glyphs[i].y);
-    }
-
-    /* We require the matrix to be invertable. */
-    ctm_inverse = scaled_font->ctm;
-    status = cairo_matrix_invert (&ctm_inverse);
-    if (unlikely (status))
-	return CAIRO_INT_STATUS_IMAGE_FALLBACK;
-
-    cairo_matrix_multiply (&new_ctm, &scaled_font->ctm, &ctm_inverse);
+    cairo_matrix_init_scale (&invert_y_axis, 1, -1);
+    cairo_matrix_multiply (&new_ctm, &invert_y_axis, &scaled_font->ctm);
+    cairo_matrix_multiply (&new_ctm, &surface->cairo_to_pdf, &new_ctm);
     font = cairo_scaled_font_create (scaled_font->font_face,
 				     &scaled_font->font_matrix,
 				     &new_ctm,
@@ -438,7 +431,7 @@ _cairo_type3_glyph_surface_analyze_glyph (void		     *abstract_surface,
     status = _cairo_scaled_glyph_lookup (surface->scaled_font,
 					 glyph_index,
 					 CAIRO_SCALED_GLYPH_INFO_METRICS |
-					 CAIRO_SCALED_GLYPH_INFO_META_SURFACE,
+					 CAIRO_SCALED_GLYPH_INFO_RECORDING_SURFACE,
 					 &scaled_glyph);
 
     if (_cairo_status_is_error (status))
@@ -449,8 +442,8 @@ _cairo_type3_glyph_surface_analyze_glyph (void		     *abstract_surface,
 	goto cleanup;
     }
 
-    status = _cairo_meta_surface_replay (scaled_glyph->meta_surface,
-					&surface->base);
+    status = _cairo_recording_surface_replay (scaled_glyph->recording_surface,
+					      &surface->base);
     if (unlikely (status))
 	goto cleanup;
 
@@ -493,7 +486,7 @@ _cairo_type3_glyph_surface_emit_glyph (void		     *abstract_surface,
     status = _cairo_scaled_glyph_lookup (surface->scaled_font,
 					 glyph_index,
 					 CAIRO_SCALED_GLYPH_INFO_METRICS |
-					 CAIRO_SCALED_GLYPH_INFO_META_SURFACE,
+					 CAIRO_SCALED_GLYPH_INFO_RECORDING_SURFACE,
 					 &scaled_glyph);
     if (status == CAIRO_INT_STATUS_UNSUPPORTED) {
 	status = _cairo_scaled_glyph_lookup (surface->scaled_font,
@@ -544,8 +537,8 @@ _cairo_type3_glyph_surface_emit_glyph (void		     *abstract_surface,
 	_cairo_type3_glyph_surface_set_stream (surface, mem_stream);
 
 	_cairo_output_stream_printf (surface->stream, "q\n");
-	status = _cairo_meta_surface_replay (scaled_glyph->meta_surface,
-					    &surface->base);
+	status = _cairo_recording_surface_replay (scaled_glyph->recording_surface,
+						  &surface->base);
 
 	status2 = _cairo_pdf_operators_flush (&surface->pdf_operators);
 	if (status == CAIRO_STATUS_SUCCESS)

@@ -40,6 +40,7 @@
 #include "cairo-private.h"
 
 #include "cairo-arc-private.h"
+#include "cairo-error-private.h"
 #include "cairo-path-private.h"
 
 #define CAIRO_TOLERANCE_MINIMUM	_cairo_fixed_to_double(1)
@@ -59,10 +60,12 @@ static const cairo_t _cairo_nil = {
     { 0, 0 },			/* last_move_point */
     { 0, 0 },			/* current point */
     FALSE,			/* has_current_point */
+    FALSE,			/* has_last_move_point */
     FALSE,			/* has_curve_to */
     FALSE,			/* is_box */
     FALSE,			/* maybe_fill_region */
     TRUE,			/* is_empty_fill */
+    { {0, 0}, {0, 0}},		/* extents */
     {{{NULL,NULL}}}		/* link */
   }}
 };
@@ -1678,8 +1681,10 @@ cairo_arc (cairo_t *cr,
 	return;
 
     /* Do nothing, successfully, if radius is <= 0 */
-    if (radius <= 0.0)
+    if (radius <= 0.0) {
+	cairo_line_to (cr, xc, yc);
 	return;
+    }
 
     while (angle2 < angle1)
 	angle2 += 2 * M_PI;
@@ -1933,7 +1938,7 @@ cairo_stroke_to_path (cairo_t *cr)
     if (unlikely (cr->status))
 	return;
 
-    /* The code in _cairo_meta_surface_get_path has a poorman's stroke_to_path */
+    /* The code in _cairo_recording_surface_get_path has a poorman's stroke_to_path */
 
     status = _cairo_gstate_stroke_path (cr->gstate);
     if (unlikely (status))

@@ -143,6 +143,16 @@ creates a bitmap image in memory.
 The type of a surface can be queried with <link linkend="cairo-surface-get-type"><function>cairo_surface_get_type()</function></link>.
 </para>
 <para>
+The initial contents of a surface after creation depend upon the manner
+of its creation. If cairo creates the surface and backing storage for
+the user, it will be initially cleared; for example,
+<link linkend="cairo-image-surface-create"><function>cairo_image_surface_create()</function></link> and <link linkend="cairo-surface-create-similar"><function>cairo_surface_create_similar()</function></link>.
+Alternatively, if the user passes in a reference to some backing storage
+and asks cairo to wrap that in a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>, then the contents are
+not modified; for example, <link linkend="cairo-image-surface-create-for-data"><function>cairo_image_surface_create_for_data()</function></link> and
+<link linkend="cairo-xlib-surface-create"><function>cairo_xlib_surface_create()</function></link>.
+</para>
+<para>
 Memory management of <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> is done with
 <link linkend="cairo-surface-reference"><function>cairo_surface_reference()</function></link> and <link linkend="cairo-surface-destroy"><function>cairo_surface_destroy()</function></link>.</para>
 <para>
@@ -534,7 +544,7 @@ resolution if never set.</para>
     CAIRO_SURFACE_TYPE_QUARTZ_IMAGE,
     CAIRO_SURFACE_TYPE_SCRIPT,
     CAIRO_SURFACE_TYPE_QT,
-    CAIRO_SURFACE_TYPE_META,
+    CAIRO_SURFACE_TYPE_RECORDING,
     CAIRO_SURFACE_TYPE_VG,
     CAIRO_SURFACE_TYPE_GL,
     CAIRO_SURFACE_TYPE_DRM,
@@ -651,34 +661,40 @@ New entries may be added in future versions.</para>
 <listitem><simpara> The surface is of type Qt, since 1.10
 </simpara></listitem>
 </varlistentry>
-<varlistentry id="CAIRO-SURFACE-TYPE-META--CAPS" role="constant">
-<term><literal>CAIRO_SURFACE_TYPE_META</literal></term>
-<listitem><simpara> The surface is a meta-type, since 1.10
+<varlistentry id="CAIRO-SURFACE-TYPE-RECORDING--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_RECORDING</literal></term>
+<listitem><simpara> The surface is of type recording, since 1.10
 </simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-SURFACE-TYPE-VG--CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_VG</literal></term>
-<listitem></listitem>
+<listitem><simpara> The surface is a OpenVG surface, since 1.10
+</simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-SURFACE-TYPE-GL--CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_GL</literal></term>
-<listitem></listitem>
+<listitem><simpara> The surface is of type OpenGL, since 1.10
+</simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-SURFACE-TYPE-DRM--CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_DRM</literal></term>
-<listitem></listitem>
+<listitem><simpara> The surface is of type Direct Render Manager, since 1.10
+</simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-SURFACE-TYPE-TEE--CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_TEE</literal></term>
-<listitem></listitem>
+<listitem><simpara> The surface is of type 'tee' (a multiplexing surface), since 1.10
+</simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-SURFACE-TYPE-XML--CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_XML</literal></term>
-<listitem></listitem>
+<listitem><simpara> The surface is of type XML (for debugging), since 1.10
+</simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-SURFACE-TYPE-SKIA--CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_SKIA</literal></term>
-<listitem></listitem>
+<listitem><simpara> The surface is of type Skia, since 1.10
+</simpara></listitem>
 </varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-surface-get-type" role="function" condition="since:1.2">

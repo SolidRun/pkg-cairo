@@ -657,6 +657,7 @@ _cairo_drm_gallium_device_create (int fd, dev_t dev, int vendor_id, int chip_id)
     device->base.surface.enable_scan_out = NULL;
     device->base.surface.flink = gallium_surface_flink;
 
+    device->base.device.flush = NULL;
     device->base.device.throttle = NULL;
     device->base.device.destroy = gallium_device_destroy;
 

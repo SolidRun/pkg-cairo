@@ -33,6 +33,8 @@
 #include "cairo-drm-radeon-private.h"
 #include "cairo-drm-ioctl-private.h"
 
+#include "cairo-error-private.h"
+
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <errno.h>
@@ -370,7 +372,7 @@ radeon_bo_create_for_name (radeon_device_t *device,
     return &bo->base;
 }
 
-void
+static void
 radeon_bo_release (void *_dev, void *_bo)
 {
     radeon_device_t *device = _dev;
@@ -429,6 +431,8 @@ cairo_status_t
 radeon_device_init (radeon_device_t *device, int fd)
 {
     _radeon_device_init_bo_cache (device);
+
+    device->base.bo.release = radeon_bo_release;
 
     return CAIRO_STATUS_SUCCESS;
 }

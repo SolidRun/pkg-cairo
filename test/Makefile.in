@@ -48,11 +48,11 @@ check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4) \
 
 # Need to add quartz-surface-source
 @CAIRO_HAS_QUARTZ_SURFACE_TRUE@am__append_3 = $(quartz_surface_test_sources)
-@CAIRO_HAS_GLITZ_SURFACE_TRUE@am__append_4 = $(glitz_surface_test_sources)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_5 = $(pdf_surface_test_sources)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_6 = $(ps_surface_test_sources)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_7 = $(svg_surface_test_sources)
-@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_8 = $(test_fallback16_surface_test_sources)
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_4 = $(pdf_surface_test_sources)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_5 = $(ps_surface_test_sources)
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_6 = $(svg_surface_test_sources)
+@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_7 = $(test_fallback16_surface_test_sources)
+@CAIRO_HAS_XCB_SURFACE_TRUE@am__append_8 = $(xcb_surface_test_sources)
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__append_9 = $(xlib_surface_test_sources)
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__append_10 = $(xlib_xrender_surface_test_sources)
 @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@am__append_11 = $(multi_page_surface_test_sources)
@@ -129,23 +129,25 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	a1-traps-sample.c a8-mask.c alpha-similar.c big-line.c \
 	big-trap.c bilevel-image.c caps.c caps-joins.c \
 	caps-joins-alpha.c caps-joins-curve.c caps-sub-paths.c clear.c \
-	clip-all.c clip-disjoint.c clip-device-offset.c clip-empty.c \
-	clip-fill.c clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
+	clear-source.c clip-all.c clip-disjoint.c clip-device-offset.c \
+	clip-empty.c clip-empty-save.c clip-fill.c clip-fill-no-op.c \
+	clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
 	clip-fill-unbounded.c clip-image.c clip-nesting.c \
 	clip-operator.c clip-push-group.c clip-stroke.c \
-	clip-stroke-unbounded.c clip-text.c clip-twice.c \
-	clip-unbounded.c clip-zero.c clipped-group.c clipped-surface.c \
-	close-path.c close-path-current-point.c \
+	clip-stroke-no-op.c clip-stroke-unbounded.c clip-text.c \
+	clip-twice.c clip-twice-rectangle.c clip-unbounded.c \
+	clip-zero.c clipped-group.c clipped-surface.c close-path.c \
+	close-path-current-point.c \
 	composite-integer-translate-source.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c copy-path.c \
 	create-for-stream.c create-from-png.c create-from-png-stream.c \
 	culled-glyphs.c curve-to-as-line-to.c dash-caps-joins.c \
-	dash-curve.c dash-infinite-loop.c dash-no-dash.c \
+	dash-curve.c dash-infinite-loop.c dash-no-dash.c dash-offset.c \
 	dash-offset-negative.c dash-scale.c dash-state.c \
-	dash-zero-length.c degenerate-arc.c degenerate-curve-to.c \
-	degenerate-dash.c degenerate-path.c degenerate-pen.c \
-	degenerate-rel-curve-to.c device-offset.c \
+	dash-zero-length.c degenerate-arc.c degenerate-arcs.c \
+	degenerate-curve-to.c degenerate-dash.c degenerate-path.c \
+	degenerate-pen.c degenerate-rel-curve-to.c device-offset.c \
 	device-offset-fractional.c device-offset-positive.c \
 	device-offset-scale.c extend-pad.c extend-pad-border.c \
 	extend-pad-similar.c extend-reflect.c extend-reflect-similar.c \
@@ -168,25 +170,28 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	leaky-dashed-rectangle.c leaky-dashed-stroke.c leaky-polygon.c \
 	line-width.c line-width-scale.c line-width-zero.c \
 	linear-gradient.c linear-gradient-reflect.c \
-	long-dashed-lines.c long-lines.c mask.c mask-alpha.c \
-	mask-ctm.c mask-glyphs.c mask-surface-ctm.c \
+	linear-gradient-subset.c linear-step-function.c \
+	linear-uniform.c long-dashed-lines.c long-lines.c mask.c \
+	mask-alpha.c mask-ctm.c mask-glyphs.c mask-surface-ctm.c \
 	mask-transformed-image.c mask-transformed-similar.c \
-	meta-surface-pattern.c mime-data.c miter-precision.c \
+	recording-surface-pattern.c mime-data.c miter-precision.c \
 	move-to-show-surface.c new-sub-path.c nil-surface.c operator.c \
-	operator-alpha.c operator-clear.c operator-source.c \
-	over-above-source.c over-around-source.c over-below-source.c \
-	over-between-source.c overlapping-glyphs.c paint.c \
-	paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
-	path-append.c path-precision.c pattern-get-type.c \
-	pattern-getters.c pixman-rotate.c png.c push-group.c \
-	push-group-color.c radial-gradient.c random-intersections-eo.c \
+	operator-alpha.c operator-alpha-alpha.c operator-clear.c \
+	operator-source.c over-above-source.c over-around-source.c \
+	over-below-source.c over-between-source.c overlapping-glyphs.c \
+	paint.c paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
+	path-append.c path-stroke-twice.c path-precision.c \
+	pattern-get-type.c pattern-getters.c pixman-rotate.c png.c \
+	push-group.c push-group-color.c radial-gradient.c \
+	radial-gradient-source.c random-intersections-eo.c \
 	random-intersections-nonzero.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c rectangle-rounding-error.c \
 	rectilinear-fill.c rectilinear-miter-limit.c \
 	rectilinear-dash.c rectilinear-stroke.c reflected-stroke.c \
 	rel-path.c rgb24-ignore-alpha.c rotate-image-surface-paint.c \
-	rotated-clip.c scale-down-source-surface-paint.c \
+	rotated-clip.c rounded-rectangle-fill.c \
+	rounded-rectangle-stroke.c scale-down-source-surface-paint.c \
 	scale-offset-image.c scale-offset-similar.c \
 	scale-source-surface-paint.c scaled-font-zero-matrix.c \
 	stroke-ctm-caps.c stroke-image.c select-font-face.c \
@@ -196,35 +201,39 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	smask-image-mask.c smask-mask.c smask-paint.c smask-stroke.c \
 	smask-text.c solid-pattern-cache-stress.c source-clip.c \
 	source-clip-scale.c source-surface-scale-paint.c \
-	spline-decomposition.c surface-finish-twice.c \
+	spline-decomposition.c subsurface.c subsurface-repeat.c \
+	subsurface-similar-repeat.c surface-finish-twice.c \
 	surface-pattern.c surface-pattern-big-scale-down.c \
-	surface-pattern-scale-down.c surface-pattern-scale-up.c \
-	text-antialias-gray.c text-antialias-none.c \
-	text-antialias-subpixel.c text-cache-crash.c \
-	text-glyph-range.c text-pattern.c text-rotate.c \
-	text-transform.c text-zero-len.c toy-font-face.c transforms.c \
-	translate-show-surface.c trap-clip.c twin.c \
+	surface-pattern-operator.c surface-pattern-scale-down.c \
+	surface-pattern-scale-up.c text-antialias-gray.c \
+	text-antialias-none.c text-antialias-subpixel.c \
+	text-cache-crash.c text-glyph-range.c text-pattern.c \
+	text-rotate.c text-transform.c text-zero-len.c toy-font-face.c \
+	transforms.c translate-show-surface.c trap-clip.c twin.c \
 	twin-antialias-gray.c twin-antialias-mixed.c \
 	twin-antialias-none.c twin-antialias-subpixel.c \
 	unantialiased-shapes.c unbounded-operator.c user-data.c \
 	user-font.c user-font-mask.c user-font-proxy.c \
-	user-font-rescale.c zero-alpha.c pthread-show-text.c \
+	user-font-rescale.c xcomposite-projection.c zero-alpha.c \
+	pthread-same-source.c pthread-show-text.c pthread-similar.c \
 	bitmap-font.c ft-font-create-for-ft-face.c \
 	ft-show-glyphs-positioning.c ft-show-glyphs-table.c \
 	ft-text-vertical-layout-type1.c \
 	ft-text-vertical-layout-type3.c ft-text-antialias-none.c \
-	quartz-surface-source.c glitz-surface-source.c pdf-features.c \
-	pdf-mime-data.c pdf-surface-source.c ps-eps.c ps-features.c \
+	quartz-surface-source.c pdf-features.c pdf-mime-data.c \
+	pdf-surface-source.c ps-eps.c ps-features.c \
 	ps-surface-source.c svg-surface.c svg-clip.c \
 	svg-surface-source.c test-fallback16-surface-source.c \
-	xlib-expose-event.c xlib-surface.c xlib-surface-source.c \
-	get-xrender-format.c multi-page.c fallback-resolution.c \
-	cairo-test-constructors.c
+	xcb-surface-source.c xlib-expose-event.c xlib-surface.c \
+	xlib-surface-source.c get-xrender-format.c multi-page.c \
+	fallback-resolution.c cairo-test-constructors.c
 am__objects_1 = cairo_test_suite-buffer-diff.$(OBJEXT) \
 	cairo_test_suite-cairo-test.$(OBJEXT) \
 	cairo_test_suite-cairo-test-runner.$(OBJEXT)
 am__objects_2 =
-am__objects_3 = cairo_test_suite-pthread-show-text.$(OBJEXT)
+am__objects_3 = cairo_test_suite-pthread-same-source.$(OBJEXT) \
+	cairo_test_suite-pthread-show-text.$(OBJEXT) \
+	cairo_test_suite-pthread-similar.$(OBJEXT)
 @HAVE_PTHREAD_TRUE@am__objects_4 = $(am__objects_3)
 am__objects_5 = cairo_test_suite-bitmap-font.$(OBJEXT) \
 	cairo_test_suite-ft-font-create-for-ft-face.$(OBJEXT) \
@@ -236,23 +245,23 @@ am__objects_5 = cairo_test_suite-bitmap-font.$(OBJEXT) \
 @CAIRO_HAS_FC_FONT_TRUE@@CAIRO_HAS_FT_FONT_TRUE@am__objects_6 = $(am__objects_5)
 am__objects_7 = cairo_test_suite-quartz-surface-source.$(OBJEXT)
 @CAIRO_HAS_QUARTZ_SURFACE_TRUE@am__objects_8 = $(am__objects_7)
-am__objects_9 = cairo_test_suite-glitz-surface-source.$(OBJEXT)
-@CAIRO_HAS_GLITZ_SURFACE_TRUE@am__objects_10 = $(am__objects_9)
-am__objects_11 = cairo_test_suite-pdf-features.$(OBJEXT) \
+am__objects_9 = cairo_test_suite-pdf-features.$(OBJEXT) \
 	cairo_test_suite-pdf-mime-data.$(OBJEXT) \
 	cairo_test_suite-pdf-surface-source.$(OBJEXT)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_12 = $(am__objects_11)
-am__objects_13 = cairo_test_suite-ps-eps.$(OBJEXT) \
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_10 = $(am__objects_9)
+am__objects_11 = cairo_test_suite-ps-eps.$(OBJEXT) \
 	cairo_test_suite-ps-features.$(OBJEXT) \
 	cairo_test_suite-ps-surface-source.$(OBJEXT)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_14 = $(am__objects_13)
-am__objects_15 = cairo_test_suite-svg-surface.$(OBJEXT) \
+@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_12 = $(am__objects_11)
+am__objects_13 = cairo_test_suite-svg-surface.$(OBJEXT) \
 	cairo_test_suite-svg-clip.$(OBJEXT) \
 	cairo_test_suite-svg-surface-source.$(OBJEXT)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__objects_16 = $(am__objects_15)
-am__objects_17 =  \
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__objects_14 = $(am__objects_13)
+am__objects_15 =  \
 	cairo_test_suite-test-fallback16-surface-source.$(OBJEXT)
-@CAIRO_HAS_TEST_SURFACES_TRUE@am__objects_18 = $(am__objects_17)
+@CAIRO_HAS_TEST_SURFACES_TRUE@am__objects_16 = $(am__objects_15)
+am__objects_17 = cairo_test_suite-xcb-surface-source.$(OBJEXT)
+@CAIRO_HAS_XCB_SURFACE_TRUE@am__objects_18 = $(am__objects_17)
 am__objects_19 = cairo_test_suite-xlib-expose-event.$(OBJEXT) \
 	cairo_test_suite-xlib-surface.$(OBJEXT) \
 	cairo_test_suite-xlib-surface-source.$(OBJEXT)
@@ -281,11 +290,14 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-caps-joins-curve.$(OBJEXT) \
 	cairo_test_suite-caps-sub-paths.$(OBJEXT) \
 	cairo_test_suite-clear.$(OBJEXT) \
+	cairo_test_suite-clear-source.$(OBJEXT) \
 	cairo_test_suite-clip-all.$(OBJEXT) \
 	cairo_test_suite-clip-disjoint.$(OBJEXT) \
 	cairo_test_suite-clip-device-offset.$(OBJEXT) \
 	cairo_test_suite-clip-empty.$(OBJEXT) \
+	cairo_test_suite-clip-empty-save.$(OBJEXT) \
 	cairo_test_suite-clip-fill.$(OBJEXT) \
+	cairo_test_suite-clip-fill-no-op.$(OBJEXT) \
 	cairo_test_suite-clip-fill-rule.$(OBJEXT) \
 	cairo_test_suite-clip-fill-rule-pixel-aligned.$(OBJEXT) \
 	cairo_test_suite-clip-fill-unbounded.$(OBJEXT) \
@@ -294,9 +306,11 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-clip-operator.$(OBJEXT) \
 	cairo_test_suite-clip-push-group.$(OBJEXT) \
 	cairo_test_suite-clip-stroke.$(OBJEXT) \
+	cairo_test_suite-clip-stroke-no-op.$(OBJEXT) \
 	cairo_test_suite-clip-stroke-unbounded.$(OBJEXT) \
 	cairo_test_suite-clip-text.$(OBJEXT) \
 	cairo_test_suite-clip-twice.$(OBJEXT) \
+	cairo_test_suite-clip-twice-rectangle.$(OBJEXT) \
 	cairo_test_suite-clip-unbounded.$(OBJEXT) \
 	cairo_test_suite-clip-zero.$(OBJEXT) \
 	cairo_test_suite-clipped-group.$(OBJEXT) \
@@ -316,11 +330,13 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-dash-curve.$(OBJEXT) \
 	cairo_test_suite-dash-infinite-loop.$(OBJEXT) \
 	cairo_test_suite-dash-no-dash.$(OBJEXT) \
+	cairo_test_suite-dash-offset.$(OBJEXT) \
 	cairo_test_suite-dash-offset-negative.$(OBJEXT) \
 	cairo_test_suite-dash-scale.$(OBJEXT) \
 	cairo_test_suite-dash-state.$(OBJEXT) \
 	cairo_test_suite-dash-zero-length.$(OBJEXT) \
 	cairo_test_suite-degenerate-arc.$(OBJEXT) \
+	cairo_test_suite-degenerate-arcs.$(OBJEXT) \
 	cairo_test_suite-degenerate-curve-to.$(OBJEXT) \
 	cairo_test_suite-degenerate-dash.$(OBJEXT) \
 	cairo_test_suite-degenerate-path.$(OBJEXT) \
@@ -390,6 +406,9 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-line-width-zero.$(OBJEXT) \
 	cairo_test_suite-linear-gradient.$(OBJEXT) \
 	cairo_test_suite-linear-gradient-reflect.$(OBJEXT) \
+	cairo_test_suite-linear-gradient-subset.$(OBJEXT) \
+	cairo_test_suite-linear-step-function.$(OBJEXT) \
+	cairo_test_suite-linear-uniform.$(OBJEXT) \
 	cairo_test_suite-long-dashed-lines.$(OBJEXT) \
 	cairo_test_suite-long-lines.$(OBJEXT) \
 	cairo_test_suite-mask.$(OBJEXT) \
@@ -399,7 +418,7 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-mask-surface-ctm.$(OBJEXT) \
 	cairo_test_suite-mask-transformed-image.$(OBJEXT) \
 	cairo_test_suite-mask-transformed-similar.$(OBJEXT) \
-	cairo_test_suite-meta-surface-pattern.$(OBJEXT) \
+	cairo_test_suite-recording-surface-pattern.$(OBJEXT) \
 	cairo_test_suite-mime-data.$(OBJEXT) \
 	cairo_test_suite-miter-precision.$(OBJEXT) \
 	cairo_test_suite-move-to-show-surface.$(OBJEXT) \
@@ -407,6 +426,7 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-nil-surface.$(OBJEXT) \
 	cairo_test_suite-operator.$(OBJEXT) \
 	cairo_test_suite-operator-alpha.$(OBJEXT) \
+	cairo_test_suite-operator-alpha-alpha.$(OBJEXT) \
 	cairo_test_suite-operator-clear.$(OBJEXT) \
 	cairo_test_suite-operator-source.$(OBJEXT) \
 	cairo_test_suite-over-above-source.$(OBJEXT) \
@@ -419,6 +439,7 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-paint-source-alpha.$(OBJEXT) \
 	cairo_test_suite-paint-with-alpha.$(OBJEXT) \
 	cairo_test_suite-path-append.$(OBJEXT) \
+	cairo_test_suite-path-stroke-twice.$(OBJEXT) \
 	cairo_test_suite-path-precision.$(OBJEXT) \
 	cairo_test_suite-pattern-get-type.$(OBJEXT) \
 	cairo_test_suite-pattern-getters.$(OBJEXT) \
@@ -427,6 +448,7 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-push-group.$(OBJEXT) \
 	cairo_test_suite-push-group-color.$(OBJEXT) \
 	cairo_test_suite-radial-gradient.$(OBJEXT) \
+	cairo_test_suite-radial-gradient-source.$(OBJEXT) \
 	cairo_test_suite-random-intersections-eo.$(OBJEXT) \
 	cairo_test_suite-random-intersections-nonzero.$(OBJEXT) \
 	cairo_test_suite-random-intersections-curves-eo.$(OBJEXT) \
@@ -441,6 +463,8 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-rgb24-ignore-alpha.$(OBJEXT) \
 	cairo_test_suite-rotate-image-surface-paint.$(OBJEXT) \
 	cairo_test_suite-rotated-clip.$(OBJEXT) \
+	cairo_test_suite-rounded-rectangle-fill.$(OBJEXT) \
+	cairo_test_suite-rounded-rectangle-stroke.$(OBJEXT) \
 	cairo_test_suite-scale-down-source-surface-paint.$(OBJEXT) \
 	cairo_test_suite-scale-offset-image.$(OBJEXT) \
 	cairo_test_suite-scale-offset-similar.$(OBJEXT) \
@@ -469,9 +493,13 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-source-clip-scale.$(OBJEXT) \
 	cairo_test_suite-source-surface-scale-paint.$(OBJEXT) \
 	cairo_test_suite-spline-decomposition.$(OBJEXT) \
+	cairo_test_suite-subsurface.$(OBJEXT) \
+	cairo_test_suite-subsurface-repeat.$(OBJEXT) \
+	cairo_test_suite-subsurface-similar-repeat.$(OBJEXT) \
 	cairo_test_suite-surface-finish-twice.$(OBJEXT) \
 	cairo_test_suite-surface-pattern.$(OBJEXT) \
 	cairo_test_suite-surface-pattern-big-scale-down.$(OBJEXT) \
+	cairo_test_suite-surface-pattern-operator.$(OBJEXT) \
 	cairo_test_suite-surface-pattern-scale-down.$(OBJEXT) \
 	cairo_test_suite-surface-pattern-scale-up.$(OBJEXT) \
 	cairo_test_suite-text-antialias-gray.$(OBJEXT) \
@@ -499,6 +527,7 @@ am__objects_27 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-user-font-mask.$(OBJEXT) \
 	cairo_test_suite-user-font-proxy.$(OBJEXT) \
 	cairo_test_suite-user-font-rescale.$(OBJEXT) \
+	cairo_test_suite-xcomposite-projection.$(OBJEXT) \
 	cairo_test_suite-zero-alpha.$(OBJEXT) $(am__objects_4) \
 	$(am__objects_6) $(am__objects_8) $(am__objects_10) \
 	$(am__objects_12) $(am__objects_14) $(am__objects_16) \
@@ -664,14 +693,6 @@ FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FREETYPE_LIBS = @FREETYPE_LIBS@
-GLITZ_AGL_CFLAGS = @GLITZ_AGL_CFLAGS@
-GLITZ_AGL_LIBS = @GLITZ_AGL_LIBS@
-GLITZ_EGL_CFLAGS = @GLITZ_EGL_CFLAGS@
-GLITZ_EGL_LIBS = @GLITZ_EGL_LIBS@
-GLITZ_GLX_CFLAGS = @GLITZ_GLX_CFLAGS@
-GLITZ_GLX_LIBS = @GLITZ_GLX_LIBS@
-GLITZ_WGL_CFLAGS = @GLITZ_WGL_CFLAGS@
-GLITZ_WGL_LIBS = @GLITZ_WGL_LIBS@
 GREP = @GREP@
 GS = @GS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -725,6 +746,7 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHLIB_EXT = @SHLIB_EXT@
 SHM_LIBS = @SHM_LIBS@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
@@ -765,16 +787,12 @@ docdir = @docdir@
 drm_CFLAGS = @drm_CFLAGS@
 drm_LIBS = @drm_LIBS@
 dvidir = @dvidir@
-eagle_CFLAGS = @eagle_CFLAGS@
-eagle_LIBS = @eagle_LIBS@
 exec_prefix = @exec_prefix@
 gallium_DIR = @gallium_DIR@
 gl_CFLAGS = @gl_CFLAGS@
 gl_LIBS = @gl_LIBS@
 glib_CFLAGS = @glib_CFLAGS@
 glib_LIBS = @glib_LIBS@
-glitz_CFLAGS = @glitz_CFLAGS@
-glitz_LIBS = @glitz_LIBS@
 gtk_CFLAGS = @gtk_CFLAGS@
 gtk_LIBS = @gtk_LIBS@
 host = @host@
@@ -808,6 +826,8 @@ pthread_CFLAGS = @pthread_CFLAGS@
 pthread_LIBS = @pthread_LIBS@
 qt_CFLAGS = @qt_CFLAGS@
 qt_LIBS = @qt_LIBS@
+real_pthread_CFLAGS = @real_pthread_CFLAGS@
+real_pthread_LIBS = @real_pthread_LIBS@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 shavedir = @shavedir@
@@ -820,8 +840,14 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 xcb_CFLAGS = @xcb_CFLAGS@
 xcb_LIBS = @xcb_LIBS@
+xcb_drm_CFLAGS = @xcb_drm_CFLAGS@
+xcb_drm_LIBS = @xcb_drm_LIBS@
+xcb_shm_CFLAGS = @xcb_shm_CFLAGS@
+xcb_shm_LIBS = @xcb_shm_LIBS@
 xlib_CFLAGS = @xlib_CFLAGS@
 xlib_LIBS = @xlib_LIBS@
+xlib_xcb_CFLAGS = @xlib_xcb_CFLAGS@
+xlib_xcb_LIBS = @xlib_xcb_LIBS@
 xlib_xrender_CFLAGS = @xlib_xrender_CFLAGS@
 xlib_xrender_LIBS = @xlib_xrender_LIBS@
 BUILT_SOURCES = cairo-test-constructors.c
@@ -844,23 +870,26 @@ TESTS = cairo-test-suite$(EXEEXT)
 test_sources = a1-image-sample.c a1-mask.c a1-traps-sample.c a8-mask.c \
 	alpha-similar.c big-line.c big-trap.c bilevel-image.c caps.c \
 	caps-joins.c caps-joins-alpha.c caps-joins-curve.c \
-	caps-sub-paths.c clear.c clip-all.c clip-disjoint.c \
-	clip-device-offset.c clip-empty.c clip-fill.c clip-fill-rule.c \
-	clip-fill-rule-pixel-aligned.c clip-fill-unbounded.c \
-	clip-image.c clip-nesting.c clip-operator.c clip-push-group.c \
-	clip-stroke.c clip-stroke-unbounded.c clip-text.c clip-twice.c \
-	clip-unbounded.c clip-zero.c clipped-group.c clipped-surface.c \
-	close-path.c close-path-current-point.c \
+	caps-sub-paths.c clear.c clear-source.c clip-all.c \
+	clip-disjoint.c clip-device-offset.c clip-empty.c \
+	clip-empty-save.c clip-fill.c clip-fill-no-op.c \
+	clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
+	clip-fill-unbounded.c clip-image.c clip-nesting.c \
+	clip-operator.c clip-push-group.c clip-stroke.c \
+	clip-stroke-no-op.c clip-stroke-unbounded.c clip-text.c \
+	clip-twice.c clip-twice-rectangle.c clip-unbounded.c \
+	clip-zero.c clipped-group.c clipped-surface.c close-path.c \
+	close-path-current-point.c \
 	composite-integer-translate-source.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c copy-path.c \
 	create-for-stream.c create-from-png.c create-from-png-stream.c \
 	culled-glyphs.c curve-to-as-line-to.c dash-caps-joins.c \
-	dash-curve.c dash-infinite-loop.c dash-no-dash.c \
+	dash-curve.c dash-infinite-loop.c dash-no-dash.c dash-offset.c \
 	dash-offset-negative.c dash-scale.c dash-state.c \
-	dash-zero-length.c degenerate-arc.c degenerate-curve-to.c \
-	degenerate-dash.c degenerate-path.c degenerate-pen.c \
-	degenerate-rel-curve-to.c device-offset.c \
+	dash-zero-length.c degenerate-arc.c degenerate-arcs.c \
+	degenerate-curve-to.c degenerate-dash.c degenerate-path.c \
+	degenerate-pen.c degenerate-rel-curve-to.c device-offset.c \
 	device-offset-fractional.c device-offset-positive.c \
 	device-offset-scale.c extend-pad.c extend-pad-border.c \
 	extend-pad-similar.c extend-reflect.c extend-reflect-similar.c \
@@ -883,25 +912,28 @@ test_sources = a1-image-sample.c a1-mask.c a1-traps-sample.c a8-mask.c \
 	leaky-dashed-rectangle.c leaky-dashed-stroke.c leaky-polygon.c \
 	line-width.c line-width-scale.c line-width-zero.c \
 	linear-gradient.c linear-gradient-reflect.c \
-	long-dashed-lines.c long-lines.c mask.c mask-alpha.c \
-	mask-ctm.c mask-glyphs.c mask-surface-ctm.c \
+	linear-gradient-subset.c linear-step-function.c \
+	linear-uniform.c long-dashed-lines.c long-lines.c mask.c \
+	mask-alpha.c mask-ctm.c mask-glyphs.c mask-surface-ctm.c \
 	mask-transformed-image.c mask-transformed-similar.c \
-	meta-surface-pattern.c mime-data.c miter-precision.c \
+	recording-surface-pattern.c mime-data.c miter-precision.c \
 	move-to-show-surface.c new-sub-path.c nil-surface.c operator.c \
-	operator-alpha.c operator-clear.c operator-source.c \
-	over-above-source.c over-around-source.c over-below-source.c \
-	over-between-source.c overlapping-glyphs.c paint.c \
-	paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
-	path-append.c path-precision.c pattern-get-type.c \
-	pattern-getters.c pixman-rotate.c png.c push-group.c \
-	push-group-color.c radial-gradient.c random-intersections-eo.c \
+	operator-alpha.c operator-alpha-alpha.c operator-clear.c \
+	operator-source.c over-above-source.c over-around-source.c \
+	over-below-source.c over-between-source.c overlapping-glyphs.c \
+	paint.c paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
+	path-append.c path-stroke-twice.c path-precision.c \
+	pattern-get-type.c pattern-getters.c pixman-rotate.c png.c \
+	push-group.c push-group-color.c radial-gradient.c \
+	radial-gradient-source.c random-intersections-eo.c \
 	random-intersections-nonzero.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c rectangle-rounding-error.c \
 	rectilinear-fill.c rectilinear-miter-limit.c \
 	rectilinear-dash.c rectilinear-stroke.c reflected-stroke.c \
 	rel-path.c rgb24-ignore-alpha.c rotate-image-surface-paint.c \
-	rotated-clip.c scale-down-source-surface-paint.c \
+	rotated-clip.c rounded-rectangle-fill.c \
+	rounded-rectangle-stroke.c scale-down-source-surface-paint.c \
 	scale-offset-image.c scale-offset-similar.c \
 	scale-source-surface-paint.c scaled-font-zero-matrix.c \
 	stroke-ctm-caps.c stroke-image.c select-font-face.c \
@@ -911,24 +943,30 @@ test_sources = a1-image-sample.c a1-mask.c a1-traps-sample.c a8-mask.c \
 	smask-image-mask.c smask-mask.c smask-paint.c smask-stroke.c \
 	smask-text.c solid-pattern-cache-stress.c source-clip.c \
 	source-clip-scale.c source-surface-scale-paint.c \
-	spline-decomposition.c surface-finish-twice.c \
+	spline-decomposition.c subsurface.c subsurface-repeat.c \
+	subsurface-similar-repeat.c surface-finish-twice.c \
 	surface-pattern.c surface-pattern-big-scale-down.c \
-	surface-pattern-scale-down.c surface-pattern-scale-up.c \
-	text-antialias-gray.c text-antialias-none.c \
-	text-antialias-subpixel.c text-cache-crash.c \
-	text-glyph-range.c text-pattern.c text-rotate.c \
-	text-transform.c text-zero-len.c toy-font-face.c transforms.c \
-	translate-show-surface.c trap-clip.c twin.c \
+	surface-pattern-operator.c surface-pattern-scale-down.c \
+	surface-pattern-scale-up.c text-antialias-gray.c \
+	text-antialias-none.c text-antialias-subpixel.c \
+	text-cache-crash.c text-glyph-range.c text-pattern.c \
+	text-rotate.c text-transform.c text-zero-len.c toy-font-face.c \
+	transforms.c translate-show-surface.c trap-clip.c twin.c \
 	twin-antialias-gray.c twin-antialias-mixed.c \
 	twin-antialias-none.c twin-antialias-subpixel.c \
 	unantialiased-shapes.c unbounded-operator.c user-data.c \
 	user-font.c user-font-mask.c user-font-proxy.c \
-	user-font-rescale.c zero-alpha.c $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(test)
-pthread_test_sources = pthread-show-text.c
+	user-font-rescale.c xcomposite-projection.c zero-alpha.c \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(test)
+pthread_test_sources = \
+	pthread-same-source.c				\
+	pthread-show-text.c				\
+	pthread-similar.c				\
+	$(NULL)
+
 ft_font_test_sources = \
 	bitmap-font.c \
 	ft-font-create-for-ft-face.c \
@@ -939,7 +977,6 @@ ft_font_test_sources = \
 	ft-text-antialias-none.c
 
 quartz_surface_test_sources = quartz-surface-source.c
-glitz_surface_test_sources = glitz-surface-source.c
 pdf_surface_test_sources = \
 	pdf-features.c \
 	pdf-mime-data.c \
@@ -957,6 +994,9 @@ svg_surface_test_sources = \
 
 test_fallback16_surface_test_sources = \
 	test-fallback16-surface-source.c
+
+xcb_surface_test_sources = \
+	xcb-surface-source.c
 
 xlib_surface_test_sources = \
 	xlib-expose-event.c \
@@ -1034,7 +1074,6 @@ REFERENCE_IMAGES = \
 	alpha-similar.svg.argb32.xfail.png \
 	alpha-similar.svg.rgb24.xfail.png \
 	big-line.ref.png \
-	big-line.xlib-fallback.ref.png \
 	big-line.xlib.ref.png \
 	bilevel-image.ref.png \
 	bitmap-font.ref.png \
@@ -1056,16 +1095,19 @@ REFERENCE_IMAGES = \
 	clear.ps.argb32.ref.png \
 	clear.svg12.argb32.xfail.png \
 	clear.svg12.rgb24.xfail.png \
+	clear-source.ref.png \
 	clip-all.ref.png \
 	clip-device-offset.argb32.ref.png \
 	clip-device-offset.rgb24.ref.png \
 	clip-disjoint.ref.png \
 	clip-disjoint.xlib.ref.png \
 	clip-empty.ref.png \
+	clip-empty-save.ref.png \
 	clip-fill.ref.png \
 	clip-fill.ps.xfail.png \
 	clip-fill.xlib.ref.png \
 	clip-fill.xlib-fallback.ref.png \
+	clip-fill-no-op.ref.png \
 	clip-fill-rule-pixel-aligned.ref.png \
 	clip-fill-rule-pixel-aligned.rgb24.ref.png \
 	clip-fill-rule.pdf.argb32.ref.png \
@@ -1129,6 +1171,7 @@ REFERENCE_IMAGES = \
 	clip-stroke.ref.png \
 	clip-stroke.xlib.ref.png \
 	clip-stroke.xlib-fallback.ref.png \
+	clip-stroke-no-op.ref.png \
 	clip-stroke-unbounded.argb32.ref.png \
 	clip-stroke-unbounded.rgb24.ref.png \
 	clip-stroke-unbounded.svg12.argb32.xfail.png \
@@ -1153,6 +1196,7 @@ REFERENCE_IMAGES = \
 	clip-twice.test-paginated.rgb24.ref.png \
 	clip-twice.xlib.ref.png \
 	clip-twice.xlib.rgb24.ref.png \
+	clip-twice-rectangle.ref.png \
 	clipped-group.pdf.ref.png \
 	clipped-group.ps2.ref.png \
 	clipped-group.ps3.ref.png \
@@ -1203,6 +1247,7 @@ REFERENCE_IMAGES = \
 	dash-curve.xlib.ref.png \
 	dash-infinite-loop.ref.png \
 	dash-no-dash.ref.png \
+	dash-offset.ref.png \
 	dash-offset-negative.ref.png \
 	dash-scale.ps2.argb32.ref.png \
 	dash-scale.ps2.rgb24.ref.png \
@@ -1224,6 +1269,7 @@ REFERENCE_IMAGES = \
 	degenerate-arc.ps3.ref.png \
 	degenerate-arc.ref.png \
 	degenerate-arc.xlib.ref.png \
+	degenerate-arcs.ref.png \
 	degenerate-curve-to.ref.png \
 	degenerate-curve-to.ps.xfail.png \
 	degenerate-dash.ps.xfail.png \
@@ -1407,10 +1453,6 @@ REFERENCE_IMAGES = \
 	ft-text-vertical-layout-type3.svg.ref.png \
 	ft-text-vertical-layout-type3.xlib.ref.png \
 	get-group-target.ref.png \
-	glitz-surface-source.argb32.ref.png \
-	glitz-surface-source.rgb24.ref.png \
-	glitz-surface-source.ps2.ref.png \
-	glitz-surface-source.ps3.ref.png \
 	glyph-cache-pressure.ps2.ref.png \
 	glyph-cache-pressure.ps3.ref.png \
 	glyph-cache-pressure.quartz.ref.png \
@@ -1492,6 +1534,9 @@ REFERENCE_IMAGES = \
 	linear-gradient.quartz.ref.png \
 	linear-gradient.ref.png \
 	linear-gradient.xlib.ref.png \
+	linear-gradient-subset.ref.png \
+	linear-step-function.xfail.png \
+	linear-uniform.ref.png \
 	long-dashed-lines.ps2.ref.png \
 	long-dashed-lines.ps3.ref.png \
 	long-dashed-lines.quartz.ref.png \
@@ -1525,19 +1570,19 @@ REFERENCE_IMAGES = \
 	mask.svg.rgb24.xfail.png \
 	mask.xlib.ref.png \
 	mask.xlib.rgb24.ref.png \
-	meta-surface-pattern.gl.argb32.ref.png \
-	meta-surface-pattern.pdf.argb32.ref.png \
-	meta-surface-pattern.pdf.rgb24.ref.png \
-	meta-surface-pattern.ps2.argb32.ref.png \
-	meta-surface-pattern.ps2.rgb24.ref.png \
-	meta-surface-pattern.ps3.argb32.ref.png \
-	meta-surface-pattern.ps3.rgb24.ref.png \
-	meta-surface-pattern.quartz.ref.png \
-	meta-surface-pattern.quartz.rgb24.ref.png \
-	meta-surface-pattern.ref.png \
-	meta-surface-pattern.rgb24.ref.png \
-	meta-surface-pattern.svg.argb32.ref.png \
-	meta-surface-pattern.svg.rgb24.ref.png \
+	recording-surface-pattern.gl.argb32.ref.png \
+	recording-surface-pattern.pdf.argb32.ref.png \
+	recording-surface-pattern.pdf.rgb24.ref.png \
+	recording-surface-pattern.ps2.argb32.ref.png \
+	recording-surface-pattern.ps2.rgb24.ref.png \
+	recording-surface-pattern.ps3.argb32.ref.png \
+	recording-surface-pattern.ps3.rgb24.ref.png \
+	recording-surface-pattern.quartz.ref.png \
+	recording-surface-pattern.quartz.rgb24.ref.png \
+	recording-surface-pattern.ref.png \
+	recording-surface-pattern.rgb24.ref.png \
+	recording-surface-pattern.svg.argb32.ref.png \
+	recording-surface-pattern.svg.rgb24.ref.png \
 	mime-data.pdf.ref.png \
 	mime-data.ps.ref.png \
 	mime-data.ref.png \
@@ -1562,6 +1607,10 @@ REFERENCE_IMAGES = \
 	operator-alpha.rgb24.ref.png \
 	operator-alpha.svg12.argb32.xfail.png \
 	operator-alpha.svg12.rgb24.xfail.png \
+	operator-alpha-alpha.ref.png \
+	operator-alpha-alpha.pdf.xfail.png \
+	operator-alpha-alpha.ps.xfail.png \
+	operator-alpha-alpha.svg.xfail.png \
 	operator-clear.ps2.argb32.ref.png \
 	operator-clear.ps3.argb32.ref.png \
 	operator-clear.quartz.ref.png \
@@ -1641,6 +1690,8 @@ REFERENCE_IMAGES = \
 	pass-through.rgb24.ref.png \
 	path-append.ps.ref.png \
 	path-append.ref.png \
+	path-stroke-twice.ref.png \
+	path-stroke-twice.ps.ref.png \
 	path-append.test-fallback.ref.png \
 	path-append.xlib-fallback.ref.png \
 	path-append.xlib.ref.png \
@@ -1651,6 +1702,8 @@ REFERENCE_IMAGES = \
 	pdf-surface-source.svg12.rgb24.xfail.png \
 	pixman-rotate.ref.png \
 	pixman-rotate.rgb24.ref.png \
+	pthread-same-source.ref.png \
+	pthread-similar.ref.png \
 	ps-surface-source.rgb24.ref.png \
 	ps-surface-source.argb32.ref.png \
 	ps-surface-source.svg12.argb32.xfail.png \
@@ -1669,6 +1722,8 @@ REFERENCE_IMAGES = \
 	radial-gradient.quartz.ref.png \
 	radial-gradient.ref.png \
 	radial-gradient.svg.xfail.png \
+	radial-gradient-source.argb32.ref.png \
+	radial-gradient-source.rgb24.ref.png \
 	random-intersections-eo.ps.ref.png \
 	random-intersections-eo.quartz.ref.png \
 	random-intersections-eo.ref.png \
@@ -1705,14 +1760,16 @@ REFERENCE_IMAGES = \
 	rel-path.rgb24.ref.png \
 	rgb24-ignore-alpha.ref.png \
 	rotate-image-surface-paint.pdf.xfail.png \
-	rotate-image-surface-paint.ps2.ref.png \
-	rotate-image-surface-paint.ps3.ref.png \
+	rotate-image-surface-paint.ps.ref.png \
 	rotate-image-surface-paint.quartz.ref.png \
 	rotate-image-surface-paint.ref.png \
+	rotate-image-surface-paint.svg.xfail.png \
 	rotate-image-surface-paint.svg.ref.png \
 	rotated-clip.ref.png \
 	rotated-clip.ps.ref.png \
 	rotated-clip.xlib.ref.png \
+	rounded-rectangle-fill.xlib.ref.png \
+	rounded-rectangle-stroke.xlib.ref.png \
 	scale-down-source-surface-paint.ref.png \
 	scale-offset-image.gl.ref.png \
 	scale-offset-image.pdf.argb32.ref.png \
@@ -1729,7 +1786,7 @@ REFERENCE_IMAGES = \
 	scale-offset-similar.ps.ref.png \
 	scale-offset-similar.ref.png \
 	scale-offset-similar.xfail.png \
-	scale-offset-similar.meta.xfail.png \
+	scale-offset-similar.recording.xfail.png \
 	scale-offset-similar.script.xfail.png \
 	scale-offset-similar.xlib.xfail.png \
 	scale-offset-similar.xlib-fallback.xfail.png \
@@ -1810,8 +1867,15 @@ REFERENCE_IMAGES = \
 	stroke-image.quartz.ref.png \
 	stroke-image.ref.png \
 	stroke-image.xlib.ref.png \
+	subsurface.ref.png \
+	subsurface-repeat.ref.png \
+	subsurface-similar-repeat.ref.png \
 	surface-pattern-big-scale-down.ref.png \
 	surface-pattern-big-scale-down.ps.xfail.png \
+	surface-pattern-operator.argb32.ref.png \
+	surface-pattern-operator.rgb24.ref.png \
+	surface-pattern-operator.xlib.argb32.ref.png \
+	surface-pattern-operator.xlib.rgb24.ref.png \
 	surface-pattern-scale-down.pdf.ref.png \
 	surface-pattern-scale-down.ps2.ref.png \
 	surface-pattern-scale-down.ps3.ref.png \
@@ -1925,6 +1989,9 @@ REFERENCE_IMAGES = \
 	user-font.ref.png \
 	user-font.svg.ref.png \
 	user-font.xlib.ref.png \
+	xcb-surface-source.rgb24.ref.png \
+	xcb-surface-source.argb32.ref.png \
+	xcomposite-projection.ref.png \
 	xlib-expose-event.ref.png \
 	xlib-surface-source.rgb24.ref.png \
 	xlib-surface-source.argb32.ref.png \
@@ -2020,7 +2087,9 @@ TESTS_ENVIRONMENT = CAIRO_TEST_MODE="$(MODE)" CAIRO_TEST_TARGET="$(TARGETS)" CAI
 EXTRA_VALGRIND_FLAGS = $(CAIRO_EXTRA_VALGRIND_FLAGS)
 VALGRIND_FLAGS = \
 	--tool=memcheck --suppressions=$(srcdir)/.valgrind-suppressions \
-	--leak-check=yes --show-reachable=yes $(EXTRA_VALGRIND_FLAGS)
+	--track-origins=yes \
+	--leak-check=yes --show-reachable=yes \
+	$(EXTRA_VALGRIND_FLAGS)
 
 
 # The following definitions both should work.
@@ -2123,11 +2192,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-caps-joins.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-caps-sub-paths.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-caps.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clear-source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-all.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-device-offset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-disjoint.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-empty-save.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-empty.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-fill-no-op.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-fill-rule-pixel-aligned.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-fill-rule.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-fill-unbounded.Po@am__quote@
@@ -2136,9 +2208,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-nesting.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-operator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-push-group.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-stroke-no-op.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-stroke-unbounded.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-stroke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-text.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-twice-rectangle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-twice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-unbounded.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-clip-zero.Po@am__quote@
@@ -2160,10 +2234,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-dash-infinite-loop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-dash-no-dash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-dash-offset-negative.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-dash-offset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-dash-scale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-dash-state.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-dash-zero-length.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-degenerate-arc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-degenerate-arcs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-degenerate-curve-to.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-degenerate-dash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-degenerate-path.Po@am__quote@
@@ -2211,7 +2287,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-get-group-target.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-get-path-extents.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-get-xrender-format.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-glitz-surface-source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-glyph-cache-pressure.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-gradient-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-gradient-constant-alpha.Po@am__quote@
@@ -2241,7 +2316,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-line-width-zero.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-line-width.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-linear-gradient-reflect.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-linear-gradient-subset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-linear-gradient.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-linear-step-function.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-linear-uniform.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-long-dashed-lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-long-lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mask-alpha.Po@am__quote@
@@ -2251,13 +2329,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mask-transformed-image.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mask-transformed-similar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mask.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-meta-surface-pattern.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mime-data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-miter-precision.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-move-to-show-surface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-multi-page.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-new-sub-path.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-nil-surface.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-operator-alpha-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-operator-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-operator-clear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-operator-source.Po@am__quote@
@@ -2273,6 +2351,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-paint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-path-append.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-path-precision.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-path-stroke-twice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pattern-get-type.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pattern-getters.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pdf-features.Po@am__quote@
@@ -2283,15 +2362,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-ps-eps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-ps-features.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-ps-surface-source.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pthread-same-source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pthread-show-text.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pthread-similar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-push-group-color.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-push-group.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-quartz-surface-source.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-radial-gradient-source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-radial-gradient.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-random-intersections-curves-eo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-random-intersections-curves-nz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-random-intersections-eo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-random-intersections-nonzero.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-recording-surface-pattern.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectangle-rounding-error.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectilinear-dash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectilinear-fill.Po@am__quote@
@@ -2302,6 +2385,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rgb24-ignore-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rotate-image-surface-paint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rotated-clip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rounded-rectangle-fill.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rounded-rectangle-stroke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-scale-down-source-surface-paint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-scale-offset-image.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-scale-offset-similar.Po@am__quote@
@@ -2330,8 +2415,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-spline-decomposition.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-stroke-ctm-caps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-stroke-image.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-subsurface-repeat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-subsurface-similar-repeat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-subsurface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-surface-finish-twice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-surface-pattern-big-scale-down.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-surface-pattern-operator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-surface-pattern-scale-down.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-surface-pattern-scale-up.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-surface-pattern.Po@am__quote@
@@ -2364,6 +2453,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-user-font-proxy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-user-font-rescale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-user-font.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-xcb-surface-source.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-xcomposite-projection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-xlib-expose-event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-xlib-surface-source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-xlib-surface.Po@am__quote@
@@ -2649,6 +2740,20 @@ cairo_test_suite-clear.obj: clear.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clear.obj `if test -f 'clear.c'; then $(CYGPATH_W) 'clear.c'; else $(CYGPATH_W) '$(srcdir)/clear.c'; fi`
 
+cairo_test_suite-clear-source.o: clear-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clear-source.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clear-source.Tpo -c -o cairo_test_suite-clear-source.o `test -f 'clear-source.c' || echo '$(srcdir)/'`clear-source.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clear-source.Tpo $(DEPDIR)/cairo_test_suite-clear-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clear-source.c' object='cairo_test_suite-clear-source.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clear-source.o `test -f 'clear-source.c' || echo '$(srcdir)/'`clear-source.c
+
+cairo_test_suite-clear-source.obj: clear-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clear-source.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-clear-source.Tpo -c -o cairo_test_suite-clear-source.obj `if test -f 'clear-source.c'; then $(CYGPATH_W) 'clear-source.c'; else $(CYGPATH_W) '$(srcdir)/clear-source.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clear-source.Tpo $(DEPDIR)/cairo_test_suite-clear-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clear-source.c' object='cairo_test_suite-clear-source.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clear-source.obj `if test -f 'clear-source.c'; then $(CYGPATH_W) 'clear-source.c'; else $(CYGPATH_W) '$(srcdir)/clear-source.c'; fi`
+
 cairo_test_suite-clip-all.o: clip-all.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-all.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-all.Tpo -c -o cairo_test_suite-clip-all.o `test -f 'clip-all.c' || echo '$(srcdir)/'`clip-all.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-all.Tpo $(DEPDIR)/cairo_test_suite-clip-all.Po
@@ -2705,6 +2810,20 @@ cairo_test_suite-clip-empty.obj: clip-empty.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-empty.obj `if test -f 'clip-empty.c'; then $(CYGPATH_W) 'clip-empty.c'; else $(CYGPATH_W) '$(srcdir)/clip-empty.c'; fi`
 
+cairo_test_suite-clip-empty-save.o: clip-empty-save.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-empty-save.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-empty-save.Tpo -c -o cairo_test_suite-clip-empty-save.o `test -f 'clip-empty-save.c' || echo '$(srcdir)/'`clip-empty-save.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-empty-save.Tpo $(DEPDIR)/cairo_test_suite-clip-empty-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-empty-save.c' object='cairo_test_suite-clip-empty-save.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-empty-save.o `test -f 'clip-empty-save.c' || echo '$(srcdir)/'`clip-empty-save.c
+
+cairo_test_suite-clip-empty-save.obj: clip-empty-save.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-empty-save.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-empty-save.Tpo -c -o cairo_test_suite-clip-empty-save.obj `if test -f 'clip-empty-save.c'; then $(CYGPATH_W) 'clip-empty-save.c'; else $(CYGPATH_W) '$(srcdir)/clip-empty-save.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-empty-save.Tpo $(DEPDIR)/cairo_test_suite-clip-empty-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-empty-save.c' object='cairo_test_suite-clip-empty-save.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-empty-save.obj `if test -f 'clip-empty-save.c'; then $(CYGPATH_W) 'clip-empty-save.c'; else $(CYGPATH_W) '$(srcdir)/clip-empty-save.c'; fi`
+
 cairo_test_suite-clip-fill.o: clip-fill.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-fill.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-fill.Tpo -c -o cairo_test_suite-clip-fill.o `test -f 'clip-fill.c' || echo '$(srcdir)/'`clip-fill.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-fill.Tpo $(DEPDIR)/cairo_test_suite-clip-fill.Po
@@ -2718,6 +2837,20 @@ cairo_test_suite-clip-fill.obj: clip-fill.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-fill.c' object='cairo_test_suite-clip-fill.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-fill.obj `if test -f 'clip-fill.c'; then $(CYGPATH_W) 'clip-fill.c'; else $(CYGPATH_W) '$(srcdir)/clip-fill.c'; fi`
+
+cairo_test_suite-clip-fill-no-op.o: clip-fill-no-op.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-fill-no-op.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-fill-no-op.Tpo -c -o cairo_test_suite-clip-fill-no-op.o `test -f 'clip-fill-no-op.c' || echo '$(srcdir)/'`clip-fill-no-op.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-fill-no-op.Tpo $(DEPDIR)/cairo_test_suite-clip-fill-no-op.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-fill-no-op.c' object='cairo_test_suite-clip-fill-no-op.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-fill-no-op.o `test -f 'clip-fill-no-op.c' || echo '$(srcdir)/'`clip-fill-no-op.c
+
+cairo_test_suite-clip-fill-no-op.obj: clip-fill-no-op.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-fill-no-op.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-fill-no-op.Tpo -c -o cairo_test_suite-clip-fill-no-op.obj `if test -f 'clip-fill-no-op.c'; then $(CYGPATH_W) 'clip-fill-no-op.c'; else $(CYGPATH_W) '$(srcdir)/clip-fill-no-op.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-fill-no-op.Tpo $(DEPDIR)/cairo_test_suite-clip-fill-no-op.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-fill-no-op.c' object='cairo_test_suite-clip-fill-no-op.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-fill-no-op.obj `if test -f 'clip-fill-no-op.c'; then $(CYGPATH_W) 'clip-fill-no-op.c'; else $(CYGPATH_W) '$(srcdir)/clip-fill-no-op.c'; fi`
 
 cairo_test_suite-clip-fill-rule.o: clip-fill-rule.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-fill-rule.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-fill-rule.Tpo -c -o cairo_test_suite-clip-fill-rule.o `test -f 'clip-fill-rule.c' || echo '$(srcdir)/'`clip-fill-rule.c
@@ -2831,6 +2964,20 @@ cairo_test_suite-clip-stroke.obj: clip-stroke.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-stroke.obj `if test -f 'clip-stroke.c'; then $(CYGPATH_W) 'clip-stroke.c'; else $(CYGPATH_W) '$(srcdir)/clip-stroke.c'; fi`
 
+cairo_test_suite-clip-stroke-no-op.o: clip-stroke-no-op.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-stroke-no-op.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-stroke-no-op.Tpo -c -o cairo_test_suite-clip-stroke-no-op.o `test -f 'clip-stroke-no-op.c' || echo '$(srcdir)/'`clip-stroke-no-op.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-stroke-no-op.Tpo $(DEPDIR)/cairo_test_suite-clip-stroke-no-op.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-stroke-no-op.c' object='cairo_test_suite-clip-stroke-no-op.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-stroke-no-op.o `test -f 'clip-stroke-no-op.c' || echo '$(srcdir)/'`clip-stroke-no-op.c
+
+cairo_test_suite-clip-stroke-no-op.obj: clip-stroke-no-op.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-stroke-no-op.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-stroke-no-op.Tpo -c -o cairo_test_suite-clip-stroke-no-op.obj `if test -f 'clip-stroke-no-op.c'; then $(CYGPATH_W) 'clip-stroke-no-op.c'; else $(CYGPATH_W) '$(srcdir)/clip-stroke-no-op.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-stroke-no-op.Tpo $(DEPDIR)/cairo_test_suite-clip-stroke-no-op.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-stroke-no-op.c' object='cairo_test_suite-clip-stroke-no-op.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-stroke-no-op.obj `if test -f 'clip-stroke-no-op.c'; then $(CYGPATH_W) 'clip-stroke-no-op.c'; else $(CYGPATH_W) '$(srcdir)/clip-stroke-no-op.c'; fi`
+
 cairo_test_suite-clip-stroke-unbounded.o: clip-stroke-unbounded.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-stroke-unbounded.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-stroke-unbounded.Tpo -c -o cairo_test_suite-clip-stroke-unbounded.o `test -f 'clip-stroke-unbounded.c' || echo '$(srcdir)/'`clip-stroke-unbounded.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-stroke-unbounded.Tpo $(DEPDIR)/cairo_test_suite-clip-stroke-unbounded.Po
@@ -2872,6 +3019,20 @@ cairo_test_suite-clip-twice.obj: clip-twice.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-twice.c' object='cairo_test_suite-clip-twice.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-twice.obj `if test -f 'clip-twice.c'; then $(CYGPATH_W) 'clip-twice.c'; else $(CYGPATH_W) '$(srcdir)/clip-twice.c'; fi`
+
+cairo_test_suite-clip-twice-rectangle.o: clip-twice-rectangle.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-twice-rectangle.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-twice-rectangle.Tpo -c -o cairo_test_suite-clip-twice-rectangle.o `test -f 'clip-twice-rectangle.c' || echo '$(srcdir)/'`clip-twice-rectangle.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-twice-rectangle.Tpo $(DEPDIR)/cairo_test_suite-clip-twice-rectangle.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-twice-rectangle.c' object='cairo_test_suite-clip-twice-rectangle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-twice-rectangle.o `test -f 'clip-twice-rectangle.c' || echo '$(srcdir)/'`clip-twice-rectangle.c
+
+cairo_test_suite-clip-twice-rectangle.obj: clip-twice-rectangle.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-twice-rectangle.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-twice-rectangle.Tpo -c -o cairo_test_suite-clip-twice-rectangle.obj `if test -f 'clip-twice-rectangle.c'; then $(CYGPATH_W) 'clip-twice-rectangle.c'; else $(CYGPATH_W) '$(srcdir)/clip-twice-rectangle.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-clip-twice-rectangle.Tpo $(DEPDIR)/cairo_test_suite-clip-twice-rectangle.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='clip-twice-rectangle.c' object='cairo_test_suite-clip-twice-rectangle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-clip-twice-rectangle.obj `if test -f 'clip-twice-rectangle.c'; then $(CYGPATH_W) 'clip-twice-rectangle.c'; else $(CYGPATH_W) '$(srcdir)/clip-twice-rectangle.c'; fi`
 
 cairo_test_suite-clip-unbounded.o: clip-unbounded.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-clip-unbounded.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-clip-unbounded.Tpo -c -o cairo_test_suite-clip-unbounded.o `test -f 'clip-unbounded.c' || echo '$(srcdir)/'`clip-unbounded.c
@@ -3139,6 +3300,20 @@ cairo_test_suite-dash-no-dash.obj: dash-no-dash.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-dash-no-dash.obj `if test -f 'dash-no-dash.c'; then $(CYGPATH_W) 'dash-no-dash.c'; else $(CYGPATH_W) '$(srcdir)/dash-no-dash.c'; fi`
 
+cairo_test_suite-dash-offset.o: dash-offset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-dash-offset.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-dash-offset.Tpo -c -o cairo_test_suite-dash-offset.o `test -f 'dash-offset.c' || echo '$(srcdir)/'`dash-offset.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-dash-offset.Tpo $(DEPDIR)/cairo_test_suite-dash-offset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dash-offset.c' object='cairo_test_suite-dash-offset.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-dash-offset.o `test -f 'dash-offset.c' || echo '$(srcdir)/'`dash-offset.c
+
+cairo_test_suite-dash-offset.obj: dash-offset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-dash-offset.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-dash-offset.Tpo -c -o cairo_test_suite-dash-offset.obj `if test -f 'dash-offset.c'; then $(CYGPATH_W) 'dash-offset.c'; else $(CYGPATH_W) '$(srcdir)/dash-offset.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-dash-offset.Tpo $(DEPDIR)/cairo_test_suite-dash-offset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dash-offset.c' object='cairo_test_suite-dash-offset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-dash-offset.obj `if test -f 'dash-offset.c'; then $(CYGPATH_W) 'dash-offset.c'; else $(CYGPATH_W) '$(srcdir)/dash-offset.c'; fi`
+
 cairo_test_suite-dash-offset-negative.o: dash-offset-negative.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-dash-offset-negative.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-dash-offset-negative.Tpo -c -o cairo_test_suite-dash-offset-negative.o `test -f 'dash-offset-negative.c' || echo '$(srcdir)/'`dash-offset-negative.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-dash-offset-negative.Tpo $(DEPDIR)/cairo_test_suite-dash-offset-negative.Po
@@ -3208,6 +3383,20 @@ cairo_test_suite-degenerate-arc.obj: degenerate-arc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='degenerate-arc.c' object='cairo_test_suite-degenerate-arc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-degenerate-arc.obj `if test -f 'degenerate-arc.c'; then $(CYGPATH_W) 'degenerate-arc.c'; else $(CYGPATH_W) '$(srcdir)/degenerate-arc.c'; fi`
+
+cairo_test_suite-degenerate-arcs.o: degenerate-arcs.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-degenerate-arcs.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-degenerate-arcs.Tpo -c -o cairo_test_suite-degenerate-arcs.o `test -f 'degenerate-arcs.c' || echo '$(srcdir)/'`degenerate-arcs.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-degenerate-arcs.Tpo $(DEPDIR)/cairo_test_suite-degenerate-arcs.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='degenerate-arcs.c' object='cairo_test_suite-degenerate-arcs.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-degenerate-arcs.o `test -f 'degenerate-arcs.c' || echo '$(srcdir)/'`degenerate-arcs.c
+
+cairo_test_suite-degenerate-arcs.obj: degenerate-arcs.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-degenerate-arcs.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-degenerate-arcs.Tpo -c -o cairo_test_suite-degenerate-arcs.obj `if test -f 'degenerate-arcs.c'; then $(CYGPATH_W) 'degenerate-arcs.c'; else $(CYGPATH_W) '$(srcdir)/degenerate-arcs.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-degenerate-arcs.Tpo $(DEPDIR)/cairo_test_suite-degenerate-arcs.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='degenerate-arcs.c' object='cairo_test_suite-degenerate-arcs.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-degenerate-arcs.obj `if test -f 'degenerate-arcs.c'; then $(CYGPATH_W) 'degenerate-arcs.c'; else $(CYGPATH_W) '$(srcdir)/degenerate-arcs.c'; fi`
 
 cairo_test_suite-degenerate-curve-to.o: degenerate-curve-to.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-degenerate-curve-to.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-degenerate-curve-to.Tpo -c -o cairo_test_suite-degenerate-curve-to.o `test -f 'degenerate-curve-to.c' || echo '$(srcdir)/'`degenerate-curve-to.c
@@ -4175,6 +4364,48 @@ cairo_test_suite-linear-gradient-reflect.obj: linear-gradient-reflect.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-linear-gradient-reflect.obj `if test -f 'linear-gradient-reflect.c'; then $(CYGPATH_W) 'linear-gradient-reflect.c'; else $(CYGPATH_W) '$(srcdir)/linear-gradient-reflect.c'; fi`
 
+cairo_test_suite-linear-gradient-subset.o: linear-gradient-subset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-linear-gradient-subset.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-linear-gradient-subset.Tpo -c -o cairo_test_suite-linear-gradient-subset.o `test -f 'linear-gradient-subset.c' || echo '$(srcdir)/'`linear-gradient-subset.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-linear-gradient-subset.Tpo $(DEPDIR)/cairo_test_suite-linear-gradient-subset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='linear-gradient-subset.c' object='cairo_test_suite-linear-gradient-subset.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-linear-gradient-subset.o `test -f 'linear-gradient-subset.c' || echo '$(srcdir)/'`linear-gradient-subset.c
+
+cairo_test_suite-linear-gradient-subset.obj: linear-gradient-subset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-linear-gradient-subset.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-linear-gradient-subset.Tpo -c -o cairo_test_suite-linear-gradient-subset.obj `if test -f 'linear-gradient-subset.c'; then $(CYGPATH_W) 'linear-gradient-subset.c'; else $(CYGPATH_W) '$(srcdir)/linear-gradient-subset.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-linear-gradient-subset.Tpo $(DEPDIR)/cairo_test_suite-linear-gradient-subset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='linear-gradient-subset.c' object='cairo_test_suite-linear-gradient-subset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-linear-gradient-subset.obj `if test -f 'linear-gradient-subset.c'; then $(CYGPATH_W) 'linear-gradient-subset.c'; else $(CYGPATH_W) '$(srcdir)/linear-gradient-subset.c'; fi`
+
+cairo_test_suite-linear-step-function.o: linear-step-function.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-linear-step-function.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-linear-step-function.Tpo -c -o cairo_test_suite-linear-step-function.o `test -f 'linear-step-function.c' || echo '$(srcdir)/'`linear-step-function.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-linear-step-function.Tpo $(DEPDIR)/cairo_test_suite-linear-step-function.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='linear-step-function.c' object='cairo_test_suite-linear-step-function.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-linear-step-function.o `test -f 'linear-step-function.c' || echo '$(srcdir)/'`linear-step-function.c
+
+cairo_test_suite-linear-step-function.obj: linear-step-function.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-linear-step-function.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-linear-step-function.Tpo -c -o cairo_test_suite-linear-step-function.obj `if test -f 'linear-step-function.c'; then $(CYGPATH_W) 'linear-step-function.c'; else $(CYGPATH_W) '$(srcdir)/linear-step-function.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-linear-step-function.Tpo $(DEPDIR)/cairo_test_suite-linear-step-function.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='linear-step-function.c' object='cairo_test_suite-linear-step-function.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-linear-step-function.obj `if test -f 'linear-step-function.c'; then $(CYGPATH_W) 'linear-step-function.c'; else $(CYGPATH_W) '$(srcdir)/linear-step-function.c'; fi`
+
+cairo_test_suite-linear-uniform.o: linear-uniform.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-linear-uniform.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-linear-uniform.Tpo -c -o cairo_test_suite-linear-uniform.o `test -f 'linear-uniform.c' || echo '$(srcdir)/'`linear-uniform.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-linear-uniform.Tpo $(DEPDIR)/cairo_test_suite-linear-uniform.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='linear-uniform.c' object='cairo_test_suite-linear-uniform.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-linear-uniform.o `test -f 'linear-uniform.c' || echo '$(srcdir)/'`linear-uniform.c
+
+cairo_test_suite-linear-uniform.obj: linear-uniform.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-linear-uniform.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-linear-uniform.Tpo -c -o cairo_test_suite-linear-uniform.obj `if test -f 'linear-uniform.c'; then $(CYGPATH_W) 'linear-uniform.c'; else $(CYGPATH_W) '$(srcdir)/linear-uniform.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-linear-uniform.Tpo $(DEPDIR)/cairo_test_suite-linear-uniform.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='linear-uniform.c' object='cairo_test_suite-linear-uniform.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-linear-uniform.obj `if test -f 'linear-uniform.c'; then $(CYGPATH_W) 'linear-uniform.c'; else $(CYGPATH_W) '$(srcdir)/linear-uniform.c'; fi`
+
 cairo_test_suite-long-dashed-lines.o: long-dashed-lines.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-long-dashed-lines.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-long-dashed-lines.Tpo -c -o cairo_test_suite-long-dashed-lines.o `test -f 'long-dashed-lines.c' || echo '$(srcdir)/'`long-dashed-lines.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-long-dashed-lines.Tpo $(DEPDIR)/cairo_test_suite-long-dashed-lines.Po
@@ -4301,19 +4532,19 @@ cairo_test_suite-mask-transformed-similar.obj: mask-transformed-similar.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-mask-transformed-similar.obj `if test -f 'mask-transformed-similar.c'; then $(CYGPATH_W) 'mask-transformed-similar.c'; else $(CYGPATH_W) '$(srcdir)/mask-transformed-similar.c'; fi`
 
-cairo_test_suite-meta-surface-pattern.o: meta-surface-pattern.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-meta-surface-pattern.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-meta-surface-pattern.Tpo -c -o cairo_test_suite-meta-surface-pattern.o `test -f 'meta-surface-pattern.c' || echo '$(srcdir)/'`meta-surface-pattern.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-meta-surface-pattern.Tpo $(DEPDIR)/cairo_test_suite-meta-surface-pattern.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='meta-surface-pattern.c' object='cairo_test_suite-meta-surface-pattern.o' libtool=no @AMDEPBACKSLASH@
+cairo_test_suite-recording-surface-pattern.o: recording-surface-pattern.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-recording-surface-pattern.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-recording-surface-pattern.Tpo -c -o cairo_test_suite-recording-surface-pattern.o `test -f 'recording-surface-pattern.c' || echo '$(srcdir)/'`recording-surface-pattern.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-recording-surface-pattern.Tpo $(DEPDIR)/cairo_test_suite-recording-surface-pattern.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='recording-surface-pattern.c' object='cairo_test_suite-recording-surface-pattern.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-meta-surface-pattern.o `test -f 'meta-surface-pattern.c' || echo '$(srcdir)/'`meta-surface-pattern.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-recording-surface-pattern.o `test -f 'recording-surface-pattern.c' || echo '$(srcdir)/'`recording-surface-pattern.c
 
-cairo_test_suite-meta-surface-pattern.obj: meta-surface-pattern.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-meta-surface-pattern.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-meta-surface-pattern.Tpo -c -o cairo_test_suite-meta-surface-pattern.obj `if test -f 'meta-surface-pattern.c'; then $(CYGPATH_W) 'meta-surface-pattern.c'; else $(CYGPATH_W) '$(srcdir)/meta-surface-pattern.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-meta-surface-pattern.Tpo $(DEPDIR)/cairo_test_suite-meta-surface-pattern.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='meta-surface-pattern.c' object='cairo_test_suite-meta-surface-pattern.obj' libtool=no @AMDEPBACKSLASH@
+cairo_test_suite-recording-surface-pattern.obj: recording-surface-pattern.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-recording-surface-pattern.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-recording-surface-pattern.Tpo -c -o cairo_test_suite-recording-surface-pattern.obj `if test -f 'recording-surface-pattern.c'; then $(CYGPATH_W) 'recording-surface-pattern.c'; else $(CYGPATH_W) '$(srcdir)/recording-surface-pattern.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-recording-surface-pattern.Tpo $(DEPDIR)/cairo_test_suite-recording-surface-pattern.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='recording-surface-pattern.c' object='cairo_test_suite-recording-surface-pattern.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-meta-surface-pattern.obj `if test -f 'meta-surface-pattern.c'; then $(CYGPATH_W) 'meta-surface-pattern.c'; else $(CYGPATH_W) '$(srcdir)/meta-surface-pattern.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-recording-surface-pattern.obj `if test -f 'recording-surface-pattern.c'; then $(CYGPATH_W) 'recording-surface-pattern.c'; else $(CYGPATH_W) '$(srcdir)/recording-surface-pattern.c'; fi`
 
 cairo_test_suite-mime-data.o: mime-data.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-mime-data.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-mime-data.Tpo -c -o cairo_test_suite-mime-data.o `test -f 'mime-data.c' || echo '$(srcdir)/'`mime-data.c
@@ -4412,6 +4643,20 @@ cairo_test_suite-operator-alpha.obj: operator-alpha.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='operator-alpha.c' object='cairo_test_suite-operator-alpha.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-operator-alpha.obj `if test -f 'operator-alpha.c'; then $(CYGPATH_W) 'operator-alpha.c'; else $(CYGPATH_W) '$(srcdir)/operator-alpha.c'; fi`
+
+cairo_test_suite-operator-alpha-alpha.o: operator-alpha-alpha.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-operator-alpha-alpha.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-operator-alpha-alpha.Tpo -c -o cairo_test_suite-operator-alpha-alpha.o `test -f 'operator-alpha-alpha.c' || echo '$(srcdir)/'`operator-alpha-alpha.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-operator-alpha-alpha.Tpo $(DEPDIR)/cairo_test_suite-operator-alpha-alpha.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='operator-alpha-alpha.c' object='cairo_test_suite-operator-alpha-alpha.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-operator-alpha-alpha.o `test -f 'operator-alpha-alpha.c' || echo '$(srcdir)/'`operator-alpha-alpha.c
+
+cairo_test_suite-operator-alpha-alpha.obj: operator-alpha-alpha.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-operator-alpha-alpha.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-operator-alpha-alpha.Tpo -c -o cairo_test_suite-operator-alpha-alpha.obj `if test -f 'operator-alpha-alpha.c'; then $(CYGPATH_W) 'operator-alpha-alpha.c'; else $(CYGPATH_W) '$(srcdir)/operator-alpha-alpha.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-operator-alpha-alpha.Tpo $(DEPDIR)/cairo_test_suite-operator-alpha-alpha.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='operator-alpha-alpha.c' object='cairo_test_suite-operator-alpha-alpha.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-operator-alpha-alpha.obj `if test -f 'operator-alpha-alpha.c'; then $(CYGPATH_W) 'operator-alpha-alpha.c'; else $(CYGPATH_W) '$(srcdir)/operator-alpha-alpha.c'; fi`
 
 cairo_test_suite-operator-clear.o: operator-clear.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-operator-clear.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-operator-clear.Tpo -c -o cairo_test_suite-operator-clear.o `test -f 'operator-clear.c' || echo '$(srcdir)/'`operator-clear.c
@@ -4581,6 +4826,20 @@ cairo_test_suite-path-append.obj: path-append.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-path-append.obj `if test -f 'path-append.c'; then $(CYGPATH_W) 'path-append.c'; else $(CYGPATH_W) '$(srcdir)/path-append.c'; fi`
 
+cairo_test_suite-path-stroke-twice.o: path-stroke-twice.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-path-stroke-twice.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-path-stroke-twice.Tpo -c -o cairo_test_suite-path-stroke-twice.o `test -f 'path-stroke-twice.c' || echo '$(srcdir)/'`path-stroke-twice.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-path-stroke-twice.Tpo $(DEPDIR)/cairo_test_suite-path-stroke-twice.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='path-stroke-twice.c' object='cairo_test_suite-path-stroke-twice.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-path-stroke-twice.o `test -f 'path-stroke-twice.c' || echo '$(srcdir)/'`path-stroke-twice.c
+
+cairo_test_suite-path-stroke-twice.obj: path-stroke-twice.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-path-stroke-twice.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-path-stroke-twice.Tpo -c -o cairo_test_suite-path-stroke-twice.obj `if test -f 'path-stroke-twice.c'; then $(CYGPATH_W) 'path-stroke-twice.c'; else $(CYGPATH_W) '$(srcdir)/path-stroke-twice.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-path-stroke-twice.Tpo $(DEPDIR)/cairo_test_suite-path-stroke-twice.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='path-stroke-twice.c' object='cairo_test_suite-path-stroke-twice.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-path-stroke-twice.obj `if test -f 'path-stroke-twice.c'; then $(CYGPATH_W) 'path-stroke-twice.c'; else $(CYGPATH_W) '$(srcdir)/path-stroke-twice.c'; fi`
+
 cairo_test_suite-path-precision.o: path-precision.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-path-precision.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-path-precision.Tpo -c -o cairo_test_suite-path-precision.o `test -f 'path-precision.c' || echo '$(srcdir)/'`path-precision.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-path-precision.Tpo $(DEPDIR)/cairo_test_suite-path-precision.Po
@@ -4692,6 +4951,20 @@ cairo_test_suite-radial-gradient.obj: radial-gradient.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='radial-gradient.c' object='cairo_test_suite-radial-gradient.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-radial-gradient.obj `if test -f 'radial-gradient.c'; then $(CYGPATH_W) 'radial-gradient.c'; else $(CYGPATH_W) '$(srcdir)/radial-gradient.c'; fi`
+
+cairo_test_suite-radial-gradient-source.o: radial-gradient-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-radial-gradient-source.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-radial-gradient-source.Tpo -c -o cairo_test_suite-radial-gradient-source.o `test -f 'radial-gradient-source.c' || echo '$(srcdir)/'`radial-gradient-source.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-radial-gradient-source.Tpo $(DEPDIR)/cairo_test_suite-radial-gradient-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='radial-gradient-source.c' object='cairo_test_suite-radial-gradient-source.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-radial-gradient-source.o `test -f 'radial-gradient-source.c' || echo '$(srcdir)/'`radial-gradient-source.c
+
+cairo_test_suite-radial-gradient-source.obj: radial-gradient-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-radial-gradient-source.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-radial-gradient-source.Tpo -c -o cairo_test_suite-radial-gradient-source.obj `if test -f 'radial-gradient-source.c'; then $(CYGPATH_W) 'radial-gradient-source.c'; else $(CYGPATH_W) '$(srcdir)/radial-gradient-source.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-radial-gradient-source.Tpo $(DEPDIR)/cairo_test_suite-radial-gradient-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='radial-gradient-source.c' object='cairo_test_suite-radial-gradient-source.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-radial-gradient-source.obj `if test -f 'radial-gradient-source.c'; then $(CYGPATH_W) 'radial-gradient-source.c'; else $(CYGPATH_W) '$(srcdir)/radial-gradient-source.c'; fi`
 
 cairo_test_suite-random-intersections-eo.o: random-intersections-eo.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-random-intersections-eo.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-random-intersections-eo.Tpo -c -o cairo_test_suite-random-intersections-eo.o `test -f 'random-intersections-eo.c' || echo '$(srcdir)/'`random-intersections-eo.c
@@ -4888,6 +5161,34 @@ cairo_test_suite-rotated-clip.obj: rotated-clip.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rotated-clip.c' object='cairo_test_suite-rotated-clip.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rotated-clip.obj `if test -f 'rotated-clip.c'; then $(CYGPATH_W) 'rotated-clip.c'; else $(CYGPATH_W) '$(srcdir)/rotated-clip.c'; fi`
+
+cairo_test_suite-rounded-rectangle-fill.o: rounded-rectangle-fill.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-rounded-rectangle-fill.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-rounded-rectangle-fill.Tpo -c -o cairo_test_suite-rounded-rectangle-fill.o `test -f 'rounded-rectangle-fill.c' || echo '$(srcdir)/'`rounded-rectangle-fill.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-rounded-rectangle-fill.Tpo $(DEPDIR)/cairo_test_suite-rounded-rectangle-fill.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rounded-rectangle-fill.c' object='cairo_test_suite-rounded-rectangle-fill.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rounded-rectangle-fill.o `test -f 'rounded-rectangle-fill.c' || echo '$(srcdir)/'`rounded-rectangle-fill.c
+
+cairo_test_suite-rounded-rectangle-fill.obj: rounded-rectangle-fill.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-rounded-rectangle-fill.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-rounded-rectangle-fill.Tpo -c -o cairo_test_suite-rounded-rectangle-fill.obj `if test -f 'rounded-rectangle-fill.c'; then $(CYGPATH_W) 'rounded-rectangle-fill.c'; else $(CYGPATH_W) '$(srcdir)/rounded-rectangle-fill.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-rounded-rectangle-fill.Tpo $(DEPDIR)/cairo_test_suite-rounded-rectangle-fill.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rounded-rectangle-fill.c' object='cairo_test_suite-rounded-rectangle-fill.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rounded-rectangle-fill.obj `if test -f 'rounded-rectangle-fill.c'; then $(CYGPATH_W) 'rounded-rectangle-fill.c'; else $(CYGPATH_W) '$(srcdir)/rounded-rectangle-fill.c'; fi`
+
+cairo_test_suite-rounded-rectangle-stroke.o: rounded-rectangle-stroke.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-rounded-rectangle-stroke.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-rounded-rectangle-stroke.Tpo -c -o cairo_test_suite-rounded-rectangle-stroke.o `test -f 'rounded-rectangle-stroke.c' || echo '$(srcdir)/'`rounded-rectangle-stroke.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-rounded-rectangle-stroke.Tpo $(DEPDIR)/cairo_test_suite-rounded-rectangle-stroke.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rounded-rectangle-stroke.c' object='cairo_test_suite-rounded-rectangle-stroke.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rounded-rectangle-stroke.o `test -f 'rounded-rectangle-stroke.c' || echo '$(srcdir)/'`rounded-rectangle-stroke.c
+
+cairo_test_suite-rounded-rectangle-stroke.obj: rounded-rectangle-stroke.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-rounded-rectangle-stroke.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-rounded-rectangle-stroke.Tpo -c -o cairo_test_suite-rounded-rectangle-stroke.obj `if test -f 'rounded-rectangle-stroke.c'; then $(CYGPATH_W) 'rounded-rectangle-stroke.c'; else $(CYGPATH_W) '$(srcdir)/rounded-rectangle-stroke.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-rounded-rectangle-stroke.Tpo $(DEPDIR)/cairo_test_suite-rounded-rectangle-stroke.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rounded-rectangle-stroke.c' object='cairo_test_suite-rounded-rectangle-stroke.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rounded-rectangle-stroke.obj `if test -f 'rounded-rectangle-stroke.c'; then $(CYGPATH_W) 'rounded-rectangle-stroke.c'; else $(CYGPATH_W) '$(srcdir)/rounded-rectangle-stroke.c'; fi`
 
 cairo_test_suite-scale-down-source-surface-paint.o: scale-down-source-surface-paint.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-scale-down-source-surface-paint.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-scale-down-source-surface-paint.Tpo -c -o cairo_test_suite-scale-down-source-surface-paint.o `test -f 'scale-down-source-surface-paint.c' || echo '$(srcdir)/'`scale-down-source-surface-paint.c
@@ -5281,6 +5582,48 @@ cairo_test_suite-spline-decomposition.obj: spline-decomposition.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-spline-decomposition.obj `if test -f 'spline-decomposition.c'; then $(CYGPATH_W) 'spline-decomposition.c'; else $(CYGPATH_W) '$(srcdir)/spline-decomposition.c'; fi`
 
+cairo_test_suite-subsurface.o: subsurface.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-subsurface.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-subsurface.Tpo -c -o cairo_test_suite-subsurface.o `test -f 'subsurface.c' || echo '$(srcdir)/'`subsurface.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-subsurface.Tpo $(DEPDIR)/cairo_test_suite-subsurface.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subsurface.c' object='cairo_test_suite-subsurface.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-subsurface.o `test -f 'subsurface.c' || echo '$(srcdir)/'`subsurface.c
+
+cairo_test_suite-subsurface.obj: subsurface.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-subsurface.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-subsurface.Tpo -c -o cairo_test_suite-subsurface.obj `if test -f 'subsurface.c'; then $(CYGPATH_W) 'subsurface.c'; else $(CYGPATH_W) '$(srcdir)/subsurface.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-subsurface.Tpo $(DEPDIR)/cairo_test_suite-subsurface.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subsurface.c' object='cairo_test_suite-subsurface.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-subsurface.obj `if test -f 'subsurface.c'; then $(CYGPATH_W) 'subsurface.c'; else $(CYGPATH_W) '$(srcdir)/subsurface.c'; fi`
+
+cairo_test_suite-subsurface-repeat.o: subsurface-repeat.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-subsurface-repeat.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-subsurface-repeat.Tpo -c -o cairo_test_suite-subsurface-repeat.o `test -f 'subsurface-repeat.c' || echo '$(srcdir)/'`subsurface-repeat.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-subsurface-repeat.Tpo $(DEPDIR)/cairo_test_suite-subsurface-repeat.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subsurface-repeat.c' object='cairo_test_suite-subsurface-repeat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-subsurface-repeat.o `test -f 'subsurface-repeat.c' || echo '$(srcdir)/'`subsurface-repeat.c
+
+cairo_test_suite-subsurface-repeat.obj: subsurface-repeat.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-subsurface-repeat.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-subsurface-repeat.Tpo -c -o cairo_test_suite-subsurface-repeat.obj `if test -f 'subsurface-repeat.c'; then $(CYGPATH_W) 'subsurface-repeat.c'; else $(CYGPATH_W) '$(srcdir)/subsurface-repeat.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-subsurface-repeat.Tpo $(DEPDIR)/cairo_test_suite-subsurface-repeat.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subsurface-repeat.c' object='cairo_test_suite-subsurface-repeat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-subsurface-repeat.obj `if test -f 'subsurface-repeat.c'; then $(CYGPATH_W) 'subsurface-repeat.c'; else $(CYGPATH_W) '$(srcdir)/subsurface-repeat.c'; fi`
+
+cairo_test_suite-subsurface-similar-repeat.o: subsurface-similar-repeat.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-subsurface-similar-repeat.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-subsurface-similar-repeat.Tpo -c -o cairo_test_suite-subsurface-similar-repeat.o `test -f 'subsurface-similar-repeat.c' || echo '$(srcdir)/'`subsurface-similar-repeat.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-subsurface-similar-repeat.Tpo $(DEPDIR)/cairo_test_suite-subsurface-similar-repeat.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subsurface-similar-repeat.c' object='cairo_test_suite-subsurface-similar-repeat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-subsurface-similar-repeat.o `test -f 'subsurface-similar-repeat.c' || echo '$(srcdir)/'`subsurface-similar-repeat.c
+
+cairo_test_suite-subsurface-similar-repeat.obj: subsurface-similar-repeat.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-subsurface-similar-repeat.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-subsurface-similar-repeat.Tpo -c -o cairo_test_suite-subsurface-similar-repeat.obj `if test -f 'subsurface-similar-repeat.c'; then $(CYGPATH_W) 'subsurface-similar-repeat.c'; else $(CYGPATH_W) '$(srcdir)/subsurface-similar-repeat.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-subsurface-similar-repeat.Tpo $(DEPDIR)/cairo_test_suite-subsurface-similar-repeat.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subsurface-similar-repeat.c' object='cairo_test_suite-subsurface-similar-repeat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-subsurface-similar-repeat.obj `if test -f 'subsurface-similar-repeat.c'; then $(CYGPATH_W) 'subsurface-similar-repeat.c'; else $(CYGPATH_W) '$(srcdir)/subsurface-similar-repeat.c'; fi`
+
 cairo_test_suite-surface-finish-twice.o: surface-finish-twice.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-surface-finish-twice.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-surface-finish-twice.Tpo -c -o cairo_test_suite-surface-finish-twice.o `test -f 'surface-finish-twice.c' || echo '$(srcdir)/'`surface-finish-twice.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-surface-finish-twice.Tpo $(DEPDIR)/cairo_test_suite-surface-finish-twice.Po
@@ -5322,6 +5665,20 @@ cairo_test_suite-surface-pattern-big-scale-down.obj: surface-pattern-big-scale-d
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='surface-pattern-big-scale-down.c' object='cairo_test_suite-surface-pattern-big-scale-down.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-surface-pattern-big-scale-down.obj `if test -f 'surface-pattern-big-scale-down.c'; then $(CYGPATH_W) 'surface-pattern-big-scale-down.c'; else $(CYGPATH_W) '$(srcdir)/surface-pattern-big-scale-down.c'; fi`
+
+cairo_test_suite-surface-pattern-operator.o: surface-pattern-operator.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-surface-pattern-operator.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-surface-pattern-operator.Tpo -c -o cairo_test_suite-surface-pattern-operator.o `test -f 'surface-pattern-operator.c' || echo '$(srcdir)/'`surface-pattern-operator.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-surface-pattern-operator.Tpo $(DEPDIR)/cairo_test_suite-surface-pattern-operator.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='surface-pattern-operator.c' object='cairo_test_suite-surface-pattern-operator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-surface-pattern-operator.o `test -f 'surface-pattern-operator.c' || echo '$(srcdir)/'`surface-pattern-operator.c
+
+cairo_test_suite-surface-pattern-operator.obj: surface-pattern-operator.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-surface-pattern-operator.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-surface-pattern-operator.Tpo -c -o cairo_test_suite-surface-pattern-operator.obj `if test -f 'surface-pattern-operator.c'; then $(CYGPATH_W) 'surface-pattern-operator.c'; else $(CYGPATH_W) '$(srcdir)/surface-pattern-operator.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-surface-pattern-operator.Tpo $(DEPDIR)/cairo_test_suite-surface-pattern-operator.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='surface-pattern-operator.c' object='cairo_test_suite-surface-pattern-operator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-surface-pattern-operator.obj `if test -f 'surface-pattern-operator.c'; then $(CYGPATH_W) 'surface-pattern-operator.c'; else $(CYGPATH_W) '$(srcdir)/surface-pattern-operator.c'; fi`
 
 cairo_test_suite-surface-pattern-scale-down.o: surface-pattern-scale-down.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-surface-pattern-scale-down.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-surface-pattern-scale-down.Tpo -c -o cairo_test_suite-surface-pattern-scale-down.o `test -f 'surface-pattern-scale-down.c' || echo '$(srcdir)/'`surface-pattern-scale-down.c
@@ -5701,6 +6058,20 @@ cairo_test_suite-user-font-rescale.obj: user-font-rescale.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-user-font-rescale.obj `if test -f 'user-font-rescale.c'; then $(CYGPATH_W) 'user-font-rescale.c'; else $(CYGPATH_W) '$(srcdir)/user-font-rescale.c'; fi`
 
+cairo_test_suite-xcomposite-projection.o: xcomposite-projection.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-xcomposite-projection.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-xcomposite-projection.Tpo -c -o cairo_test_suite-xcomposite-projection.o `test -f 'xcomposite-projection.c' || echo '$(srcdir)/'`xcomposite-projection.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-xcomposite-projection.Tpo $(DEPDIR)/cairo_test_suite-xcomposite-projection.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xcomposite-projection.c' object='cairo_test_suite-xcomposite-projection.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-xcomposite-projection.o `test -f 'xcomposite-projection.c' || echo '$(srcdir)/'`xcomposite-projection.c
+
+cairo_test_suite-xcomposite-projection.obj: xcomposite-projection.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-xcomposite-projection.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-xcomposite-projection.Tpo -c -o cairo_test_suite-xcomposite-projection.obj `if test -f 'xcomposite-projection.c'; then $(CYGPATH_W) 'xcomposite-projection.c'; else $(CYGPATH_W) '$(srcdir)/xcomposite-projection.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-xcomposite-projection.Tpo $(DEPDIR)/cairo_test_suite-xcomposite-projection.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xcomposite-projection.c' object='cairo_test_suite-xcomposite-projection.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-xcomposite-projection.obj `if test -f 'xcomposite-projection.c'; then $(CYGPATH_W) 'xcomposite-projection.c'; else $(CYGPATH_W) '$(srcdir)/xcomposite-projection.c'; fi`
+
 cairo_test_suite-zero-alpha.o: zero-alpha.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-zero-alpha.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-zero-alpha.Tpo -c -o cairo_test_suite-zero-alpha.o `test -f 'zero-alpha.c' || echo '$(srcdir)/'`zero-alpha.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-zero-alpha.Tpo $(DEPDIR)/cairo_test_suite-zero-alpha.Po
@@ -5715,6 +6086,20 @@ cairo_test_suite-zero-alpha.obj: zero-alpha.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-zero-alpha.obj `if test -f 'zero-alpha.c'; then $(CYGPATH_W) 'zero-alpha.c'; else $(CYGPATH_W) '$(srcdir)/zero-alpha.c'; fi`
 
+cairo_test_suite-pthread-same-source.o: pthread-same-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pthread-same-source.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-pthread-same-source.Tpo -c -o cairo_test_suite-pthread-same-source.o `test -f 'pthread-same-source.c' || echo '$(srcdir)/'`pthread-same-source.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-pthread-same-source.Tpo $(DEPDIR)/cairo_test_suite-pthread-same-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pthread-same-source.c' object='cairo_test_suite-pthread-same-source.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pthread-same-source.o `test -f 'pthread-same-source.c' || echo '$(srcdir)/'`pthread-same-source.c
+
+cairo_test_suite-pthread-same-source.obj: pthread-same-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pthread-same-source.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-pthread-same-source.Tpo -c -o cairo_test_suite-pthread-same-source.obj `if test -f 'pthread-same-source.c'; then $(CYGPATH_W) 'pthread-same-source.c'; else $(CYGPATH_W) '$(srcdir)/pthread-same-source.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-pthread-same-source.Tpo $(DEPDIR)/cairo_test_suite-pthread-same-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pthread-same-source.c' object='cairo_test_suite-pthread-same-source.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pthread-same-source.obj `if test -f 'pthread-same-source.c'; then $(CYGPATH_W) 'pthread-same-source.c'; else $(CYGPATH_W) '$(srcdir)/pthread-same-source.c'; fi`
+
 cairo_test_suite-pthread-show-text.o: pthread-show-text.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pthread-show-text.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-pthread-show-text.Tpo -c -o cairo_test_suite-pthread-show-text.o `test -f 'pthread-show-text.c' || echo '$(srcdir)/'`pthread-show-text.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-pthread-show-text.Tpo $(DEPDIR)/cairo_test_suite-pthread-show-text.Po
@@ -5728,6 +6113,20 @@ cairo_test_suite-pthread-show-text.obj: pthread-show-text.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pthread-show-text.c' object='cairo_test_suite-pthread-show-text.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pthread-show-text.obj `if test -f 'pthread-show-text.c'; then $(CYGPATH_W) 'pthread-show-text.c'; else $(CYGPATH_W) '$(srcdir)/pthread-show-text.c'; fi`
+
+cairo_test_suite-pthread-similar.o: pthread-similar.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pthread-similar.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-pthread-similar.Tpo -c -o cairo_test_suite-pthread-similar.o `test -f 'pthread-similar.c' || echo '$(srcdir)/'`pthread-similar.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-pthread-similar.Tpo $(DEPDIR)/cairo_test_suite-pthread-similar.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pthread-similar.c' object='cairo_test_suite-pthread-similar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pthread-similar.o `test -f 'pthread-similar.c' || echo '$(srcdir)/'`pthread-similar.c
+
+cairo_test_suite-pthread-similar.obj: pthread-similar.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pthread-similar.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-pthread-similar.Tpo -c -o cairo_test_suite-pthread-similar.obj `if test -f 'pthread-similar.c'; then $(CYGPATH_W) 'pthread-similar.c'; else $(CYGPATH_W) '$(srcdir)/pthread-similar.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-pthread-similar.Tpo $(DEPDIR)/cairo_test_suite-pthread-similar.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pthread-similar.c' object='cairo_test_suite-pthread-similar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pthread-similar.obj `if test -f 'pthread-similar.c'; then $(CYGPATH_W) 'pthread-similar.c'; else $(CYGPATH_W) '$(srcdir)/pthread-similar.c'; fi`
 
 cairo_test_suite-bitmap-font.o: bitmap-font.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-bitmap-font.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-bitmap-font.Tpo -c -o cairo_test_suite-bitmap-font.o `test -f 'bitmap-font.c' || echo '$(srcdir)/'`bitmap-font.c
@@ -5840,20 +6239,6 @@ cairo_test_suite-quartz-surface-source.obj: quartz-surface-source.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='quartz-surface-source.c' object='cairo_test_suite-quartz-surface-source.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-quartz-surface-source.obj `if test -f 'quartz-surface-source.c'; then $(CYGPATH_W) 'quartz-surface-source.c'; else $(CYGPATH_W) '$(srcdir)/quartz-surface-source.c'; fi`
-
-cairo_test_suite-glitz-surface-source.o: glitz-surface-source.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-glitz-surface-source.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-glitz-surface-source.Tpo -c -o cairo_test_suite-glitz-surface-source.o `test -f 'glitz-surface-source.c' || echo '$(srcdir)/'`glitz-surface-source.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-glitz-surface-source.Tpo $(DEPDIR)/cairo_test_suite-glitz-surface-source.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='glitz-surface-source.c' object='cairo_test_suite-glitz-surface-source.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-glitz-surface-source.o `test -f 'glitz-surface-source.c' || echo '$(srcdir)/'`glitz-surface-source.c
-
-cairo_test_suite-glitz-surface-source.obj: glitz-surface-source.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-glitz-surface-source.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-glitz-surface-source.Tpo -c -o cairo_test_suite-glitz-surface-source.obj `if test -f 'glitz-surface-source.c'; then $(CYGPATH_W) 'glitz-surface-source.c'; else $(CYGPATH_W) '$(srcdir)/glitz-surface-source.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-glitz-surface-source.Tpo $(DEPDIR)/cairo_test_suite-glitz-surface-source.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='glitz-surface-source.c' object='cairo_test_suite-glitz-surface-source.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-glitz-surface-source.obj `if test -f 'glitz-surface-source.c'; then $(CYGPATH_W) 'glitz-surface-source.c'; else $(CYGPATH_W) '$(srcdir)/glitz-surface-source.c'; fi`
 
 cairo_test_suite-pdf-features.o: pdf-features.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pdf-features.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-pdf-features.Tpo -c -o cairo_test_suite-pdf-features.o `test -f 'pdf-features.c' || echo '$(srcdir)/'`pdf-features.c
@@ -5994,6 +6379,20 @@ cairo_test_suite-test-fallback16-surface-source.obj: test-fallback16-surface-sou
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-fallback16-surface-source.c' object='cairo_test_suite-test-fallback16-surface-source.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-test-fallback16-surface-source.obj `if test -f 'test-fallback16-surface-source.c'; then $(CYGPATH_W) 'test-fallback16-surface-source.c'; else $(CYGPATH_W) '$(srcdir)/test-fallback16-surface-source.c'; fi`
+
+cairo_test_suite-xcb-surface-source.o: xcb-surface-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-xcb-surface-source.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-xcb-surface-source.Tpo -c -o cairo_test_suite-xcb-surface-source.o `test -f 'xcb-surface-source.c' || echo '$(srcdir)/'`xcb-surface-source.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-xcb-surface-source.Tpo $(DEPDIR)/cairo_test_suite-xcb-surface-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xcb-surface-source.c' object='cairo_test_suite-xcb-surface-source.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-xcb-surface-source.o `test -f 'xcb-surface-source.c' || echo '$(srcdir)/'`xcb-surface-source.c
+
+cairo_test_suite-xcb-surface-source.obj: xcb-surface-source.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-xcb-surface-source.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-xcb-surface-source.Tpo -c -o cairo_test_suite-xcb-surface-source.obj `if test -f 'xcb-surface-source.c'; then $(CYGPATH_W) 'xcb-surface-source.c'; else $(CYGPATH_W) '$(srcdir)/xcb-surface-source.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-xcb-surface-source.Tpo $(DEPDIR)/cairo_test_suite-xcb-surface-source.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xcb-surface-source.c' object='cairo_test_suite-xcb-surface-source.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-xcb-surface-source.obj `if test -f 'xcb-surface-source.c'; then $(CYGPATH_W) 'xcb-surface-source.c'; else $(CYGPATH_W) '$(srcdir)/xcb-surface-source.c'; fi`
 
 cairo_test_suite-xlib-expose-event.o: xlib-expose-event.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-xlib-expose-event.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-xlib-expose-event.Tpo -c -o cairo_test_suite-xlib-expose-event.o `test -f 'xlib-expose-event.c' || echo '$(srcdir)/'`xlib-expose-event.c

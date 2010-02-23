@@ -21,10 +21,6 @@ if CAIRO_HAS_QUARTZ_SURFACE
 test_sources += $(quartz_surface_test_sources)
 endif
 
-if CAIRO_HAS_GLITZ_SURFACE
-test_sources += $(glitz_surface_test_sources)
-endif
-
 if CAIRO_HAS_PDF_SURFACE
 test_sources += $(pdf_surface_test_sources)
 endif
@@ -39,6 +35,10 @@ endif
 
 if CAIRO_HAS_TEST_SURFACES
 test_sources += $(test_fallback16_surface_test_sources)
+endif
+
+if CAIRO_HAS_XCB_SURFACE
+test_sources += $(xcb_surface_test_sources)
 endif
 
 if CAIRO_HAS_XLIB_SURFACE
@@ -143,7 +143,6 @@ REFERENCE_IMAGES = \
 	alpha-similar.svg.argb32.xfail.png \
 	alpha-similar.svg.rgb24.xfail.png \
 	big-line.ref.png \
-	big-line.xlib-fallback.ref.png \
 	big-line.xlib.ref.png \
 	bilevel-image.ref.png \
 	bitmap-font.ref.png \
@@ -165,16 +164,19 @@ REFERENCE_IMAGES = \
 	clear.ps.argb32.ref.png \
 	clear.svg12.argb32.xfail.png \
 	clear.svg12.rgb24.xfail.png \
+	clear-source.ref.png \
 	clip-all.ref.png \
 	clip-device-offset.argb32.ref.png \
 	clip-device-offset.rgb24.ref.png \
 	clip-disjoint.ref.png \
 	clip-disjoint.xlib.ref.png \
 	clip-empty.ref.png \
+	clip-empty-save.ref.png \
 	clip-fill.ref.png \
 	clip-fill.ps.xfail.png \
 	clip-fill.xlib.ref.png \
 	clip-fill.xlib-fallback.ref.png \
+	clip-fill-no-op.ref.png \
 	clip-fill-rule-pixel-aligned.ref.png \
 	clip-fill-rule-pixel-aligned.rgb24.ref.png \
 	clip-fill-rule.pdf.argb32.ref.png \
@@ -238,6 +240,7 @@ REFERENCE_IMAGES = \
 	clip-stroke.ref.png \
 	clip-stroke.xlib.ref.png \
 	clip-stroke.xlib-fallback.ref.png \
+	clip-stroke-no-op.ref.png \
 	clip-stroke-unbounded.argb32.ref.png \
 	clip-stroke-unbounded.rgb24.ref.png \
 	clip-stroke-unbounded.svg12.argb32.xfail.png \
@@ -262,6 +265,7 @@ REFERENCE_IMAGES = \
 	clip-twice.test-paginated.rgb24.ref.png \
 	clip-twice.xlib.ref.png \
 	clip-twice.xlib.rgb24.ref.png \
+	clip-twice-rectangle.ref.png \
 	clipped-group.pdf.ref.png \
 	clipped-group.ps2.ref.png \
 	clipped-group.ps3.ref.png \
@@ -312,6 +316,7 @@ REFERENCE_IMAGES = \
 	dash-curve.xlib.ref.png \
 	dash-infinite-loop.ref.png \
 	dash-no-dash.ref.png \
+	dash-offset.ref.png \
 	dash-offset-negative.ref.png \
 	dash-scale.ps2.argb32.ref.png \
 	dash-scale.ps2.rgb24.ref.png \
@@ -333,6 +338,7 @@ REFERENCE_IMAGES = \
 	degenerate-arc.ps3.ref.png \
 	degenerate-arc.ref.png \
 	degenerate-arc.xlib.ref.png \
+	degenerate-arcs.ref.png \
 	degenerate-curve-to.ref.png \
 	degenerate-curve-to.ps.xfail.png \
 	degenerate-dash.ps.xfail.png \
@@ -516,10 +522,6 @@ REFERENCE_IMAGES = \
 	ft-text-vertical-layout-type3.svg.ref.png \
 	ft-text-vertical-layout-type3.xlib.ref.png \
 	get-group-target.ref.png \
-	glitz-surface-source.argb32.ref.png \
-	glitz-surface-source.rgb24.ref.png \
-	glitz-surface-source.ps2.ref.png \
-	glitz-surface-source.ps3.ref.png \
 	glyph-cache-pressure.ps2.ref.png \
 	glyph-cache-pressure.ps3.ref.png \
 	glyph-cache-pressure.quartz.ref.png \
@@ -601,6 +603,9 @@ REFERENCE_IMAGES = \
 	linear-gradient.quartz.ref.png \
 	linear-gradient.ref.png \
 	linear-gradient.xlib.ref.png \
+	linear-gradient-subset.ref.png \
+	linear-step-function.xfail.png \
+	linear-uniform.ref.png \
 	long-dashed-lines.ps2.ref.png \
 	long-dashed-lines.ps3.ref.png \
 	long-dashed-lines.quartz.ref.png \
@@ -634,19 +639,19 @@ REFERENCE_IMAGES = \
 	mask.svg.rgb24.xfail.png \
 	mask.xlib.ref.png \
 	mask.xlib.rgb24.ref.png \
-	meta-surface-pattern.gl.argb32.ref.png \
-	meta-surface-pattern.pdf.argb32.ref.png \
-	meta-surface-pattern.pdf.rgb24.ref.png \
-	meta-surface-pattern.ps2.argb32.ref.png \
-	meta-surface-pattern.ps2.rgb24.ref.png \
-	meta-surface-pattern.ps3.argb32.ref.png \
-	meta-surface-pattern.ps3.rgb24.ref.png \
-	meta-surface-pattern.quartz.ref.png \
-	meta-surface-pattern.quartz.rgb24.ref.png \
-	meta-surface-pattern.ref.png \
-	meta-surface-pattern.rgb24.ref.png \
-	meta-surface-pattern.svg.argb32.ref.png \
-	meta-surface-pattern.svg.rgb24.ref.png \
+	recording-surface-pattern.gl.argb32.ref.png \
+	recording-surface-pattern.pdf.argb32.ref.png \
+	recording-surface-pattern.pdf.rgb24.ref.png \
+	recording-surface-pattern.ps2.argb32.ref.png \
+	recording-surface-pattern.ps2.rgb24.ref.png \
+	recording-surface-pattern.ps3.argb32.ref.png \
+	recording-surface-pattern.ps3.rgb24.ref.png \
+	recording-surface-pattern.quartz.ref.png \
+	recording-surface-pattern.quartz.rgb24.ref.png \
+	recording-surface-pattern.ref.png \
+	recording-surface-pattern.rgb24.ref.png \
+	recording-surface-pattern.svg.argb32.ref.png \
+	recording-surface-pattern.svg.rgb24.ref.png \
 	mime-data.pdf.ref.png \
 	mime-data.ps.ref.png \
 	mime-data.ref.png \
@@ -671,6 +676,10 @@ REFERENCE_IMAGES = \
 	operator-alpha.rgb24.ref.png \
 	operator-alpha.svg12.argb32.xfail.png \
 	operator-alpha.svg12.rgb24.xfail.png \
+	operator-alpha-alpha.ref.png \
+	operator-alpha-alpha.pdf.xfail.png \
+	operator-alpha-alpha.ps.xfail.png \
+	operator-alpha-alpha.svg.xfail.png \
 	operator-clear.ps2.argb32.ref.png \
 	operator-clear.ps3.argb32.ref.png \
 	operator-clear.quartz.ref.png \
@@ -750,6 +759,8 @@ REFERENCE_IMAGES = \
 	pass-through.rgb24.ref.png \
 	path-append.ps.ref.png \
 	path-append.ref.png \
+	path-stroke-twice.ref.png \
+	path-stroke-twice.ps.ref.png \
 	path-append.test-fallback.ref.png \
 	path-append.xlib-fallback.ref.png \
 	path-append.xlib.ref.png \
@@ -760,6 +771,8 @@ REFERENCE_IMAGES = \
 	pdf-surface-source.svg12.rgb24.xfail.png \
 	pixman-rotate.ref.png \
 	pixman-rotate.rgb24.ref.png \
+	pthread-same-source.ref.png \
+	pthread-similar.ref.png \
 	ps-surface-source.rgb24.ref.png \
 	ps-surface-source.argb32.ref.png \
 	ps-surface-source.svg12.argb32.xfail.png \
@@ -778,6 +791,8 @@ REFERENCE_IMAGES = \
 	radial-gradient.quartz.ref.png \
 	radial-gradient.ref.png \
 	radial-gradient.svg.xfail.png \
+	radial-gradient-source.argb32.ref.png \
+	radial-gradient-source.rgb24.ref.png \
 	random-intersections-eo.ps.ref.png \
 	random-intersections-eo.quartz.ref.png \
 	random-intersections-eo.ref.png \
@@ -814,14 +829,16 @@ REFERENCE_IMAGES = \
 	rel-path.rgb24.ref.png \
 	rgb24-ignore-alpha.ref.png \
 	rotate-image-surface-paint.pdf.xfail.png \
-	rotate-image-surface-paint.ps2.ref.png \
-	rotate-image-surface-paint.ps3.ref.png \
+	rotate-image-surface-paint.ps.ref.png \
 	rotate-image-surface-paint.quartz.ref.png \
 	rotate-image-surface-paint.ref.png \
+	rotate-image-surface-paint.svg.xfail.png \
 	rotate-image-surface-paint.svg.ref.png \
 	rotated-clip.ref.png \
 	rotated-clip.ps.ref.png \
 	rotated-clip.xlib.ref.png \
+	rounded-rectangle-fill.xlib.ref.png \
+	rounded-rectangle-stroke.xlib.ref.png \
 	scale-down-source-surface-paint.ref.png \
 	scale-offset-image.gl.ref.png \
 	scale-offset-image.pdf.argb32.ref.png \
@@ -838,7 +855,7 @@ REFERENCE_IMAGES = \
 	scale-offset-similar.ps.ref.png \
 	scale-offset-similar.ref.png \
 	scale-offset-similar.xfail.png \
-	scale-offset-similar.meta.xfail.png \
+	scale-offset-similar.recording.xfail.png \
 	scale-offset-similar.script.xfail.png \
 	scale-offset-similar.xlib.xfail.png \
 	scale-offset-similar.xlib-fallback.xfail.png \
@@ -919,8 +936,15 @@ REFERENCE_IMAGES = \
 	stroke-image.quartz.ref.png \
 	stroke-image.ref.png \
 	stroke-image.xlib.ref.png \
+	subsurface.ref.png \
+	subsurface-repeat.ref.png \
+	subsurface-similar-repeat.ref.png \
 	surface-pattern-big-scale-down.ref.png \
 	surface-pattern-big-scale-down.ps.xfail.png \
+	surface-pattern-operator.argb32.ref.png \
+	surface-pattern-operator.rgb24.ref.png \
+	surface-pattern-operator.xlib.argb32.ref.png \
+	surface-pattern-operator.xlib.rgb24.ref.png \
 	surface-pattern-scale-down.pdf.ref.png \
 	surface-pattern-scale-down.ps2.ref.png \
 	surface-pattern-scale-down.ps3.ref.png \
@@ -1034,6 +1058,9 @@ REFERENCE_IMAGES = \
 	user-font.ref.png \
 	user-font.svg.ref.png \
 	user-font.xlib.ref.png \
+	xcb-surface-source.rgb24.ref.png \
+	xcb-surface-source.argb32.ref.png \
+	xcomposite-projection.ref.png \
 	xlib-expose-event.ref.png \
 	xlib-surface-source.rgb24.ref.png \
 	xlib-surface-source.argb32.ref.png \
@@ -1082,13 +1109,13 @@ $(REFERENCE_IMAGES)
 #                         manipulation for SVG
 # extend-pad            - lacks implementation in pixman and consequently used
 #                         as an excuse for lack of support in other backends
-# fallback-resolution   - The essential problem here is that the meta-surface
+# fallback-resolution   - The essential problem here is that the recording-surface
 #                         has recorded a sequence of operations with one device
 #                         transformation, and we attempt to replay it with
 #                         another (basically a scale-factor for the falback
 #                         resolution). Carl begun to look at this with his
 #                         chain-of-bugs, but the can of worms is much bigger.
-#                         It appears to be a design flaw in the meta-surface
+#                         It appears to be a design flaw in the recording-surface
 #                         that may spread further...
 #                         My solution would be to lock Behad and Adrian in a
 #                         room, with Carl as a moderator and not let them out
@@ -1281,7 +1308,9 @@ TESTS_ENVIRONMENT = CAIRO_TEST_MODE="$(MODE)" CAIRO_TEST_TARGET="$(TARGETS)" CAI
 EXTRA_VALGRIND_FLAGS = $(CAIRO_EXTRA_VALGRIND_FLAGS)
 VALGRIND_FLAGS = \
 	--tool=memcheck --suppressions=$(srcdir)/.valgrind-suppressions \
-	--leak-check=yes --show-reachable=yes $(EXTRA_VALGRIND_FLAGS)
+	--track-origins=yes \
+	--leak-check=yes --show-reachable=yes \
+	$(EXTRA_VALGRIND_FLAGS)
 
 CLEANFILES +=					\
 	valgrind-log				\

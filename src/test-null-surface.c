@@ -40,6 +40,8 @@
 
 #include "test-null-surface.h"
 
+#include "cairo-error-private.h"
+
 slim_hidden_proto (_cairo_test_null_surface_create);
 
 static cairo_int_status_t
@@ -67,9 +69,9 @@ typedef cairo_int_status_t
 			         cairo_operator_t	 op,
 				 const cairo_pattern_t	*source,
 				 cairo_path_fixed_t	*path,
-				 cairo_stroke_style_t	*style,
-				 cairo_matrix_t		*ctm,
-				 cairo_matrix_t		*ctm_inverse,
+				 const cairo_stroke_style_t	*style,
+				 const cairo_matrix_t		*ctm,
+				 const cairo_matrix_t		*ctm_inverse,
 				 double			 tolerance,
 				 cairo_antialias_t	 antialias,
 				 cairo_clip_t		*clip);
@@ -177,7 +179,10 @@ _cairo_test_null_surface_create (cairo_content_t content)
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
     }
 
-    _cairo_surface_init (surface, &null_surface_backend, content);
+    _cairo_surface_init (surface,
+			 &null_surface_backend,
+			 NULL, /* device */
+			 content);
 
     return surface;
 }

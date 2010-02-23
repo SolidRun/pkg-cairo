@@ -243,12 +243,8 @@ associated methods must be used for correct output.</p>
 <a name="cairo-win32-surface-get-dc"></a><h3>cairo_win32_surface_get_dc ()</h3>
 <pre class="programlisting">HDC                 cairo_win32_surface_get_dc          (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
 <p>
-Returns the HDC associated with this surface, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if none.
-Also returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if the surface is not a win32 surface.</p>
+Returns the HDC associated with this surface, or <code class="literal">NULL</code> if none.
+Also returns <code class="literal">NULL</code> if the surface is not a win32 surface.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -261,9 +257,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NUL
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> HDC or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if no HDC available.
+<td> HDC or <code class="literal">NULL</code> if no HDC available.
 
 </td>
 </tr>
@@ -278,9 +272,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NUL
 <p>
 Returns a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> image surface that refers to the same bits
 as the DIB of the Win32 surface.  If the passed-in win32 surface
-is not a DIB surface, <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> is returned.</p>
+is not a DIB surface, <code class="literal">NULL</code> is returned.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -294,9 +286,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NUL
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> (owned by the win32 <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a>),
-or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if the win32 surface is not a DIB.
+or <code class="literal">NULL</code> if the win32 surface is not a DIB.
 
 </td>
 </tr>

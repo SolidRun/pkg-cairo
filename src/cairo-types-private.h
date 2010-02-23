@@ -46,10 +46,13 @@
 
 typedef struct _cairo_array cairo_array_t;
 typedef struct _cairo_backend cairo_backend_t;
+typedef struct _cairo_boxes_t cairo_boxes_t;
 typedef struct _cairo_cache cairo_cache_t;
+typedef struct _cairo_composite_rectangles cairo_composite_rectangles_t;
 typedef struct _cairo_clip cairo_clip_t;
 typedef struct _cairo_clip_path cairo_clip_path_t;
 typedef struct _cairo_color cairo_color_t;
+typedef struct _cairo_device_backend cairo_device_backend_t;
 typedef struct _cairo_font_face_backend     cairo_font_face_backend_t;
 typedef struct _cairo_gstate cairo_gstate_t;
 typedef struct _cairo_hash_entry cairo_hash_entry_t;
@@ -64,6 +67,8 @@ typedef struct _cairo_scaled_font_backend   cairo_scaled_font_backend_t;
 typedef struct _cairo_scaled_font_subsets cairo_scaled_font_subsets_t;
 typedef struct _cairo_solid_pattern cairo_solid_pattern_t;
 typedef struct _cairo_surface_backend cairo_surface_backend_t;
+typedef struct _cairo_surface_snapshot cairo_surface_snapshot_t;
+typedef struct _cairo_surface_subsurface cairo_surface_subsurface_t;
 typedef struct _cairo_surface_wrapper cairo_surface_wrapper_t;
 typedef struct _cairo_unscaled_font_backend cairo_unscaled_font_backend_t;
 typedef struct _cairo_xlib_screen_info cairo_xlib_screen_info_t;
@@ -158,13 +163,15 @@ typedef enum _cairo_int_status {
     CAIRO_INT_STATUS_NOTHING_TO_DO,
     CAIRO_INT_STATUS_FLATTEN_TRANSPARENCY,
     CAIRO_INT_STATUS_IMAGE_FALLBACK,
-    CAIRO_INT_STATUS_ANALYZE_META_SURFACE_PATTERN,
+    CAIRO_INT_STATUS_ANALYZE_RECORDING_SURFACE_PATTERN,
 
     CAIRO_INT_STATUS_LAST_STATUS
 } cairo_int_status_t;
 
 typedef enum _cairo_internal_surface_type {
-    CAIRO_INTERNAL_SURFACE_TYPE_PAGINATED = 0x1000,
+    CAIRO_INTERNAL_SURFACE_TYPE_SUBSURFACE = 0x1000,
+    CAIRO_INTERNAL_SURFACE_TYPE_SNAPSHOT,
+    CAIRO_INTERNAL_SURFACE_TYPE_PAGINATED,
     CAIRO_INTERNAL_SURFACE_TYPE_ANALYSIS,
     CAIRO_INTERNAL_SURFACE_TYPE_TEST_FALLBACK,
     CAIRO_INTERNAL_SURFACE_TYPE_TEST_PAGINATED,
@@ -208,29 +215,6 @@ typedef struct _cairo_point_int {
 
 #define CAIRO_RECT_INT_MIN (INT_MIN >> CAIRO_FIXED_FRAC_BITS)
 #define CAIRO_RECT_INT_MAX (INT_MAX >> CAIRO_FIXED_FRAC_BITS)
-
-/* Rectangles that take part in a composite operation.
- *
- * This defines four translations that define which pixels of the
- * source pattern, mask, clip and destination surface take part in a
- * general composite operation.  The idea is that the pixels at
- *
- *	(i,j)+(src.x, src.y) of the source,
- *      (i,j)+(mask.x, mask.y) of the mask,
- *      (i,j)+(clip.x, clip.y) of the clip and
- *      (i,j)+(dst.x, dst.y) of the destination
- *
- * all combine together to form the result at (i,j)+(dst.x,dst.y),
- * for i,j ranging in [0,width) and [0,height) respectively.
- */
-typedef struct _cairo_composite_rectangles {
-        cairo_point_int_t src;
-        cairo_point_int_t mask;
-        cairo_point_int_t clip;
-        cairo_point_int_t dst;
-        int width;
-        int height;
-} cairo_composite_rectangles_t;
 
 typedef enum _cairo_direction {
     CAIRO_DIRECTION_FORWARD,
@@ -322,7 +306,8 @@ typedef struct _cairo_format_masks {
 typedef enum {
     CAIRO_STOCK_WHITE,
     CAIRO_STOCK_BLACK,
-    CAIRO_STOCK_TRANSPARENT
+    CAIRO_STOCK_TRANSPARENT,
+    CAIRO_STOCK_NUM_COLORS,
 } cairo_stock_t;
 
 typedef enum _cairo_image_transparency {
@@ -340,4 +325,100 @@ struct _cairo_mime_data {
     void *closure;
 };
 
+struct _cairo_pattern {
+    cairo_pattern_type_t	type;
+    cairo_reference_count_t	ref_count;
+    cairo_status_t		status;
+    cairo_user_data_array_t	user_data;
+
+    cairo_matrix_t		matrix;
+    cairo_filter_t		filter;
+    cairo_extend_t		extend;
+
+    cairo_bool_t		has_component_alpha;
+};
+
+struct _cairo_solid_pattern {
+    cairo_pattern_t base;
+    cairo_color_t color;
+    cairo_content_t content;
+};
+
+typedef struct _cairo_surface_pattern {
+    cairo_pattern_t base;
+
+    cairo_surface_t *surface;
+} cairo_surface_pattern_t;
+
+typedef struct _cairo_gradient_stop {
+    double offset;
+    cairo_color_t color;
+} cairo_gradient_stop_t;
+
+typedef struct _cairo_gradient_pattern {
+    cairo_pattern_t base;
+
+    unsigned int	    n_stops;
+    unsigned int	    stops_size;
+    cairo_gradient_stop_t  *stops;
+    cairo_gradient_stop_t   stops_embedded[2];
+} cairo_gradient_pattern_t;
+
+typedef struct _cairo_linear_pattern {
+    cairo_gradient_pattern_t base;
+
+    cairo_point_t p1;
+    cairo_point_t p2;
+} cairo_linear_pattern_t;
+
+typedef struct _cairo_radial_pattern {
+    cairo_gradient_pattern_t base;
+
+    cairo_point_t c1;
+    cairo_fixed_t r1;
+    cairo_point_t c2;
+    cairo_fixed_t r2;
+} cairo_radial_pattern_t;
+
+typedef union {
+    cairo_gradient_pattern_t base;
+
+    cairo_linear_pattern_t linear;
+    cairo_radial_pattern_t radial;
+} cairo_gradient_pattern_union_t;
+
+typedef union {
+    cairo_pattern_type_t	    type;
+    cairo_pattern_t		    base;
+
+    cairo_solid_pattern_t	    solid;
+    cairo_surface_pattern_t	    surface;
+    cairo_gradient_pattern_union_t  gradient;
+} cairo_pattern_union_t;
+
+/*
+ * A #cairo_unscaled_font_t is just an opaque handle we use in the
+ * glyph cache.
+ */
+typedef struct _cairo_unscaled_font {
+    cairo_hash_entry_t			 hash_entry;
+    cairo_reference_count_t		 ref_count;
+    const cairo_unscaled_font_backend_t	*backend;
+} cairo_unscaled_font_t;
+
+typedef struct _cairo_scaled_glyph {
+    cairo_hash_entry_t hash_entry;
+
+    cairo_text_extents_t    metrics;		/* user-space metrics */
+    cairo_text_extents_t    fs_metrics;		/* font-space metrics */
+    cairo_box_t		    bbox;		/* device-space bounds */
+    int16_t                 x_advance;		/* device-space rounded X advance */
+    int16_t                 y_advance;		/* device-space rounded Y advance */
+
+    cairo_image_surface_t   *surface;		/* device-space image */
+    cairo_path_fixed_t	    *path;		/* device-space outline */
+    cairo_surface_t         *recording_surface;	/* device-space recording-surface */
+
+    void		    *surface_private;	/* for the surface backend */
+} cairo_scaled_glyph_t;
 #endif /* CAIRO_TYPES_PRIVATE_H */

@@ -39,6 +39,7 @@
  */
 
 #include "cairoint.h"
+#include "cairo-error-private.h"
 
 COMPILE_TIME_ASSERT (CAIRO_STATUS_LAST_STATUS < CAIRO_INT_STATUS_UNSUPPORTED);
 COMPILE_TIME_ASSERT (CAIRO_INT_STATUS_LAST_STATUS <= 127);
@@ -125,6 +126,10 @@ cairo_status_to_string (cairo_status_t status)
 	return "invalid value (typically too big) for the size of the input (surface, pattern, etc.)";
     case CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED:
 	return "user-font method not implemented";
+    case CAIRO_STATUS_DEVICE_TYPE_MISMATCH:
+	return "the device type is not appropriate for the operation";
+    case CAIRO_STATUS_DEVICE_ERROR:
+	return "an operation to the device caused an unspecified error";
     default:
     case CAIRO_STATUS_LAST_STATUS:
 	return "<unknown error status>";
@@ -416,7 +421,49 @@ _cairo_operator_bounded_by_source (cairo_operator_t op)
     return FALSE;
 }
 
+uint32_t
+_cairo_operator_bounded_by_either (cairo_operator_t op)
+{
+    switch (op) {
+    default:
+	ASSERT_NOT_REACHED;
+    case CAIRO_OPERATOR_OVER:
+    case CAIRO_OPERATOR_ATOP:
+    case CAIRO_OPERATOR_DEST:
+    case CAIRO_OPERATOR_DEST_OVER:
+    case CAIRO_OPERATOR_DEST_OUT:
+    case CAIRO_OPERATOR_XOR:
+    case CAIRO_OPERATOR_ADD:
+    case CAIRO_OPERATOR_SATURATE:
+    case CAIRO_OPERATOR_MULTIPLY:
+    case CAIRO_OPERATOR_SCREEN:
+    case CAIRO_OPERATOR_OVERLAY:
+    case CAIRO_OPERATOR_DARKEN:
+    case CAIRO_OPERATOR_LIGHTEN:
+    case CAIRO_OPERATOR_COLOR_DODGE:
+    case CAIRO_OPERATOR_COLOR_BURN:
+    case CAIRO_OPERATOR_HARD_LIGHT:
+    case CAIRO_OPERATOR_SOFT_LIGHT:
+    case CAIRO_OPERATOR_DIFFERENCE:
+    case CAIRO_OPERATOR_EXCLUSION:
+    case CAIRO_OPERATOR_HSL_HUE:
+    case CAIRO_OPERATOR_HSL_SATURATION:
+    case CAIRO_OPERATOR_HSL_COLOR:
+    case CAIRO_OPERATOR_HSL_LUMINOSITY:
+	return CAIRO_OPERATOR_BOUND_BY_MASK | CAIRO_OPERATOR_BOUND_BY_SOURCE;
+    case CAIRO_OPERATOR_CLEAR:
+    case CAIRO_OPERATOR_SOURCE:
+	return CAIRO_OPERATOR_BOUND_BY_MASK;
+    case CAIRO_OPERATOR_OUT:
+    case CAIRO_OPERATOR_IN:
+    case CAIRO_OPERATOR_DEST_IN:
+    case CAIRO_OPERATOR_DEST_ATOP:
+	return 0;
+    }
 
+}
+
+#if DISABLE_SOME_FLOATING_POINT
 /* This function is identical to the C99 function lround(), except that it
  * performs arithmetic rounding (floor(d + .5) instead of away-from-zero rounding) and
  * has a valid input range of (INT_MIN, INT_MAX] instead of
@@ -626,6 +673,64 @@ _cairo_lround (double d)
     return output;
 #undef MSW
 #undef LSW
+}
+#endif
+
+/* Convert a 32-bit IEEE single precision floating point number to a
+ * 'half' representation (s10.5)
+ */
+uint16_t
+_cairo_half_from_float (float f)
+{
+    union {
+	uint32_t ui;
+	float f;
+    } u;
+    int s, e, m;
+
+    u.f = f;
+    s =  (u.ui >> 16) & 0x00008000;
+    e = ((u.ui >> 23) & 0x000000ff) - (127 - 15);
+    m =   u.ui        & 0x007fffff;
+    if (e <= 0) {
+	if (e < -10) {
+	    /* underflow */
+	    return 0;
+	}
+
+	m = (m | 0x00800000) >> (1 - e);
+
+	/* round to nearest, round 0.5 up. */
+	if (m &  0x00001000)
+	    m += 0x00002000;
+	return s | (m >> 13);
+    } else if (e == 0xff - (127 - 15)) {
+	if (m == 0) {
+	    /* infinity */
+	    return s | 0x7c00;
+	} else {
+	    /* nan */
+	    m >>= 13;
+	    return s | 0x7c00 | m | (m == 0);
+	}
+    } else {
+	/* round to nearest, round 0.5 up. */
+	if (m &  0x00001000) {
+	    m += 0x00002000;
+
+	    if (m & 0x00800000) {
+		m =  0;
+		e += 1;
+	    }
+	}
+
+	if (e > 30) {
+	    /* overflow -> infinity */
+	    return s | 0x7c00;
+	}
+
+	return s | (e << 10) | (m >> 13);
+    }
 }
 
 

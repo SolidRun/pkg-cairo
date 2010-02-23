@@ -467,11 +467,11 @@ status = cairo_scaled_font_text_to_glyphs (scaled_font,
 if (status == CAIRO_STATUS_SUCCESS) {
     cairo_show_text_glyphs (cr,
                             utf8, utf8_len,
-                            *glyphs, *num_glyphs,
-                            *clusters, *num_clusters, *cluster_flags);
+                            glyphs, num_glyphs,
+                            clusters, num_clusters, cluster_flags);
 
-    cairo_glyph_free (*glyphs);
-    cairo_text_cluster_free (*clusters);
+    cairo_glyph_free (glyphs);
+    cairo_text_cluster_free (clusters);
 }
 </programlisting></informalexample>
 </para>
@@ -491,8 +491,8 @@ status = cairo_scaled_font_text_to_glyphs (scaled_font,
                                            NULL);
 
 if (status == CAIRO_STATUS_SUCCESS) {
-    cairo_show_glyphs (cr, *glyphs, *num_glyphs);
-    cairo_glyph_free (*glyphs);
+    cairo_show_glyphs (cr, glyphs, num_glyphs);
+    cairo_glyph_free (glyphs);
 }
 </programlisting></informalexample>
 </para>
@@ -519,13 +519,13 @@ status = cairo_scaled_font_text_to_glyphs (scaled_font,
 if (status == CAIRO_STATUS_SUCCESS) {
     cairo_show_text_glyphs (cr,
                             utf8, utf8_len,
-                            *glyphs, *num_glyphs,
-                            *clusters, *num_clusters, *cluster_flags);
+                            glyphs, num_glyphs,
+                            clusters, num_clusters, cluster_flags);
 
     if (glyphs != stack_glyphs)
-        cairo_glyph_free (*glyphs);
+        cairo_glyph_free (glyphs);
     if (clusters != stack_clusters)
-        cairo_text_cluster_free (*clusters);
+        cairo_text_cluster_free (clusters);
 }
 </programlisting></informalexample>
 </para>

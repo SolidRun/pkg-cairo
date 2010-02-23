@@ -26,6 +26,7 @@
  */
 #include "cairoint.h"
 
+#include "cairo-composite-rectangles-private.h"
 #include "cairo-fixed-private.h"
 
 static cairo_scan_converter_t *
@@ -38,10 +39,10 @@ _create_scan_converter (cairo_fill_rule_t			 fill_rule,
 	return NULL;
     }
 
-    return _cairo_tor_scan_converter_create (rects->mask.x,
-					     rects->mask.y,
-					     rects->mask.x + rects->width,
-					     rects->mask.y + rects->height,
+    return _cairo_tor_scan_converter_create (rects->bounded.x,
+					     rects->bounded.y,
+					     rects->bounded.x + rects->bounded.width,
+					     rects->bounded.y + rects->bounded.height,
 					     fill_rule);
 }
 
@@ -100,14 +101,22 @@ _cairo_surface_composite_trapezoids_as_polygon (cairo_surface_t	*surface,
     cairo_composite_rectangles_t rects;
     cairo_status_t status;
 
-    rects.src.x = src_x;
-    rects.src.y = src_y;
-    rects.dst.x = dst_x;
-    rects.dst.y = dst_y;
+    rects.source.x = src_x;
+    rects.source.y = src_y;
+    rects.source.width  = width;
+    rects.source.height = height;
+
     rects.mask.x = dst_x;
     rects.mask.y = dst_y;
-    rects.width  = width;
-    rects.height = height;
+    rects.mask.width  = width;
+    rects.mask.height = height;
+
+    rects.bounded.x = dst_x;
+    rects.bounded.y = dst_y;
+    rects.bounded.width  = width;
+    rects.bounded.height = height;
+
+    rects.unbounded = rects.bounded;
 
     converter = _create_scan_converter (CAIRO_FILL_RULE_WINDING,
 					antialias,
@@ -266,6 +275,8 @@ _cairo_scan_converter_create_in_error (cairo_status_t status)
     case CAIRO_STATUS_NO_MEMORY: RETURN_NIL;
     case CAIRO_STATUS_INVALID_SIZE: RETURN_NIL;
     case CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED: RETURN_NIL;
+    case CAIRO_STATUS_DEVICE_TYPE_MISMATCH: RETURN_NIL;
+    case CAIRO_STATUS_DEVICE_ERROR: RETURN_NIL;
     default:
 	break;
     }
@@ -275,13 +286,15 @@ _cairo_scan_converter_create_in_error (cairo_status_t status)
 }
 
 static cairo_status_t
-_cairo_nil_span_renderer_render_row (
+_cairo_nil_span_renderer_render_rows (
     void				*abstract_renderer,
     int					 y,
+    int					 height,
     const cairo_half_open_span_t	*coverages,
     unsigned				 num_coverages)
 {
     (void) y;
+    (void) height;
     (void) coverages;
     (void) num_coverages;
     return _cairo_span_renderer_status (abstract_renderer);
@@ -310,7 +323,7 @@ _cairo_span_renderer_set_error (
 	ASSERT_NOT_REACHED;
     }
     if (renderer->status == CAIRO_STATUS_SUCCESS) {
-	renderer->render_row = _cairo_nil_span_renderer_render_row;
+	renderer->render_rows = _cairo_nil_span_renderer_render_rows;
 	renderer->finish = _cairo_nil_span_renderer_finish;
 	renderer->status = error;
     }
@@ -372,6 +385,8 @@ _cairo_span_renderer_create_in_error (cairo_status_t status)
     case CAIRO_STATUS_NO_MEMORY: RETURN_NIL;
     case CAIRO_STATUS_INVALID_SIZE: RETURN_NIL;
     case CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED: RETURN_NIL;
+    case CAIRO_STATUS_DEVICE_TYPE_MISMATCH: RETURN_NIL;
+    case CAIRO_STATUS_DEVICE_ERROR: RETURN_NIL;
     default:
 	break;
     }

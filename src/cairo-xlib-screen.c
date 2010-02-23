@@ -58,8 +58,11 @@
 #include "cairo-xlib-xrender-private.h"
 
 #include "cairo-xlib-surface-private.h"
+#include "cairo-error-private.h"
 
+#if CAIRO_HAS_FC_FONT
 #include <fontconfig/fontconfig.h>
+#endif
 
 static int
 parse_boolean (const char *v)
@@ -140,7 +143,6 @@ get_integer_default (Display    *dpy,
 #define FC_HINT_MEDIUM      2
 #define FC_HINT_FULL        3
 #endif
-
 
 static void
 _cairo_xlib_init_screen_font_options (Display *dpy,
@@ -282,6 +284,7 @@ _cairo_xlib_screen_close_display (cairo_xlib_screen_t *info)
     } while (_cairo_atomic_int_cmpxchg (&info->gc_depths, old, 0) != old);
 #else
     old = info->gc_depths;
+    info->gc_depths = 0;
 #endif
 
     for (i = 0; i < ARRAY_LENGTH (info->gc); i++) {
@@ -395,13 +398,13 @@ _cairo_xlib_screen_get_gc (cairo_xlib_screen_t *info,
 	if (old == 0)
 	    break;
 
-	if (((old >> 0) & 0xff) == (unsigned) depth)
+	if (((old >> 0) & 0xff) == depth)
 	    i = 0;
-	else if (((old >> 8) & 0xff) == (unsigned) depth)
+	else if (((old >> 8) & 0xff) == depth)
 	    i = 1;
-	else if (((old >> 16) & 0xff) == (unsigned) depth)
+	else if (((old >> 16) & 0xff) == depth)
 	    i = 2;
-	else if (((old >> 24) & 0xff) == (unsigned) depth)
+	else if (((old >> 24) & 0xff) == depth)
 	    i = 3;
 	else
 	    break;

@@ -42,6 +42,9 @@
 #include <locale.h> /* for locale independent %f printing */
 #include <ctype.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <stdarg.h>
 
 #include <cairo.h>
 #if CAIRO_HAS_FT_FONT
@@ -95,7 +98,7 @@ static void *_dlhandle = RTLD_NEXT;
     if (name##_real == NULL) { \
 	name##_real = (typeof (&name))(dlsym (_dlhandle, #name));	\
 	if (name##_real == NULL && _dlhandle == RTLD_NEXT) { \
-	    _dlhandle = dlopen ("libcairo.so", RTLD_LAZY); \
+	    _dlhandle = dlopen ("libcairo." SHARED_LIB_EXT, RTLD_LAZY); \
 	    name##_real = (typeof (&name))(dlsym (_dlhandle, #name));	\
 	    assert (name##_real != NULL); \
 	} \
@@ -1484,6 +1487,8 @@ _status_to_string (cairo_status_t status)
 	f(INVALID_WEIGHT);
 	f(INVALID_SIZE);
 	f(USER_FONT_NOT_IMPLEMENTED);
+	f(DEVICE_TYPE_MISMATCH);
+	f(DEVICE_ERROR);
     case CAIRO_STATUS_LAST_STATUS:
 	break;
     }
@@ -1742,6 +1747,15 @@ DONE:
 }
 
 static void
+to_octal (int value, char *buf, size_t size)
+{
+    do {
+	buf[--size] = '0' + (value & 7);
+	value >>= 3;
+    } while (size);
+}
+
+static void
 _emit_string_literal (const char *utf8, int len)
 {
     char c;
@@ -1784,13 +1798,11 @@ ESCAPED_CHAR:
 	    if (isprint (c) || isspace (c)) {
 		_trace_printf ("%c", c);
 	    } else {
-		int octal = 0;
-		while (c) {
-		    octal *= 10;
-		    octal += c&7;
-		    c /= 8;
-		}
-		_trace_printf ("\\%03d", octal);
+		char buf[4] = { '\\' };
+		int ret_ignored;
+
+		to_octal (c, buf+1, 3);
+		ret_ignored = fwrite (buf, 4, 1, logfile);
 	    }
 	    break;
 	}
@@ -4555,7 +4567,7 @@ cairo_xlib_surface_create_with_xrender_format (Display *dpy,
 #if CAIRO_HAS_SCRIPT_SURFACE
 #include <cairo-script.h>
 cairo_surface_t *
-cairo_script_surface_create (cairo_script_context_t *ctx,
+cairo_script_surface_create (cairo_device_t *device,
 			     cairo_content_t content,
 			     double width,
 			     double height)
@@ -4565,7 +4577,7 @@ cairo_script_surface_create (cairo_script_context_t *ctx,
 
     _enter_trace ();
 
-    ret = DLCALL (cairo_script_surface_create, ctx, content, width, height);
+    ret = DLCALL (cairo_script_surface_create, device, content, width, height);
     surface_id = _create_surface_id (ret);
 
     _emit_line_info ();
@@ -4590,7 +4602,7 @@ cairo_script_surface_create (cairo_script_context_t *ctx,
 }
 
 cairo_surface_t *
-cairo_script_surface_create_for_target (cairo_script_context_t *ctx,
+cairo_script_surface_create_for_target (cairo_device_t *device,
 					cairo_surface_t *target)
 {
     cairo_surface_t *ret;
@@ -4598,7 +4610,7 @@ cairo_script_surface_create_for_target (cairo_script_context_t *ctx,
 
     _enter_trace ();
 
-    ret = DLCALL (cairo_script_surface_create_for_target, ctx, target);
+    ret = DLCALL (cairo_script_surface_create_for_target, device, target);
     surface_id = _create_surface_id (ret);
 
     _emit_line_info ();
@@ -4714,22 +4726,22 @@ _cairo_test_null_surface_create (cairo_content_t	content)
 #endif
 
 cairo_surface_t *
-cairo_meta_surface_create (cairo_content_t content,
-			   const cairo_rectangle_t *extents)
+cairo_recording_surface_create (cairo_content_t content,
+				const cairo_rectangle_t *extents)
 {
     cairo_surface_t *ret;
     long surface_id;
 
     _enter_trace ();
 
-    ret = DLCALL (cairo_meta_surface_create, content, extents);
+    ret = DLCALL (cairo_recording_surface_create, content, extents);
     surface_id = _create_surface_id (ret);
 
     _emit_line_info ();
     if (_write_lock ()) {
 	if (extents) {
 	    _trace_printf ("dict\n"
-			   "  /type /meta set\n"
+			   "  /type /recording set\n"
 			   "  /content //%s set\n"
 			   "  /extents [%f %f %f %f] set\n"
 			   "  surface dup /s%ld exch def\n",
@@ -4740,7 +4752,7 @@ cairo_meta_surface_create (cairo_content_t content,
 	    _surface_object_set_size (ret, extents->width, extents->height);
 	} else {
 	    _trace_printf ("dict\n"
-			   "  /type /meta set\n"
+			   "  /type /recording set\n"
 			   "  /content //%s set\n"
 			   "  surface dup /s%ld exch def\n",
 			   _content_to_string (content),

@@ -48,6 +48,8 @@
 #include "cairoint.h"
 
 #include "cairo-clip-private.h"
+#include "cairo-composite-rectangles-private.h"
+#include "cairo-error-private.h"
 #include "cairo-paginated-private.h"
 #include "cairo-win32-private.h"
 #include "cairo-scaled-font-subsets-private.h"
@@ -366,7 +368,9 @@ _cairo_win32_surface_create_for_dc (HDC             original_dc,
     surface->extents = surface->clip_rect;
     surface->font_subsets = NULL;
 
-    _cairo_surface_init (&surface->base, &cairo_win32_surface_backend,
+    _cairo_surface_init (&surface->base,
+			 &cairo_win32_surface_backend,
+			 NULL, /* device */
 			 _cairo_content_from_format (format));
 
     return &surface->base;
@@ -1675,7 +1679,9 @@ cairo_win32_surface_create (HDC hdc)
 
     surface->flags = _cairo_win32_flags_for_dc (surface->dc);
 
-    _cairo_surface_init (&surface->base, &cairo_win32_surface_backend,
+    _cairo_surface_init (&surface->base,
+			 &cairo_win32_surface_backend,
+			 NULL, /* device */
 			 _cairo_content_from_format (format));
 
     return (cairo_surface_t *)surface;
@@ -1869,6 +1875,9 @@ typedef struct _cairo_win32_surface_span_renderer {
     const cairo_pattern_t *pattern;
     cairo_antialias_t antialias;
 
+    uint8_t *mask_data;
+    uint32_t mask_stride;
+
     cairo_image_surface_t *mask;
     cairo_win32_surface_t *dst;
     cairo_region_t *clip_region;
@@ -1877,14 +1886,16 @@ typedef struct _cairo_win32_surface_span_renderer {
 } cairo_win32_surface_span_renderer_t;
 
 static cairo_status_t
-_cairo_win32_surface_span_renderer_render_row (
+_cairo_win32_surface_span_renderer_render_rows (
     void				*abstract_renderer,
     int					 y,
+    int					 height,
     const cairo_half_open_span_t	*spans,
     unsigned				 num_spans)
 {
     cairo_win32_surface_span_renderer_t *renderer = abstract_renderer;
-    _cairo_image_surface_span_render_row (y, spans, num_spans, renderer->mask, &renderer->composite_rectangles);
+    while (height--)
+	_cairo_image_surface_span_render_row (y++, spans, num_spans, renderer->mask_data, renderer->mask_stride);
     return CAIRO_STATUS_SUCCESS;
 }
 
@@ -1920,11 +1931,10 @@ _cairo_win32_surface_span_renderer_finish (void *abstract_renderer)
 
 	    status = dst->image->backend->composite (renderer->op,
 		    renderer->pattern, mask_pattern, dst->image,
-		    rects->src.x,
-		    rects->src.y,
+		    rects->bounded.x, rects->bounded.y,
 		    0, 0,		/* mask.x, mask.y */
-		    rects->dst.x, rects->dst.y,
-		    rects->width, rects->height,
+		    rects->bounded.x, rects->bounded.y,
+		    rects->bounded.width, rects->bounded.height,
 		    renderer->clip_region);
 	} else {
 	    /* otherwise go through the fallback_composite path which
@@ -1932,11 +1942,10 @@ _cairo_win32_surface_span_renderer_finish (void *abstract_renderer)
 	    status = _cairo_surface_fallback_composite (
 		    renderer->op,
 		    renderer->pattern, mask_pattern, &dst->base,
-		    rects->src.x,
-		    rects->src.y,
+		    rects->bounded.x, rects->bounded.y,
 		    0, 0,		/* mask.x, mask.y */
-		    rects->dst.x, rects->dst.y,
-		    rects->width, rects->height,
+		    rects->bounded.x, rects->bounded.y,
+		    rects->bounded.width, rects->bounded.height,
 		    renderer->clip_region);
 	}
 	cairo_pattern_destroy (mask_pattern);
@@ -1972,8 +1981,8 @@ _cairo_win32_surface_create_span_renderer (cairo_operator_t	 op,
     cairo_win32_surface_t *dst = abstract_dst;
     cairo_win32_surface_span_renderer_t *renderer;
     cairo_status_t status;
-    int width = rects->width;
-    int height = rects->height;
+    int width = rects->bounded.width;
+    int height = rects->bounded.height;
 
     renderer = calloc(1, sizeof(*renderer));
     if (renderer == NULL)
@@ -1981,8 +1990,7 @@ _cairo_win32_surface_create_span_renderer (cairo_operator_t	 op,
 
     renderer->base.destroy = _cairo_win32_surface_span_renderer_destroy;
     renderer->base.finish = _cairo_win32_surface_span_renderer_finish;
-    renderer->base.render_row =
-	_cairo_win32_surface_span_renderer_render_row;
+    renderer->base.render_rows = _cairo_win32_surface_span_renderer_render_rows;
     renderer->op = op;
     renderer->pattern = pattern;
     renderer->antialias = antialias;
@@ -2003,6 +2011,9 @@ _cairo_win32_surface_create_span_renderer (cairo_operator_t	 op,
 	_cairo_win32_surface_span_renderer_destroy (renderer);
 	return _cairo_span_renderer_create_in_error (status);
     }
+
+    renderer->mask_data = renderer->mask->data - rects->bounded.x - rects->bounded.y * renderer->mask->stride;
+    renderer->mask_stride = renderer->mask->stride;
     return &renderer->base;
 }
 

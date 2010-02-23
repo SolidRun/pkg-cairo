@@ -6,7 +6,6 @@ void _cairo_boilerplate_register_all (void);
 
 extern void _register_builtin (void);
 extern void _register_xlib (void);
-extern void _register_gl (void);
 extern void _register_ps (void);
 extern void _register_pdf (void);
 extern void _register_svg (void);
@@ -17,7 +16,6 @@ _cairo_boilerplate_register_all (void)
 {
     _register_builtin ();
     _register_xlib ();
-    _register_gl ();
     _register_ps ();
     _register_pdf ();
     _register_svg ();

@@ -43,6 +43,7 @@
 #include "cairoint.h"
 
 #include "test-fallback16-surface.h"
+#include "cairo-error-private.h"
 
 typedef struct _test_fallback16_surface {
     cairo_surface_t base;
@@ -80,6 +81,7 @@ _cairo_test_fallback16_surface_create (cairo_content_t	content,
 
     _cairo_surface_init (&surface->base,
 			 &test_fallback16_surface_backend,
+			 NULL, /* device */
 			 content);
 
     surface->backing = backing;
@@ -166,7 +168,6 @@ _test_fallback16_surface_release_dest_image (void			   *abstract_surface,
 static cairo_status_t
 _test_fallback16_surface_clone_similar (void		  *abstract_surface,
 					cairo_surface_t     *src,
-					cairo_content_t	     content,
 					int                  src_x,
 					int                  src_y,
 					int                  width,
@@ -185,7 +186,6 @@ _test_fallback16_surface_clone_similar (void		  *abstract_surface,
 	return CAIRO_STATUS_SUCCESS;
     } else {
 	return _cairo_surface_clone_similar (surface->backing, src,
-					     content,
 					     src_x, src_y,
 					     width, height,
 					     clone_offset_x, clone_offset_y,

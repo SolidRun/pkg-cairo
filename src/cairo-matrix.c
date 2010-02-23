@@ -34,9 +34,8 @@
  *	Carl D. Worth <cworth@cworth.org>
  */
 
-#define _GNU_SOURCE
-
 #include "cairoint.h"
+#include "cairo-error-private.h"
 
 #if _XOPEN_SOURCE >= 600 || defined (_ISOC99_SOURCE)
 #define ISFINITE(x) isfinite (x)
@@ -916,7 +915,7 @@ _cairo_matrix_to_pixman_matrix (const cairo_matrix_t	*matrix,
          * that point.
 	 */
 
-	if (_cairo_matrix_is_translation (matrix))
+	if (_cairo_matrix_has_unity_scale (matrix))
 	    return;
 
         /* Note: If we can't invert the transformation, skip the adjustment. */

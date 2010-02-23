@@ -43,6 +43,7 @@
 
 #include "test-wrapping-surface.h"
 
+#include "cairo-error-private.h"
 #include "cairo-surface-wrapper-private.h"
 
 typedef struct _test_wrapping_surface {
@@ -68,6 +69,7 @@ _cairo_test_wrapping_surface_create (cairo_surface_t *target)
 
     _cairo_surface_init (&surface->base,
 			 &test_wrapping_surface_backend,
+			 NULL, /* device */
 			 target->content);
 
     _cairo_surface_wrapper_init (&surface->wrapper, target);
@@ -160,9 +162,9 @@ _test_wrapping_surface_stroke (void				*abstract_surface,
 				cairo_operator_t		 op,
 				const cairo_pattern_t		*source,
 				cairo_path_fixed_t		*path,
-				cairo_stroke_style_t		*style,
-				cairo_matrix_t			*ctm,
-				cairo_matrix_t			*ctm_inverse,
+				const cairo_stroke_style_t		*style,
+				const cairo_matrix_t			*ctm,
+				const cairo_matrix_t			*ctm_inverse,
 				double				 tolerance,
 				cairo_antialias_t		 antialias,
 				cairo_clip_t			*clip)

@@ -38,10 +38,12 @@
 #define __STDC_LIMIT_MACROS
 
 #include "cairoint.h"
-#include "cairo-types-private.h"
+
 #include "cairo-clip-private.h"
-#include "cairo-surface-clipper-private.h"
+#include "cairo-error-private.h"
 #include "cairo-region-private.h"
+#include "cairo-surface-clipper-private.h"
+#include "cairo-types-private.h"
 
 #include "cairo-qt.h"
 
@@ -324,7 +326,7 @@ _qmatrix_from_cairo_matrix (const cairo_matrix_t& m)
 /** Path conversion **/
 typedef struct _qpainter_path_transform {
     QPainterPath path;
-    cairo_matrix_t *ctm_inverse;
+    const cairo_matrix_t *ctm_inverse;
 } qpainter_path_data;
 
 /* cairo path -> execute in context */
@@ -392,7 +394,7 @@ _cairo_path_to_qpainterpath_close_path (void *closure)
 
 static inline QPainterPath
 path_to_qt (cairo_path_fixed_t *path,
-	    cairo_matrix_t *ctm_inverse = NULL)
+	    const cairo_matrix_t *ctm_inverse = NULL)
 {
     qpainter_path_data data;
     cairo_status_t status;
@@ -485,7 +487,7 @@ _cairo_qt_surface_finish (void *abstract_surface)
     if (qs->image || qs->pixmap)
         delete qs->p;
     else
-        qs->p->restore();
+	qs->p->restore ();
 
     if (qs->image_equiv)
         cairo_surface_destroy (qs->image_equiv);
@@ -668,7 +670,6 @@ _cairo_qt_surface_release_dest_image (void *abstract_surface,
 static cairo_status_t
 _cairo_qt_surface_clone_similar (void *abstract_surface,
 				 cairo_surface_t *src,
-				 cairo_content_t  content,
 				 int              src_x,
 				 int              src_y,
 				 int              width,
@@ -697,7 +698,7 @@ _cairo_qt_surface_get_extents (void *abstract_surface,
 
     extents->x = qs->window.x();
     extents->y = qs->window.y();
-    extents->width = qs->window.width();
+    extents->width  = qs->window.width();
     extents->height = qs->window.height();
 
     return TRUE;
@@ -1042,7 +1043,7 @@ struct PatternToBrushConverter {
 
 struct PatternToPenConverter {
     PatternToPenConverter (const cairo_pattern_t *source,
-                           cairo_stroke_style_t *style) :
+                           const cairo_stroke_style_t *style) :
         mBrushConverter(source)
     {
         Qt::PenJoinStyle join = Qt::MiterJoin;
@@ -1330,9 +1331,9 @@ _cairo_qt_surface_stroke (void *abstract_surface,
 			  cairo_operator_t op,
 			  const cairo_pattern_t *source,
 			  cairo_path_fixed_t *path,
-			  cairo_stroke_style_t *style,
-			  cairo_matrix_t *ctm,
-			  cairo_matrix_t *ctm_inverse,
+			  const cairo_stroke_style_t *style,
+			  const cairo_matrix_t *ctm,
+			  const cairo_matrix_t *ctm_inverse,
 			  double tolerance,
 			  cairo_antialias_t antialias,
 			  cairo_clip_t *clip)
@@ -1553,11 +1554,30 @@ static cairo_status_t
 _cairo_qt_surface_flush (void *abstract_surface)
 {
     cairo_qt_surface_t *qs = (cairo_qt_surface_t *) abstract_surface;
-    
-    QPaintDevice * dev = qs->p->device();
-    qs->p->end();
-    qs->p->begin(dev);
-    
+
+    if (qs->p == NULL)
+	return CAIRO_STATUS_SUCCESS;
+
+    if (qs->image || qs->pixmap) {
+	qs->p->end ();
+	qs->p->begin (qs->p->device ());
+    } else {
+	qs->p->restore ();
+    }
+
+    return CAIRO_STATUS_SUCCESS;
+}
+
+static cairo_status_t
+_cairo_qt_surface_mark_dirty (void *abstract_surface,
+			      int x, int y,
+			      int width, int height)
+{
+    cairo_qt_surface_t *qs = (cairo_qt_surface_t *) abstract_surface;
+
+    if (qs->p && !(qs->image || qs->pixmap))
+	qs->p->save ();
+
     return CAIRO_STATUS_SUCCESS;
 }
 
@@ -1586,7 +1606,7 @@ static const cairo_surface_backend_t cairo_qt_surface_backend = {
     NULL, /* old_show_glyphs */
     NULL, /* get_font_options */
     _cairo_qt_surface_flush,
-    NULL, /* mark_dirty_rectangle */
+    _cairo_qt_surface_mark_dirty,
     NULL, /* scaled_font_fini */
     NULL, /* scaled_glyph_fini */
 
@@ -1676,6 +1696,7 @@ cairo_qt_surface_create (QPainter *painter)
 
     _cairo_surface_init (&qs->base,
 			 &cairo_qt_surface_backend,
+			 NULL, /* device */
 			 CAIRO_CONTENT_COLOR_ALPHA);
 
     _cairo_surface_clipper_init (&qs->clipper,
@@ -1718,6 +1739,7 @@ cairo_qt_surface_create_with_qimage (cairo_format_t format,
 
     _cairo_surface_init (&qs->base,
 			 &cairo_qt_surface_backend,
+			 NULL, /* device */
 			 _cairo_content_from_format (format));
 
     _cairo_surface_clipper_init (&qs->clipper,
@@ -1776,7 +1798,10 @@ cairo_qt_surface_create_with_qpixmap (cairo_content_t content,
     if (content == CAIRO_CONTENT_COLOR_ALPHA)
 	pixmap->fill(Qt::transparent);
 
-    _cairo_surface_init (&qs->base, &cairo_qt_surface_backend, content);
+    _cairo_surface_init (&qs->base,
+			 &cairo_qt_surface_backend,
+			 NULL, /* device */
+			 content);
 
     _cairo_surface_clipper_init (&qs->clipper,
 				 _cairo_qt_surface_clipper_intersect_clip_path);

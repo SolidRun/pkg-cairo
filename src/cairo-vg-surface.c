@@ -38,10 +38,11 @@
 
 #include "cairo-vg.h"
 
-#include "cairo-path-fixed-private.h"
-#include "cairo-meta-surface-private.h"
-#include "cairo-surface-clipper-private.h"
 #include "cairo-cache-private.h"
+#include "cairo-error-private.h"
+#include "cairo-path-fixed-private.h"
+#include "cairo-recording-surface-private.h"
+#include "cairo-surface-clipper-private.h"
 
 #include <pixman.h>
 #include <VG/openvg.h>
@@ -409,7 +410,6 @@ _vg_surface_clipper_intersect_clip_path (cairo_surface_clipper_t *clipper,
 						      cairo_vg_surface_t,
 						      clipper);
     cairo_vg_surface_t *mask;
-    cairo_solid_pattern_t white;
     cairo_status_t status;
 
     if (path == NULL) {
@@ -428,9 +428,9 @@ _vg_surface_clipper_intersect_clip_path (cairo_surface_clipper_t *clipper,
     if (unlikely (mask->base.status))
 	return mask->base.status;
 
-    _cairo_pattern_init_solid (&white, CAIRO_COLOR_WHITE, CAIRO_CONTENT_ALPHA);
     status = _cairo_surface_fill (&mask->base,
-				  CAIRO_OPERATOR_SOURCE, &white.base,
+				  CAIRO_OPERATOR_SOURCE,
+				  _cairo_pattern_white.base,
 				  path, fill_rule, tolerance, antialias,
 				  NULL);
     if (status) {
@@ -840,7 +840,7 @@ _vg_setup_solid_source (cairo_vg_context_t *context,
 }
 
 static cairo_vg_surface_t *
-_vg_clone_meta_surface (cairo_vg_context_t *context,
+_vg_clone_recording_surface (cairo_vg_context_t *context,
 			cairo_surface_t *surface)
 {
     VGImage vg_image;
@@ -870,7 +870,7 @@ _vg_clone_meta_surface (cairo_vg_context_t *context,
 				     extents.width, extents.height);
     cairo_surface_set_device_offset (&clone->base, -extents.x, -extents.y);
 
-    status = _cairo_meta_surface_replay (surface, &clone->base);
+    status = _cairo_recording_surface_replay (surface, &clone->base);
     if (unlikely (status)) {
 	cairo_surface_destroy (&clone->base);
 	return (cairo_vg_surface_t *) _cairo_surface_create_in_error (status);
@@ -958,15 +958,14 @@ _vg_setup_surface_source (cairo_vg_context_t *context,
     cairo_status_t status;
 
     snapshot = _cairo_surface_has_snapshot (spat->surface,
-					    &cairo_vg_surface_backend,
-					    spat->surface->content);
+					    &cairo_vg_surface_backend);
     if (snapshot != NULL) {
 	clone = (cairo_vg_surface_t *) cairo_surface_reference (snapshot);
 	goto DONE;
     }
 
-    if (_cairo_surface_is_meta (spat->surface))
-	clone = _vg_clone_meta_surface (context, spat->surface);
+    if (_cairo_surface_is_recording (spat->surface))
+	clone = _vg_clone_recording_surface (context, spat->surface);
     else
 	clone = _vg_clone_image_surface (context, spat->surface);
     if (clone == NULL)
@@ -1606,6 +1605,7 @@ _vg_surface_create_internal (cairo_vg_context_t *context,
 
     _cairo_surface_init (&surface->base,
 			 &cairo_vg_surface_backend,
+			 NULL, /* device */
 			 _vg_format_to_content (format));
 
     surface->width  = width;

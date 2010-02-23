@@ -48,6 +48,7 @@ typedef void (*cairo_surface_func_t) (cairo_surface_t *);
 
 struct _cairo_surface {
     const cairo_surface_backend_t *backend;
+    cairo_device_t *device;
 
     /* We allow surfaces to override the backend->type by shoving something
      * else into surface->type. This is for "wrapper" surfaces that want to
@@ -58,8 +59,11 @@ struct _cairo_surface {
 
     cairo_reference_count_t ref_count;
     cairo_status_t status;
-    cairo_bool_t finished;
     unsigned int unique_id;
+
+    unsigned finished : 1;
+    unsigned is_clear : 1;
+    unsigned has_font_options : 1;
 
     cairo_user_data_array_t user_data;
     cairo_user_data_array_t mime_data;
@@ -89,7 +93,6 @@ struct _cairo_surface {
      * and set using _cairo_surface_set_font_options(), and propagated by
      * cairo_surface_create_similar().
      */
-    cairo_bool_t has_font_options;
     cairo_font_options_t font_options;
 };
 
