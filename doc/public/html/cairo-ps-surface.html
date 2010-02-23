@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>PostScript Surfaces</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-png-functions.html" title="PNG Support">
@@ -115,9 +115,7 @@ vary. See <a class="link" href="cairo-ps-surface.html#cairo-ps-surface-set-size"
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>filename</code></em> :</span></p></td>
-<td> a filename for the PS output (must be writable), <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> may be
+<td> a filename for the PS output (must be writable), <code class="literal">NULL</code> may be
            used to specify no output. This will generate a PS surface that
            may be queried and used as a source, without generating a
            temporary file.
@@ -172,9 +170,7 @@ output can vary. See <a class="link" href="cairo-ps-surface.html#cairo-ps-surfac
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>write_func</code></em> :</span></p></td>
-<td> a <a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> to accept the output data, may be <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> a <a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> to accept the output data, may be <code class="literal">NULL</code>
              to indicate a no-op <em class="parameter"><code>write_func</code></em>. With a no-op <em class="parameter"><code>write_func</code></em>,
              the surface may be queried or used as a source without
              generating any temporary files.
@@ -308,9 +304,7 @@ Used to retrieve the list of supported levels. See
 <pre class="programlisting">const char *        cairo_ps_level_to_string            (<a class="link" href="cairo-ps-surface.html#cairo-ps-level-t" title="enum cairo_ps_level_t">cairo_ps_level_t</a> level);</pre>
 <p>
 Get the string representation of the given <em class="parameter"><code>level</code></em> id. This function
-will return <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if <em class="parameter"><code>level</code></em> id isn't valid. See <a class="link" href="cairo-ps-surface.html#cairo-ps-get-levels" title="cairo_ps_get_levels ()"><code class="function">cairo_ps_get_levels()</code></a>
+will return <code class="literal">NULL</code> if <em class="parameter"><code>level</code></em> id isn't valid. See <a class="link" href="cairo-ps-surface.html#cairo-ps-get-levels" title="cairo_ps_get_levels ()"><code class="function">cairo_ps_get_levels()</code></a>
 for a way to get the list of valid level ids.</p>
 <p>
 </p>
@@ -338,9 +332,7 @@ for a way to get the list of valid level ids.</p>
 <pre class="programlisting">void                cairo_ps_surface_set_eps            (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
                                                          <a class="link" href="cairo-types.html#cairo-bool-t" title="cairo_bool_t">cairo_bool_t</a> eps);</pre>
 <p>
-If <em class="parameter"><code>eps</code></em> is <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a>, the PostScript surface will output Encapsulated
+If <em class="parameter"><code>eps</code></em> is <code class="literal">TRUE</code>, the PostScript surface will output Encapsulated
 PostScript.
 </p>
 <p>
@@ -361,9 +353,7 @@ than one page.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>eps</code></em> :</span></p></td>
-<td> <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> to output EPS format PostScript
+<td> <code class="literal">TRUE</code> to output EPS format PostScript
 </td>
 </tr>
 </tbody>
@@ -388,9 +378,7 @@ Check whether the PostScript surface will output Encapsulated PostScript.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if the surface will output Encapsulated PostScript.
+<td> <code class="literal">TRUE</code> if the surface will output Encapsulated PostScript.
 
 </td>
 </tr>

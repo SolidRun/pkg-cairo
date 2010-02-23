@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cairo_surface_t</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-surfaces.html" title="Surfaces">
@@ -847,9 +847,7 @@ object is a nil object, 0 will be returned.
                                                          <a class="link" href="cairo-types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()">cairo_destroy_func_t</a> destroy);</pre>
 <p>
 Attach user data to <em class="parameter"><code>surface</code></em>.  To remove user data from a surface,
-call this function with the key that was used to set it and <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+call this function with the key that was used to set it and <code class="literal">NULL</code>
 for <em class="parameter"><code>data</code></em>.</p>
 <p>
 </p>
@@ -895,9 +893,7 @@ slot could not be allocated for the user data.
 <p>
 Return user data previously attached to <em class="parameter"><code>surface</code></em> using the specified
 key.  If no user data has been attached with the given key this
-function returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.</p>
+function returns <code class="literal">NULL</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -916,9 +912,7 @@ attached to
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the user data previously attached or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>.
+<td> the user data previously attached or <code class="literal">NULL</code>.
 </td>
 </tr>
 </tbody>
@@ -983,9 +977,7 @@ whether it actually uses the provided text and cluster data
 to a <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a> call.
 </p>
 <p>
-Note: Even if this function returns <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a>, a
+Note: Even if this function returns <code class="literal">FALSE</code>, a
 <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a> operation targeted at <em class="parameter"><code>surface</code></em> will
 still succeed.  It just will
 act like a <a class="link" href="cairo-text.html#cairo-show-glyphs" title="cairo_show_glyphs ()"><code class="function">cairo_show_glyphs()</code></a> operation.  Users can use this
@@ -1003,12 +995,8 @@ target surface does not use it.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if <em class="parameter"><code>surface</code></em> supports
-              <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a>, <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise
+<td> <code class="literal">TRUE</code> if <em class="parameter"><code>surface</code></em> supports
+              <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a>, <code class="literal">FALSE</code> otherwise
 
 </td>
 </tr>
