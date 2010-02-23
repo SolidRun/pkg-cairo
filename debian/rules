@@ -115,7 +115,6 @@ clean:
 	# restore files from backup
 	[ ! -r config.sub.orig ] || mv -f config.sub.orig config.sub
 	[ ! -r config.guess.orig ] || mv -f config.guess.orig config.guess
-	rm -f src/cairo-features.h
 	rm -f *-stamp
 	rm -rf $(buildbasedir) $(installbasedir)
 	dh_clean
