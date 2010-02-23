@@ -14,8 +14,10 @@ cairo (1.9.6-1) experimental; urgency=low
   * debian/rules:
     + Don't update config.guess/config.sub, upstream doesn't use them.
     + Don't delete cairo-features.h in clean.
+  * debian/patches/02_xcb-without-dri2.patch:
+    + Fix compilation without DRI2.
 
- -- Sebastian Dröge <slomo@debian.org>  Tue, 23 Feb 2010 11:13:11 +0100
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 23 Feb 2010 14:33:09 +0100
 
 cairo (1.9.4-1) experimental; urgency=low
 
