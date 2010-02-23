@@ -1,3 +1,20 @@
+cairo (1.9.6-1) experimental; urgency=low
+
+  * New upstream development release:
+  * debian/patches,
+    debian/source/format,
+    debian/rules,
+    debian/control,
+    debian/compat:
+    + Update to source format 3.0 (quilt).
+    + Update to debhelper compat level 7.
+    + Update Standards-Version to 3.8.4.
+  * debian/rules:
+    + Don't update config.guess/config.sub, upstream doesn't use them.
+    + Don't delete cairo-features.h in clean.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 23 Feb 2010 11:13:11 +0100
+
 cairo (1.9.4-1) experimental; urgency=low
 
   * New upstream development release.
