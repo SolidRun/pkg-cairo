@@ -18,7 +18,7 @@ Build-Depends: debhelper (>= 7),
                libpixman-1-dev (>= 0.15.16),
                libxcb1-dev (>= 0.9.92),
                libxcb-render0-dev (>= 0.9.92),
-               libxcb-render-util0-dev,
+               libxcb-shm0-dev,
                zlib1g-dev
 Standards-Version: 3.8.4
 Vcs-Git: git://git.debian.org/git/collab-maint/cairo.git
@@ -47,8 +47,7 @@ Depends: libcairo2 (= ${binary:Version}),
          libsm-dev,
          libpixman-1-dev (>= 0.15.16),
          libxcb1-dev,
-         libxcb-render0-dev,
-         libxcb-render-util0-dev
+         libxcb-render0-dev
 Description: Development files for the Cairo 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
