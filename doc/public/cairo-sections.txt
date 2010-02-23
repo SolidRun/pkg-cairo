@@ -2,6 +2,7 @@
 <FILE>cairo-ft</FILE>
 <TITLE>ft-font</TITLE>
 CAIRO_HAS_FT_FONT
+CAIRO_HAS_FC_FONT
 cairo_ft_font_face_create_for_ft_face
 cairo_ft_font_face_create_for_pattern
 cairo_ft_font_options_substitute
@@ -71,6 +72,10 @@ cairo_image_surface_get_stride
 CAIRO_HAS_PDF_SURFACE
 cairo_pdf_surface_create
 cairo_pdf_surface_create_for_stream
+cairo_pdf_surface_restrict_to_version
+cairo_pdf_version_t
+cairo_pdf_get_versions
+cairo_pdf_version_to_string
 cairo_pdf_surface_set_size
 </SECTION>
 
@@ -168,6 +173,9 @@ cairo_svg_version_to_string
 <SECTION>
 <FILE>cairo-surface</FILE>
 <TITLE>surface</TITLE>
+CAIRO_MIME_TYPE_JP2
+CAIRO_MIME_TYPE_JPEG
+CAIRO_MIME_TYPE_PNG
 cairo_surface_t
 cairo_content_t
 cairo_surface_create_similar
@@ -192,6 +200,8 @@ cairo_surface_get_user_data
 cairo_surface_copy_page
 cairo_surface_show_page
 cairo_surface_has_show_text_glyphs
+cairo_surface_set_mime_data
+cairo_surface_get_mime_data
 </SECTION>
 
 <SECTION>
@@ -549,7 +559,6 @@ cairo_matrix_destroy
 cairo_matrix_copy
 cairo_matrix_get_affine
 cairo_set_target_surface
-cairo_set_target_glitz
 cairo_set_target_image
 cairo_set_target_pdf
 cairo_set_target_png

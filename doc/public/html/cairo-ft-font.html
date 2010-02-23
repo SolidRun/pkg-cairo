@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>FreeType Fonts</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-font-options.html" title="cairo_font_options_t">
@@ -49,6 +49,7 @@
 <a name="cairo-ft-font.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 #define             <a class="link" href="cairo-ft-font.html#CAIRO-HAS-FT-FONT--CAPS" title="CAIRO_HAS_FT_FONT">CAIRO_HAS_FT_FONT</a>
+#define             <a class="link" href="cairo-ft-font.html#CAIRO-HAS-FC-FONT--CAPS" title="CAIRO_HAS_FC_FONT">CAIRO_HAS_FC_FONT</a>
 <a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * <a class="link" href="cairo-ft-font.html#cairo-ft-font-face-create-for-ft-face" title="cairo_ft_font_face_create_for_ft_face ()">cairo_ft_font_face_create_for_ft_face</a>
                                                         (FT_Face face,
                                                          int load_flags);
@@ -71,10 +72,19 @@ systems, but can be used on other platforms too.
 <a name="cairo-ft-font.details"></a><h2>Details</h2>
 <div class="refsect2" title="CAIRO_HAS_FT_FONT">
 <a name="CAIRO-HAS-FT-FONT--CAPS"></a><h3>CAIRO_HAS_FT_FONT</h3>
-<pre class="programlisting">#define CAIRO_HAS_FT_FONT 1
-</pre>
+<pre class="programlisting">#define             CAIRO_HAS_FT_FONT</pre>
 <p>
 Defined if the FreeType font backend is available.
+This macro can be used to conditionally compile backend-specific code.
+</p>
+</div>
+<hr>
+<div class="refsect2" title="CAIRO_HAS_FC_FONT">
+<a name="CAIRO-HAS-FC-FONT--CAPS"></a><h3>CAIRO_HAS_FC_FONT</h3>
+<pre class="programlisting">#define             CAIRO_HAS_FC_FONT</pre>
+<p>
+Defined if the Fontconfig-specific functions of the FreeType font backend
+are available.
 This macro can be used to conditionally compile backend-specific code.
 </p>
 </div>
@@ -172,8 +182,14 @@ appropriately to reflect the options in a <a class="link" href="cairo-font-optio
 <p>
 The pattern's FC_FT_FACE element is inspected first and if that is set,
 that will be the FreeType font face associated with the returned cairo
-font face.  Otherwise the FC_FILE and FC_INDEX elements of <em class="parameter"><code>pattern</code></em> are
-used to load a font face from file.
+font face.  Otherwise the FC_FILE element is checked.  If it's set,
+that and the value of the FC_INDEX element (defaults to zero) of <em class="parameter"><code>pattern</code></em>
+are used to load a font face from file.
+</p>
+<p>
+If both steps from the previous paragraph fails, <em class="parameter"><code>pattern</code></em> will be passed
+to FcConfigSubstitute, FcDefaultSubstitute, and finally FcFontMatch,
+and the resulting font pattern is used.
 </p>
 <p>
 If the FC_FT_FACE element of <em class="parameter"><code>pattern</code></em> is set, the user is responsible
@@ -188,13 +204,8 @@ the life time of the FT_Face to that of the cairo font-face.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pattern</code></em> :</span></p></td>
-<td> A fully resolved fontconfig
-  pattern. A pattern can be resolved, by, among other things, calling
-  <code class="function">FcConfigSubstitute()</code>, <code class="function">FcDefaultSubstitute()</code>, then
-  <code class="function">FcFontMatch()</code>. Cairo will call <code class="function">FcPatternReference()</code> on this
-  pattern, so you should not further modify the pattern, but you can
-  release your reference to the pattern with <code class="function">FcPatternDestroy()</code> if
-  you no longer need to access it.
+<td> A fontconfig pattern.  Cairo makes a copy of the pattern
+if it needs to.  You are free to modify or free <em class="parameter"><code>pattern</code></em> after this call.
 </td>
 </tr>
 <tr>
@@ -255,7 +266,7 @@ You must be careful when using this function in a library or in a
 threaded application, because freetype's design makes it unsafe to
 call freetype functions simultaneously from multiple threads, (even
 if using distinct FT_Face objects). Because of this, application
-code that acquires an FT_Face object with this call must add it's
+code that acquires an FT_Face object with this call must add its
 own locking to protect any use of that object, (and which also must
 protect any other calls into cairo as almost any cairo function
 might result in a call into the freetype library).</p>
@@ -275,9 +286,7 @@ might result in a call into the freetype library).</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The <span class="type">FT_Face</span> object for <em class="parameter"><code>font</code></em>, scaled appropriately,
-or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a> if <em class="parameter"><code>scaled_font</code></em> is in an error state (see
+or <code class="literal">NULL</code> if <em class="parameter"><code>scaled_font</code></em> is in an error state (see
 <a class="link" href="cairo-scaled-font.html#cairo-scaled-font-status" title="cairo_scaled_font_status ()"><code class="function">cairo_scaled_font_status()</code></a>) or there is insufficient memory.
 </td>
 </tr>

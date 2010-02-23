@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Paths</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-drawing.html" title="Drawing">
 <link rel="prev" href="cairo-context.html" title="cairo_t">
@@ -156,7 +156,7 @@ includes both headers and coordinates for each portion.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a> <em class="structfield"><code>status</code></em>;</span></p></td>
+<td><p><span class="term"><a class="link" href="cairo-error-status.html#cairo-status-t" title="cairo_status_t ()">cairo_status_t</a> <em class="structfield"><code>status</code></em>;</span></p></td>
 <td> the current error status
 </td>
 </tr>
@@ -316,9 +316,7 @@ over the returned data structure.
 </p>
 <p>
 This function will always return a valid pointer, but the result
-will have no data (<code class="literal">data==<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a></code> and
+will have no data (<code class="literal">data==<code class="literal">NULL</code></code> and
 <code class="literal">num_data==0</code>), if either of the following
 conditions hold:
 </p>
@@ -327,7 +325,7 @@ conditions hold:
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">If there is insufficient memory to copy the path. In this
     case <code class="literal">path-&gt;status</code> will be set to
-    <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>.</li>
+    <code class="literal">CAIRO_STATUS_NO_MEMORY</code>.</li>
 <li class="listitem">If <em class="parameter"><code>cr</code></em> is already in an error state. In this case
    <code class="literal">path-&gt;status</code> will contain the same status that
    would be returned by <a class="link" href="cairo-context.html#cairo-status" title="cairo_status ()"><code class="function">cairo_status()</code></a>.</li>
@@ -371,9 +369,7 @@ series of <a class="link" href="cairo-paths.html#CAIRO-PATH-LINE-TO--CAPS"><code
 </p>
 <p>
 This function will always return a valid pointer, but the result
-will have no data (<code class="literal">data==<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a></code> and
+will have no data (<code class="literal">data==<code class="literal">NULL</code></code> and
 <code class="literal">num_data==0</code>), if either of the following
 conditions hold:
 </p>
@@ -382,7 +378,7 @@ conditions hold:
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">If there is insufficient memory to copy the path. In this
     case <code class="literal">path-&gt;status</code> will be set to
-    <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>.</li>
+    <code class="literal">CAIRO_STATUS_NO_MEMORY</code>.</li>
 <li class="listitem">If <em class="parameter"><code>cr</code></em> is already in an error state. In this case
    <code class="literal">path-&gt;status</code> will contain the same status that
    would be returned by <a class="link" href="cairo-context.html#cairo-status" title="cairo_status ()"><code class="function">cairo_status()</code></a>.</li>
@@ -444,7 +440,7 @@ return value from one of <a class="link" href="cairo-paths.html#cairo-copy-path"
 <a class="link" href="cairo-paths.html#cairo-copy-path-flat" title="cairo_copy_path_flat ()"><code class="function">cairo_copy_path_flat()</code></a> or it may be constructed manually.  See
 <a class="link" href="cairo-paths.html#cairo-path-t" title="cairo_path_t"><span class="type">cairo_path_t</span></a> for details on how the path data structure should be
 initialized, and note that <code class="literal">path-&gt;status</code> must be
-initialized to <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a>.</p>
+initialized to <code class="literal">CAIRO_STATUS_SUCCESS</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1043,9 +1039,7 @@ serious text-using applications. See <a class="link" href="cairo-paths.html#cair
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8</code></em> :</span></p></td>
-<td> a NUL-terminated string of text encoded in UTF-8, or <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
-><code class="literal">NULL</code></a>
+<td> a NUL-terminated string of text encoded in UTF-8, or <code class="literal">NULL</code>
 </td>
 </tr>
 </tbody>
@@ -1077,7 +1071,7 @@ cairo_curve_to(<em class="parameter"><code>cr</code></em>, x+<em class="paramete
 <p>
 It is an error to call this function with no current point. Doing
 so will cause <em class="parameter"><code>cr</code></em> to shutdown with a status of
-<a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-CURRENT-POINT--CAPS"><code class="literal">CAIRO_STATUS_NO_CURRENT_POINT</code></a>.</p>
+<code class="literal">CAIRO_STATUS_NO_CURRENT_POINT</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1140,7 +1134,7 @@ is logically equivalent to cairo_line_to(<em class="parameter"><code>cr</code></
 <p>
 It is an error to call this function with no current point. Doing
 so will cause <em class="parameter"><code>cr</code></em> to shutdown with a status of
-<a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-CURRENT-POINT--CAPS"><code class="literal">CAIRO_STATUS_NO_CURRENT_POINT</code></a>.</p>
+<code class="literal">CAIRO_STATUS_NO_CURRENT_POINT</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1181,7 +1175,7 @@ is logically equivalent to cairo_move_to(<em class="parameter"><code>cr</code></
 <p>
 It is an error to call this function with no current point. Doing
 so will cause <em class="parameter"><code>cr</code></em> to shutdown with a status of
-<a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-CURRENT-POINT--CAPS"><code class="literal">CAIRO_STATUS_NO_CURRENT_POINT</code></a>.</p>
+<code class="literal">CAIRO_STATUS_NO_CURRENT_POINT</code>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">

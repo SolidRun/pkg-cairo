@@ -24,19 +24,21 @@
  * Author: Carl D. Worth <cworth@cworth.org>
  */
 
-#include "cairo-boilerplate.h"
-#include "cairo-boilerplate-pdf-private.h"
+#include "cairo-boilerplate-private.h"
 
 #include <cairo-pdf.h>
 #include <cairo-pdf-surface-private.h>
 #include <cairo-paginated-surface-private.h>
 
 #if HAVE_SIGNAL_H
-#include <stdlib.h>
 #include <signal.h>
 #endif
 
-cairo_user_data_key_t pdf_closure_key;
+#if ! CAIRO_HAS_RECORDING_SURFACE
+#define CAIRO_SURFACE_TYPE_RECORDING CAIRO_INTERNAL_SURFACE_TYPE_RECORDING
+#endif
+
+static const cairo_user_data_key_t pdf_closure_key;
 
 typedef struct _pdf_target_closure
 {
@@ -48,13 +50,13 @@ typedef struct _pdf_target_closure
 
 #define ARRAY_LENGTH(__array) ((int) (sizeof (__array) / sizeof (__array[0])))
 
-cairo_surface_t *
+static cairo_surface_t *
 _cairo_boilerplate_pdf_create_surface (const char		 *name,
 				       cairo_content_t		  content,
-				       int			  width,
-				       int			  height,
-				       int			  max_width,
-				       int			  max_height,
+				       double			  width,
+				       double			  height,
+				       double			  max_width,
+				       double			  max_height,
 				       cairo_boilerplate_mode_t	  mode,
 				       int                        id,
 				       void			**closure)
@@ -69,10 +71,10 @@ _cairo_boilerplate_pdf_create_surface (const char		 *name,
 
     *closure = ptc = xmalloc (sizeof (pdf_target_closure_t));
 
-    ptc->width = width;
-    ptc->height = height;
+    ptc->width = ceil (width);
+    ptc->height = ceil (height);
 
-    xasprintf (&ptc->filename, "%s-out.pdf", name);
+    xasprintf (&ptc->filename, "%s.out.pdf", name);
     xunlink (ptc->filename);
 
     surface = cairo_pdf_surface_create (ptc->filename, width, height);
@@ -85,7 +87,7 @@ _cairo_boilerplate_pdf_create_surface (const char		 *name,
 	ptc->target = surface;
 	surface = cairo_surface_create_similar (ptc->target,
 						CAIRO_CONTENT_COLOR,
-						width, height);
+						ptc->width, ptc->height);
 	if (cairo_surface_status (surface))
 	    goto CLEANUP_TARGET;
     } else {
@@ -107,7 +109,7 @@ _cairo_boilerplate_pdf_create_surface (const char		 *name,
     return surface;
 }
 
-cairo_status_t
+static cairo_status_t
 _cairo_boilerplate_pdf_finish_surface (cairo_surface_t		*surface)
 {
     pdf_target_closure_t *ptc = cairo_surface_get_user_data (surface,
@@ -135,7 +137,6 @@ _cairo_boilerplate_pdf_finish_surface (cairo_surface_t		*surface)
 	if (status)
 	    return status;
 
-	cairo_surface_finish (surface);
 	status = cairo_surface_status (surface);
 	if (status)
 	    return status;
@@ -151,7 +152,7 @@ _cairo_boilerplate_pdf_finish_surface (cairo_surface_t		*surface)
     return CAIRO_STATUS_SUCCESS;
 }
 
-cairo_status_t
+static cairo_status_t
 _cairo_boilerplate_pdf_surface_write_to_png (cairo_surface_t *surface, const char *filename)
 {
     pdf_target_closure_t *ptc = cairo_surface_get_user_data (surface, &pdf_closure_key);
@@ -181,7 +182,7 @@ _cairo_boilerplate_pdf_convert_to_image (cairo_surface_t *surface, int page)
     return cairo_boilerplate_convert_to_image (ptc->filename, page+1);
 }
 
-cairo_surface_t *
+static cairo_surface_t *
 _cairo_boilerplate_pdf_get_image_surface (cairo_surface_t *surface,
 					  int page,
 					  int width,
@@ -199,7 +200,7 @@ _cairo_boilerplate_pdf_get_image_surface (cairo_surface_t *surface,
     return surface;
 }
 
-void
+static void
 _cairo_boilerplate_pdf_cleanup (void *closure)
 {
     pdf_target_closure_t *ptc = closure;
@@ -209,8 +210,7 @@ _cairo_boilerplate_pdf_cleanup (void *closure)
     free (ptc);
 }
 
-
-void
+static void
 _cairo_boilerplate_pdf_force_fallbacks (cairo_surface_t *abstract_surface,
 	                                unsigned int flags)
 {
@@ -227,3 +227,34 @@ _cairo_boilerplate_pdf_force_fallbacks (cairo_surface_t *abstract_surface,
     surface = (cairo_pdf_surface_t*) paginated->target;
     surface->force_fallbacks = TRUE;
 }
+
+static const cairo_boilerplate_target_t targets[] = {
+#if CAIRO_CAN_TEST_PDF_SURFACE
+    {
+	"pdf", "pdf", ".pdf", NULL,
+	CAIRO_SURFACE_TYPE_PDF,
+	CAIRO_TEST_CONTENT_COLOR_ALPHA_FLATTENED, 0,
+	"cairo_pdf_surface_create",
+	_cairo_boilerplate_pdf_create_surface,
+	_cairo_boilerplate_pdf_force_fallbacks,
+	_cairo_boilerplate_pdf_finish_surface,
+	_cairo_boilerplate_pdf_get_image_surface,
+	_cairo_boilerplate_pdf_surface_write_to_png,
+	_cairo_boilerplate_pdf_cleanup,
+	NULL, TRUE, TRUE
+    },
+    {
+	"pdf", "pdf", ".pdf", NULL,
+	CAIRO_SURFACE_TYPE_RECORDING, CAIRO_CONTENT_COLOR, 0,
+	"cairo_pdf_surface_create",
+	_cairo_boilerplate_pdf_create_surface,
+	_cairo_boilerplate_pdf_force_fallbacks,
+	_cairo_boilerplate_pdf_finish_surface,
+	_cairo_boilerplate_pdf_get_image_surface,
+	_cairo_boilerplate_pdf_surface_write_to_png,
+	_cairo_boilerplate_pdf_cleanup,
+	NULL, TRUE, TRUE
+    },
+#endif
+};
+CAIRO_BOILERPLATE (pdf, targets)

@@ -62,6 +62,7 @@
 #include <string.h>
 
 #include <cairo.h>
+#include <cairo-script-interpreter.h>
 
 #if CAIRO_CAN_TEST_PDF_SURFACE
 #include <poppler.h>
@@ -76,7 +77,7 @@
 #include <libspectre/spectre.h>
 #endif
 
-#if HAVE_FCNTL_H && HAVE_SIGNAL_H && HAVE_SYS_STAT_H && HAVE_SYS_SOCKET_H && HAVE_SYS_POLL_H && HAVE_SYS_UN_H
+#if HAVE_UNISTD_H && HAVE_FCNTL_H && HAVE_SIGNAL_H && HAVE_SYS_STAT_H && HAVE_SYS_SOCKET_H && HAVE_SYS_POLL_H && HAVE_SYS_UN_H
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/stat.h>
@@ -232,6 +233,85 @@ write_ppm (cairo_surface_t *surface, int fd)
     return NULL;
 }
 
+static cairo_surface_t *
+_create_image (void *closure,
+	       cairo_content_t content,
+	       double width, double height,
+	       long uid)
+{
+    cairo_surface_t **out = closure;
+    cairo_format_t format;
+    switch (content) {
+    case CAIRO_CONTENT_ALPHA:
+	format = CAIRO_FORMAT_A8;
+	break;
+    case CAIRO_CONTENT_COLOR:
+	format = CAIRO_FORMAT_RGB24;
+	break;
+    default:
+    case CAIRO_CONTENT_COLOR_ALPHA:
+	format = CAIRO_FORMAT_ARGB32;
+	break;
+    }
+    *out = cairo_image_surface_create (format, width, height);
+    return cairo_surface_reference (*out);
+}
+
+#if CAIRO_HAS_INTERPRETER
+static const char *
+_cairo_script_render_page (const char *filename,
+			   cairo_surface_t **surface_out)
+{
+    cairo_script_interpreter_t *csi;
+    cairo_surface_t *surface = NULL;
+    cairo_status_t status;
+    const cairo_script_interpreter_hooks_t hooks = {
+	.closure = &surface,
+	.surface_create = _create_image,
+    };
+
+    csi = cairo_script_interpreter_create ();
+    cairo_script_interpreter_install_hooks (csi, &hooks);
+    cairo_script_interpreter_run (csi, filename);
+    status = cairo_script_interpreter_destroy (csi);
+    if (surface == NULL) {
+	return "cairo-script interpreter failed";
+    }
+
+    if (status == CAIRO_STATUS_SUCCESS)
+	status = cairo_surface_status (surface);
+    if (status) {
+	cairo_surface_destroy (surface);
+	return cairo_status_to_string (status);
+    }
+
+    *surface_out = surface;
+    return NULL;
+}
+
+static const char *
+cs_convert (char **argv, int fd)
+{
+    const char *err;
+    cairo_surface_t *surface = NULL; /* silence compiler warning */
+
+    err = _cairo_script_render_page (argv[0], &surface);
+    if (err != NULL)
+	return err;
+
+    err = write_ppm (surface, fd);
+    cairo_surface_destroy (surface);
+
+    return err;
+}
+#else
+static const char *
+cs_convert (char **argv, int fd)
+{
+    return "compiled without CairoScript support.";
+}
+#endif
+
 #if CAIRO_CAN_TEST_PDF_SURFACE
 /* adapted from pdf2png.c */
 static const char *
@@ -273,14 +353,15 @@ _poppler_render_page (const char *filename,
 
     poppler_page_get_size (page, &width, &height);
 
-    surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, width, height);
+    surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
     cr = cairo_create (surface);
-
-    cairo_set_source_rgb (cr, 1., 1., 1.);
-    cairo_paint (cr);
 
     poppler_page_render (page, cr);
     g_object_unref (page);
+
+    cairo_set_operator (cr, CAIRO_OPERATOR_DEST_OVER);
+    cairo_set_source_rgb (cr, 1., 1., 1.);
+    cairo_paint (cr);
 
     status = cairo_status (cr);
     cairo_destroy (cr);
@@ -465,6 +546,7 @@ convert (char **argv, int fd)
 	const char *type;
 	const char *(*func) (char **, int);
     } converters[] = {
+	{ "cs", cs_convert },
 	{ "pdf", pdf_convert },
 	{ "ps", ps_convert },
 	{ "svg", svg_convert },
@@ -598,6 +680,62 @@ write_pid_file (void)
     return ret;
 }
 
+static int
+open_devnull_to_fd (int want_fd, int flags)
+{
+    int error;
+    int got_fd;
+
+    close (want_fd);
+
+    got_fd = open("/dev/null", flags | O_CREAT, 0700);
+    if (got_fd == -1)
+        return -1;
+
+    error = dup2 (got_fd, want_fd);
+    close (got_fd);
+
+    return error;
+}
+
+static int
+daemonize (void)
+{
+    void (*oldhup) (int);
+
+    /* Let the parent go. */
+    switch (fork ()) {
+    case -1: return -1;
+    case 0: break;
+    default: _exit (0);
+    }
+
+    /* Become session leader. */
+    if (setsid () == -1)
+	return -1;
+
+    /* Refork to yield session leadership. */
+    oldhup = signal (SIGHUP, SIG_IGN);
+
+    switch (fork ()) {		/* refork to yield session leadership. */
+    case -1: return -1;
+    case 0: break;
+    default: _exit (0);
+    }
+
+    signal (SIGHUP, oldhup);
+
+    /* Establish stdio. */
+    if (open_devnull_to_fd (0, O_RDONLY) == -1)
+	return -1;
+    if (open_devnull_to_fd (1, O_WRONLY | O_APPEND) == -1)
+	return -1;
+    if (dup2 (1, 2) == -1)
+	return -1;
+
+    return 0;
+}
+
 static const char *
 any2ppm_daemon (void)
 {
@@ -643,7 +781,7 @@ any2ppm_daemon (void)
     }
 
     /* ready for client connection - detach from parent/terminal */
-    if (getenv ("ANY2PPM_NODAEMON") == NULL && daemon (1, 0) == -1) {
+    if (getenv ("ANY2PPM_NODAEMON") == NULL && daemonize () == -1) {
 	close (sk);
 	return "unable to detach from parent";
     }
@@ -707,7 +845,9 @@ main (int argc, char **argv)
 {
     const char *err;
 
+#if CAIRO_CAN_TEST_PDF_SURFACE || CAIRO_CAN_TEST_SVG_SURFACE
     g_type_init ();
+#endif
 
 #if CAIRO_CAN_TEST_SVG_SURFACE
     rsvg_init ();

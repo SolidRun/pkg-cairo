@@ -60,8 +60,7 @@ image formats are those defined in <link linkend="cairo-format-t"><type>cairo_fo
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-IMAGE-SURFACE--CAPS" role="macro" condition="since:1.8">
 <title>CAIRO_HAS_IMAGE_SURFACE</title>
-<indexterm zone="CAIRO-HAS-IMAGE-SURFACE--CAPS" role="1.8"><primary sortas="CAIRO_HAS_IMAGE_SURFACE">CAIRO_HAS_IMAGE_SURFACE</primary></indexterm><programlisting>#define CAIRO_HAS_IMAGE_SURFACE 1
-</programlisting>
+<indexterm zone="CAIRO-HAS-IMAGE-SURFACE--CAPS" role="1.8"><primary sortas="CAIRO_HAS_IMAGE_SURFACE">CAIRO_HAS_IMAGE_SURFACE</primary></indexterm><programlisting>#define             CAIRO_HAS_IMAGE_SURFACE</programlisting>
 <para>
 Defined if the image surface backend is available.
 The image surface backend is always built in.
@@ -208,7 +207,7 @@ width*bytes_per_pixel to provide proper alignment for each pixel
 and row. This alignment is required to allow high-performance rendering
 within cairo. The correct way to obtain a legal stride value is to
 call <link linkend="cairo-format-stride-for-width"><function>cairo_format_stride_for_width()</function></link> with the desired format and
-maximum image width value, and the use the resulting stride value
+maximum image width value, and then use the resulting stride value
 to allocate the data and to create the image surface. See
 <link linkend="cairo-format-stride-for-width"><function>cairo_format_stride_for_width()</function></link> for example code.</para>
 <para>

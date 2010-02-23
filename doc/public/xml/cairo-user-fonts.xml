@@ -88,8 +88,7 @@ other application to draw "funky" fonts.
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-USER-FONT--CAPS" role="macro" condition="since:1.8">
 <title>CAIRO_HAS_USER_FONT</title>
-<indexterm zone="CAIRO-HAS-USER-FONT--CAPS" role="1.8"><primary sortas="CAIRO_HAS_USER_FONT">CAIRO_HAS_USER_FONT</primary></indexterm><programlisting>#define CAIRO_HAS_USER_FONT 1
-</programlisting>
+<indexterm zone="CAIRO-HAS-USER-FONT--CAPS" role="1.8"><primary sortas="CAIRO_HAS_USER_FONT">CAIRO_HAS_USER_FONT</primary></indexterm><programlisting>#define             CAIRO_HAS_USER_FONT</programlisting>
 <para>
 Defined if the user font backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -139,8 +138,7 @@ in deadlock.</para>
 <varlistentry><term><parameter>extents</parameter>&#160;:</term>
 <listitem><simpara> font extents to fill in, in font space
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS--CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or
-<link linkend="CAIRO-STATUS-USER-FONT-ERROR--CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS--CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or an error status on error.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
@@ -253,7 +251,8 @@ will free the allocated cluster array using <link linkend="cairo-text-cluster-fr
 </para>
 <para>
 The callback is optional.  If <parameter>num_glyphs</parameter> is negative upon
-the callback returning, the unicode_to_glyph callback
+the callback returning or if the return value
+is <link linkend="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS"><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></link>, the unicode_to_glyph callback
 is tried.  See <link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><type>cairo_user_scaled_font_unicode_to_glyph_func_t</type></link>.
 </para>
 <para>
@@ -291,8 +290,9 @@ glyph value for other purposes.</para>
 <listitem><simpara> pointer to location to store cluster flags corresponding to the
                 output <parameter>clusters</parameter>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS--CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or
-<link linkend="CAIRO-STATUS-USER-FONT-ERROR--CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS--CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success,
+<link linkend="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS"><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></link> if fallback options should be tried,
+or <link linkend="CAIRO-STATUS-USER-FONT-ERROR--CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
@@ -319,8 +319,9 @@ complex scripts can be implemented using this callback.
 </para>
 <para>
 The callback is optional, and only used if text_to_glyphs callback is not
-set or fails to return glyphs.  If this callback is not set, an identity
-mapping from Unicode code-points to glyph indices is assumed.
+set or fails to return glyphs.  If this callback is not set or if it returns
+<link linkend="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS"><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></link>, an identity mapping from Unicode
+code-points to glyph indices is assumed.
 </para>
 <para>
 Note: While cairo does not impose any limitation on glyph indices,
@@ -341,8 +342,9 @@ glyph value for other purposes.</para>
 <varlistentry><term><parameter>glyph_index</parameter>&#160;:</term>
 <listitem><simpara> output glyph index
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS--CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or
-<link linkend="CAIRO-STATUS-USER-FONT-ERROR--CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS--CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success,
+<link linkend="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED--CAPS"><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></link> if fallback options should be tried,
+or <link linkend="CAIRO-STATUS-USER-FONT-ERROR--CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>

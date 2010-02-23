@@ -19,6 +19,9 @@
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
+#define             <link linkend="CAIRO-MIME-TYPE-JP2--CAPS">CAIRO_MIME_TYPE_JP2</link>
+#define             <link linkend="CAIRO-MIME-TYPE-JPEG--CAPS">CAIRO_MIME_TYPE_JPEG</link>
+#define             <link linkend="CAIRO-MIME-TYPE-PNG--CAPS">CAIRO_MIME_TYPE_PNG</link>
 typedef             <link linkend="cairo-surface-t">cairo_surface_t</link>;
 enum                <link linkend="cairo-content-t">cairo_content_t</link>;
 <link linkend="cairo-surface-t">cairo_surface_t</link> *   <link linkend="cairo-surface-create-similar">cairo_surface_create_similar</link>        (<link linkend="cairo-surface-t">cairo_surface_t</link> *other,
@@ -65,6 +68,16 @@ unsigned <link linkend="int">int</link>        <link linkend="cairo-surface-get-
 <link linkend="void">void</link>                <link linkend="cairo-surface-copy-page">cairo_surface_copy_page</link>             (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
 <link linkend="void">void</link>                <link linkend="cairo-surface-show-page">cairo_surface_show_page</link>             (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
 <link linkend="cairo-bool-t">cairo_bool_t</link>        <link linkend="cairo-surface-has-show-text-glyphs">cairo_surface_has_show_text_glyphs</link>  (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface);
+<link linkend="cairo-status-t">cairo_status_t</link>      <link linkend="cairo-surface-set-mime-data">cairo_surface_set_mime_data</link>         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                                         const <link linkend="char">char</link> *mime_type,
+                                                         unsigned <link linkend="char">char</link> *data,
+                                                         unsigned <link linkend="int">int</link> length,
+                                                         <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy,
+                                                         <link linkend="void">void</link> *closure);
+<link linkend="void">void</link>                <link linkend="cairo-surface-get-mime-data">cairo_surface_get_mime_data</link>         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                                         const <link linkend="char">char</link> *mime_type,
+                                                         unsigned <link linkend="char">char</link> **data,
+                                                         unsigned <link linkend="int">int</link> *length);
 </synopsis>
 </refsynopsisdiv>
 
@@ -92,6 +105,27 @@ cairo_<emphasis>backend</emphasis><link linkend="surface-create"><function>_surf
 
 <refsect1 id="cairo-surface.details" role="details">
 <title role="details.title">Details</title>
+<refsect2 id="CAIRO-MIME-TYPE-JP2--CAPS" role="macro">
+<title>CAIRO_MIME_TYPE_JP2</title>
+<indexterm zone="CAIRO-MIME-TYPE-JP2--CAPS"><primary sortas="CAIRO_MIME_TYPE_JP2">CAIRO_MIME_TYPE_JP2</primary></indexterm><programlisting>#define CAIRO_MIME_TYPE_JP2 "image/jp2"
+</programlisting>
+<para>
+The Joint Photographic Experts Group (JPEG) 2000 image coding standard (ISO/IEC 15444-1). Since 1.10
+</para></refsect2>
+<refsect2 id="CAIRO-MIME-TYPE-JPEG--CAPS" role="macro">
+<title>CAIRO_MIME_TYPE_JPEG</title>
+<indexterm zone="CAIRO-MIME-TYPE-JPEG--CAPS"><primary sortas="CAIRO_MIME_TYPE_JPEG">CAIRO_MIME_TYPE_JPEG</primary></indexterm><programlisting>#define CAIRO_MIME_TYPE_JPEG "image/jpeg"
+</programlisting>
+<para>
+The Joint Photographic Experts Group (JPEG) image coding standard (ISO/IEC 10918-1). Since 1.10
+</para></refsect2>
+<refsect2 id="CAIRO-MIME-TYPE-PNG--CAPS" role="macro">
+<title>CAIRO_MIME_TYPE_PNG</title>
+<indexterm zone="CAIRO-MIME-TYPE-PNG--CAPS"><primary sortas="CAIRO_MIME_TYPE_PNG">CAIRO_MIME_TYPE_PNG</primary></indexterm><programlisting>#define CAIRO_MIME_TYPE_PNG "image/png"
+</programlisting>
+<para>
+The Portable Network Graphics image file format (ISO/IEC 15948). Since 1.10
+</para></refsect2>
 <refsect2 id="cairo-surface-t" role="typedef">
 <title>cairo_surface_t</title>
 <indexterm zone="cairo-surface-t"><primary sortas="cairo_surface_t">cairo_surface_t</primary></indexterm><programlisting>typedef struct _cairo_surface cairo_surface_t;
@@ -107,6 +141,16 @@ There are different subtypes of <link linkend="cairo-surface-t"><type>cairo_surf
 different drawing backends; for example, <link linkend="cairo-image-surface-create"><function>cairo_image_surface_create()</function></link>
 creates a bitmap image in memory.
 The type of a surface can be queried with <link linkend="cairo-surface-get-type"><function>cairo_surface_get_type()</function></link>.
+</para>
+<para>
+The initial contents of a surface after creation depend upon the manner
+of its creation. If cairo creates the surface and backing storage for
+the user, it will be initially cleared; for example,
+<link linkend="cairo-image-surface-create"><function>cairo_image_surface_create()</function></link> and <link linkend="cairo-surface-create-similar"><function>cairo_surface_create_similar()</function></link>.
+Alternatively, if the user passes in a reference to some backing storage
+and asks cairo to wrap that in a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>, then the contents are
+not modified; for example, <link linkend="cairo-image-surface-create-for-data"><function>cairo_image_surface_create_for_data()</function></link> and
+<link linkend="cairo-xlib-surface-create"><function>cairo_xlib_surface_create()</function></link>.
 </para>
 <para>
 Memory management of <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> is done with
@@ -497,7 +541,16 @@ resolution if never set.</para>
     CAIRO_SURFACE_TYPE_SVG,
     CAIRO_SURFACE_TYPE_OS2,
     CAIRO_SURFACE_TYPE_WIN32_PRINTING,
-    CAIRO_SURFACE_TYPE_QUARTZ_IMAGE
+    CAIRO_SURFACE_TYPE_QUARTZ_IMAGE,
+    CAIRO_SURFACE_TYPE_SCRIPT,
+    CAIRO_SURFACE_TYPE_QT,
+    CAIRO_SURFACE_TYPE_RECORDING,
+    CAIRO_SURFACE_TYPE_VG,
+    CAIRO_SURFACE_TYPE_GL,
+    CAIRO_SURFACE_TYPE_DRM,
+    CAIRO_SURFACE_TYPE_TEE,
+    CAIRO_SURFACE_TYPE_XML,
+    CAIRO_SURFACE_TYPE_SKIA
 } cairo_surface_type_t;
 </programlisting>
 <para>
@@ -596,6 +649,51 @@ New entries may be added in future versions.</para>
 <varlistentry id="CAIRO-SURFACE-TYPE-QUARTZ-IMAGE--CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_QUARTZ_IMAGE</literal></term>
 <listitem><simpara> The surface is of type quartz_image
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-SCRIPT--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_SCRIPT</literal></term>
+<listitem><simpara> The surface is of type script, since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-QT--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_QT</literal></term>
+<listitem><simpara> The surface is of type Qt, since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-RECORDING--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_RECORDING</literal></term>
+<listitem><simpara> The surface is of type recording, since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-VG--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_VG</literal></term>
+<listitem><simpara> The surface is a OpenVG surface, since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-GL--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_GL</literal></term>
+<listitem><simpara> The surface is of type OpenGL, since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-DRM--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_DRM</literal></term>
+<listitem><simpara> The surface is of type Direct Render Manager, since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-TEE--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_TEE</literal></term>
+<listitem><simpara> The surface is of type 'tee' (a multiplexing surface), since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-XML--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_XML</literal></term>
+<listitem><simpara> The surface is of type XML (for debugging), since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-SKIA--CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_SKIA</literal></term>
+<listitem><simpara> The surface is of type Skia, since 1.10
 </simpara></listitem>
 </varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
@@ -739,6 +837,69 @@ target surface does not use it.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
+<refsect2 id="cairo-surface-set-mime-data" role="function" condition="since:1.10">
+<title>cairo_surface_set_mime_data ()</title>
+<indexterm zone="cairo-surface-set-mime-data" role="1.10"><primary sortas="cairo_surface_set_mime_data">cairo_surface_set_mime_data</primary></indexterm><programlisting><link linkend="cairo-status-t">cairo_status_t</link>      cairo_surface_set_mime_data         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                                         const <link linkend="char">char</link> *mime_type,
+                                                         unsigned <link linkend="char">char</link> *data,
+                                                         unsigned <link linkend="int">int</link> length,
+                                                         <link linkend="cairo-destroy-func-t">cairo_destroy_func_t</link> destroy,
+                                                         <link linkend="void">void</link> *closure);</programlisting>
+<para>
+Attach an image in the format <parameter>mime_type</parameter> to <parameter>surface</parameter>. To remove
+the data from a surface, call this function with same mime type
+and <link linkend="NULL--CAPS"><literal>NULL</literal></link> for <parameter>data</parameter>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mime_type</parameter>&#160;:</term>
+<listitem><simpara> the mime type of the image data
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara> the image data to attach to the surface
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&#160;:</term>
+<listitem><simpara> the length of the image data
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="cairo-destroy-func-t"><type>cairo_destroy_func_t</type></link> which will be called when the
+surface is destroyed or when new image data is attached using the
+same mime type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&#160;:</term>
+<listitem><simpara> the data to be passed to the <parameter>destroy</parameter> notifier
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS--CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> or <link linkend="CAIRO-STATUS-NO-MEMORY--CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link> if a
+slot could not be allocated for the user data.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 1.10</para></refsect2>
+<refsect2 id="cairo-surface-get-mime-data" role="function" condition="since:1.10">
+<title>cairo_surface_get_mime_data ()</title>
+<indexterm zone="cairo-surface-get-mime-data" role="1.10"><primary sortas="cairo_surface_get_mime_data">cairo_surface_get_mime_data</primary></indexterm><programlisting><link linkend="void">void</link>                cairo_surface_get_mime_data         (<link linkend="cairo-surface-t">cairo_surface_t</link> *surface,
+                                                         const <link linkend="char">char</link> *mime_type,
+                                                         unsigned <link linkend="char">char</link> **data,
+                                                         unsigned <link linkend="int">int</link> *length);</programlisting>
+<para>
+Return mime data previously attached to <parameter>surface</parameter> using the
+specified mime type.  If no data has been attached with the given
+mime type, <parameter>data</parameter> is set <link linkend="NULL--CAPS"><literal>NULL</literal></link>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mime_type</parameter>&#160;:</term>
+<listitem><simpara> the mime type of the image data
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara> the image data to attached to the surface
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&#160;:</term>
+<listitem><simpara> the length of the image data
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 1.10</para></refsect2>
 
 </refsect1>
 

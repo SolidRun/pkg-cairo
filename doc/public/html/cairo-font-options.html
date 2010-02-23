@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cairo_font_options_t</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-scaled-font.html" title="cairo_scaled_font_t">
@@ -52,7 +52,7 @@ typedef             <a class="link" href="cairo-font-options.html#cairo-font-opt
 <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> * <a class="link" href="cairo-font-options.html#cairo-font-options-create" title="cairo_font_options_create ()">cairo_font_options_create</a>        (void);
 <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> * <a class="link" href="cairo-font-options.html#cairo-font-options-copy" title="cairo_font_options_copy ()">cairo_font_options_copy</a>          (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *original);
 void                <a class="link" href="cairo-font-options.html#cairo-font-options-destroy" title="cairo_font_options_destroy ()">cairo_font_options_destroy</a>          (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);
-<a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      <a class="link" href="cairo-font-options.html#cairo-font-options-status" title="cairo_font_options_status ()">cairo_font_options_status</a>           (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);
+<a class="link" href="cairo-error-status.html#cairo-status-t" title="cairo_status_t ()">cairo_status_t</a>      <a class="link" href="cairo-font-options.html#cairo-font-options-status" title="cairo_font_options_status ()">cairo_font_options_status</a>           (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);
 void                <a class="link" href="cairo-font-options.html#cairo-font-options-merge" title="cairo_font_options_merge ()">cairo_font_options_merge</a>            (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options,
                                                          const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *other);
 unsigned long       <a class="link" href="cairo-font-options.html#cairo-font-options-hash" title="cairo_font_options_hash ()">cairo_font_options_hash</a>             (const <a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);
@@ -187,7 +187,7 @@ Destroys a <a class="link" href="cairo-font-options.html#cairo-font-options-t" t
 <hr>
 <div class="refsect2" title="cairo_font_options_status ()">
 <a name="cairo-font-options-status"></a><h3>cairo_font_options_status ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_font_options_status           (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
+<pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="cairo_status_t ()">cairo_status_t</a>      cairo_font_options_status           (<a class="link" href="cairo-font-options.html#cairo-font-options-t" title="cairo_font_options_t">cairo_font_options_t</a> *options);</pre>
 <p>
 Checks whether an error has previously occurred for this
 font options object</p>
@@ -203,7 +203,7 @@ font options object</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
+<td> <code class="literal">CAIRO_STATUS_SUCCESS</code> or <code class="literal">CAIRO_STATUS_NO_MEMORY</code>
 </td>
 </tr>
 </tbody>
@@ -289,12 +289,8 @@ Compares two font options objects for equality.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if all fields of the two font options objects match.
-Note that this function will return <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> if either object is in
+<td> <code class="literal">TRUE</code> if all fields of the two font options objects match.
+Note that this function will return <code class="literal">FALSE</code> if either object is in
 error.
 </td>
 </tr>

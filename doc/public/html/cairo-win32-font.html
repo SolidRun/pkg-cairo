@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Win32 Fonts</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-ft-font.html" title="FreeType Fonts">
@@ -56,7 +56,7 @@
 <a class="link" href="cairo-font-face.html#cairo-font-face-t" title="cairo_font_face_t">cairo_font_face_t</a> * <a class="link" href="cairo-win32-font.html#cairo-win32-font-face-create-for-logfontw-hfont" title="cairo_win32_font_face_create_for_logfontw_hfont ()">cairo_win32_font_face_create_for_logfontw_hfont</a>
                                                         (LOGFONTW *logfont,
                                                          HFONT font);
-<a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      <a class="link" href="cairo-win32-font.html#cairo-win32-scaled-font-select-font" title="cairo_win32_scaled_font_select_font ()">cairo_win32_scaled_font_select_font</a> (<a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t">cairo_scaled_font_t</a> *scaled_font,
+<a class="link" href="cairo-error-status.html#cairo-status-t" title="cairo_status_t ()">cairo_status_t</a>      <a class="link" href="cairo-win32-font.html#cairo-win32-scaled-font-select-font" title="cairo_win32_scaled_font_select_font ()">cairo_win32_scaled_font_select_font</a> (<a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t">cairo_scaled_font_t</a> *scaled_font,
                                                          HDC hdc);
 void                <a class="link" href="cairo-win32-font.html#cairo-win32-scaled-font-done-font" title="cairo_win32_scaled_font_done_font ()">cairo_win32_scaled_font_done_font</a>   (<a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t">cairo_scaled_font_t</a> *scaled_font);
 double              <a class="link" href="cairo-win32-font.html#cairo-win32-scaled-font-get-metrics-factor" title="cairo_win32_scaled_font_get_metrics_factor ()">cairo_win32_scaled_font_get_metrics_factor</a>
@@ -171,7 +171,7 @@ and can be used with functions such as <a class="link" href="cairo-win32-font.ht
 <tr>
 <td><p><span class="term"><em class="parameter"><code>logfont</code></em> :</span></p></td>
 <td> A <span class="type">LOGFONTW</span> structure specifying the font to use.
-  If hfont is null then the lfHeight, lfWidth, lfOrientation and lfEscapement
+  If <em class="parameter"><code>font</code></em> is <code class="literal">NULL</code> then the lfHeight, lfWidth, lfOrientation and lfEscapement
   fields of this structure are ignored. Otherwise lfWidth, lfOrientation and
   lfEscapement must be zero.
 </td>
@@ -194,7 +194,7 @@ and can be used with functions such as <a class="link" href="cairo-win32-font.ht
 <hr>
 <div class="refsect2" title="cairo_win32_scaled_font_select_font ()">
 <a name="cairo-win32-scaled-font-select-font"></a><h3>cairo_win32_scaled_font_select_font ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>      cairo_win32_scaled_font_select_font (<a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t">cairo_scaled_font_t</a> *scaled_font,
+<pre class="programlisting"><a class="link" href="cairo-error-status.html#cairo-status-t" title="cairo_status_t ()">cairo_status_t</a>      cairo_win32_scaled_font_select_font (<a class="link" href="cairo-scaled-font.html#cairo-scaled-font-t" title="cairo_scaled_font_t">cairo_scaled_font_t</a> *scaled_font,
                                                          HDC hdc);</pre>
 <p>
 Selects the font into the given device context and changes the
@@ -230,8 +230,8 @@ the use of this function to preserve the original graphics state.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-error-status.html#CAIRO-STATUS-SUCCESS--CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> if the operation succeeded.
-  otherwise an error such as <a class="link" href="cairo-error-status.html#CAIRO-STATUS-NO-MEMORY--CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a> and
+<td> <code class="literal">CAIRO_STATUS_SUCCESS</code> if the operation succeeded.
+  otherwise an error such as <code class="literal">CAIRO_STATUS_NO_MEMORY</code> and
   the device context is unchanged.
 </td>
 </tr>
