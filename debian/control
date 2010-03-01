@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 7),
                pkg-config (>= 0.19),
                libfontconfig1-dev (>= 2.2.95),
                libfreetype6-dev (>= 2.1.10),
-               libxrender-dev (>= 0.6.0),
+               libxrender-dev (>= 0.6),
                libx11-dev,
                libpng12-dev,
                libdirectfb-dev (>= 0.9.25),
@@ -41,13 +41,15 @@ Architecture: any
 Depends: libcairo2 (= ${binary:Version}),
          libfontconfig1-dev (>= 2.2.95),
          libfreetype6-dev (>= 2.1.10),
-         libxrender-dev (>= 0.6.0),
+         libx11-dev,
+         libxrender-dev (>= 0.6),
          libpng12-dev,
          libdirectfb-dev (>= 0.9.25),
          libsm-dev,
          libpixman-1-dev (>= 0.15.16),
-         libxcb1-dev,
-         libxcb-render0-dev
+         libxcb1-dev (>= 0.9.92),
+         libxcb-render0-dev (>= 0.9.92),
+         libxcb-shm0-dev
 Description: Development files for the Cairo 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
