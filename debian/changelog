@@ -1,3 +1,26 @@
+cairo (1.8.10-3) unstable; urgency=low
+
+  [ Cyril Brulebois ]
+  * Switch udeb from DirectFB to Xlib to prepare the move to an X11-based
+    graphical installer:
+     - Ship libcairo2-udeb instead of libcairo-directfb2-udeb.
+     - Update package description accordingly.
+     - Rename udeb’s .install file accordingly.
+     - Adapt package name for various dh_* calls accordingly.
+     - Switch --enable-directfb and --enable-xlib in *configure_flags
+       variables, and get rid of --program-suffix=-directfb, no longer
+       needed.
+  * Version/Bump some B-D to make sure the udeb gets its dependencies on
+    the (recently-added) udebs rather than on the libraries:
+     - libx11-dev
+     - libxrender-dev
+  * Thanks to Julien Cristau for his initial patch.
+
+  [ Sebastian Dröge ]
+  * Upload to unstable (Closes: #573394).
+
+ -- Sebastian Dröge <slomo@debian.org>  Sun, 14 Mar 2010 19:31:51 +0100
+
 cairo (1.8.10-2) unstable; urgency=low
 
   * debian/rules:
