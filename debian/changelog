@@ -1,9 +1,29 @@
 cairo (1.9.6-5) UNRELEASED; urgency=low
 
   * debian/rules:
-    + Add --disable-silent-rules to configure flags.
+    + Add --disable-silent-rules --disable-shave to configure flags.
+  * debian/control,
+    debian/rules,
+    debian/libcairo-directfb2*:
+    + Drop DirectFB backend completely now, it's marked experimental
+      upstream and was only enabled for the debian-installer, which now
+      uses X11 anyway.
+  * debian/control:
+    + Drop obsolete Replaces and Conflicts which were for versions many
+      releases ago.
+    + Add ${misc:Depends} and ${shlibs:Depends} wherever necessary.
+  * debian/rules:
+    + Use dh_prep instead of dh_clean -k.
+  * debian/patches/03_no-cxx.patch:
+    + Patch by Julien Cristau to drop the unecessary dependency on
+      libstdc++ caused by an automake stupidity.
+  * debian/patches/99_autoreconf.patch:
+    + Regenerated automake/autoconf files for the above change.
+  * debian/patches/99_ltmain_as-needed.patch,
+    debian/rules:
+    + Link with -Wl,-z,defs -Wl,-O1 -Wl,--as-needed.
 
- -- Sebastian Dröge <slomo@debian.org>  Fri, 19 Mar 2010 09:47:50 +0100
+ -- Sebastian Dröge <slomo@debian.org>  Fri, 19 Mar 2010 14:28:17 +0100
 
 cairo (1.9.6-4) experimental; urgency=low
 
