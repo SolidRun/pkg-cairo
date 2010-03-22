@@ -1,3 +1,15 @@
+cairo (1.9.6-6) experimental; urgency=low
+
+  * debian/patches/04_bo-rectangular-edge-traversal-invalid-read.patch:
+    + Patch from upstream GIT to fix invalid read during edge traversal.
+      Fixes crash in WebKit.
+  * debian/patches/05_am-maintainer-mode.patch,
+    debian/patches/99_autoreconf.patch:
+    + Add support for disabling automake maintainer mode, which causes
+      warnings messages and possible errors during build.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 22 Mar 2010 06:49:30 +0100
+
 cairo (1.9.6-5) experimental; urgency=low
 
   * debian/rules:
