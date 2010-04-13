@@ -1,3 +1,25 @@
+cairo (1.8.10-4) unstable; urgency=low
+
+  * debian/rules:
+    + Add --disable-silent-rules --disable-shave to configure flags.
+  * debian/control,
+    debian/rules,
+    debian/libcairo-directfb2*:
+    + Drop DirectFB backend completely now, it's marked experimental
+      upstream and was only enabled for the debian-installer, which now
+      uses X11 anyway.
+  * debian/control:
+    + Drop obsolete Replaces and Conflicts which were for versions many
+      releases ago.
+    + Add ${misc:Depends} and ${shlibs:Depends} wherever necessary.
+  * debian/rules:
+    + Use dh_prep instead of dh_clean -k.
+  * debian/patches/99_ltmain_as-needed.patch,
+    debian/rules:
+    + Link with -Wl,-z,defs -Wl,-O1 -Wl,--as-needed.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 13 Apr 2010 08:34:29 +0200
+
 cairo (1.8.10-3) unstable; urgency=low
 
   [ Cyril Brulebois ]
