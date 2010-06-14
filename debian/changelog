@@ -3,8 +3,15 @@ cairo (1.9.8-1) experimental; urgency=low
   * New upstream development release:
     + debian/control:
       - Update pixman and xcb (build-) dependencies.
+    + debian/patches/02_xcb-without-dri2.patch,
+      debian/patches/04_bo-rectangular-edge-traversal-invalid-read.patch,
+      debian/patches/06_bo-rectangular-skipping.patch:
+      - Dropped, merged upstream.
+    + debian/patches/03_no-cxx.patch,
+      debian/patches/99_autoreconf.patch:
+      - Refreshed for the new version.
 
- -- Sebastian Dröge <slomo@debian.org>  Mon, 14 Jun 2010 09:39:19 +0200
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 14 Jun 2010 09:48:49 +0200
 
 cairo (1.9.6-6) experimental; urgency=low
 
