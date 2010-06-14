@@ -1,6 +1,7 @@
 cairo (1.9.8-1) experimental; urgency=low
 
   * New upstream development release:
+    + Fixes crash in evince when displaying a file (Closes: #578072).
     + debian/control:
       - Update pixman and xcb (build-) dependencies.
     + debian/patches/02_xcb-without-dri2.patch,
@@ -13,8 +14,10 @@ cairo (1.9.8-1) experimental; urgency=low
     + debian/libcairo2.symbols,
       debian/rules:
       - Update symbols and shlibs version for the new API.
+  * debian/copyright:
+    + Fix typo (Closes: #573530).
 
- -- Sebastian Dröge <slomo@debian.org>  Mon, 14 Jun 2010 09:58:31 +0200
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 14 Jun 2010 10:04:57 +0200
 
 cairo (1.9.6-6) experimental; urgency=low
 
