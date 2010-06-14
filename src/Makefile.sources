@@ -138,6 +138,7 @@ cairo_sources = \
 	cairo-recording-surface.c \
 	cairo-misc.c \
 	cairo-mutex.c \
+	cairo-observer.c \
 	cairo-output-stream.c \
 	cairo-paginated-surface.c \
 	cairo-path-bounds.c \
@@ -312,16 +313,26 @@ cairo_beos_headers = cairo-beos.h
 #cairo_beos_sources = cairo-beos-surface.cpp
 
 cairo_gl_headers = cairo-gl.h
-cairo_gl_private = cairo-gl-private.h
-cairo_gl_sources = cairo-gl-surface.c cairo-gl-glyphs.c cairo-gl-shaders.c
+cairo_gl_private = cairo-gl-private.h \
+		   cairo-gl-gradient-private.h
+cairo_gl_sources = cairo-gl-composite.c \
+		   cairo-gl-device.c \
+		   cairo-gl-glyphs.c \
+		   cairo-gl-gradient.c \
+		   cairo-gl-shaders.c \
+		   cairo-gl-surface.c
+
 cairo_glx_sources += cairo-glx-context.c
+cairo_egl_sources += cairo-egl-context.c
 
 cairo_directfb_headers = cairo-directfb.h
 cairo_directfb_sources = cairo-directfb-surface.c
 
 cairo_drm_headers = cairo-drm.h
 cairo_drm_private = drm/cairo-drm-private.h \
+		    drm/cairo-drm-ioctl-private.h \
 		    drm/cairo-drm-intel-private.h \
+		    drm/cairo-drm-intel-ioctl-private.h \
 		    drm/cairo-drm-i915-private.h \
 		    drm/cairo-drm-i965-private.h \
 		    drm/cairo-drm-intel-brw-defines.h \
@@ -348,6 +359,13 @@ cairo_drm_sources = drm/cairo-drm.c \
 		    drm/cairo-drm-radeon.c \
 		    drm/cairo-drm-radeon-surface.c
 cairo_gallium_sources = drm/cairo-drm-gallium-surface.c
+
+if BUILD_DRM_XR
+cairo_drm_headers += cairo-drm-xr.h
+cairo_drm_sources += \
+		     drm/cairo-drm-xr.c \
+		     $(NULL)
+endif
 
 cairo_script_headers = cairo-script.h
 cairo_script_sources = cairo-script-surface.c

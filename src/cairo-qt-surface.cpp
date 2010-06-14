@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -300,10 +300,14 @@ static QImage::Format
 _qimage_format_from_cairo_format (cairo_format_t fmt)
 {
     switch (fmt) {
+    case CAIRO_FORMAT_INVALID:
+	ASSERT_NOT_REACHED;
     case CAIRO_FORMAT_ARGB32:
         return QImage::Format_ARGB32_Premultiplied;
     case CAIRO_FORMAT_RGB24:
         return QImage::Format_RGB32;
+    case CAIRO_FORMAT_RGB16_565:
+        return QImage::Format_RGB16;
     case CAIRO_FORMAT_A8:
         return QImage::Format_Indexed8; // XXX not quite
     case CAIRO_FORMAT_A1:

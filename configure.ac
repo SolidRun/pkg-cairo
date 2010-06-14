@@ -40,13 +40,11 @@ AC_ARG_ENABLE(pthread,
 have_pthread=no
 if test "x$use_pthread" != "xno"; then
   pthread_REQUIRES="pthread"
-  PKG_CHECK_MODULES(pthread, $pthread_REQUIRES,
+  PKG_CHECK_MODULES(PTHREAD, $pthread_REQUIRES,
 		    [use_pthread=yes; have_pthread=yes],
-		    [AC_CHECK_HEADERS([pthread.h], [use_pthread=yes;
-                                                    pthread_CFLAGS="-pthread"
-                                                    pthread_LIBS="-pthread"
-                                                    have_pthread=yes
-                                                   ], [use_pthread="no (requires $pthread_REQUIRES)"])])
+		    [AX_PTHREAD([use_pthread=yes;
+                                 have_pthread=yes
+                                ], [use_pthread="no (requires $pthread_REQUIRES)"])])
   if test "x$have_pthread" = "xyes"; then
     AC_DEFINE([CAIRO_HAS_PTHREAD], 1, [Define to 1 if we have pthread support])
   fi
@@ -55,8 +53,9 @@ AM_CONDITIONAL(HAVE_PTHREAD, test "x$have_pthread" = "xyes")
 if test "x$have_pthread" = xno -a "x$use_pthread" = xyes; then
   AC_MSG_ERROR([pthread requested but not found])
 fi
-CAIRO_CFLAGS="$CAIRO_CFLAGS $pthread_CFLAGS"
-CAIRO_LIBS="$CAIRO_LIBS $pthread_LIBS"
+CAIRO_CFLAGS="$CAIRO_CFLAGS $PTHREAD_CFLAGS"
+CAIRO_LDFLAGS="$PTHREAD_CFLAGS $CAIRO_LDFLAGS"
+CAIRO_LIBS="$CAIRO_LIBS $PTHREAD_LIBS"
 
 dnl ===========================================================================
 
@@ -116,10 +115,13 @@ CAIRO_ENABLE_SURFACE_BACKEND(xlib_xrender, Xlib Xrender, auto, [
 dnl ===========================================================================
 
 CAIRO_ENABLE_SURFACE_BACKEND(xcb, XCB, no, [
-  xcb_REQUIRES="xcb >= 0.9.92 xcb-render >= 0.9.92"
+  xcb_REQUIRES="xcb >= 1.1.92 xcb-render >= 0.9.92"
   PKG_CHECK_MODULES(xcb, $xcb_REQUIRES, ,
 		    [AC_MSG_RESULT(no)
 		    use_xcb="no (requires $xcb_REQUIRES http://xcb.freedesktop.org)"])
+  if $PKG_CONFIG --atleast-version=1.4 xcb; then
+    CAIRO_CFLAGS="$CAIRO_CFLAGS -DXCB_GENERIC_ERROR_HAS_MAJOR_MINOR_CODES"
+  fi
 ])
 
 CAIRO_ENABLE_FUNCTIONS(xlib_xcb, Xlib/XCB, no, [
@@ -140,7 +142,7 @@ CAIRO_ENABLE_FUNCTIONS(xcb_shm, XCB/SHM, auto, [
 			[AC_MSG_RESULT(no)
 			use_xcb_shm="no (requires $xcb_shm http://xcb.freedesktop.org)"])
   else
-    use_xcb_drm="no (requires both --enable-xcb)"
+    use_xcb_shm="no (requires both --enable-xcb)"
   fi
 ])
 AM_CONDITIONAL(BUILD_XCB_SHM, test "x$use_xcb_shm" = "xyes")
@@ -255,6 +257,19 @@ CAIRO_ENABLE_SURFACE_BACKEND(drm, DRM, no, [
   use_drm="no (requires $drm_REQUIRES, udev is available from git://git.kernel.org/pub/scm/linux/hotplug/udev.git)"])
 ])
 
+CAIRO_ENABLE_FUNCTIONS(drm_xr, DRM Xr (DDX), no, [
+  if test "x$use_drm" == "xyes"; then
+      drm_xr_REQUIRES="xorg-server >= 1.6 xproto xextproto >= 7.0.99.1 renderproto x11"
+      PKG_CHECK_MODULES(drm_xr, $drm_xr_REQUIRES, ,
+			[AC_MSG_RESULT(no)
+			use_drm_xr="no (requires $drm_xr)"])
+      drm_xr_CFLAGS=`echo "$drm_xr_CFLAGS" | $SED -e 's/-fvisibility=hidden//g'`
+  else
+    use_drm_xr="no (requires --enable-drm)"
+  fi
+])
+AM_CONDITIONAL(BUILD_DRM_XR, test "x$use_drm_xr" = "xyes")
+
 CAIRO_ENABLE_SURFACE_BACKEND(gallium, Gallium3D, no, [
   if test "x$use_drm" = "xyes"; then
       AC_ARG_WITH([gallium],
@@ -321,8 +336,9 @@ CAIRO_ENABLE_SURFACE_BACKEND(gl, OpenGL, no, [
 	  fi])
 
   have_glew="no"
-  AC_CHECK_LIB(GLEW, glewInit,
-	       [AC_CHECK_HEADER(GL/glew.h, [have_glew="yes"], [])])
+  # Disable system GLEW since it assumes X and crashes with EGL
+  #AC_CHECK_LIB(GLEW, glewInit,
+  #	       [AC_CHECK_HEADER(GL/glew.h, [have_glew="yes"], [])])
   if test "x$have_glew" = "xyes"; then
     gl_NONPKGCONFIG_LIBS="-lGLEW $gl_NONPKGCONFIG_LIBS"
     use_glew="yes (system library)"
@@ -332,6 +348,7 @@ CAIRO_ENABLE_SURFACE_BACKEND(gl, OpenGL, no, [
     CAIRO_CFLAGS="$CAIRO_CFLAGS -I\$(top_srcdir)/src/glew"
   fi
   need_glx_functions=yes
+  need_egl_functions=yes
 ])
 
 dnl ===========================================================================
@@ -357,27 +374,31 @@ CAIRO_ENABLE_SURFACE_BACKEND(vg, OpenVG, no, [
 
 CAIRO_ENABLE_FUNCTIONS(egl, EGL, auto, [
   if test "x$need_egl_functions" = "xyes"; then
-    AC_CHECK_HEADER(EGL/egl.h,, [use_egl="no (EGL headers not found)"])
-    if test "x$use_egl" = "xyes"; then
-      egl_NONPKGCONFIG_CFLAGS=
-      egl_NONPKGCONFIG_LIBS=
-      save_LIBS="$LIBS"
-      other_egl_LIBS=""
-      # Temporary workaround for missing link from egl13
-      AC_CHECK_LIB(csi, csi_stream_attachresource, other_egl_LIBS="-lcsi")
-      LIBS="$other_egl_LIBS $LIBS"
-      for egl_lib in EGL egl13 egl12 egl11; do
-	if test -z "$egl_NONPKGCONFIG_LIBS"; then
-          AC_CHECK_LIB($egl_lib, eglGetError, egl_NONPKGCONFIG_LIBS="-l$egl_lib")
-	fi
-      done
-      if test -z "$egl_NONPKGCONFIG_LIBS"; then
-        use_egl="no (EGL library not found)"
-      else
-        egl_NONPKGCONFIG_LIBS="$egl_NONPKGCONFIG_LIBS $other_egl_LIBS"
-      fi
-      LIBS="$save_LIBS"
-    fi
+      egl_REQUIRES="egl"
+      PKG_CHECK_MODULES(egl, $egl_REQUIRES, ,
+		    [egl_REQUIRES=""
+		     AC_CHECK_HEADER(EGL/egl.h,, [use_egl="no (EGL headers not found)"])
+		     if test "x$use_egl" = "xyes"; then
+			 egl_NONPKGCONFIG_CFLAGS=
+			 egl_NONPKGCONFIG_LIBS=
+			 save_LIBS="$LIBS"
+			 other_egl_LIBS=""
+			 # Temporary workaround for missing link from egl13
+			 AC_CHECK_LIB(csi, csi_stream_attachresource, other_egl_LIBS="-lcsi")
+			 LIBS="$other_egl_LIBS $LIBS"
+			 for egl_lib in EGL egl13 egl12 egl11; do
+			     if test -z "$egl_NONPKGCONFIG_LIBS"; then
+				 AC_CHECK_LIB($egl_lib, eglGetError, egl_NONPKGCONFIG_LIBS="-l$egl_lib")
+			     fi
+			 done
+			 if test -z "$egl_NONPKGCONFIG_LIBS"; then
+			     use_egl="no (EGL library not found)"
+			 else
+			     egl_NONPKGCONFIG_LIBS="$egl_NONPKGCONFIG_LIBS $other_egl_LIBS"
+			 fi
+			 LIBS="$save_LIBS"
+		     fi
+  	])
   else
       use_egl="no (not required by any backend)"
   fi
@@ -542,7 +563,7 @@ dnl ===========================================================================
 
 # poppler-0.9.2 has an important bug fixes for user-font and an
 # enhancement not to gobble nearly 1GiB of memory during test/large-font.
-POPPLER_VERSION_REQUIRED=0.9.2
+POPPLER_VERSION_REQUIRED=0.13.3
 test_pdf=no
 any2ppm_pdf=no
 if test "x$use_pdf" = "xyes"; then
@@ -602,7 +623,7 @@ CAIRO_ENABLE(test_surfaces, test surfaces, no)
 dnl ===========================================================================
 
 CAIRO_ENABLE_SURFACE_BACKEND(image, image, always, [
-  pixman_REQUIRES="pixman-1 >= 0.15.16"
+  pixman_REQUIRES="pixman-1 >= 0.17.5"
   PKG_CHECK_MODULES(pixman, $pixman_REQUIRES, , [AC_MSG_RESULT(no)
   use_image="no (requires $pixman_REQUIRES http://cairographics.org/releases/)"])
   image_REQUIRES=$pixman_REQUIRES
@@ -708,6 +729,11 @@ PKG_CHECK_MODULES(glib, glib-2.0, have_glib=yes, have_glib=no)
 AC_SUBST(glib_CFLAGS)
 AC_SUBST(glib_LIBS)
 AM_CONDITIONAL(BUILD_SPHINX, test "x$have_glib" = "xyes")
+
+save_LIBS="$LIBS"
+AC_CHECK_LIB(rt, shm_open, shm_LIBS="-lrt")
+AC_SUBST(shm_LIBS)
+LIBS="$save_LIBS"
 
 dnl ===========================================================================
 

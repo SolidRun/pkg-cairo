@@ -1,12 +1,14 @@
 test_sources = \
 	a1-image-sample.c 				\
 	a1-mask.c					\
+	a1-mask-sample.c 				\
 	a1-traps-sample.c				\
 	a8-mask.c					\
 	alpha-similar.c					\
 	big-line.c					\
 	big-trap.c					\
 	bilevel-image.c					\
+	bug-bo-rectangular.c				\
 	caps.c						\
 	caps-joins.c					\
 	caps-joins-alpha.c				\
@@ -15,19 +17,23 @@ test_sources = \
 	clear.c						\
 	clear-source.c					\
 	clip-all.c					\
+	clip-contexts.c					\
 	clip-disjoint.c					\
 	clip-device-offset.c				\
 	clip-empty.c					\
+	clip-empty-group.c				\
 	clip-empty-save.c				\
 	clip-fill.c					\
 	clip-fill-no-op.c				\
 	clip-fill-rule.c				\
 	clip-fill-rule-pixel-aligned.c			\
 	clip-fill-unbounded.c				\
+	clip-group-shapes.c				\
 	clip-image.c					\
 	clip-nesting.c					\
 	clip-operator.c					\
 	clip-push-group.c				\
+	clip-shape.c					\
 	clip-stroke.c					\
 	clip-stroke-no-op.c				\
 	clip-stroke-unbounded.c				\
@@ -44,6 +50,7 @@ test_sources = \
 	composite-integer-translate-over.c		\
 	composite-integer-translate-over-repeat.c	\
 	copy-path.c					\
+	coverage.c					\
 	create-for-stream.c				\
 	create-from-png.c				\
 	create-from-png-stream.c			\
@@ -62,13 +69,16 @@ test_sources = \
 	degenerate-arcs.c				\
 	degenerate-curve-to.c				\
 	degenerate-dash.c				\
+	degenerate-linear-gradient.c			\
 	degenerate-path.c				\
 	degenerate-pen.c				\
+	degenerate-radial-gradient.c			\
 	degenerate-rel-curve-to.c			\
 	device-offset.c					\
 	device-offset-fractional.c			\
 	device-offset-positive.c			\
 	device-offset-scale.c				\
+	error-setters.c					\
 	extend-pad.c					\
 	extend-pad-border.c				\
 	extend-pad-similar.c				\
@@ -103,9 +113,11 @@ test_sources = \
 	gradient-alpha.c				\
 	gradient-constant-alpha.c			\
 	gradient-zero-stops.c				\
+	gradient-zero-stops-mask.c			\
 	group-clip.c					\
 	group-paint.c					\
 	group-unaligned.c				\
+	half-coverage.c					\
 	huge-linear.c					\
 	huge-radial.c					\
 	image-surface-source.c				\
@@ -114,6 +126,7 @@ test_sources = \
 	in-fill-empty-trapezoid.c			\
 	in-fill-trapezoid.c				\
 	invalid-matrix.c				\
+	inverse-text.c					\
 	joins.c						\
 	large-clip.c					\
 	large-font.c					\
@@ -128,6 +141,8 @@ test_sources = \
 	line-width-scale.c				\
 	line-width-zero.c				\
 	linear-gradient.c				\
+	linear-gradient-extend.c			\
+	linear-gradient-one-stop.c			\
 	linear-gradient-reflect.c			\
 	linear-gradient-subset.c			\
 	linear-step-function.c				\
@@ -161,6 +176,7 @@ test_sources = \
 	paint-repeat.c					\
 	paint-source-alpha.c				\
 	paint-with-alpha.c				\
+	partial-coverage.c				\
 	path-append.c					\
 	path-stroke-twice.c				\
 	path-precision.c				\
@@ -171,6 +187,10 @@ test_sources = \
 	push-group.c					\
 	push-group-color.c				\
 	radial-gradient.c				\
+	radial-gradient-extend.c			\
+	radial-gradient-mask.c				\
+	radial-gradient-mask-source.c			\
+	radial-gradient-one-stop.c			\
 	radial-gradient-source.c			\
 	random-intersections-eo.c			\
 	random-intersections-nonzero.c			\
@@ -217,13 +237,19 @@ test_sources = \
 	source-surface-scale-paint.c			\
 	spline-decomposition.c				\
 	subsurface.c                                    \
+	subsurface-image-repeat.c                       \
 	subsurface-repeat.c                             \
+	subsurface-reflect.c                            \
+	subsurface-pad.c                                \
+	subsurface-modify-child.c                       \
+	subsurface-modify-parent.c                      \
 	subsurface-similar-repeat.c                     \
 	surface-finish-twice.c				\
 	surface-pattern.c				\
 	surface-pattern-big-scale-down.c		\
 	surface-pattern-operator.c			\
 	surface-pattern-scale-down.c			\
+	surface-pattern-scale-down-extend.c		\
 	surface-pattern-scale-up.c			\
 	text-antialias-gray.c				\
 	text-antialias-none.c				\
@@ -251,7 +277,9 @@ test_sources = \
 	user-font-proxy.c				\
 	user-font-rescale.c				\
 	xcomposite-projection.c				\
-	zero-alpha.c
+	xlib-expose-event.c 				\
+	zero-alpha.c					\
+	zero-mask.c
 
 pthread_test_sources =					\
 	pthread-same-source.c				\
@@ -267,6 +295,9 @@ ft_font_test_sources = \
 	ft-text-vertical-layout-type1.c \
 	ft-text-vertical-layout-type3.c \
 	ft-text-antialias-none.c
+
+gl_surface_test_sources = \
+	gl-surface-source.c
 
 quartz_surface_test_sources = quartz-surface-source.c
 
@@ -292,7 +323,6 @@ xcb_surface_test_sources = \
 	xcb-surface-source.c
 
 xlib_surface_test_sources = \
-	xlib-expose-event.c \
 	xlib-surface.c \
 	xlib-surface-source.c
 

@@ -170,6 +170,7 @@ _cairo_boilerplate_svg_finish_surface (cairo_surface_t		*surface)
 	if (status)
 	    return status;
 
+	cairo_surface_finish (surface);
 	status = cairo_surface_status (surface);
 	if (status)
 	    return status;
@@ -241,8 +242,10 @@ static void
 _cairo_boilerplate_svg_cleanup (void *closure)
 {
     svg_target_closure_t *ptc = closure;
-    if (ptc->target)
+    if (ptc->target != NULL) {
+	cairo_surface_finish (ptc->target);
 	cairo_surface_destroy (ptc->target);
+    }
     free (ptc->filename);
     free (ptc);
 }
@@ -282,7 +285,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_svg_get_image_surface,
 	_cairo_boilerplate_svg_surface_write_to_png,
 	_cairo_boilerplate_svg_cleanup,
-	NULL, TRUE, TRUE
+	NULL, FALSE, TRUE, TRUE
     },
     {
 	"svg11", "svg", NULL, NULL,
@@ -294,7 +297,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_svg_get_image_surface,
 	_cairo_boilerplate_svg_surface_write_to_png,
 	_cairo_boilerplate_svg_cleanup,
-	NULL, TRUE, TRUE
+	NULL, FALSE, TRUE, TRUE
     },
     {
 	"svg12", "svg", NULL, NULL,
@@ -306,7 +309,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_svg_get_image_surface,
 	_cairo_boilerplate_svg_surface_write_to_png,
 	_cairo_boilerplate_svg_cleanup,
-	NULL, TRUE, TRUE
+	NULL, FALSE, TRUE, TRUE
     },
     {
 	"svg12", "svg", NULL, NULL,
@@ -318,7 +321,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_svg_get_image_surface,
 	_cairo_boilerplate_svg_surface_write_to_png,
 	_cairo_boilerplate_svg_cleanup,
-	NULL, TRUE, TRUE
+	NULL, FALSE, TRUE, TRUE
     },
 #endif
 };

@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -2624,12 +2624,10 @@ _cairo_ft_resolve_pattern (FcPattern		      *pattern,
     }
 
     status = _cairo_ft_unscaled_font_create_for_pattern (resolved, &unscaled);
-    if (unlikely (status)) {
+    if (unlikely (status || unscaled == NULL)) {
 	font_face = (cairo_font_face_t *)&_cairo_font_face_nil;
 	goto FREE_RESOLVED;
     }
-
-    assert (unscaled != NULL);
 
     _get_pattern_ft_options (resolved, &ft_options);
     font_face = _cairo_ft_font_face_create (unscaled, &ft_options);

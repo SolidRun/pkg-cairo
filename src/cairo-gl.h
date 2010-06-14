@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -57,19 +57,36 @@ cairo_gl_surface_get_height (cairo_surface_t *abstract_surface);
 cairo_public void
 cairo_gl_surface_swapbuffers (cairo_surface_t *surface);
 
-cairo_public cairo_status_t
-cairo_gl_surface_glfinish (cairo_surface_t *surface);
-
 #if CAIRO_HAS_GLX_FUNCTIONS
 #include <GL/glx.h>
 
 cairo_public cairo_device_t *
 cairo_glx_device_create (Display *dpy, GLXContext gl_ctx);
 
+cairo_public Display *
+cairo_glx_device_get_display (cairo_device_t *device);
+
+cairo_public GLXContext
+cairo_glx_device_get_context (cairo_device_t *device);
+
 cairo_public cairo_surface_t *
 cairo_gl_surface_create_for_window (cairo_device_t *device,
 				    Window win,
 				    int width, int height);
+#endif
+
+#if CAIRO_HAS_EGL_FUNCTIONS
+#include <EGL/egl.h>
+
+cairo_public cairo_device_t *
+cairo_egl_device_create (EGLDisplay dpy, EGLContext egl);
+
+cairo_public cairo_surface_t *
+cairo_gl_surface_create_for_egl (cairo_device_t	*device,
+				 EGLSurface	 egl,
+				 int		 width,
+				 int		 height);
+
 #endif
 
 CAIRO_END_DECLS

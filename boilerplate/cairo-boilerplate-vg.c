@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -311,7 +311,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_vg_cleanup_glx,
-	_cairo_boilerplate_vg_synchronize
+	_cairo_boilerplate_vg_synchronize,
+	TRUE, FALSE, FALSE
     },
     {
 	"vg-glx", "vg", NULL, NULL,
@@ -322,7 +323,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_vg_cleanup_glx,
-	_cairo_boilerplate_vg_synchronize
+	_cairo_boilerplate_vg_synchronize,
+	FALSE, FALSE, FALSE
     },
 #endif
 #if CAIRO_HAS_EGL_FUNCTIONS
@@ -335,7 +337,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_vg_cleanup_egl,
-	_cairo_boilerplate_vg_synchronize
+	_cairo_boilerplate_vg_synchronize,
+	TRUE, FALSE, FALSE
     },
     {
 	"vg-egl", "vg", NULL, NULL,
@@ -346,7 +349,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_vg_cleanup_egl,
-	_cairo_boilerplate_vg_synchronize
+	_cairo_boilerplate_vg_synchronize,
+	FALSE, FALSE, FALSE
     },
 #endif
 };

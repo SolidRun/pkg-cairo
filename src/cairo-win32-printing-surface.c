@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -497,7 +497,7 @@ _cairo_win32_printing_surface_paint_recording_pattern (cairo_win32_surface_t   *
 	    SelectClipPath (surface->dc, RGN_AND);
 
 	    SaveDC (surface->dc); /* Allow clip path to be reset during replay */
-	    status = _cairo_recording_surface_replay_region (&recording_surface->base,
+	    status = _cairo_recording_surface_replay_region (&recording_surface->base, NULL,
 							     &surface->base,
 							     CAIRO_RECORDING_REGION_NATIVE);
 	    assert (status != CAIRO_INT_STATUS_UNSUPPORTED);

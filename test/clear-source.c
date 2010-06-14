@@ -1,24 +1,25 @@
 /*
  * Copyright 2009 Benjamin Otte
  *
- * Permission to use, copy, modify, distribute, and sell this software
- * and its documentation for any purpose is hereby granted without
- * fee, provided that the above copyright notice appear in all copies
- * and that both that copyright notice and this permission notice
- * appear in supporting documentation, and that the name of
- * Benjamin Otte not be used in advertising or publicity pertaining to
- * distribution of the software without specific, written prior
- * permission. Benjamin Otte makes no representations about the
- * suitability of this software for any purpose.  It is provided "as
- * is" without express or implied warranty.
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * BENJAMIN OTTE DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
- * SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS, IN NO EVENT SHALL BENJAMIN OTTE BE LIABLE FOR ANY SPECIAL,
- * INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
- * RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
- * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
- * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  *
  * Author: Benjamin Otte <otte@gnome.org>
  */
@@ -42,23 +43,26 @@ create_surface (cairo_t *target, cairo_content_t content, surface_type_t type)
     cairo_t *cr;
 
     surface = cairo_surface_create_similar (cairo_get_target (target),
-                                            content,
-                                            SIZE, SIZE);
+					    content,
+					    SIZE, SIZE);
 
     if (type == CLEAR)
-        return surface;
+	return surface;
 
     cr = cairo_create (surface);
+    cairo_surface_destroy (surface);
+
     cairo_set_source_rgb (cr, 0.75, 0, 0);
     cairo_paint (cr);
-    cairo_destroy (cr);
 
     if (type == PAINTED)
-        return surface;
+	goto DONE;
 
-    cr = cairo_create (surface);
     cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
     cairo_paint (cr);
+
+DONE:
+    surface = cairo_surface_reference (cairo_get_target (cr));
     cairo_destroy (cr);
 
     return surface;
@@ -117,28 +121,29 @@ glyphs (cairo_t *cr, cairo_surface_t *surface)
 
 typedef void (* operation_t) (cairo_t *cr, cairo_surface_t *surface);
 static operation_t operations[] = {
-  paint,
-  fill,
-  stroke,
-  mask,
-  mask_self,
-  glyphs
+    paint,
+    fill,
+    stroke,
+    mask,
+    mask_self,
+    glyphs
 };
 
-static cairo_test_status_t
+    static cairo_test_status_t
 draw (cairo_t *cr, int width, int height)
 {
     cairo_content_t contents[] = { CAIRO_CONTENT_COLOR_ALPHA, CAIRO_CONTENT_COLOR, CAIRO_CONTENT_ALPHA };
     unsigned int content, type, ops;
-    cairo_surface_t *surface;
 
     cairo_set_source_rgb (cr, 0.5, 0.5, 0.5);
     cairo_paint (cr);
     cairo_translate (cr, SPACE, SPACE);
 
     for (type = 0; type <= PAINTED; type++) {
-        for (content = 0; content < ARRAY_LENGTH (contents); content++) {
-            surface = create_surface (cr, contents[content], type);
+	for (content = 0; content < ARRAY_LENGTH (contents); content++) {
+	    cairo_surface_t *surface;
+
+	    surface = create_surface (cr, contents[content], type);
 
             cairo_save (cr);
             for (ops = 0; ops < ARRAY_LENGTH (operations); ops++) {
@@ -149,6 +154,8 @@ draw (cairo_t *cr, int width, int height)
             }
             cairo_restore (cr);
             cairo_translate (cr, SIZE + SPACE, 0);
+
+	    cairo_surface_destroy (surface);
         }
     }
 

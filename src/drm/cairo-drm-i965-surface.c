@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -168,7 +168,9 @@ i965_stream_commit (i965_device_t *device,
 
     assert (stream->used);
 
-    bo = intel_bo_create (&device->intel, stream->used, FALSE);
+    bo = intel_bo_create (&device->intel,
+			  stream->used, stream->used,
+			  FALSE, I915_TILING_NONE, 0);
 
     /* apply pending relocations */
     for (n = 0; n < stream->num_pending_relocations; n++) {
@@ -290,8 +292,7 @@ static void
 i965_device_reset (i965_device_t *device)
 {
     device->exec.count = 0;
-    device->exec.gtt_size = I965_CONSTANT_SIZE +
-	                    I965_VERTEX_SIZE +
+    device->exec.gtt_size = I965_VERTEX_SIZE +
 	                    I965_SURFACE_SIZE +
 			    I965_GENERAL_SIZE +
 			    I965_BATCH_SIZE;
@@ -374,22 +375,25 @@ i965_exec (i965_device_t *device, uint32_t offset)
 
     /* XXX any write target within the batch should now be in error */
     for (i = 0; i < device->exec.count; i++) {
+	intel_bo_t *bo = device->exec.bo[i];
 	cairo_bool_t ret;
 
-	device->exec.bo[i]->offset = device->exec.exec[i].offset;
-	device->exec.bo[i]->exec = NULL;
-	device->exec.bo[i]->batch_read_domains = 0;
-	device->exec.bo[i]->batch_write_domain = 0;
+	bo->offset = device->exec.exec[i].offset;
+	bo->exec = NULL;
+	bo->batch_read_domains = 0;
+	bo->batch_write_domain = 0;
 
-	if (device->exec.bo[i]->purgeable) {
-	    ret = intel_bo_madvise (&device->intel,
-				    device->exec.bo[i],
-				    I915_MADV_DONTNEED);
+	if (bo->virtual)
+	    intel_bo_unmap (bo);
+	bo->cpu = FALSE;
+
+	if (bo->purgeable)
+	    ret = intel_bo_madvise (&device->intel, bo, I915_MADV_DONTNEED);
 	    /* ignore immediate notification of purging */
-	}
 
-	cairo_list_init (&device->exec.bo[i]->link);
-	intel_bo_destroy (&device->intel, device->exec.bo[i]);
+	cairo_list_del (&bo->cache_list);
+	cairo_list_init (&bo->link);
+	intel_bo_destroy (&device->intel, bo);
     }
     cairo_list_init (&device->flush);
 
@@ -497,7 +501,8 @@ i965_device_flush (i965_device_t *device)
 
 	bo = intel_bo_create (&device->intel,
 			      device->general.used,
-			      FALSE);
+			      device->general.used,
+			      FALSE, I915_TILING_NONE, 0);
 	if (unlikely (bo == NULL))
 	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
@@ -532,14 +537,8 @@ i965_device_flush (i965_device_t *device)
 
     /* Combine vertex+constant+surface+batch streams? */
     max = aligned = device->vertex.used;
-    if (device->constant.used) {
-	aligned = (aligned + 63) & -64;
-	aligned += device->constant.used;
-	if (device->constant.used > max)
-	    max = device->constant.used;
-    }
     if (device->surface.used) {
-	aligned = (aligned + 31) & -32;
+	aligned = (aligned + 63) & -64;
 	aligned += device->surface.used;
 	if (device->surface.used > max)
 	    max = device->surface.used;
@@ -554,7 +553,9 @@ i965_device_flush (i965_device_t *device)
 	if (aligned <= 8192)
 	    max = aligned;
 
-	bo = intel_bo_create (&device->intel, max, FALSE);
+	bo = intel_bo_create (&device->intel,
+			      max, max,
+			      FALSE, I915_TILING_NONE, 0);
 	if (unlikely (bo == NULL))
 	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
@@ -564,15 +565,10 @@ i965_device_flush (i965_device_t *device)
 	    _copy_to_bo_and_apply_relocations (device, bo, &device->vertex, 0);
 
 	aligned = device->vertex.used;
-	if (device->constant.used) {
-	    aligned = (aligned + 63) & -64;
-	    _copy_to_bo_and_apply_relocations (device, bo, &device->constant, aligned);
-	    aligned += device->constant.used;
-	}
 
 	batch_num_relocations = device->batch.num_relocations;
 	if (device->surface.used) {
-	    aligned = (aligned + 31) & -32;
+	    aligned = (aligned + 63) & -64;
 	    _copy_to_bo_and_apply_relocations (device, bo, &device->surface, aligned);
 
 	    batch_num_relocations = device->batch.num_relocations;
@@ -624,51 +620,12 @@ i965_device_flush (i965_device_t *device)
 	}
     } else {
 	i965_stream_commit (device, &device->vertex);
+	if (device->surface.used)
+	    i965_stream_commit (device, &device->surface);
 
-	if (device->constant.used && device->surface.used){
-	    aligned = (device->constant.used + 31) & -32;
-	    aligned += device->surface.used;
-
-	    max = MAX (device->constant.used, device->surface.used);
-	    if (aligned <= next_bo_size (max)) {
-		if (aligned <= 8192)
-		    max = aligned;
-
-		bo = intel_bo_create (&device->intel, max, FALSE);
-		if (unlikely (bo == NULL))
-		    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
-
-		assert (aligned <= bo->base.size);
-
-		_copy_to_bo_and_apply_relocations (device, bo, &device->constant, 0);
-
-		aligned = (device->constant.used + 31) & -32;
-
-		_copy_to_bo_and_apply_relocations (device, bo, &device->surface, aligned);
-
-		if (device->surface.num_relocations) {
-		    assert (bo->exec != NULL);
-
-		    for (n = 0; n < device->surface.num_relocations; n++)
-			device->surface.relocations[n].offset += aligned;
-
-		    bo->exec->relocs_ptr = (uintptr_t) device->surface.relocations;
-		    bo->exec->relocation_count = device->surface.num_relocations;
-		}
-
-		i965_stream_reset (&device->surface);
-		i965_stream_reset (&device->constant);
-
-		intel_bo_destroy (&device->intel, bo);
-	    }
-	} else {
-	    if (device->constant.used)
-		i965_stream_commit (device, &device->constant);
-	    if (device->surface.used)
-		i965_stream_commit (device, &device->surface);
-	}
-
-	bo = intel_bo_create (&device->intel, device->batch.used, FALSE);
+	bo = intel_bo_create (&device->intel,
+			      device->batch.used, device->batch.used,
+			      FALSE, I915_TILING_NONE, 0);
 	if (unlikely (bo == NULL))
 	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
@@ -691,13 +648,10 @@ i965_device_flush (i965_device_t *device)
 	aligned = 0;
     }
 
-    intel_glyph_cache_unmap (&device->intel);
-
     status = i965_exec (device, aligned);
 
     i965_stream_reset (&device->vertex);
     i965_stream_reset (&device->surface);
-    i965_stream_reset (&device->constant);
     i965_stream_reset (&device->batch);
 
     intel_glyph_cache_unpin (&device->intel);
@@ -706,6 +660,29 @@ i965_device_flush (i965_device_t *device)
     i965_device_reset (device);
 
     return status;
+}
+
+static cairo_surface_t *
+i965_surface_create_similar (void *abstract_other,
+			     cairo_content_t content,
+			     int width, int height)
+{
+    i965_surface_t *other;
+    cairo_format_t format;
+
+    if (width > 8192 || height > 8192)
+	return NULL;
+
+    other = abstract_other;
+    if (content == other->intel.drm.base.content)
+	format = other->intel.drm.format;
+    else
+	format = _cairo_format_from_content (content);
+
+    return i965_surface_create_internal ((cairo_drm_device_t *) other->intel.drm.base.device,
+					 format,
+					 width, height,
+					 I965_TILING_DEFAULT, TRUE);
 }
 
 static cairo_status_t
@@ -779,6 +756,7 @@ i965_fixup_unbounded (i965_surface_t *dst,
 		      cairo_clip_t *clip)
 {
     i965_shader_t shader;
+    i965_device_t *device;
     cairo_status_t status;
 
     i965_shader_init (&shader, dst, CAIRO_OPERATOR_CLEAR);
@@ -809,70 +787,83 @@ i965_fixup_unbounded (i965_surface_t *dst,
 	return status;
     }
 
-    status = i965_shader_commit (&shader, i965_device (dst));
-    if (unlikely (status)) {
-	i965_shader_fini (&shader);
+    device = i965_device (dst);
+    status = cairo_device_acquire (&device->intel.base.base);
+    if (unlikely (status))
 	return status;
+
+    status = i965_shader_commit (&shader, device);
+    if (unlikely (status)) {
+	goto BAIL;
     }
 
-    /* top */
-    if (extents->bounded.y != extents->unbounded.y) {
-	cairo_rectangle_int_t rect;
-
-	rect.x = extents->unbounded.x;
-	rect.y = extents->unbounded.y;
-	rect.width  = extents->unbounded.width;
-	rect.height = extents->bounded.y - rect.y;
-
+    if (extents->bounded.width == 0 || extents->bounded.height == 0) {
 	i965_shader_add_rectangle (&shader,
-				   rect.x, rect.y,
-				   rect.width, rect.height);
-    }
+				   extents->unbounded.x,
+				   extents->unbounded.y,
+				   extents->unbounded.width,
+				   extents->unbounded.height);
+    } else { /* top */
+	if (extents->bounded.y != extents->unbounded.y) {
+	    cairo_rectangle_int_t rect;
 
-    /* left */
-    if (extents->bounded.x != extents->unbounded.x) {
-	cairo_rectangle_int_t rect;
+	    rect.x = extents->unbounded.x;
+	    rect.y = extents->unbounded.y;
+	    rect.width  = extents->unbounded.width;
+	    rect.height = extents->bounded.y - rect.y;
 
-	rect.x = extents->unbounded.x;
-	rect.y = extents->bounded.y;
-	rect.width  = extents->bounded.x - extents->unbounded.x;
-	rect.height = extents->bounded.height;
+	    i965_shader_add_rectangle (&shader,
+				       rect.x, rect.y,
+				       rect.width, rect.height);
+	}
 
-	i965_shader_add_rectangle (&shader,
-				   rect.x, rect.y,
-				   rect.width, rect.height);
-    }
+	/* left */
+	if (extents->bounded.x != extents->unbounded.x) {
+	    cairo_rectangle_int_t rect;
 
-    /* right */
-    if (extents->bounded.x + extents->bounded.width != extents->unbounded.x + extents->unbounded.width) {
-	cairo_rectangle_int_t rect;
+	    rect.x = extents->unbounded.x;
+	    rect.y = extents->bounded.y;
+	    rect.width  = extents->bounded.x - extents->unbounded.x;
+	    rect.height = extents->bounded.height;
 
-	rect.x = extents->bounded.x + extents->bounded.width;
-	rect.y = extents->bounded.y;
-	rect.width  = extents->unbounded.x + extents->unbounded.width - rect.x;
-	rect.height = extents->bounded.height;
+	    i965_shader_add_rectangle (&shader,
+				       rect.x, rect.y,
+				       rect.width, rect.height);
+	}
 
-	i965_shader_add_rectangle (&shader,
-				   rect.x, rect.y,
-				   rect.width, rect.height);
-    }
+	/* right */
+	if (extents->bounded.x + extents->bounded.width != extents->unbounded.x + extents->unbounded.width) {
+	    cairo_rectangle_int_t rect;
 
-    /* bottom */
-    if (extents->bounded.y + extents->bounded.height != extents->unbounded.y + extents->unbounded.height) {
-	cairo_rectangle_int_t rect;
+	    rect.x = extents->bounded.x + extents->bounded.width;
+	    rect.y = extents->bounded.y;
+	    rect.width  = extents->unbounded.x + extents->unbounded.width - rect.x;
+	    rect.height = extents->bounded.height;
 
-	rect.x = extents->unbounded.x;
-	rect.y = extents->bounded.y + extents->bounded.height;
-	rect.width  = extents->unbounded.width;
-	rect.height = extents->unbounded.y + extents->unbounded.height - rect.y;
+	    i965_shader_add_rectangle (&shader,
+				       rect.x, rect.y,
+				       rect.width, rect.height);
+	}
 
-	i965_shader_add_rectangle (&shader,
-				   rect.x, rect.y,
-				   rect.width, rect.height);
+	/* bottom */
+	if (extents->bounded.y + extents->bounded.height != extents->unbounded.y + extents->unbounded.height) {
+	    cairo_rectangle_int_t rect;
+
+	    rect.x = extents->unbounded.x;
+	    rect.y = extents->bounded.y + extents->bounded.height;
+	    rect.width  = extents->unbounded.width;
+	    rect.height = extents->unbounded.y + extents->unbounded.height - rect.y;
+
+	    i965_shader_add_rectangle (&shader,
+				       rect.x, rect.y,
+				       rect.width, rect.height);
+	}
     }
 
     i965_shader_fini (&shader);
-    return CAIRO_STATUS_SUCCESS;
+  BAIL:
+    cairo_device_release (&device->intel.base.base);
+    return status;
 }
 
 static cairo_status_t
@@ -957,19 +948,31 @@ i965_fixup_unbounded_boxes (i965_surface_t *dst,
     }
 
     if (likely (status == CAIRO_STATUS_SUCCESS && clear.num_boxes)) {
-	status = i965_shader_commit (&shader, i965_device (dst));
-	if (likely (status == CAIRO_STATUS_SUCCESS)) {
-	    for (chunk = &clear.chunks; chunk != NULL; chunk = chunk->next) {
-		for (i = 0; i < chunk->count; i++) {
-		    int x1 = _cairo_fixed_integer_part (chunk->base[i].p1.x);
-		    int y1 = _cairo_fixed_integer_part (chunk->base[i].p1.y);
-		    int x2 = _cairo_fixed_integer_part (chunk->base[i].p2.x);
-		    int y2 = _cairo_fixed_integer_part (chunk->base[i].p2.y);
+	i965_device_t *device;
 
-		    i965_shader_add_rectangle (&shader, x1, y1, x2 - x1, y2 - y1);
-		}
+	device = i965_device (dst);
+	status = cairo_device_acquire (&device->intel.base.base);
+	if (unlikely (status))
+	    goto err_shader;
+
+	status = i965_shader_commit (&shader, device);
+	if (unlikely (status))
+	    goto err_device;
+
+	for (chunk = &clear.chunks; chunk != NULL; chunk = chunk->next) {
+	    for (i = 0; i < chunk->count; i++) {
+		int x1 = _cairo_fixed_integer_part (chunk->base[i].p1.x);
+		int y1 = _cairo_fixed_integer_part (chunk->base[i].p1.y);
+		int x2 = _cairo_fixed_integer_part (chunk->base[i].p2.x);
+		int y2 = _cairo_fixed_integer_part (chunk->base[i].p2.y);
+
+		i965_shader_add_rectangle (&shader, x1, y1, x2 - x1, y2 - y1);
 	    }
 	}
+
+err_device:
+	cairo_device_release (&device->intel.base.base);
+err_shader:
 	i965_shader_fini (&shader);
     }
 
@@ -992,6 +995,7 @@ _composite_boxes (i965_surface_t *dst,
     const struct _cairo_boxes_chunk *chunk;
     cairo_status_t status;
     i965_shader_t shader;
+    i965_device_t *device;
     int i;
 
     /* If the boxes are not pixel-aligned, we will need to compute a real mask */
@@ -1017,25 +1021,35 @@ _composite_boxes (i965_surface_t *dst,
 	    i965_shader_set_clip (&shader, clip);
     }
 
-    status = i965_shader_commit (&shader, i965_device (dst));
-    if (likely (status == CAIRO_STATUS_SUCCESS)) {
-	for (chunk = &boxes->chunks; chunk != NULL; chunk = chunk->next) {
-	    cairo_box_t *box = chunk->base;
-	    for (i = 0; i < chunk->count; i++) {
-		int x1 = _cairo_fixed_integer_round (box[i].p1.x);
-		int y1 = _cairo_fixed_integer_round (box[i].p1.y);
-		int x2 = _cairo_fixed_integer_round (box[i].p2.x);
-		int y2 = _cairo_fixed_integer_round (box[i].p2.y);
+    device = i965_device (dst);
+    status = cairo_device_acquire (&device->intel.base.base);
+    if (unlikely (status))
+	goto err_shader;
 
-		if (x2 > x1 && y2 > y1)
-		    i965_shader_add_rectangle (&shader, x1, y1, x2 - x1, y2 - y1);
-	    }
+    status = i965_shader_commit (&shader, i965_device (dst));
+    if (unlikely (status))
+	goto err_device;
+
+    for (chunk = &boxes->chunks; chunk != NULL; chunk = chunk->next) {
+	cairo_box_t *box = chunk->base;
+	for (i = 0; i < chunk->count; i++) {
+	    int x1 = _cairo_fixed_integer_round (box[i].p1.x);
+	    int y1 = _cairo_fixed_integer_round (box[i].p1.y);
+	    int x2 = _cairo_fixed_integer_round (box[i].p2.x);
+	    int y2 = _cairo_fixed_integer_round (box[i].p2.y);
+
+	    if (x2 > x1 && y2 > y1)
+		i965_shader_add_rectangle (&shader, x1, y1, x2 - x1, y2 - y1);
 	}
     }
-    i965_shader_fini (&shader);
 
-    if (status == CAIRO_STATUS_SUCCESS && ! extents->is_bounded)
+    if (! extents->is_bounded)
 	status = i965_fixup_unbounded_boxes (dst, extents, clip, boxes);
+
+  err_device:
+    cairo_device_release (&device->intel.base.base);
+  err_shader:
+    i965_shader_fini (&shader);
 
     return status;
 }
@@ -1135,6 +1149,7 @@ i965_surface_mask (void				*abstract_dst,
     i965_surface_t *dst = abstract_dst;
     cairo_composite_rectangles_t extents;
     i965_shader_t shader;
+    i965_device_t *device;
     cairo_clip_t local_clip;
     cairo_region_t *clip_region = NULL;
     cairo_bool_t need_clip_surface = FALSE;
@@ -1169,14 +1184,14 @@ i965_surface_mask (void				*abstract_dst,
 					  source,
 					  &extents.bounded);
     if (unlikely (status))
-	goto BAIL;
+	goto err_shader;
 
     status = i965_shader_acquire_pattern (&shader,
 					  &shader.mask,
 					  mask,
 					  &extents.bounded);
     if (unlikely (status))
-	goto BAIL;
+	goto err_shader;
 
     if (clip != NULL) {
 	status = _cairo_clip_get_region (clip, &clip_region);
@@ -1186,9 +1201,14 @@ i965_surface_mask (void				*abstract_dst,
 	    i965_shader_set_clip (&shader, clip);
     }
 
-    status = i965_shader_commit (&shader, i965_device (dst));
+    device = i965_device (dst);
+    status = cairo_device_acquire (&device->intel.base.base);
     if (unlikely (status))
-	goto BAIL;
+	goto err_shader;
+
+    status = i965_shader_commit (&shader, device);
+    if (unlikely (status))
+	goto err_device;
 
     if (clip_region != NULL) {
 	unsigned int n, num_rectangles;
@@ -1214,7 +1234,9 @@ i965_surface_mask (void				*abstract_dst,
     if (! extents.is_bounded)
 	status = i965_fixup_unbounded (dst, &extents, clip);
 
-  BAIL:
+  err_device:
+    cairo_device_release (&device->intel.base.base);
+  err_shader:
     i965_shader_fini (&shader);
     if (have_clip)
 	_cairo_clip_fini (&local_clip);
@@ -1471,7 +1493,7 @@ CLEANUP_BOXES:
 static const cairo_surface_backend_t i965_surface_backend = {
     CAIRO_SURFACE_TYPE_DRM,
 
-    _cairo_drm_surface_create_similar,
+    i965_surface_create_similar,
     i965_surface_finish,
     intel_surface_acquire_source_image,
     intel_surface_release_source_image,
@@ -1503,10 +1525,12 @@ static const cairo_surface_backend_t i965_surface_backend = {
 
 static void
 i965_surface_init (i965_surface_t *surface,
-	           cairo_content_t content,
-		   cairo_drm_device_t *device)
+		   cairo_drm_device_t *device,
+	           cairo_format_t format,
+		   int width, int height)
 {
-    intel_surface_init (&surface->intel, &i965_surface_backend, device, content);
+    intel_surface_init (&surface->intel, &i965_surface_backend, device,
+			format, width, height);
     surface->stream = 0;
 }
 
@@ -1532,7 +1556,7 @@ i965_tiling_height (uint32_t tiling, int height)
 
 cairo_surface_t *
 i965_surface_create_internal (cairo_drm_device_t *base_dev,
-		              cairo_content_t content,
+		              cairo_format_t format,
 			      int width, int height,
 			      uint32_t tiling,
 			      cairo_bool_t gpu_target)
@@ -1544,47 +1568,36 @@ i965_surface_create_internal (cairo_drm_device_t *base_dev,
     if (unlikely (surface == NULL))
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
-    i965_surface_init (surface, content, base_dev);
+    i965_surface_init (surface, base_dev, format, width, height);
 
     if (width && height) {
-	uint32_t size;
-
-	surface->intel.drm.width  = width;
-	surface->intel.drm.height = height;
+	uint32_t size, stride;
+	intel_bo_t *bo;
 
 	width = (width + 3) & -4;
-	surface->intel.drm.stride = cairo_format_stride_for_width (surface->intel.drm.format,
-							      width);
-	surface->intel.drm.stride = (surface->intel.drm.stride + 63) & ~63;
-
-#if 0
-	/* check for tiny surfaces for which tiling is irrelevant */
-	if (height * surface->intel.drm.stride < 4096)
-	    tiling = I915_TILING_NONE;
-#endif
-	surface->intel.drm.stride = i965_tiling_stride (tiling,
-						       	surface->intel.drm.stride);
+	stride = cairo_format_stride_for_width (surface->intel.drm.format, width);
+	stride = (stride + 63) & ~63;
+	stride = i965_tiling_stride (tiling, stride);
+	surface->intel.drm.stride = stride;
 
 	height = i965_tiling_height (tiling, height);
 	assert (height <= I965_MAX_SIZE);
 
-	size = surface->intel.drm.stride * height;
-	if (tiling != I915_TILING_NONE)
-	    size = (size + 4095) & -4096;
-
-	surface->intel.drm.bo = &intel_bo_create (to_intel_device (&base_dev->base),
-						  size, gpu_target)->base;
-	if (surface->intel.drm.bo == NULL) {
+	size = stride * height;
+	bo = intel_bo_create (to_intel_device (&base_dev->base),
+			      size, size,
+			      gpu_target, tiling, stride);
+	if (bo == NULL) {
 	    status_ignored = _cairo_drm_surface_finish (&surface->intel.drm);
 	    free (surface);
 	    return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 	}
 
-	intel_bo_set_tiling (to_intel_device (&base_dev->base),
-			     to_intel_bo (surface->intel.drm.bo),
-			     tiling, surface->intel.drm.stride);
+	bo->tiling = tiling;
+	bo->stride = stride;
+	surface->intel.drm.bo = &bo->base;
 
-	assert (surface->intel.drm.bo->size >= (size_t) surface->intel.drm.stride*height);
+	assert (bo->base.size >= (size_t) stride*height);
     }
 
     return &surface->intel.drm.base;
@@ -1592,9 +1605,21 @@ i965_surface_create_internal (cairo_drm_device_t *base_dev,
 
 static cairo_surface_t *
 i965_surface_create (cairo_drm_device_t *device,
-		     cairo_content_t content, int width, int height)
+		     cairo_format_t format, int width, int height)
 {
-    return i965_surface_create_internal (device, content, width, height,
+    switch (format) {
+    case CAIRO_FORMAT_ARGB32:
+    case CAIRO_FORMAT_RGB16_565:
+    case CAIRO_FORMAT_RGB24:
+    case CAIRO_FORMAT_A8:
+	break;
+    case CAIRO_FORMAT_INVALID:
+    default:
+    case CAIRO_FORMAT_A1:
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_INVALID_FORMAT));
+    }
+
+    return i965_surface_create_internal (device, format, width, height,
 	                                 I965_TILING_DEFAULT, TRUE);
 }
 
@@ -1606,7 +1631,6 @@ i965_surface_create_for_name (cairo_drm_device_t *base_dev,
 {
     i965_device_t *device;
     i965_surface_t *surface;
-    cairo_content_t content;
     cairo_status_t status_ignored;
     int min_stride;
 
@@ -1619,14 +1643,11 @@ i965_surface_create_for_name (cairo_drm_device_t *base_dev,
 
     switch (format) {
     case CAIRO_FORMAT_ARGB32:
-	content = CAIRO_CONTENT_COLOR_ALPHA;
-	break;
+    case CAIRO_FORMAT_RGB16_565:
     case CAIRO_FORMAT_RGB24:
-	content = CAIRO_CONTENT_COLOR;
-	break;
     case CAIRO_FORMAT_A8:
-	content = CAIRO_CONTENT_ALPHA;
 	break;
+    case CAIRO_FORMAT_INVALID:
     default:
     case CAIRO_FORMAT_A1:
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_INVALID_FORMAT));
@@ -1636,7 +1657,7 @@ i965_surface_create_for_name (cairo_drm_device_t *base_dev,
     if (unlikely (surface == NULL))
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
-    i965_surface_init (surface, content, base_dev);
+    i965_surface_init (surface, base_dev, format, width, height);
 
     device = (i965_device_t *) base_dev;
     surface->intel.drm.bo = &intel_bo_create_for_name (&device->intel, name)->base;
@@ -1646,8 +1667,6 @@ i965_surface_create_for_name (cairo_drm_device_t *base_dev,
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
     }
 
-    surface->intel.drm.width = width;
-    surface->intel.drm.height = height;
     surface->intel.drm.stride = stride;
 
     return &surface->intel.drm.base;
@@ -1712,6 +1731,9 @@ static cairo_int_status_t
 _i965_device_flush (cairo_drm_device_t *device)
 {
     cairo_status_t status;
+
+    if (unlikely (device->base.finished))
+	return CAIRO_STATUS_SUCCESS;
 
     status = cairo_device_acquire (&device->base);
     if (likely (status == CAIRO_STATUS_SUCCESS))
@@ -1870,12 +1892,6 @@ _cairo_drm_i965_device_create (int fd, dev_t dev, int vendor_id, int chip_id)
 		      device->vertex_base, sizeof (device->vertex_base),
 		      device->vertex_pending_relocations,
 		      ARRAY_LENGTH (device->vertex_pending_relocations),
-		      NULL, 0);
-
-    i965_stream_init (&device->constant,
-		      device->constant_base, sizeof (device->constant_base),
-		      device->constant_pending_relocations,
-		      ARRAY_LENGTH (device->constant_pending_relocations),
 		      NULL, 0);
 
     cairo_list_init (&device->flush);

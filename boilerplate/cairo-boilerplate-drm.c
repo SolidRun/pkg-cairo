@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -46,12 +46,20 @@ _cairo_boilerplate_drm_create_surface (const char		 *name,
 				       void			**closure)
 {
     cairo_device_t *device;
+    cairo_format_t format;
 
     device = cairo_drm_device_default ();
     if (device == NULL)
 	return NULL; /* skip tests if no supported h/w found */
 
-    return *closure = cairo_drm_surface_create (device, content, width, height);
+    switch (content) {
+    case CAIRO_CONTENT_ALPHA: format = CAIRO_FORMAT_A8; break;
+    case CAIRO_CONTENT_COLOR: format = CAIRO_FORMAT_RGB24; break;
+    default:
+    case CAIRO_CONTENT_COLOR_ALPHA: format = CAIRO_FORMAT_ARGB32; break;
+    }
+
+    return *closure = cairo_drm_surface_create (device, format, width, height);
 }
 
 static void
@@ -59,7 +67,7 @@ _cairo_boilerplate_drm_synchronize (void *closure)
 {
     cairo_surface_t *image;
 
-    image = cairo_drm_surface_map (closure);
+    image = cairo_drm_surface_map_to_image (closure);
     if (cairo_surface_status (image) == CAIRO_STATUS_SUCCESS)
 	cairo_drm_surface_unmap (closure, image);
 }
@@ -76,7 +84,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	NULL,
-	_cairo_boilerplate_drm_synchronize
+	_cairo_boilerplate_drm_synchronize,
+	TRUE, FALSE, FALSE
     },
     {
 	"drm", "drm", NULL, NULL,
@@ -87,7 +96,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	NULL,
-	_cairo_boilerplate_drm_synchronize
+	_cairo_boilerplate_drm_synchronize,
+	FALSE, FALSE, FALSE
     },
 };
 CAIRO_BOILERPLATE (drm, targets)

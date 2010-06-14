@@ -150,11 +150,14 @@
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
 
+/* Enable if you have MacOS X atomic operations */
+#undef HAVE_OS_ATOMIC_OPS
+
 /* Define to 1 if you have the `poppler_page_render' function. */
 #undef HAVE_POPPLER_PAGE_RENDER
 
-/* Define to 1 if you have the <pthread.h> header file. */
-#undef HAVE_PTHREAD_H
+/* Define if you have POSIX threads libraries and header files. */
+#undef HAVE_PTHREAD
 
 /* Define to 1 if you have the `raise' function. */
 #undef HAVE_RAISE
@@ -261,6 +264,10 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* Define to necessary symbol if this constant uses a non-standard name on
+   your system. */
+#undef PTHREAD_CREATE_JOINABLE
 
 /* Shared library file extension */
 #undef SHARED_LIB_EXT

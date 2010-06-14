@@ -26,6 +26,8 @@
 
 #include "cairo-boilerplate-private.h"
 
+#if CAIRO_CAN_TEST_PDF_SURFACE
+
 #include <cairo-pdf.h>
 #include <cairo-pdf-surface-private.h>
 #include <cairo-paginated-surface-private.h>
@@ -137,6 +139,7 @@ _cairo_boilerplate_pdf_finish_surface (cairo_surface_t		*surface)
 	if (status)
 	    return status;
 
+	cairo_surface_finish (surface);
 	status = cairo_surface_status (surface);
 	if (status)
 	    return status;
@@ -204,8 +207,10 @@ static void
 _cairo_boilerplate_pdf_cleanup (void *closure)
 {
     pdf_target_closure_t *ptc = closure;
-    if (ptc->target)
+    if (ptc->target) {
+	cairo_surface_finish (ptc->target);
 	cairo_surface_destroy (ptc->target);
+    }
     free (ptc->filename);
     free (ptc);
 }
@@ -227,6 +232,7 @@ _cairo_boilerplate_pdf_force_fallbacks (cairo_surface_t *abstract_surface,
     surface = (cairo_pdf_surface_t*) paginated->target;
     surface->force_fallbacks = TRUE;
 }
+#endif
 
 static const cairo_boilerplate_target_t targets[] = {
 #if CAIRO_CAN_TEST_PDF_SURFACE
@@ -241,7 +247,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_pdf_get_image_surface,
 	_cairo_boilerplate_pdf_surface_write_to_png,
 	_cairo_boilerplate_pdf_cleanup,
-	NULL, TRUE, TRUE
+	NULL, FALSE, TRUE, TRUE
     },
     {
 	"pdf", "pdf", ".pdf", NULL,
@@ -253,7 +259,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_pdf_get_image_surface,
 	_cairo_boilerplate_pdf_surface_write_to_png,
 	_cairo_boilerplate_pdf_cleanup,
-	NULL, TRUE, TRUE
+	NULL, FALSE, TRUE, TRUE
     },
 #endif
 };

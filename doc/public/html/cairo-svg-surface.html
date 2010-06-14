@@ -8,18 +8,8 @@
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-win32-surface.html" title="Win32 Surfaces">
 <link rel="next" href="cairo-quartz-surface.html" title="Quartz Surfaces">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="cairo-drawing.html" title="Drawing">
-<link rel="chapter" href="cairo-fonts.html" title="Fonts">
-<link rel="chapter" href="cairo-surfaces.html" title="Surfaces">
-<link rel="chapter" href="cairo-support.html" title="Utilities">
-<link rel="index" href="index-all.html" title="Index">
-<link rel="index" href="index-1.2.html" title="Index of new symbols in 1.2">
-<link rel="index" href="index-1.4.html" title="Index of new symbols in 1.4">
-<link rel="index" href="index-1.6.html" title="Index of new symbols in 1.6">
-<link rel="index" href="index-1.8.html" title="Index of new symbols in 1.8">
-<link rel="appendix" href="language-bindings.html" title="Appendix A. Creating a language binding for cairo">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -32,8 +22,8 @@
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#cairo-svg-surface.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#cairo-svg-surface.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#cairo-svg-surface.description" class="shortcut">Description</a>
 </td></tr>
 </table>
 <div class="refentry" title="SVG Surfaces">
@@ -47,22 +37,21 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-svg-surface.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-#define             <a class="link" href="cairo-svg-surface.html#CAIRO-HAS-SVG-SURFACE--CAPS" title="CAIRO_HAS_SVG_SURFACE">CAIRO_HAS_SVG_SURFACE</a>
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-svg-surface.html#cairo-svg-surface-create" title="cairo_svg_surface_create ()">cairo_svg_surface_create</a>            (const char *filename,
-                                                         double width_in_points,
-                                                         double height_in_points);
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-svg-surface.html#cairo-svg-surface-create-for-stream" title="cairo_svg_surface_create_for_stream ()">cairo_svg_surface_create_for_stream</a> (<a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()">cairo_write_func_t</a> write_func,
-                                                         void *closure,
-                                                         double width_in_points,
-                                                         double height_in_points);
-void                <a class="link" href="cairo-svg-surface.html#cairo-svg-surface-restrict-to-version" title="cairo_svg_surface_restrict_to_version ()">cairo_svg_surface_restrict_to_version</a>
-                                                        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
-                                                         <a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t">cairo_svg_version_t</a> version);
+<pre class="synopsis">#define             <a class="link" href="cairo-svg-surface.html#CAIRO-HAS-SVG-SURFACE:CAPS" title="CAIRO_HAS_SVG_SURFACE">CAIRO_HAS_SVG_SURFACE</a>
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   <a class="link" href="cairo-svg-surface.html#cairo-svg-surface-create" title="cairo_svg_surface_create ()">cairo_svg_surface_create</a>            (<em class="parameter"><code>const <span class="type">char</span> *filename</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> width_in_points</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> height_in_points</code></em>);
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   <a class="link" href="cairo-svg-surface.html#cairo-svg-surface-create-for-stream" title="cairo_svg_surface_create_for_stream ()">cairo_svg_surface_create_for_stream</a> (<em class="parameter"><code><a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> write_func</code></em>,
+                                                         <em class="parameter"><code><span class="type">void</span> *closure</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> width_in_points</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> height_in_points</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="cairo-svg-surface.html#cairo-svg-surface-restrict-to-version" title="cairo_svg_surface_restrict_to_version ()">cairo_svg_surface_restrict_to_version</a>
+                                                        (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t"><span class="type">cairo_svg_version_t</span></a> version</code></em>);
 enum                <a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t">cairo_svg_version_t</a>;
-void                <a class="link" href="cairo-svg-surface.html#cairo-svg-get-versions" title="cairo_svg_get_versions ()">cairo_svg_get_versions</a>              (<a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t">cairo_svg_version_t</a> const **versions,
-                                                         int *num_versions);
-const char *        <a class="link" href="cairo-svg-surface.html#cairo-svg-version-to-string" title="cairo_svg_version_to_string ()">cairo_svg_version_to_string</a>         (<a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t">cairo_svg_version_t</a> version);
+<span class="returnvalue">void</span>                <a class="link" href="cairo-svg-surface.html#cairo-svg-get-versions" title="cairo_svg_get_versions ()">cairo_svg_get_versions</a>              (<em class="parameter"><code><a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t"><span class="type">cairo_svg_version_t</span></a> const **versions</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> *num_versions</code></em>);
+const <span class="returnvalue">char</span> *        <a class="link" href="cairo-svg-surface.html#cairo-svg-version-to-string" title="cairo_svg_version_to_string ()">cairo_svg_version_to_string</a>         (<em class="parameter"><code><a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t"><span class="type">cairo_svg_version_t</span></a> version</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -75,8 +64,9 @@ SVG files and is a multi-page vector surface backend.
 <div class="refsect1" title="Details">
 <a name="cairo-svg-surface.details"></a><h2>Details</h2>
 <div class="refsect2" title="CAIRO_HAS_SVG_SURFACE">
-<a name="CAIRO-HAS-SVG-SURFACE--CAPS"></a><h3>CAIRO_HAS_SVG_SURFACE</h3>
-<pre class="programlisting">#define             CAIRO_HAS_SVG_SURFACE</pre>
+<a name="CAIRO-HAS-SVG-SURFACE:CAPS"></a><h3>CAIRO_HAS_SVG_SURFACE</h3>
+<pre class="programlisting">#define CAIRO_HAS_SVG_SURFACE 1
+</pre>
 <p>
 Defined if the SVG surface backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -85,20 +75,38 @@ This macro can be used to conditionally compile backend-specific code.
 <hr>
 <div class="refsect2" title="cairo_svg_surface_create ()">
 <a name="cairo-svg-surface-create"></a><h3>cairo_svg_surface_create ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_svg_surface_create            (const char *filename,
-                                                         double width_in_points,
-                                                         double height_in_points);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   cairo_svg_surface_create            (<em class="parameter"><code>const <span class="type">char</span> *filename</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> width_in_points</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> height_in_points</code></em>);</pre>
 <p>
 Creates a SVG surface of the specified size in points to be written
-to <em class="parameter"><code>filename</code></em>.</p>
+to <em class="parameter"><code>filename</code></em>.
+</p>
 <p>
+The SVG surface backend recognizes the following MIME types for the
+data attached to a surface (see <a class="link" href="cairo-surface.html#cairo-surface-set-mime-data" title="cairo_surface_set_mime_data ()"><code class="function">cairo_surface_set_mime_data()</code></a>) when
+it is used as a source pattern for drawing on this surface:
+<a class="link" href="cairo-surface.html#CAIRO-MIME-TYPE-JPEG:CAPS" title="CAIRO_MIME_TYPE_JPEG"><code class="literal">CAIRO_MIME_TYPE_JPEG</code></a>, <a class="link" href="cairo-surface.html#CAIRO-MIME-TYPE-PNG:CAPS" title="CAIRO_MIME_TYPE_PNG"><code class="literal">CAIRO_MIME_TYPE_PNG</code></a>,
+<a class="link" href="cairo-surface.html#CAIRO-MIME-TYPE-URI:CAPS" title="CAIRO_MIME_TYPE_URI"><code class="literal">CAIRO_MIME_TYPE_URI</code></a>. If any of them is specified, the SVG backend
+emits a href with the content of MIME data instead of a surface
+snapshot (PNG, Base64-encoded) in the corresponding image tag.
+</p>
+<p>
+The unofficial MIME type <a class="link" href="cairo-surface.html#CAIRO-MIME-TYPE-URI:CAPS" title="CAIRO_MIME_TYPE_URI"><code class="literal">CAIRO_MIME_TYPE_URI</code></a> is examined
+first. If present, the URI is emitted as is: assuring the
+correctness of URI is left to the client code.
+</p>
+<p>
+If <a class="link" href="cairo-surface.html#CAIRO-MIME-TYPE-URI:CAPS" title="CAIRO_MIME_TYPE_URI"><code class="literal">CAIRO_MIME_TYPE_URI</code></a> is not present, but <a class="link" href="cairo-surface.html#CAIRO-MIME-TYPE-JPEG:CAPS" title="CAIRO_MIME_TYPE_JPEG"><code class="literal">CAIRO_MIME_TYPE_JPEG</code></a>
+or <a class="link" href="cairo-surface.html#CAIRO-MIME-TYPE-PNG:CAPS" title="CAIRO_MIME_TYPE_PNG"><code class="literal">CAIRO_MIME_TYPE_PNG</code></a> is specified, the corresponding data is
+Base64-encoded and emitted.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>filename</code></em> :</span></p></td>
-<td> a filename for the SVG output (must be writable), <code class="literal">NULL</code> may be
+<td>a filename for the SVG output (must be writable), <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> may be
            used to specify no output. This will generate a SVG surface that
            may be queried and used as a source, without generating a
            temporary file.
@@ -106,12 +114,12 @@ to <em class="parameter"><code>filename</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width_in_points</code></em> :</span></p></td>
-<td> width of the surface, in points (1 point == 1/72.0 inch)
+<td>width of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height_in_points</code></em> :</span></p></td>
-<td> height of the surface, in points (1 point == 1/72.0 inch)
+<td>height of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
@@ -133,21 +141,20 @@ occurs. You can use <a class="link" href="cairo-surface.html#cairo-surface-statu
 <hr>
 <div class="refsect2" title="cairo_svg_surface_create_for_stream ()">
 <a name="cairo-svg-surface-create-for-stream"></a><h3>cairo_svg_surface_create_for_stream ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_svg_surface_create_for_stream (<a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()">cairo_write_func_t</a> write_func,
-                                                         void *closure,
-                                                         double width_in_points,
-                                                         double height_in_points);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   cairo_svg_surface_create_for_stream (<em class="parameter"><code><a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> write_func</code></em>,
+                                                         <em class="parameter"><code><span class="type">void</span> *closure</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> width_in_points</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> height_in_points</code></em>);</pre>
 <p>
 Creates a SVG surface of the specified size in points to be written
-incrementally to the stream represented by <em class="parameter"><code>write_func</code></em> and <em class="parameter"><code>closure</code></em>.</p>
-<p>
+incrementally to the stream represented by <em class="parameter"><code>write_func</code></em> and <em class="parameter"><code>closure</code></em>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>write_func</code></em> :</span></p></td>
-<td> a <a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> to accept the output data, may be <code class="literal">NULL</code>
+<td>a <a class="link" href="cairo-png-functions.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> to accept the output data, may be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
              to indicate a no-op <em class="parameter"><code>write_func</code></em>. With a no-op <em class="parameter"><code>write_func</code></em>,
              the surface may be queried or used as a source without
              generating any temporary files.
@@ -155,17 +162,17 @@ incrementally to the stream represented by <em class="parameter"><code>write_fun
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>closure</code></em> :</span></p></td>
-<td> the closure argument for <em class="parameter"><code>write_func</code></em>
+<td>the closure argument for <em class="parameter"><code>write_func</code></em>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width_in_points</code></em> :</span></p></td>
-<td> width of the surface, in points (1 point == 1/72.0 inch)
+<td>width of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height_in_points</code></em> :</span></p></td>
-<td> height of the surface, in points (1 point == 1/72.0 inch)
+<td>height of the surface, in points (1 point == 1/72.0 inch)
 </td>
 </tr>
 <tr>
@@ -187,9 +194,9 @@ occurs. You can use <a class="link" href="cairo-surface.html#cairo-surface-statu
 <hr>
 <div class="refsect2" title="cairo_svg_surface_restrict_to_version ()">
 <a name="cairo-svg-surface-restrict-to-version"></a><h3>cairo_svg_surface_restrict_to_version ()</h3>
-<pre class="programlisting">void                cairo_svg_surface_restrict_to_version
-                                                        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
-                                                         <a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t">cairo_svg_version_t</a> version);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                cairo_svg_surface_restrict_to_version
+                                                        (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t"><span class="type">cairo_svg_version_t</span></a> version</code></em>);</pre>
 <p>
 Restricts the generated SVG file to <em class="parameter"><code>version</code></em>. See <a class="link" href="cairo-svg-surface.html#cairo-svg-get-versions" title="cairo_svg_get_versions ()"><code class="function">cairo_svg_get_versions()</code></a>
 for a list of available version values that can be used here.
@@ -198,20 +205,19 @@ for a list of available version values that can be used here.
 This function should only be called before any drawing operations
 have been performed on the given surface. The simplest way to do
 this is to call this function immediately after creating the
-surface.</p>
-<p>
+surface.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a SVG <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a>
+<td>a SVG <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
-<td> SVG version
+<td>SVG version
 </td>
 </tr>
 </tbody>
@@ -228,20 +234,19 @@ surface.</p>
 </pre>
 <p>
 <a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t"><span class="type">cairo_svg_version_t</span></a> is used to describe the version number of the SVG
-specification that a generated SVG file will conform to.</p>
-<p>
+specification that a generated SVG file will conform to.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="CAIRO-SVG-VERSION-1-1--CAPS"></a><span class="term"><code class="literal">CAIRO_SVG_VERSION_1_1</code></span></p></td>
-<td> The version 1.1 of the SVG specification.
+<td><p><a name="CAIRO-SVG-VERSION-1-1:CAPS"></a><span class="term"><code class="literal">CAIRO_SVG_VERSION_1_1</code></span></p></td>
+<td>The version 1.1 of the SVG specification.
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-SVG-VERSION-1-2--CAPS"></a><span class="term"><code class="literal">CAIRO_SVG_VERSION_1_2</code></span></p></td>
-<td> The version 1.2 of the SVG specification.
+<td><p><a name="CAIRO-SVG-VERSION-1-2:CAPS"></a><span class="term"><code class="literal">CAIRO_SVG_VERSION_1_2</code></span></p></td>
+<td>The version 1.2 of the SVG specification.
 </td>
 </tr>
 </tbody>
@@ -250,24 +255,23 @@ specification that a generated SVG file will conform to.</p>
 <hr>
 <div class="refsect2" title="cairo_svg_get_versions ()">
 <a name="cairo-svg-get-versions"></a><h3>cairo_svg_get_versions ()</h3>
-<pre class="programlisting">void                cairo_svg_get_versions              (<a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t">cairo_svg_version_t</a> const **versions,
-                                                         int *num_versions);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                cairo_svg_get_versions              (<em class="parameter"><code><a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t"><span class="type">cairo_svg_version_t</span></a> const **versions</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> *num_versions</code></em>);</pre>
 <p>
 Used to retrieve the list of supported versions. See
-<a class="link" href="cairo-svg-surface.html#cairo-svg-surface-restrict-to-version" title="cairo_svg_surface_restrict_to_version ()"><code class="function">cairo_svg_surface_restrict_to_version()</code></a>.</p>
-<p>
+<a class="link" href="cairo-svg-surface.html#cairo-svg-surface-restrict-to-version" title="cairo_svg_surface_restrict_to_version ()"><code class="function">cairo_svg_surface_restrict_to_version()</code></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>versions</code></em> :</span></p></td>
-<td> supported version list
+<td>supported version list
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>num_versions</code></em> :</span></p></td>
-<td> list length
+<td>list length
 </td>
 </tr>
 </tbody>
@@ -277,19 +281,18 @@ Used to retrieve the list of supported versions. See
 <hr>
 <div class="refsect2" title="cairo_svg_version_to_string ()">
 <a name="cairo-svg-version-to-string"></a><h3>cairo_svg_version_to_string ()</h3>
-<pre class="programlisting">const char *        cairo_svg_version_to_string         (<a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t">cairo_svg_version_t</a> version);</pre>
+<pre class="programlisting">const <span class="returnvalue">char</span> *        cairo_svg_version_to_string         (<em class="parameter"><code><a class="link" href="cairo-svg-surface.html#cairo-svg-version-t" title="enum cairo_svg_version_t"><span class="type">cairo_svg_version_t</span></a> version</code></em>);</pre>
 <p>
 Get the string representation of the given <em class="parameter"><code>version</code></em> id. This function
-will return <code class="literal">NULL</code> if <em class="parameter"><code>version</code></em> isn't valid. See <a class="link" href="cairo-svg-surface.html#cairo-svg-get-versions" title="cairo_svg_get_versions ()"><code class="function">cairo_svg_get_versions()</code></a>
-for a way to get the list of valid version ids.</p>
-<p>
+will return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>version</code></em> isn't valid. See <a class="link" href="cairo-svg-surface.html#cairo-svg-get-versions" title="cairo_svg_get_versions ()"><code class="function">cairo_svg_get_versions()</code></a>
+for a way to get the list of valid version ids.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
-<td> a version id
+<td>a version id
 </td>
 </tr>
 <tr>
@@ -315,6 +318,6 @@ for a way to get the list of valid version ids.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.15</div>
 </body>
 </html>

@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -71,8 +71,6 @@ i965_glyphs_accumulate_rectangle (i965_glyphs_t *glyphs)
     if (unlikely (glyphs->vbo_offset + size > I965_VERTEX_SIZE)) {
 	struct i965_vbo *vbo;
 
-	intel_bo_unmap (glyphs->tail->bo);
-
 	vbo = malloc (sizeof (struct i965_vbo));
 	if (unlikely (vbo == NULL)) {
 	    /* throw error! */
@@ -83,7 +81,8 @@ i965_glyphs_accumulate_rectangle (i965_glyphs_t *glyphs)
 
 	vbo->next = NULL;
 	vbo->bo = intel_bo_create (&glyphs->shader.device->intel,
-				   I965_VERTEX_SIZE, FALSE);
+				   I965_VERTEX_SIZE, I965_VERTEX_SIZE,
+				   FALSE, I915_TILING_NONE, 0);
 	vbo->count = 0;
 
 	glyphs->vbo_offset = 0;
@@ -152,8 +151,8 @@ i965_surface_mask_internal (i965_surface_t *dst,
     shader.mask.base.extend = i965_extend (CAIRO_EXTEND_NONE);
 
     cairo_matrix_init_translate (&shader.mask.base.matrix,
-				 -extents->bounded.x + NEAREST_BIAS,
-				 -extents->bounded.y + NEAREST_BIAS);
+				 -extents->bounded.x,
+				 -extents->bounded.y);
     cairo_matrix_scale (&shader.mask.base.matrix,
 			1. / mask->intel.drm.width,
 			1. / mask->intel.drm.height);
@@ -266,15 +265,15 @@ i965_surface_glyphs (void			*abstract_surface,
     }
 
     if (overlap || ! extents.is_bounded) {
-	cairo_content_t content;
+	cairo_format_t format;
 
-	content = CAIRO_CONTENT_ALPHA;
+	format = CAIRO_FORMAT_A8;
 	if (scaled_font->options.antialias == CAIRO_ANTIALIAS_SUBPIXEL)
-	    content |= CAIRO_CONTENT_COLOR;
+	    format = CAIRO_FORMAT_ARGB32;
 
 	mask = (i965_surface_t *)
 	    i965_surface_create_internal (&i965_device (surface)->intel.base,
-					  content,
+					  format,
 					  extents.bounded.width,
 					  extents.bounded.height,
 					  I965_TILING_DEFAULT,
@@ -331,7 +330,8 @@ i965_surface_glyphs (void			*abstract_surface,
     } else {
 	glyphs.get_rectangle = i965_glyphs_accumulate_rectangle;
 	glyphs.head.bo = intel_bo_create (&device->intel,
-					  I965_VERTEX_SIZE, FALSE);
+					  I965_VERTEX_SIZE, I965_VERTEX_SIZE,
+					  FALSE, I915_TILING_NONE, 0);
 	if (unlikely (glyphs.head.bo == NULL))
 	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
@@ -346,9 +346,9 @@ i965_surface_glyphs (void			*abstract_surface,
     _cairo_scaled_font_freeze_cache (scaled_font);
     //private = _cairo_scaled_font_get_device (scaled_font, device);
     if (scaled_font->surface_private == NULL) {
-	/* XXX couple into list to remove on context destruction */
 	scaled_font->surface_private = device;
 	scaled_font->surface_backend = surface->intel.drm.base.backend;
+	cairo_list_add (&scaled_font->link, &device->intel.fonts);
     }
 
     memset (glyph_cache, 0, sizeof (glyph_cache));
@@ -431,16 +431,19 @@ i965_surface_glyphs (void			*abstract_surface,
 	    last_bo = cache->buffer.bo;
 	}
 
-	x1 += mask_x; x2 += mask_x;
-	y1 += mask_y; y2 += mask_y;
+	x2 = x1 + glyph->width;
+	y2 = y1 + glyph->height;
+
+	if (mask_x)
+	    x1 += mask_x, x2 += mask_x;
+	if (mask_y)
+	    y1 += mask_y, y2 += mask_y;
 
 	i965_add_glyph_rectangle (&glyphs, x1, y1, x2, y2, glyph);
     }
 
-    if (mask != NULL && clip_region != NULL) {
-	intel_bo_unmap (glyphs.tail->bo);
+    if (mask != NULL && clip_region != NULL)
 	i965_clipped_vertices (device, &glyphs.head, clip_region);
-    }
 
     status = CAIRO_STATUS_SUCCESS;
   FINISH:
@@ -448,9 +451,6 @@ i965_surface_glyphs (void			*abstract_surface,
     cairo_device_release (surface->intel.drm.base.device);
   CLEANUP_GLYPHS:
     i965_shader_fini (&glyphs.shader);
-
-    if (glyphs.tail->bo && glyphs.tail->bo->virtual)
-	intel_bo_unmap (glyphs.tail->bo);
 
     if (glyphs.head.bo != NULL) {
 	struct i965_vbo *vbo, *next;

@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -48,6 +48,57 @@ static const cairo_region_t _cairo_region_nil = {
     CAIRO_REFERENCE_COUNT_INVALID,	/* ref_count */
     CAIRO_STATUS_NO_MEMORY,		/* status */
 };
+
+cairo_region_t *
+_cairo_region_create_in_error (cairo_status_t status)
+{
+    switch (status) {
+    case CAIRO_STATUS_NO_MEMORY:
+	return (cairo_region_t *) &_cairo_region_nil;
+
+    case CAIRO_STATUS_SUCCESS:
+    case CAIRO_STATUS_LAST_STATUS:
+	ASSERT_NOT_REACHED;
+	/* fall-through */
+    case CAIRO_STATUS_SURFACE_TYPE_MISMATCH:
+    case CAIRO_STATUS_INVALID_STATUS:
+    case CAIRO_STATUS_INVALID_CONTENT:
+    case CAIRO_STATUS_INVALID_FORMAT:
+    case CAIRO_STATUS_INVALID_VISUAL:
+    case CAIRO_STATUS_READ_ERROR:
+    case CAIRO_STATUS_WRITE_ERROR:
+    case CAIRO_STATUS_FILE_NOT_FOUND:
+    case CAIRO_STATUS_TEMP_FILE_ERROR:
+    case CAIRO_STATUS_INVALID_STRIDE:
+    case CAIRO_STATUS_INVALID_SIZE:
+    case CAIRO_STATUS_DEVICE_TYPE_MISMATCH:
+    case CAIRO_STATUS_DEVICE_ERROR:
+    case CAIRO_STATUS_INVALID_RESTORE:
+    case CAIRO_STATUS_INVALID_POP_GROUP:
+    case CAIRO_STATUS_NO_CURRENT_POINT:
+    case CAIRO_STATUS_INVALID_MATRIX:
+    case CAIRO_STATUS_NULL_POINTER:
+    case CAIRO_STATUS_INVALID_STRING:
+    case CAIRO_STATUS_INVALID_PATH_DATA:
+    case CAIRO_STATUS_SURFACE_FINISHED:
+    case CAIRO_STATUS_PATTERN_TYPE_MISMATCH:
+    case CAIRO_STATUS_INVALID_DASH:
+    case CAIRO_STATUS_INVALID_DSC_COMMENT:
+    case CAIRO_STATUS_INVALID_INDEX:
+    case CAIRO_STATUS_CLIP_NOT_REPRESENTABLE:
+    case CAIRO_STATUS_FONT_TYPE_MISMATCH:
+    case CAIRO_STATUS_USER_FONT_IMMUTABLE:
+    case CAIRO_STATUS_USER_FONT_ERROR:
+    case CAIRO_STATUS_NEGATIVE_COUNT:
+    case CAIRO_STATUS_INVALID_CLUSTERS:
+    case CAIRO_STATUS_INVALID_SLANT:
+    case CAIRO_STATUS_INVALID_WEIGHT:
+    case CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED:
+    default:
+	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
+	return (cairo_region_t *) &_cairo_region_nil;
+    }
+}
 
 /**
  * _cairo_region_set_error:
@@ -155,17 +206,14 @@ cairo_region_create_rectangles (const cairo_rectangle_int_t *rects,
     int i;
 
     region = _cairo_malloc (sizeof (cairo_region_t));
-    if (unlikely (region == NULL)) {
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	return (cairo_region_t *) &_cairo_region_nil;
-    }
+    if (unlikely (region == NULL))
+	return _cairo_region_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
     if (count > ARRAY_LENGTH (stack_pboxes)) {
 	pboxes = _cairo_malloc_ab (count, sizeof (pixman_box32_t));
 	if (unlikely (pboxes == NULL)) {
 	    free (region);
-	    _cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	    return (cairo_region_t *) &_cairo_region_nil;
+	    return _cairo_region_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 	}
     }
 
@@ -183,8 +231,7 @@ cairo_region_create_rectangles (const cairo_rectangle_int_t *rects,
 
     if (unlikely (i == 0)) {
 	free (region);
-	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
-	return (cairo_region_t *) &_cairo_region_nil;
+	return _cairo_region_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
     }
 
     CAIRO_REFERENCE_COUNT_INIT (&region->ref_count, 1);
@@ -492,7 +539,7 @@ slim_hidden_def (cairo_region_subtract_rectangle);
  * Since: 1.10
  **/
 cairo_status_t
-cairo_region_intersect (cairo_region_t *dst, cairo_region_t *other)
+cairo_region_intersect (cairo_region_t *dst, const cairo_region_t *other)
 {
     if (dst->status)
 	return dst->status;
@@ -500,7 +547,7 @@ cairo_region_intersect (cairo_region_t *dst, cairo_region_t *other)
     if (other->status)
 	return _cairo_region_set_error (dst, other->status);
 
-    if (! pixman_region32_intersect (&dst->rgn, &dst->rgn, &other->rgn))
+    if (! pixman_region32_intersect (&dst->rgn, &dst->rgn, CONST_CAST &other->rgn))
 	return _cairo_region_set_error (dst, CAIRO_STATUS_NO_MEMORY);
 
     return CAIRO_STATUS_SUCCESS;
@@ -555,7 +602,7 @@ slim_hidden_def (cairo_region_intersect_rectangle);
  **/
 cairo_status_t
 cairo_region_union (cairo_region_t *dst,
-		    cairo_region_t *other)
+		    const cairo_region_t *other)
 {
     if (dst->status)
 	return dst->status;
@@ -563,7 +610,7 @@ cairo_region_union (cairo_region_t *dst,
     if (other->status)
 	return _cairo_region_set_error (dst, other->status);
 
-    if (! pixman_region32_union (&dst->rgn, &dst->rgn, &other->rgn))
+    if (! pixman_region32_union (&dst->rgn, &dst->rgn, CONST_CAST &other->rgn))
 	return _cairo_region_set_error (dst, CAIRO_STATUS_NO_MEMORY);
 
     return CAIRO_STATUS_SUCCESS;
@@ -713,13 +760,14 @@ slim_hidden_def (cairo_region_contains_point);
 
 /**
  * cairo_region_equal:
- * @region_a: a #cairo_region_t
- * @region_b: a #cairo_region_t
+ * @region_a: a #cairo_region_t or %NULL
+ * @region_b: a #cairo_region_t or %NULL
  *
- * Compares whether region_a is equivalent to region_b.
+ * Compares whether region_a is equivalent to region_b. %NULL as an argument
+ * is equal to itself, but not to any non-%NULL region.
  *
  * Return value: %TRUE if both regions contained the same coverage,
- * %FALSE if it is not.
+ * %FALSE if it is not or any region is in an error status.
  *
  * Since: 1.10
  **/

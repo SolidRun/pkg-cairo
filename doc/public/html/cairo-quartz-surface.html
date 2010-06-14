@@ -8,18 +8,8 @@
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-svg-surface.html" title="SVG Surfaces">
 <link rel="next" href="cairo-xlib-surface.html" title="XLib Surfaces">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="cairo-drawing.html" title="Drawing">
-<link rel="chapter" href="cairo-fonts.html" title="Fonts">
-<link rel="chapter" href="cairo-surfaces.html" title="Surfaces">
-<link rel="chapter" href="cairo-support.html" title="Utilities">
-<link rel="index" href="index-all.html" title="Index">
-<link rel="index" href="index-1.2.html" title="Index of new symbols in 1.2">
-<link rel="index" href="index-1.4.html" title="Index of new symbols in 1.4">
-<link rel="index" href="index-1.6.html" title="Index of new symbols in 1.6">
-<link rel="index" href="index-1.8.html" title="Index of new symbols in 1.8">
-<link rel="appendix" href="language-bindings.html" title="Appendix A. Creating a language binding for cairo">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -32,8 +22,8 @@
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#cairo-quartz-surface.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#cairo-quartz-surface.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#cairo-quartz-surface.description" class="shortcut">Description</a>
 </td></tr>
 </table>
 <div class="refentry" title="Quartz Surfaces">
@@ -47,16 +37,15 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-quartz-surface.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-#define             <a class="link" href="cairo-quartz-surface.html#CAIRO-HAS-QUARTZ-SURFACE--CAPS" title="CAIRO_HAS_QUARTZ_SURFACE">CAIRO_HAS_QUARTZ_SURFACE</a>
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-quartz-surface.html#cairo-quartz-surface-create" title="cairo_quartz_surface_create ()">cairo_quartz_surface_create</a>         (<a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t">cairo_format_t</a> format,
-                                                         unsigned int width,
-                                                         unsigned int height);
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-quartz-surface.html#cairo-quartz-surface-create-for-cg-context" title="cairo_quartz_surface_create_for_cg_context ()">cairo_quartz_surface_create_for_cg_context</a>
-                                                        (CGContextRef cgContext,
-                                                         unsigned int width,
-                                                         unsigned int height);
-CGContextRef        <a class="link" href="cairo-quartz-surface.html#cairo-quartz-surface-get-cg-context" title="cairo_quartz_surface_get_cg_context ()">cairo_quartz_surface_get_cg_context</a> (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
+<pre class="synopsis">#define             <a class="link" href="cairo-quartz-surface.html#CAIRO-HAS-QUARTZ-SURFACE:CAPS" title="CAIRO_HAS_QUARTZ_SURFACE">CAIRO_HAS_QUARTZ_SURFACE</a>
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   <a class="link" href="cairo-quartz-surface.html#cairo-quartz-surface-create" title="cairo_quartz_surface_create ()">cairo_quartz_surface_create</a>         (<em class="parameter"><code><a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t"><span class="type">cairo_format_t</span></a> format</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> height</code></em>);
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   <a class="link" href="cairo-quartz-surface.html#cairo-quartz-surface-create-for-cg-context" title="cairo_quartz_surface_create_for_cg_context ()">cairo_quartz_surface_create_for_cg_context</a>
+                                                        (<em class="parameter"><code><span class="type">CGContextRef</span> cgContext</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> height</code></em>);
+<span class="returnvalue">CGContextRef</span>        <a class="link" href="cairo-quartz-surface.html#cairo-quartz-surface-get-cg-context" title="cairo_quartz_surface_get_cg_context ()">cairo_quartz_surface_get_cg_context</a> (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -69,7 +58,7 @@ Apple OS X Quartz rendering system.
 <div class="refsect1" title="Details">
 <a name="cairo-quartz-surface.details"></a><h2>Details</h2>
 <div class="refsect2" title="CAIRO_HAS_QUARTZ_SURFACE">
-<a name="CAIRO-HAS-QUARTZ-SURFACE--CAPS"></a><h3>CAIRO_HAS_QUARTZ_SURFACE</h3>
+<a name="CAIRO-HAS-QUARTZ-SURFACE:CAPS"></a><h3>CAIRO_HAS_QUARTZ_SURFACE</h3>
 <pre class="programlisting">#define             CAIRO_HAS_QUARTZ_SURFACE</pre>
 <p>
 Defined if the Quartz surface backend is available.
@@ -79,32 +68,31 @@ This macro can be used to conditionally compile backend-specific code.
 <hr>
 <div class="refsect2" title="cairo_quartz_surface_create ()">
 <a name="cairo-quartz-surface-create"></a><h3>cairo_quartz_surface_create ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_quartz_surface_create         (<a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t">cairo_format_t</a> format,
-                                                         unsigned int width,
-                                                         unsigned int height);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   cairo_quartz_surface_create         (<em class="parameter"><code><a class="link" href="cairo-image-surface.html#cairo-format-t" title="enum cairo_format_t"><span class="type">cairo_format_t</span></a> format</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> height</code></em>);</pre>
 <p>
 Creates a Quartz surface backed by a CGBitmap.  The surface is
 created using the Device RGB (or Device Gray, for A8) color space.
 All Cairo operations, including those that require software
-rendering, will succeed on this surface.</p>
-<p>
+rendering, will succeed on this surface.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
-<td> format of pixels in the surface to create
+<td>format of pixels in the surface to create
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td> width of the surface, in pixels
+<td>width of the surface, in pixels
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td> height of the surface, in pixels
+<td>height of the surface, in pixels
 </td>
 </tr>
 <tr>
@@ -120,10 +108,10 @@ rendering, will succeed on this surface.</p>
 <hr>
 <div class="refsect2" title="cairo_quartz_surface_create_for_cg_context ()">
 <a name="cairo-quartz-surface-create-for-cg-context"></a><h3>cairo_quartz_surface_create_for_cg_context ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_quartz_surface_create_for_cg_context
-                                                        (CGContextRef cgContext,
-                                                         unsigned int width,
-                                                         unsigned int height);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   cairo_quartz_surface_create_for_cg_context
+                                                        (<em class="parameter"><code><span class="type">CGContextRef</span> cgContext</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> height</code></em>);</pre>
 <p>
 Creates a Quartz surface that wraps the given CGContext.  The
 CGContext is assumed to be in the standard Cairo coordinate space
@@ -143,25 +131,24 @@ CGContextScaleCTM (cgContext, 1.0, -1.0);
 </p>
 <p>
 All Cairo operations are implemented in terms of Quartz operations,
-as long as Quartz-compatible elements are used (such as Quartz fonts).</p>
-<p>
+as long as Quartz-compatible elements are used (such as Quartz fonts).
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cgContext</code></em> :</span></p></td>
-<td> the existing CGContext for which to create the surface
+<td>the existing CGContext for which to create the surface
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td> width of the surface, in pixels
+<td>width of the surface, in pixels
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td> height of the surface, in pixels
+<td>height of the surface, in pixels
 </td>
 </tr>
 <tr>
@@ -177,18 +164,17 @@ as long as Quartz-compatible elements are used (such as Quartz fonts).</p>
 <hr>
 <div class="refsect2" title="cairo_quartz_surface_get_cg_context ()">
 <a name="cairo-quartz-surface-get-cg-context"></a><h3>cairo_quartz_surface_get_cg_context ()</h3>
-<pre class="programlisting">CGContextRef        cairo_quartz_surface_get_cg_context (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">CGContextRef</span>        cairo_quartz_surface_get_cg_context (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
 Returns the CGContextRef that the given Quartz surface is backed
-by.</p>
-<p>
+by.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> the Cairo Quartz surface
+<td>the Cairo Quartz surface
 </td>
 </tr>
 <tr>
@@ -213,6 +199,6 @@ by.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.15</div>
 </body>
 </html>
