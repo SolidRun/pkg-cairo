@@ -62,63 +62,6 @@ typedef struct _cairo_perf_case {
 
 const cairo_perf_case_t perf_cases[];
 
-/* Some targets just aren't that interesting for performance testing,
- * (not least because many of these surface types use a recording-surface
- * and as such defer the "real" rendering to later, so our timing
- * loops wouldn't count the real work, just the recording by the
- * recording-surface. */
-static cairo_bool_t
-target_is_measurable (const cairo_boilerplate_target_t *target)
-{
-    switch ((int) target->expected_type) {
-    case CAIRO_SURFACE_TYPE_IMAGE:
-	if (strcmp (target->name, "pdf") == 0 ||
-	    strcmp (target->name, "ps") == 0)
-	{
-	    return FALSE;
-	}
-	else
-	{
-	    return TRUE;
-	}
-    case CAIRO_SURFACE_TYPE_XLIB:
-	if (strcmp (target->name, "xlib-fallback") == 0 ||
-	    strcmp (target->name, "xlib-reference") == 0)
-	{
-	    return FALSE;
-	}
-	else
-	{
-	    return TRUE;
-	}
-    case CAIRO_SURFACE_TYPE_XCB:
-    case CAIRO_SURFACE_TYPE_GLITZ:
-    case CAIRO_SURFACE_TYPE_QUARTZ:
-    case CAIRO_SURFACE_TYPE_WIN32:
-    case CAIRO_SURFACE_TYPE_BEOS:
-    case CAIRO_SURFACE_TYPE_DIRECTFB:
-#if CAIRO_VERSION > CAIRO_VERSION_ENCODE(1,1,2)
-    case CAIRO_SURFACE_TYPE_OS2:
-#endif
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,9,4)
-    case CAIRO_SURFACE_TYPE_QT:
-#endif
-#if CAIRO_HAS_GL_SURFACE
-    case CAIRO_SURFACE_TYPE_GL:
-#endif
-#if CAIRO_HAS_DRM_SURFACE
-    case CAIRO_SURFACE_TYPE_DRM:
-#endif
-#if CAIRO_HAS_SKIA_SURFACE
-    case CAIRO_SURFACE_TYPE_SKIA:
-#endif
-	return TRUE;
-
-    default:
-	return FALSE;
-    }
-}
-
 static const char *
 _content_to_string (cairo_content_t content, cairo_bool_t similar)
 {
@@ -187,14 +130,16 @@ cairo_perf_calibrate (cairo_perf_t *perf,
     cairo_perf_ticks_t calibration0, calibration;
     unsigned loops, min_loops;
 
-    calibration0 = perf_func (perf->cr, perf->size, perf->size, 1);
+    min_loops = 1;
+    calibration0 = perf_func (perf->cr, perf->size, perf->size, min_loops);
     if (perf->fast_and_sloppy) {
 	calibration = calibration0;
     } else {
-	loops = cairo_perf_ticks_per_second () / 100 / calibration0;
-	if (loops < 3)
-	    loops = 3;
-	calibration = (calibration0 + perf_func (perf->cr, perf->size, perf->size, loops)) / (loops + 1);
+	calibration = 0.01 * cairo_perf_ticks_per_second ();
+	while (calibration0 < calibration) {
+	    min_loops *= 10;
+	    calibration0 = perf_func (perf->cr, perf->size, perf->size, min_loops);
+	}
     }
 
     /* XXX
@@ -208,7 +153,7 @@ cairo_perf_calibrate (cairo_perf_t *perf,
      * a more rigorous analysis of the synchronisation overhead,
      * that is to estimate the time for loop=0.
      */
-    loops = perf->ms_per_iteration * 0.001 * cairo_perf_ticks_per_second () / calibration;
+    loops = perf->ms_per_iteration * 0.001 * cairo_perf_ticks_per_second () * min_loops / calibration;
     min_loops = perf->fast_and_sloppy ? 1 : 10;
     if (loops < min_loops)
 	loops = min_loops;
@@ -219,7 +164,8 @@ cairo_perf_calibrate (cairo_perf_t *perf,
 void
 cairo_perf_run (cairo_perf_t		*perf,
 		const char		*name,
-		cairo_perf_func_t	 perf_func)
+		cairo_perf_func_t	 perf_func,
+		cairo_count_func_t	 count_func)
 {
     static cairo_bool_t first_run = TRUE;
     unsigned int i, similar, has_similar;
@@ -313,8 +259,7 @@ cairo_perf_run (cairo_perf_t		*perf,
 		if (i > 0) {
 		    _cairo_stats_compute (&stats, times, i+1);
 
-		    if (stats.std_dev <= CAIRO_PERF_LOW_STD_DEV)
-		    {
+		    if (stats.std_dev <= CAIRO_PERF_LOW_STD_DEV) {
 			low_std_dev_count++;
 			if (low_std_dev_count >= CAIRO_PERF_STABLE_STD_DEV_COUNT)
 			    break;
@@ -330,12 +275,23 @@ cairo_perf_run (cairo_perf_t		*perf,
 
 	if (perf->summary) {
 	    _cairo_stats_compute (&stats, times, i);
-	    fprintf (perf->summary,
-		     "%10lld %#8.3f %#8.3f %#5.2f%% %3d\n",
-		     (long long) stats.min_ticks,
-		     (stats.min_ticks * 1000.0) / cairo_perf_ticks_per_second (),
-		     (stats.median_ticks * 1000.0) / cairo_perf_ticks_per_second (),
-		     stats.std_dev * 100.0, stats.iterations);
+	    if (count_func != NULL) {
+		double count = count_func (perf->cr, perf->size, perf->size);
+		fprintf (perf->summary,
+			 "%10lld %#8.3f %#8.3f %#5.2f%% %3d: %.2f\n",
+			 (long long) stats.min_ticks,
+			 (stats.min_ticks * 1000.0) / cairo_perf_ticks_per_second (),
+			 (stats.median_ticks * 1000.0) / cairo_perf_ticks_per_second (),
+			 stats.std_dev * 100.0, stats.iterations,
+			 count * cairo_perf_ticks_per_second () / stats.min_ticks);
+	    } else {
+		fprintf (perf->summary,
+			 "%10lld %#8.3f %#8.3f %#5.2f%% %3d\n",
+			 (long long) stats.min_ticks,
+			 (stats.min_ticks * 1000.0) / cairo_perf_ticks_per_second (),
+			 (stats.median_ticks * 1000.0) / cairo_perf_ticks_per_second (),
+			 stats.std_dev * 100.0, stats.iterations);
+	    }
 	    fflush (perf->summary);
 	}
 
@@ -476,6 +432,8 @@ static void
 cairo_perf_fini (cairo_perf_t *perf)
 {
     cairo_boilerplate_free_targets (perf->targets);
+    cairo_boilerplate_fini ();
+
     free (perf->times);
     cairo_debug_reset_static_data ();
 #if HAVE_FCFINI
@@ -512,7 +470,7 @@ main (int argc, char *argv[])
     for (i = 0; i < perf.num_targets; i++) {
         const cairo_boilerplate_target_t *target = perf.targets[i];
 
-	if (! target_is_measurable (target))
+	if (! target->is_measurable)
 	    continue;
 
 	perf.target = target;
@@ -572,8 +530,8 @@ const cairo_perf_case_t perf_cases[] = {
     { fill,   64, 512},
     { stroke, 64, 512},
     { text,   64, 512},
-    { glyphs,   64, 512},
-    { mask,  64, 512},
+    { glyphs, 64, 512},
+    { mask,   64, 512},
     { tessellate, 100, 100},
     { subimage_copy, 16, 512},
     { pattern_create_radial, 16, 16},

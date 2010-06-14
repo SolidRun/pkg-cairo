@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -35,6 +35,7 @@
 
 #include "cairo-error-private.h"
 #include "cairo-drm-i915-private.h"
+#include "cairo-surface-offset-private.h"
 #include "cairo-surface-subsurface-private.h"
 #include "cairo-surface-snapshot-private.h"
 
@@ -149,7 +150,7 @@ i915_packed_pixel_surface_create (i915_device_t *device,
 			 content);
 
     surface->bo = intel_bo_create (&device->intel, size, FALSE);
-    assert (tiling == I915_TILING_NONE);
+    assert (surface->bo->tiling == I915_TILING_NONE);
     if (unlikely (surface->bo == NULL)) {
 	free (surface);
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
@@ -233,8 +234,6 @@ i915_packed_pixel_surface_create (i915_device_t *device,
 		data += size;
 	    }
 	}
-
-	intel_bo_unmap (surface->bo);
     }
 
     surface->device = device;
@@ -318,7 +317,7 @@ i915_shader_linear_color (i915_device_t *device,
 
     /* interpolate */
     i915_fs_mad (out, 0,
-		 i915_fs_operand (tmp, -X, -X, -X, -X),
+		 i915_fs_operand (tmp, NEG_X, NEG_X, NEG_X, NEG_X),
 		 i915_fs_operand_reg (c0),
 		 i915_fs_operand_reg (c0));
     i915_fs_mad (out, 0,
@@ -372,8 +371,8 @@ i915_shader_radial_init (struct i915_shader_radial *r,
 /* Max instruction count: 10 */
 static void
 i915_shader_radial_coord (i915_device_t *device,
-			   enum i915_shader_radial_mode mode,
-			   int in, int g0, int g1, int out)
+			  enum i915_shader_radial_mode mode,
+			  int in, int g0, int g1, int out)
 {
     switch (mode) {
     case RADIAL_ONE:
@@ -385,7 +384,7 @@ i915_shader_radial_coord (i915_device_t *device,
 	i915_fs_mad (FS_U0, MASK_X | MASK_Y,
 		     i915_fs_operand (in, X, Y, ZERO, ZERO),
 		     i915_fs_operand (g0, Z, Z, ZERO, ZERO),
-		     i915_fs_operand (g0, -X, -Y, ZERO, ZERO));
+		     i915_fs_operand (g0, NEG_X, NEG_Y, ZERO, ZERO));
 	i915_fs_dp2add (FS_U0, MASK_X,
 			i915_fs_operand (FS_U0, X, Y, ZERO, ZERO),
 			i915_fs_operand (FS_U0, X, Y, ZERO, ZERO),
@@ -418,7 +417,7 @@ i915_shader_radial_coord (i915_device_t *device,
 	/* u1.x = pdx² + pdy² - r1²; [C] */
 	i915_fs_dp3 (FS_U1, MASK_X,
 		     i915_fs_operand (FS_U0, X, Y, Z, ZERO),
-		     i915_fs_operand (FS_U0, X, Y, -Z, ZERO));
+		     i915_fs_operand (FS_U0, X, Y, NEG_Z, ZERO));
 	/* u1.x = C, u1.y = B, u1.z=-4*A; */
 	i915_fs_mov_masked (FS_U1, MASK_Y, i915_fs_operand (FS_U0, W, W, W, W));
 	i915_fs_mov_masked (FS_U1, MASK_Z, i915_fs_operand (g0, W, W, W, W));
@@ -433,8 +432,8 @@ i915_shader_radial_coord (i915_device_t *device,
 	i915_fs_rsq (out, MASK_X, i915_fs_operand (FS_U1, X, X, X, X));
 	i915_fs_mad (out, MASK_X | MASK_Y,
 		     i915_fs_operand (out, X, X, ZERO, ZERO),
-		     i915_fs_operand (FS_U1, X, -X, ZERO, ZERO),
-		     i915_fs_operand (FS_U0, -W, -W, ZERO, ZERO));
+		     i915_fs_operand (FS_U1, X, NEG_X, ZERO, ZERO),
+		     i915_fs_operand (FS_U0, NEG_W, NEG_W, ZERO, ZERO));
 	/* out.x = (-B + sqrt (B² - 4*A*C)) / (2 * A),
 	 * out.y = (-B - sqrt (B² - 4*A*C)) / (2 * A)
 	 */
@@ -535,13 +534,6 @@ i915_shader_get_num_tex_coords (const i915_shader_t *shader)
      (((pure & (1 << 2)) ? ONE_CHANNEL_VAL : ZERO_CHANNEL_VAL) << Z_CHANNEL_SHIFT) | \
      (((pure & (1 << 3)) ? ONE_CHANNEL_VAL : ZERO_CHANNEL_VAL) << W_CHANNEL_SHIFT))
 
-#define i915_fs_operand_reg_pure(reg, pure) \
-    (reg | \
-     (((pure & (1 << 0)) ? X_CHANNEL_VAL : ZERO_CHANNEL_VAL) << X_CHANNEL_SHIFT) | \
-     (((pure & (1 << 1)) ? Y_CHANNEL_VAL : ZERO_CHANNEL_VAL) << Y_CHANNEL_SHIFT) | \
-     (((pure & (1 << 2)) ? Z_CHANNEL_VAL : ZERO_CHANNEL_VAL) << Z_CHANNEL_SHIFT) | \
-     (((pure & (1 << 3)) ? W_CHANNEL_VAL : ZERO_CHANNEL_VAL) << W_CHANNEL_SHIFT))
-
 static void
 i915_set_shader_program (i915_device_t *device,
 			 const i915_shader_t *shader)
@@ -563,6 +555,7 @@ i915_set_shader_program (i915_device_t *device,
 	(i915_shader_channel_key (&shader->mask)   <<  8) |
 	(i915_shader_channel_key (&shader->clip)   << 16) |
 	(shader->op << 24) |
+	((shader->opacity < 1.) << 30) |
 	(((shader->content & CAIRO_CONTENT_ALPHA) == CAIRO_CONTENT_ALPHA) << 31);
     if (n == device->current_program)
 	return;
@@ -640,7 +633,7 @@ i915_set_shader_program (i915_device_t *device,
 	/* XXX can we defer premultiplication? */
 	i915_fs_mul (out_reg,
 		     i915_fs_operand_reg (FS_U3),
-		     i915_fs_operand (FS_U3, W, W, W, W));
+		     i915_fs_operand (FS_U3, W, W, W, ONE));
 
 	constant_offset += 2;
 	texture_offset += 1;
@@ -651,9 +644,9 @@ i915_set_shader_program (i915_device_t *device,
 	i915_shader_radial_coord (device, shader->source.base.mode,
 				  FS_T0, /* input */
 				  FS_C0, FS_C1, /* gradient constants */
-				  FS_U3); /* coordinate */
+				  FS_R0); /* coordinate */
 
-	i915_fs_texld (out_reg, FS_S0, FS_U3);
+	i915_fs_texld (out_reg, FS_S0, FS_R0);
 	constant_offset += 2;
 	texture_offset += 1;
 	sampler_offset += 1;
@@ -711,11 +704,7 @@ i915_set_shader_program (i915_device_t *device,
 				  FS_T0 + texture_offset, /* input */
 				  FS_C0 + constant_offset,
 				  FS_C0 + constant_offset + 1, /* colour ramp */
-				  FS_U3); /* unpremultiplied output */
-	i915_fs_mul (FS_R1,
-		     i915_fs_operand_reg (FS_U3),
-		     i915_fs_operand (source_reg, W, W, W, W));
-
+				  FS_R1); /* unpremultiplied output */
 	constant_offset += 2;
 	texture_offset += 1;
 	mask_reg = FS_R1;
@@ -726,9 +715,9 @@ i915_set_shader_program (i915_device_t *device,
 				  FS_T0 + texture_offset, /* input */
 				  FS_C0 + constant_offset,
 				  FS_C0 + constant_offset + 1, /* gradient constants */
-				  FS_U3); /* coordinate */
+				  FS_R1); /* coordinate */
 
-	i915_fs_texld (FS_R1, FS_S0 + sampler_offset, FS_U3);
+	i915_fs_texld (FS_R1, FS_S0 + sampler_offset, FS_R1);
 	constant_offset += 2;
 	texture_offset += 1;
 	sampler_offset += 1;
@@ -746,23 +735,37 @@ i915_set_shader_program (i915_device_t *device,
     if (mask_reg != ~0U) {
 	if (! shader->need_combine &&
 	    shader->clip.type.fragment != FS_TEXTURE &&
-	    shader->content != CAIRO_CONTENT_ALPHA)
+	    (shader->content != CAIRO_CONTENT_ALPHA || source_reg == ~0U))
 	{
 	    out_reg = FS_OC;
 	}
 	if (source_reg == ~0U) {
 	    if (source_pure) {
 		if (shader->mask.type.fragment == FS_SPANS) {
-		    i915_fs_mov (out_reg,
-				 i915_fs_operand_impure (mask_reg, X, source_pure));
+		    if (out_reg == FS_OC && shader->content == CAIRO_CONTENT_ALPHA) {
+			if (source_pure & (1 << 3))
+			    i915_fs_mov (out_reg, i915_fs_operand (mask_reg, X, X, X, X));
+			else
+			    i915_fs_mov (out_reg, i915_fs_operand_zero ());
+		    } else {
+			i915_fs_mov (out_reg,
+				     i915_fs_operand_impure (mask_reg, X, source_pure));
+		    }
 		} else {
 		    /* XXX ComponentAlpha
 		       i915_fs_mov (out_reg,
 		       i915_fs_operand_pure (mask_reg,
 		       shader->source.solid.pure));
 		       */
-		    i915_fs_mov (out_reg,
-				 i915_fs_operand_impure (mask_reg, W, source_pure));
+		    if (out_reg == FS_OC && shader->content == CAIRO_CONTENT_ALPHA) {
+			if (source_pure & (1 << 3))
+			    i915_fs_mov (out_reg, i915_fs_operand (mask_reg, W, W, W, W));
+			else
+			    i915_fs_mov (out_reg, i915_fs_operand_zero ());
+		    } else {
+			i915_fs_mov (out_reg,
+				     i915_fs_operand_impure (mask_reg, W, source_pure));
+		    }
 		}
 		source_reg = out_reg;
 	    } else if (shader->mask.type.fragment == FS_SPANS) {
@@ -774,22 +777,41 @@ i915_set_shader_program (i915_device_t *device,
 	    }
 	} else {
 	    if (shader->mask.type.fragment == FS_SPANS) {
-		i915_fs_mul (out_reg,
-			     i915_fs_operand_reg (source_reg),
-			     i915_fs_operand (mask_reg, X, X, X, X));
+		    if (out_reg == FS_OC && shader->content == CAIRO_CONTENT_ALPHA) {
+			i915_fs_mul (out_reg,
+				     i915_fs_operand (source_reg, W, W, W, W),
+				     i915_fs_operand (mask_reg, X, X, X, X));
+		    } else {
+			i915_fs_mul (out_reg,
+				     i915_fs_operand_reg (source_reg),
+				     i915_fs_operand (mask_reg, X, X, X, X));
+		    }
 	    } else {
 		/* XXX ComponentAlpha
 		i915_fs_mul (FS_R0,
 			     i915_fs_operand_reg (source_reg),
 			     i915_fs_operand_reg (mask_reg));
 		 */
-		i915_fs_mul (out_reg,
-			     i915_fs_operand_reg (source_reg),
-			     i915_fs_operand (mask_reg, W, W, W, W));
+		if (out_reg == FS_OC && shader->content == CAIRO_CONTENT_ALPHA) {
+		    i915_fs_mul (out_reg,
+				 i915_fs_operand (source_reg, W, W, W, W),
+				 i915_fs_operand (mask_reg, W, W, W, W));
+		} else {
+		    i915_fs_mul (out_reg,
+				 i915_fs_operand_reg (source_reg),
+				 i915_fs_operand (mask_reg, W, W, W, W));
+		}
 	    }
 
 	    source_reg = out_reg;
 	}
+    }
+
+    if (shader->opacity < 1.) {
+	i915_fs_mul (source_reg,
+		     i915_fs_operand_reg (source_reg),
+		     i915_fs_operand_reg (FS_C0 + constant_offset));
+	constant_offset++;
     }
 
     /* need to preserve order of src, mask, clip, dst */
@@ -820,7 +842,7 @@ i915_set_shader_program (i915_device_t *device,
 		dest_reg = FS_OC;
 	    } else {
 		i915_fs_add (FS_U0,
-			     i915_fs_operand (source_reg, -W, -W, -W, -W),
+			     i915_fs_operand (source_reg, NEG_W, NEG_W, NEG_W, NEG_W),
 			     i915_fs_operand_one ());
 		i915_fs_mul (FS_U0,
 			     i915_fs_operand_reg (FS_U0),
@@ -851,7 +873,7 @@ i915_set_shader_program (i915_device_t *device,
 		source_reg = FS_R3;
 	    } else {
 		i915_fs_add (FS_U0,
-			     i915_fs_operand (source_reg, -W, -W, -W, -W),
+			     i915_fs_operand (source_reg, NEG_W, NEG_W, NEG_W, NEG_W),
 			     i915_fs_operand_one ());
 		i915_fs_mul (FS_R3,
 			     i915_fs_operand_reg (FS_U0),
@@ -902,41 +924,50 @@ i915_set_shader_program (i915_device_t *device,
 		    source_reg = mask_reg;
 		} else {
 		    out_reg = FS_OC;
-		    if (shader->content == CAIRO_CONTENT_ALPHA)
-			out_reg = FS_U0;
-		    i915_fs_mov (out_reg,
-				 i915_fs_operand_reg_pure (mask_reg, source_pure));
+		    if ((shader->content & CAIRO_CONTENT_COLOR) == 0) {
+			if (source_pure & (1 << 3))
+			    i915_fs_mov (out_reg, i915_fs_operand (mask_reg, W, W, W, W));
+			else
+			    i915_fs_mov (out_reg, i915_fs_operand_zero ());
+		    } else {
+			i915_fs_mov (out_reg,
+				     i915_fs_operand_impure (mask_reg, W, source_pure));
+		    }
 		    source_reg = out_reg;
 		}
 	    } else if (mask_reg) {
 		out_reg = FS_OC;
-		if (shader->content == CAIRO_CONTENT_ALPHA)
-		    out_reg = FS_U0;
-		i915_fs_mul (out_reg,
-			     i915_fs_operand_reg (source_reg),
-			     i915_fs_operand (mask_reg, W, W, W, W));
+		if ((shader->content & CAIRO_CONTENT_COLOR) == 0) {
+		    i915_fs_mul (out_reg,
+				 i915_fs_operand (source_reg, W, W, W, W),
+				 i915_fs_operand (mask_reg, W, W, W, W));
+		} else {
+		    i915_fs_mul (out_reg,
+				 i915_fs_operand_reg (source_reg),
+				 i915_fs_operand (mask_reg, W, W, W, W));
+		}
 
 		source_reg = out_reg;
 	    }
 	} else {
-	    /* (source OP dest)  LERP_clip dest */
+	    /* (source OP dest) LERP_clip dest */
 	    if (source_reg == ~0U) {
 		if (source_pure == 0) {
-		    i915_fs_mov (FS_U0,
+		    i915_fs_mov (FS_R3,
 				 i915_fs_operand (mask_reg, W, W, W, W));
 		} else {
-		    i915_fs_mov (FS_U0,
+		    i915_fs_mov (FS_R3,
 				 i915_fs_operand_impure (mask_reg, W, source_pure));
 		}
 	    } else {
-		i915_fs_mul (FS_U0,
+		i915_fs_mul (FS_R3,
 			     i915_fs_operand_reg (source_reg),
 			     i915_fs_operand (mask_reg, W, W, W, W));
 	    }
 
 	    i915_fs_add (mask_reg,
 			 i915_fs_operand_one (),
-			 i915_fs_operand (mask_reg, -W, -W, -W, -W));
+			 i915_fs_operand (mask_reg, NEG_W, NEG_W, NEG_W, NEG_W));
 
 	    if (dest_reg != FS_OC) {
 		if (dest_reg == ~0U) {
@@ -955,33 +986,42 @@ i915_set_shader_program (i915_device_t *device,
 	    }
 
 	    source_reg = FS_OC;
-	    if (shader->content != CAIRO_CONTENT_COLOR_ALPHA)
-		source_reg = FS_U0;
-	    i915_fs_add (source_reg,
-			 i915_fs_operand_reg (FS_U0),
-			 i915_fs_operand_reg (mask_reg));
+	    if ((shader->content & CAIRO_CONTENT_COLOR) == 0) {
+		i915_fs_add (source_reg,
+			     i915_fs_operand (FS_R3, W, W, W, W),
+			     i915_fs_operand (mask_reg, W, W, W, W));
+	    } else {
+		i915_fs_add (source_reg,
+			     i915_fs_operand_reg (FS_R3),
+			     i915_fs_operand_reg (mask_reg));
+	    }
 	}
     }
 
     if (source_reg != FS_OC) {
-	if (source_reg == ~0U)
-	    if (source_pure)
-		i915_fs_mov (FS_OC, i915_fs_operand_pure (source_pure));
-	    else
+	if (source_reg == ~0U) {
+	    if (source_pure) {
+		if ((shader->content & CAIRO_CONTENT_COLOR) == 0) {
+		    if (source_pure & (1 << 3))
+			i915_fs_mov (FS_OC, i915_fs_operand_one ());
+		    else
+			i915_fs_mov (FS_OC, i915_fs_operand_zero ());
+		} else
+		    i915_fs_mov (FS_OC, i915_fs_operand_pure (source_pure));
+	    } else {
 		i915_fs_mov (FS_OC, i915_fs_operand_one ());
-	else if ((shader->content & CAIRO_CONTENT_COLOR) == 0)
+	    }
+	} else if ((shader->content & CAIRO_CONTENT_COLOR) == 0) {
 	    i915_fs_mov (FS_OC, i915_fs_operand (source_reg, W, W, W, W));
-	else
+	} else {
 	    i915_fs_mov (FS_OC, i915_fs_operand_reg (source_reg));
-    } else {
-	if ((shader->content & CAIRO_CONTENT_COLOR) == 0)
-	    i915_fs_mov (FS_OC, i915_fs_operand (FS_OC, W, W, W, W));
+	}
     }
 
     FS_END ();
 }
 
-static void
+static cairo_bool_t
 i915_shader_linear_init (struct i915_shader_linear *l,
 			 const cairo_linear_pattern_t *linear)
 {
@@ -990,9 +1030,12 @@ i915_shader_linear_init (struct i915_shader_linear *l,
 
     dx = _cairo_fixed_to_double (linear->p2.x - linear->p1.x);
     dy = _cairo_fixed_to_double (linear->p2.y - linear->p1.y);
-    sf = 1. / (dx * dx + dy * dy);
-    dx *= sf;
-    dy *= sf;
+    sf = dx * dx + dy * dy;
+    if (sf <= 1e-5)
+	return FALSE;
+
+    dx /= sf;
+    dy /= sf;
 
     x0 = _cairo_fixed_to_double (linear->p1.x);
     y0 = _cairo_fixed_to_double (linear->p1.y);
@@ -1011,6 +1054,8 @@ i915_shader_linear_init (struct i915_shader_linear *l,
 	l->dy = m.xy;
 	l->offset = m.x0;
     }
+
+    return TRUE;
 }
 
 static cairo_bool_t
@@ -1111,7 +1156,7 @@ i915_shader_acquire_solid (i915_shader_t *shader,
 	src->base.content = content;
 	src->type.fragment = src == &shader->source ? FS_DIFFUSE : FS_CONSTANT;
     }
-    src->type.vertex = VS_CONSTANT;
+    src->type.vertex = src->type.fragment == FS_ZERO ? VS_ZERO : VS_CONSTANT;
     src->type.pattern = PATTERN_CONSTANT;
 
     return CAIRO_STATUS_SUCCESS;
@@ -1126,8 +1171,8 @@ i915_shader_acquire_linear (i915_shader_t *shader,
     cairo_bool_t mode = LINEAR_TEXTURE;
     cairo_status_t status;
 
-    i915_shader_linear_init (&src->linear, linear);
-    if (linear->base.n_stops == 2 &&
+    if (i915_shader_linear_init (&src->linear, linear) &&
+	linear->base.n_stops == 2 &&
 	linear->base.stops[0].offset == 0.0 &&
 	linear->base.stops[1].offset == 1.0)
     {
@@ -1211,7 +1256,7 @@ i915_shader_acquire_radial (i915_shader_t *shader,
 
     i915_shader_radial_init (&src->radial, radial);
 
-    src->type.vertex = VS_RADIAL;
+    src->type.vertex = VS_TEXTURE;
     src->type.fragment = FS_RADIAL;
     src->type.pattern = PATTERN_RADIAL;
     src->base.texfmt = TEXCOORDFMT_2D;
@@ -1240,21 +1285,38 @@ i915_surface_clone (i915_device_t *device,
     i915_surface_t *clone;
     cairo_status_t status;
 
+#if 0
     clone =
 	i915_surface_create_from_cacheable_image_internal (device, image);
     if (unlikely (clone->intel.drm.base.status))
 	return clone->intel.drm.base.status;
+#else
+    cairo_format_t format;
 
-    status = _cairo_surface_attach_snapshot (&image->base,
-					     &clone->intel.drm.base,
-					     intel_surface_detach_snapshot);
-    if (likely (status == CAIRO_STATUS_SUCCESS))
-	status = intel_snapshot_cache_insert (&device->intel, &clone->intel);
+    format = image->format;
+    if (format == CAIRO_FORMAT_A1)
+	format = CAIRO_FORMAT_A8;
 
-    if (unlikely (status)) {
-	cairo_surface_destroy (&clone->intel.drm.base);
+    clone = (i915_surface_t *)
+	i915_surface_create_internal (&device->intel.base,
+				      format,
+				      image->width,
+				      image->height,
+				      I915_TILING_DEFAULT,
+				      FALSE);
+    if (unlikely (clone->intel.drm.base.status))
+	return clone->intel.drm.base.status;
+
+    status = intel_bo_put_image (&device->intel,
+				 to_intel_bo (clone->intel.drm.bo),
+				 image,
+				 0, 0,
+				 image->width, image->height,
+				 0, 0);
+
+    if (unlikely (status))
 	return status;
-    }
+#endif
 
     *clone_out = clone;
     return CAIRO_STATUS_SUCCESS;
@@ -1268,10 +1330,15 @@ i915_surface_clone_subimage (i915_device_t *device,
 {
     i915_surface_t *clone;
     cairo_status_t status;
+    cairo_format_t format;
+
+    format = image->format;
+    if (format == CAIRO_FORMAT_A1)
+	format = CAIRO_FORMAT_A8;
 
     clone = (i915_surface_t *)
 	i915_surface_create_internal (&device->intel.base,
-				      image->base.content,
+				      format,
 				      extents->width,
 				      extents->height,
 				      I915_TILING_NONE,
@@ -1279,9 +1346,8 @@ i915_surface_clone_subimage (i915_device_t *device,
     if (unlikely (clone->intel.drm.base.status))
 	return clone->intel.drm.base.status;
 
-    status = intel_bo_put_image (to_intel_device (clone->intel.drm.base.device),
+    status = intel_bo_put_image (&device->intel,
 				 to_intel_bo (clone->intel.drm.bo),
-				 clone->intel.drm.stride,
 				 image,
 				 extents->x, extents->y,
 				 extents->width, extents->height,
@@ -1289,6 +1355,60 @@ i915_surface_clone_subimage (i915_device_t *device,
 
     if (unlikely (status))
 	return status;
+
+    *clone_out = clone;
+    return CAIRO_STATUS_SUCCESS;
+}
+
+static cairo_status_t
+i915_surface_render_pattern (i915_device_t *device,
+			     const cairo_surface_pattern_t *pattern,
+			     const cairo_rectangle_int_t *extents,
+			     i915_surface_t **clone_out)
+{
+    i915_surface_t *clone;
+    cairo_surface_t *image;
+    cairo_status_t status;
+    void *ptr;
+
+    clone = (i915_surface_t *)
+	i915_surface_create_internal (&device->intel.base,
+				      _cairo_format_from_content (pattern->surface->content),
+				      extents->width,
+				      extents->height,
+				      I915_TILING_NONE,
+				      FALSE);
+    if (unlikely (clone->intel.drm.base.status))
+	return clone->intel.drm.base.status;
+
+    ptr = intel_bo_map (&device->intel,
+			to_intel_bo (clone->intel.drm.bo));
+    if (unlikely (ptr == NULL)) {
+	cairo_surface_destroy (&clone->intel.drm.base);
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+    }
+
+    image = cairo_image_surface_create_for_data (ptr,
+						 clone->intel.drm.format,
+						 clone->intel.drm.width,
+						 clone->intel.drm.height,
+						 clone->intel.drm.stride);
+    if (unlikely (image->status)) {
+	cairo_surface_destroy (&clone->intel.drm.base);
+	return image->status;
+    }
+
+    status = _cairo_surface_offset_paint (image,
+					  extents->x, extents->y,
+					  CAIRO_OPERATOR_SOURCE,
+					  &pattern->base,
+					  NULL);
+    cairo_surface_destroy (image);
+
+    if (unlikely (status)) {
+	cairo_surface_destroy (&clone->intel.drm.base);
+	return status;
+    }
 
     *clone_out = clone;
     return CAIRO_STATUS_SUCCESS;
@@ -1350,6 +1470,46 @@ i915_shader_acquire_solid_surface (i915_shader_t *shader,
     return CAIRO_STATUS_SUCCESS;
 }
 
+static cairo_filter_t
+sampled_area (const cairo_surface_pattern_t *pattern,
+	      const cairo_rectangle_int_t *extents,
+	      cairo_rectangle_int_t *sample)
+{
+    cairo_rectangle_int_t surface_extents;
+    cairo_filter_t filter;
+    double x1, x2, y1, y2;
+    double pad;
+
+    x1 = extents->x;
+    y1 = extents->y;
+    x2 = extents->x + (int) extents->width;
+    y2 = extents->y + (int) extents->height;
+
+    if (_cairo_matrix_is_translation (&pattern->base.matrix)) {
+	x1 += pattern->base.matrix.x0; x2 += pattern->base.matrix.x0;
+	y1 += pattern->base.matrix.y0; y2 += pattern->base.matrix.y0;
+    } else {
+	_cairo_matrix_transform_bounding_box (&pattern->base.matrix,
+					      &x1, &y1, &x2, &y2,
+					      NULL);
+    }
+
+    filter = _cairo_pattern_analyze_filter (&pattern->base, &pad);
+    sample->x = floor (x1 - pad);
+    sample->y = floor (y1 - pad);
+    sample->width  = ceil (x2 + pad) - sample->x;
+    sample->height = ceil (y2 + pad) - sample->y;
+
+    if (_cairo_surface_get_extents (pattern->surface, &surface_extents)) {
+	cairo_bool_t is_empty;
+
+	is_empty = _cairo_rectangle_intersect (sample,
+					       &surface_extents);
+    }
+
+    return filter;
+}
+
 static cairo_status_t
 i915_shader_acquire_surface (i915_shader_t *shader,
 			     union i915_shader_channel *src,
@@ -1364,9 +1524,14 @@ i915_shader_acquire_surface (i915_shader_t *shader,
     int src_x = 0, src_y = 0;
     cairo_surface_t *free_me = NULL;
     cairo_status_t status;
+    cairo_rectangle_int_t sample;
 
     assert (src->type.fragment == (i915_fragment_shader_t) -1);
     drm = surface = pattern->surface;
+
+    extend = pattern->base.extend;
+    src->base.matrix = pattern->base.matrix;
+    filter = sampled_area (pattern, extents, &sample);
 
 #if CAIRO_HAS_XCB_SURFACE && CAIRO_HAS_XCB_DRM_FUNCTIONS
     if (surface->type == CAIRO_SURFACE_TYPE_XCB) {
@@ -1405,11 +1570,11 @@ i915_shader_acquire_surface (i915_shader_t *shader,
 		cairo_surface_subsurface_t *sub = (cairo_surface_subsurface_t *) surface;
 		int x;
 
-		if (s->intel.drm.fallback != NULL) {
-		    status = intel_surface_flush (s);
-		    if (unlikely (status))
-			return status;
-		}
+		status = i915_surface_fallback_flush (s);
+		if (unlikely (status))
+		    return status;
+
+		/* XXX blt subimage and cache snapshot */
 
 		if (to_intel_bo (s->intel.drm.bo)->batch_write_domain) {
 		    /* XXX pipelined flush of RENDER/TEXTURE cache */
@@ -1438,18 +1603,23 @@ i915_shader_acquire_surface (i915_shader_t *shader,
 	    }
 	} else {
 	    /* XXX if s == shader->dst allow if FILTER_NEAREST, EXTEND_NONE? */
-	    if (s->intel.drm.base.device == shader->target->intel.drm.base.device &&
-		s != shader->target)
-	    {
-		if (s->intel.drm.fallback != NULL) {
-		    status = intel_surface_flush (s);
+	    if (s->intel.drm.base.device == shader->target->intel.drm.base.device) {
+		status = i915_surface_fallback_flush (s);
+		if (unlikely (status))
+		    return status;
+
+		if (s == shader->target || i915_surface_needs_tiling (s)) {
+		    status = i915_surface_copy_subimage (i915_device (shader->target),
+							 s, &sample, TRUE, &s);
 		    if (unlikely (status))
 			return status;
-		}
 
+		    free_me = drm = &s->intel.drm.base;
+		}
 
 		src->type.fragment = FS_TEXTURE;
 		src->surface.pixel = NONE;
+
 		surface_width  = s->intel.drm.width;
 		surface_height = s->intel.drm.height;
 
@@ -1474,8 +1644,6 @@ i915_shader_acquire_surface (i915_shader_t *shader,
 	    _cairo_surface_has_snapshot (surface,
 					 shader->target->intel.drm.base.backend);
 	if (s == NULL) {
-	    cairo_image_surface_t *image;
-	    void *image_extra;
 	    cairo_status_t status;
 
 #if 0
@@ -1485,23 +1653,59 @@ i915_shader_acquire_surface (i915_shader_t *shader,
 				     clone_out);
 #endif
 
-	    status = _cairo_surface_acquire_source_image (surface, &image, &image_extra);
-	    if (unlikely (status))
-		return status;
+	    if (sample.width > 2048 || sample.height > 2048) {
+		status = i915_surface_render_pattern (i915_device (shader->target),
+						      pattern, extents,
+						      &s);
+		if (unlikely (status))
+		    return status;
 
-	    if (image->width < 2048 && image->height < 2048) {
-		status = i915_surface_clone ((i915_device_t *) shader->target->intel.drm.base.device,
-					     image, &s);
+		extend = CAIRO_EXTEND_NONE;
+		filter = CAIRO_FILTER_NEAREST;
+		cairo_matrix_init_translate (&src->base.matrix,
+					     -extents->x, -extents->y);
 	    } else {
-		status = i915_surface_clone_subimage ((i915_device_t *) shader->target->intel.drm.base.device,
-						      image, extents, &s);
-		src_x = -extents->x;
-		src_y = -extents->y;
-	    }
+		cairo_image_surface_t *image;
+		void *image_extra;
 
-	    _cairo_surface_release_source_image (surface, image, image_extra);
-	    if (unlikely (status))
-		return status;
+		status = _cairo_surface_acquire_source_image (surface, &image, &image_extra);
+		if (unlikely (status))
+		    return status;
+
+		if (image->width  < 2048 &&
+		    image->height < 2048 &&
+		    sample.width  >= image->width / 4 &&
+		    sample.height >= image->height /4)
+		{
+
+		    status = i915_surface_clone (i915_device (shader->target),
+						 image, &s);
+
+		    if (likely (status == CAIRO_STATUS_SUCCESS)) {
+			_cairo_surface_attach_snapshot (surface,
+							&s->intel.drm.base,
+							intel_surface_detach_snapshot);
+
+			status = intel_snapshot_cache_insert (&i915_device (shader->target)->intel,
+							      &s->intel);
+			if (unlikely (status)) {
+			    cairo_surface_finish (&s->intel.drm.base);
+			    cairo_surface_destroy (&s->intel.drm.base);
+			}
+		    }
+		}
+		else
+		{
+		    status = i915_surface_clone_subimage (i915_device (shader->target),
+							  image, &sample, &s);
+		    src_x = -extents->x;
+		    src_y = -extents->y;
+		}
+
+		_cairo_surface_release_source_image (surface, image, image_extra);
+		if (unlikely (status))
+		    return status;
+	    }
 
 	    free_me = &s->intel.drm.base;
 	}
@@ -1524,11 +1728,10 @@ i915_shader_acquire_surface (i915_shader_t *shader,
     /* XXX transform nx1 or 1xn surfaces to 1D */
 
     src->type.pattern = PATTERN_TEXTURE;
-    extend = pattern->base.extend;
     if (extend != CAIRO_EXTEND_NONE &&
-	extents->x >= 0 && extents->y >= 0 &&
-	extents->x + extents->width  <= surface_width &&
-	extents->y + extents->height <= surface_height)
+	sample.x >= 0 && sample.y >= 0 &&
+	sample.x + sample.width  <= surface_width &&
+	sample.y + sample.height <= surface_height)
     {
 	extend = CAIRO_EXTEND_NONE;
     }
@@ -1541,10 +1744,6 @@ i915_shader_acquire_surface (i915_shader_t *shader,
     }
     src->base.content = drm->content;
 
-    filter = pattern->base.filter;
-    if (_cairo_matrix_is_pixel_exact (&pattern->base.matrix))
-	filter = CAIRO_FILTER_NEAREST;
-
     src->base.sampler[0] =
 	(MIPFILTER_NONE << SS2_MIP_FILTER_SHIFT) |
 	i915_texture_filter (filter);
@@ -1553,11 +1752,8 @@ i915_shader_acquire_surface (i915_shader_t *shader,
 	i915_texture_extend (extend);
 
     /* tweak the src matrix to map from dst to texture coordinates */
-    src->base.matrix = pattern->base.matrix;
     if (src_x | src_y)
 	cairo_matrix_translate (&src->base.matrix, src_x, src_x);
-    if (i915_texture_filter_is_nearest (filter))
-	cairo_matrix_translate (&src->base.matrix, NEAREST_BIAS, NEAREST_BIAS);
     cairo_matrix_init_scale (&m, 1. / surface_width, 1. / surface_height);
     cairo_matrix_multiply (&src->base.matrix, &src->base.matrix, &m);
 
@@ -1685,14 +1881,44 @@ i915_shader_channel_init (union i915_shader_channel *channel)
     channel->base.mode = 0;
 }
 
+static void
+i915_shader_channel_fini (i915_device_t *device,
+			   union i915_shader_channel *channel)
+{
+    switch (channel->type.pattern) {
+    case PATTERN_TEXTURE:
+    case PATTERN_BASE:
+    case PATTERN_LINEAR:
+    case PATTERN_RADIAL:
+	if (channel->base.bo != NULL)
+	    intel_bo_destroy (&device->intel, channel->base.bo);
+	break;
+
+    default:
+    case PATTERN_CONSTANT:
+	break;
+    }
+}
+
+static void
+i915_shader_channel_reset (i915_device_t *device,
+			   union i915_shader_channel *channel)
+{
+    i915_shader_channel_fini (device, channel);
+    i915_shader_channel_init (channel);
+}
+
 void
 i915_shader_init (i915_shader_t *shader,
 		  i915_surface_t *dst,
-		  cairo_operator_t op)
+		  cairo_operator_t op,
+		  double opacity)
 {
+    shader->committed = FALSE;
     shader->device = i915_device (dst);
     shader->target = dst;
     shader->op = op;
+    shader->opacity = opacity;
 
     shader->blend = i915_get_blend (op, dst);
     shader->need_combine = FALSE;
@@ -1709,216 +1935,219 @@ static void
 i915_set_shader_samplers (i915_device_t *device,
 	                  const i915_shader_t *shader)
 {
-    uint32_t n_samplers, n;
-    uint32_t samplers[4 * (1+2+8)];
-    uint32_t mask, tu;
+    uint32_t n_samplers, n_maps, n;
+    uint32_t samplers[2*4];
+    uint32_t maps[4*4];
+    uint32_t mask, s, m;
 
-    n_samplers =
+    n_maps =
 	shader->source.base.n_samplers +
 	shader->mask.base.n_samplers +
 	shader->clip.base.n_samplers +
 	shader->dst.base.n_samplers;
-    assert (n_samplers <= 4);
+    assert (n_maps <= 4);
 
-    if (n_samplers == 0)
+    if (n_maps == 0)
 	return;
 
-    mask  = (1 << n_samplers) - 1;
+    n_samplers =
+	!! shader->source.base.bo +
+	!! shader->mask.base.bo +
+	!! shader->clip.base.bo +
+	!! shader->dst.base.bo;
+
+    mask  = (1 << n_maps) - 1;
 
     /* We check for repeated setting of sample state mainly to catch
      * continuation of text strings across multiple show-glyphs.
      */
-    tu = 0;
+    s = m = 0;
     if (shader->source.base.bo != NULL) {
-	samplers[tu++] = shader->source.base.bo->base.handle;
-	samplers[tu++] = shader->source.base.sampler[0];
-	samplers[tu++] = shader->source.base.sampler[1];
+	samplers[s++] = shader->source.base.sampler[0];
+	samplers[s++] = shader->source.base.sampler[1];
+	maps[m++] = shader->source.base.bo->base.handle;
 	for (n = 0; n < shader->source.base.n_samplers; n++) {
-	    samplers[tu++] = shader->source.base.offset[n];
-	    samplers[tu++] = shader->source.base.map[2*n+0];
-	    samplers[tu++] = shader->source.base.map[2*n+1];
+	    maps[m++] = shader->source.base.offset[n];
+	    maps[m++] = shader->source.base.map[2*n+0];
+	    maps[m++] = shader->source.base.map[2*n+1];
 	}
     }
     if (shader->mask.base.bo != NULL) {
-	samplers[tu++] = shader->mask.base.bo->base.handle;
-	samplers[tu++] = shader->mask.base.sampler[0];
-	samplers[tu++] = shader->mask.base.sampler[1];
+	samplers[s++] = shader->mask.base.sampler[0];
+	samplers[s++] = shader->mask.base.sampler[1];
+	maps[m++] = shader->mask.base.bo->base.handle;
 	for (n = 0; n < shader->mask.base.n_samplers; n++) {
-	    samplers[tu++] = shader->mask.base.offset[n];
-	    samplers[tu++] = shader->mask.base.map[2*n+0];
-	    samplers[tu++] = shader->mask.base.map[2*n+1];
+	    maps[m++] = shader->mask.base.offset[n];
+	    maps[m++] = shader->mask.base.map[2*n+0];
+	    maps[m++] = shader->mask.base.map[2*n+1];
 	}
     }
     if (shader->clip.base.bo != NULL) {
-	samplers[tu++] = shader->clip.base.bo->base.handle;
-	samplers[tu++] = shader->clip.base.sampler[0];
-	samplers[tu++] = shader->clip.base.sampler[1];
+	samplers[s++] = shader->clip.base.sampler[0];
+	samplers[s++] = shader->clip.base.sampler[1];
+	maps[m++] = shader->clip.base.bo->base.handle;
 	for (n = 0; n < shader->clip.base.n_samplers; n++) {
-	    samplers[tu++] = shader->clip.base.offset[n];
-	    samplers[tu++] = shader->clip.base.map[2*n+0];
-	    samplers[tu++] = shader->clip.base.map[2*n+1];
+	    maps[m++] = shader->clip.base.offset[n];
+	    maps[m++] = shader->clip.base.map[2*n+0];
+	    maps[m++] = shader->clip.base.map[2*n+1];
 	}
     }
     if (shader->dst.base.bo != NULL) {
-	samplers[tu++] = shader->dst.base.bo->base.handle;
-	samplers[tu++] = shader->dst.base.sampler[0];
-	samplers[tu++] = shader->dst.base.sampler[1];
+	samplers[s++] = shader->dst.base.sampler[0];
+	samplers[s++] = shader->dst.base.sampler[1];
+	maps[m++] = shader->dst.base.bo->base.handle;
 	for (n = 0; n < shader->dst.base.n_samplers; n++) {
-	    samplers[tu++] = shader->dst.base.offset[n];
-	    samplers[tu++] = shader->dst.base.map[2*n+0];
-	    samplers[tu++] = shader->dst.base.map[2*n+1];
+	    maps[m++] = shader->dst.base.offset[n];
+	    maps[m++] = shader->dst.base.map[2*n+0];
+	    maps[m++] = shader->dst.base.map[2*n+1];
 	}
     }
 
-    if (tu == device->current_n_samplers &&
-	memcmp (device->current_samplers,
-		samplers,
-		tu * sizeof (uint32_t)) == 0)
+    if (n_maps > device->current_n_maps ||
+	memcmp (device->current_maps,
+		maps,
+		m * sizeof (uint32_t)))
     {
-	return;
-    }
-    device->current_n_samplers = tu;
-    memcpy (device->current_samplers, samplers, tu * sizeof (uint32_t));
+	memcpy (device->current_maps, maps, m * sizeof (uint32_t));
+	device->current_n_maps = n_maps;
 
-    if (device->current_source != NULL)
-	*device->current_source = 0;
-    if (device->current_mask != NULL)
-	*device->current_mask = 0;
-    if (device->current_clip != NULL)
-	*device->current_clip = 0;
+	if (device->current_source != NULL)
+	    *device->current_source = 0;
+	if (device->current_mask != NULL)
+	    *device->current_mask = 0;
+	if (device->current_clip != NULL)
+	    *device->current_clip = 0;
 
 #if 0
-    if (shader->source.type.pattern == PATTERN_TEXTURE) {
-	switch ((int) shader->source.surface.surface->type) {
-	case CAIRO_SURFACE_TYPE_DRM:
-	    {
-		i915_surface_t *surface =
-		    (i915_surface_t *) shader->source.surface.surface;
-		device->current_source = &surface->is_current_texture;
-		surface->is_current_texture |= CURRENT_SOURCE;
+	if (shader->source.type.pattern == PATTERN_TEXTURE) {
+	    switch ((int) shader->source.surface.surface->type) {
+	    case CAIRO_SURFACE_TYPE_DRM:
+		{
+		    i915_surface_t *surface =
+			(i915_surface_t *) shader->source.surface.surface;
+		    device->current_source = &surface->is_current_texture;
+		    surface->is_current_texture |= CURRENT_SOURCE;
+		    break;
+		}
+
+	    case I915_PACKED_PIXEL_SURFACE_TYPE:
+		{
+		    i915_packed_pixel_surface_t *surface =
+			(i915_packed_pixel_surface_t *) shader->source.surface.surface;
+		    device->current_source = &surface->is_current_texture;
+		    surface->is_current_texture |= CURRENT_SOURCE;
+		    break;
+		}
+
+	    default:
+		device->current_source = NULL;
 		break;
 	    }
-
-	case I915_PACKED_PIXEL_SURFACE_TYPE:
-	    {
-		i915_packed_pixel_surface_t *surface =
-		    (i915_packed_pixel_surface_t *) shader->source.surface.surface;
-		device->current_source = &surface->is_current_texture;
-		surface->is_current_texture |= CURRENT_SOURCE;
-		break;
-	    }
-
-	default:
+	} else
 	    device->current_source = NULL;
-	    break;
-	}
-    } else
-	device->current_source = NULL;
 
-    if (shader->mask.type.pattern == PATTERN_TEXTURE) {
-	switch ((int) shader->mask.surface.surface->type) {
-	case CAIRO_SURFACE_TYPE_DRM:
-	    {
-		i915_surface_t *surface =
-		    (i915_surface_t *) shader->mask.surface.surface;
-		device->current_mask = &surface->is_current_texture;
-		surface->is_current_texture |= CURRENT_MASK;
+	if (shader->mask.type.pattern == PATTERN_TEXTURE) {
+	    switch ((int) shader->mask.surface.surface->type) {
+	    case CAIRO_SURFACE_TYPE_DRM:
+		{
+		    i915_surface_t *surface =
+			(i915_surface_t *) shader->mask.surface.surface;
+		    device->current_mask = &surface->is_current_texture;
+		    surface->is_current_texture |= CURRENT_MASK;
+		    break;
+		}
+
+	    case I915_PACKED_PIXEL_SURFACE_TYPE:
+		{
+		    i915_packed_pixel_surface_t *surface =
+			(i915_packed_pixel_surface_t *) shader->mask.surface.surface;
+		    device->current_mask = &surface->is_current_texture;
+		    surface->is_current_texture |= CURRENT_MASK;
+		    break;
+		}
+
+	    default:
+		device->current_mask = NULL;
 		break;
 	    }
-
-	case I915_PACKED_PIXEL_SURFACE_TYPE:
-	    {
-		i915_packed_pixel_surface_t *surface =
-		    (i915_packed_pixel_surface_t *) shader->mask.surface.surface;
-		device->current_mask = &surface->is_current_texture;
-		surface->is_current_texture |= CURRENT_MASK;
-		break;
-	    }
-
-	default:
+	} else
 	    device->current_mask = NULL;
-	    break;
-	}
-    } else
-	device->current_mask = NULL;
 #endif
 
-    OUT_DWORD (_3DSTATE_MAP_STATE | (3 * n_samplers));
-    OUT_DWORD (mask);
-    if (shader->source.base.bo != NULL) {
+	OUT_DWORD (_3DSTATE_MAP_STATE | (3 * n_maps));
+	OUT_DWORD (mask);
 	for (n = 0; n < shader->source.base.n_samplers; n++) {
 	    i915_batch_emit_reloc (device, shader->source.base.bo,
 				   shader->source.base.offset[n],
-				   I915_GEM_DOMAIN_SAMPLER, 0);
+				   I915_GEM_DOMAIN_SAMPLER, 0,
+				   FALSE);
 	    OUT_DWORD (shader->source.base.map[2*n+0]);
 	    OUT_DWORD (shader->source.base.map[2*n+1]);
 	}
-    }
-    if (shader->mask.base.bo != NULL) {
 	for (n = 0; n < shader->mask.base.n_samplers; n++) {
 	    i915_batch_emit_reloc (device, shader->mask.base.bo,
 				   shader->mask.base.offset[n],
-				   I915_GEM_DOMAIN_SAMPLER, 0);
+				   I915_GEM_DOMAIN_SAMPLER, 0,
+				   FALSE);
 	    OUT_DWORD (shader->mask.base.map[2*n+0]);
 	    OUT_DWORD (shader->mask.base.map[2*n+1]);
 	}
-    }
-    if (shader->clip.base.bo != NULL) {
 	for (n = 0; n < shader->clip.base.n_samplers; n++) {
 	    i915_batch_emit_reloc (device, shader->clip.base.bo,
 				   shader->clip.base.offset[n],
-				   I915_GEM_DOMAIN_SAMPLER, 0);
+				   I915_GEM_DOMAIN_SAMPLER, 0,
+				   FALSE);
 	    OUT_DWORD (shader->clip.base.map[2*n+0]);
 	    OUT_DWORD (shader->clip.base.map[2*n+1]);
 	}
-    }
-    if (shader->dst.base.bo != NULL) {
 	for (n = 0; n < shader->dst.base.n_samplers; n++) {
 	    i915_batch_emit_reloc (device, shader->dst.base.bo,
 				   shader->dst.base.offset[n],
-				   I915_GEM_DOMAIN_SAMPLER, 0);
+				   I915_GEM_DOMAIN_SAMPLER, 0,
+				   FALSE);
 	    OUT_DWORD (shader->dst.base.map[2*n+0]);
 	    OUT_DWORD (shader->dst.base.map[2*n+1]);
 	}
     }
 
-    OUT_DWORD (_3DSTATE_SAMPLER_STATE | (3 * n_samplers));
-    OUT_DWORD (mask);
-    tu = 0;
-    if (shader->source.base.bo != NULL) {
+    if (n_samplers > device->current_n_samplers ||
+	memcmp (device->current_samplers,
+		samplers,
+		s * sizeof (uint32_t)))
+    {
+	device->current_n_samplers = s;
+	memcpy (device->current_samplers, samplers, s * sizeof (uint32_t));
+
+	OUT_DWORD (_3DSTATE_SAMPLER_STATE | (3 * n_maps));
+	OUT_DWORD (mask);
+	s = 0;
 	for (n = 0; n < shader->source.base.n_samplers; n++) {
 	    OUT_DWORD (shader->source.base.sampler[0]);
 	    OUT_DWORD (shader->source.base.sampler[1] |
-		       (tu << SS3_TEXTUREMAP_INDEX_SHIFT));
+		       (s << SS3_TEXTUREMAP_INDEX_SHIFT));
 	    OUT_DWORD (0x0);
-	    tu++;
+	    s++;
 	}
-    }
-    if (shader->mask.base.bo != NULL) {
 	for (n = 0; n < shader->mask.base.n_samplers; n++) {
 	    OUT_DWORD (shader->mask.base.sampler[0]);
 	    OUT_DWORD (shader->mask.base.sampler[1] |
-		       (tu << SS3_TEXTUREMAP_INDEX_SHIFT));
+		       (s << SS3_TEXTUREMAP_INDEX_SHIFT));
 	    OUT_DWORD (0x0);
-	    tu++;
+	    s++;
 	}
-    }
-    if (shader->clip.base.bo != NULL) {
 	for (n = 0; n < shader->clip.base.n_samplers; n++) {
 	    OUT_DWORD (shader->clip.base.sampler[0]);
 	    OUT_DWORD (shader->clip.base.sampler[1] |
-		       (tu << SS3_TEXTUREMAP_INDEX_SHIFT));
+		       (s << SS3_TEXTUREMAP_INDEX_SHIFT));
 	    OUT_DWORD (0x0);
-	    tu++;
+	    s++;
 	}
-    }
-    if (shader->dst.base.bo != NULL) {
 	for (n = 0; n < shader->dst.base.n_samplers; n++) {
 	    OUT_DWORD (shader->dst.base.sampler[0]);
 	    OUT_DWORD (shader->dst.base.sampler[1] |
-		       (tu << SS3_TEXTUREMAP_INDEX_SHIFT));
+		       (s << SS3_TEXTUREMAP_INDEX_SHIFT));
 	    OUT_DWORD (0x0);
-	    tu++;
+	    s++;
 	}
     }
 }
@@ -2012,17 +2241,6 @@ i915_set_constants (i915_device_t *device,
     memcpy (device->current_constants, constants, n_constants*4);
 }
 
-static inline uint32_t
-pack_float (float f)
-{
-    union {
-	float f;
-	uint32_t ui;
-    } t;
-    t.f = f;
-    return t.ui;
-}
-
 static uint32_t
 pack_constants (const union i915_shader_channel *channel,
 		uint32_t *constants)
@@ -2073,7 +2291,7 @@ static void
 i915_set_shader_constants (i915_device_t *device,
 	                   const i915_shader_t *shader)
 {
-    uint32_t constants[4*4*3];
+    uint32_t constants[4*4*3+4];
     unsigned n_constants;
 
     n_constants = 0;
@@ -2096,6 +2314,14 @@ i915_set_shader_constants (i915_device_t *device,
     }
     n_constants += pack_constants (&shader->mask, constants + n_constants);
 
+    if (shader->opacity < 1.) {
+	constants[n_constants+0] =
+	    constants[n_constants+1] =
+	    constants[n_constants+2] =
+	    constants[n_constants+3] = pack_float (shader->opacity);
+	n_constants += 4;
+    }
+
     if (n_constants != 0 &&
 	(device->current_n_constants != n_constants ||
 	 memcmp (device->current_constants, constants, n_constants*4)))
@@ -2115,74 +2341,77 @@ i915_shader_needs_update (const i915_shader_t *shader,
 	return TRUE;
 
     count =
+	!! shader->source.base.bo +
+	!! shader->mask.base.bo +
+	!! shader->clip.base.bo +
+	!! shader->dst.base.bo;
+    if (count > device->current_n_samplers)
+	return TRUE;
+
+    count =
 	shader->source.base.n_samplers +
 	shader->mask.base.n_samplers +
 	shader->clip.base.n_samplers +
 	shader->dst.base.n_samplers;
-    if (count > 4)
+    if (count > device->current_n_maps)
 	return TRUE;
 
-    if (count != 0) {
-	count *= 3;
-	if (shader->source.base.bo != NULL)
-	    count += 3;
-	if (shader->mask.base.bo != NULL)
-	    count += 3;
-	if (shader->clip.base.bo != NULL)
-	    count += 3;
-	if (shader->dst.base.bo != NULL)
-	    count += 3;
-
-	if (count != device->current_n_samplers)
+    if (count) {
+	count = 0;
+	if (shader->source.base.bo != NULL) {
+	    buf[count++] = shader->source.base.sampler[0];
+	    buf[count++] = shader->source.base.sampler[1];
+	}
+	if (shader->mask.base.bo != NULL) {
+	    buf[count++] = shader->mask.base.sampler[0];
+	    buf[count++] = shader->mask.base.sampler[1];
+	}
+	if (shader->clip.base.bo != NULL) {
+	    buf[count++] = shader->clip.base.sampler[0];
+	    buf[count++] = shader->clip.base.sampler[1];
+	}
+	if (shader->dst.base.bo != NULL) {
+	    buf[count++] = shader->dst.base.sampler[0];
+	    buf[count++] = shader->dst.base.sampler[1];
+	}
+	if (memcmp (device->current_samplers, buf, count * sizeof (uint32_t)))
 	    return TRUE;
 
-	if (count != 0) {
-	    count = 0;
-	    if (shader->source.base.bo != NULL) {
-		buf[count++] = shader->source.base.bo->base.handle;
-		buf[count++] = shader->source.base.sampler[0];
-		buf[count++] = shader->source.base.sampler[1];
-		for (n = 0; n < shader->source.base.n_samplers; n++) {
-		    buf[count++] = shader->source.base.offset[n];
-		    buf[count++] = shader->source.base.map[2*n+0];
-		    buf[count++] = shader->source.base.map[2*n+1];
-		}
+	count = 0;
+	if (shader->source.base.bo != NULL) {
+	    buf[count++] = shader->source.base.bo->base.handle;
+	    for (n = 0; n < shader->source.base.n_samplers; n++) {
+		buf[count++] = shader->source.base.offset[n];
+		buf[count++] = shader->source.base.map[2*n+0];
+		buf[count++] = shader->source.base.map[2*n+1];
 	    }
-	    if (shader->mask.base.bo != NULL) {
-		buf[count++] = shader->mask.base.bo->base.handle;
-		buf[count++] = shader->mask.base.sampler[0];
-		buf[count++] = shader->mask.base.sampler[1];
-		for (n = 0; n < shader->mask.base.n_samplers; n++) {
-		    buf[count++] = shader->mask.base.offset[n];
-		    buf[count++] = shader->mask.base.map[2*n+0];
-		    buf[count++] = shader->mask.base.map[2*n+1];
-		}
-	    }
-	    if (shader->clip.base.bo != NULL) {
-		buf[count++] = shader->clip.base.bo->base.handle;
-		buf[count++] = shader->clip.base.sampler[0];
-		buf[count++] = shader->clip.base.sampler[1];
-		for (n = 0; n < shader->clip.base.n_samplers; n++) {
-		    buf[count++] = shader->clip.base.offset[n];
-		    buf[count++] = shader->clip.base.map[2*n+0];
-		    buf[count++] = shader->clip.base.map[2*n+1];
-		}
-	    }
-	    if (shader->dst.base.bo != NULL) {
-		buf[count++] = shader->dst.base.bo->base.handle;
-		buf[count++] = shader->dst.base.sampler[0];
-		buf[count++] = shader->dst.base.sampler[1];
-		for (n = 0; n < shader->dst.base.n_samplers; n++) {
-		    buf[count++] = shader->dst.base.offset[n];
-		    buf[count++] = shader->dst.base.map[2*n+0];
-		    buf[count++] = shader->dst.base.map[2*n+1];
-		}
-	    }
-
-	    assert (count == device->current_n_samplers);
-	    if (memcmp (device->current_samplers, buf, count * sizeof (uint32_t)))
-		return TRUE;
 	}
+	if (shader->mask.base.bo != NULL) {
+	    buf[count++] = shader->mask.base.bo->base.handle;
+	    for (n = 0; n < shader->mask.base.n_samplers; n++) {
+		buf[count++] = shader->mask.base.offset[n];
+		buf[count++] = shader->mask.base.map[2*n+0];
+		buf[count++] = shader->mask.base.map[2*n+1];
+	    }
+	}
+	if (shader->clip.base.bo != NULL) {
+	    buf[count++] = shader->clip.base.bo->base.handle;
+	    for (n = 0; n < shader->clip.base.n_samplers; n++) {
+		buf[count++] = shader->clip.base.offset[n];
+		buf[count++] = shader->clip.base.map[2*n+0];
+		buf[count++] = shader->clip.base.map[2*n+1];
+	    }
+	}
+	if (shader->dst.base.bo != NULL) {
+	    buf[count++] = shader->dst.base.bo->base.handle;
+	    for (n = 0; n < shader->dst.base.n_samplers; n++) {
+		buf[count++] = shader->dst.base.offset[n];
+		buf[count++] = shader->dst.base.map[2*n+0];
+		buf[count++] = shader->dst.base.map[2*n+1];
+	    }
+	}
+	if (memcmp (device->current_maps, buf, count * sizeof (uint32_t)))
+	    return TRUE;
     }
 
     if (i915_shader_get_texcoords (shader) != device->current_texcoords)
@@ -2218,30 +2447,30 @@ i915_shader_needs_update (const i915_shader_t *shader,
 	(i915_shader_channel_key (&shader->mask)   <<  8) |
 	(i915_shader_channel_key (&shader->clip)   << 16) |
 	(shader->op << 24) |
+	((shader->opacity < 1.) << 30) |
 	(((shader->content & CAIRO_CONTENT_ALPHA) == CAIRO_CONTENT_ALPHA) << 31);
     return n != device->current_program;
 }
 
-static void
-i915_set_shader_target (i915_device_t *device,
-		        const i915_shader_t *shader)
+void
+i915_set_dst (i915_device_t *device, i915_surface_t *dst)
 {
-    i915_surface_t *dst;
-    intel_bo_t *bo;
     uint32_t size;
 
-    dst = shader->target;
-    if (device->current_target == dst)
-	return;
+    if (device->current_target != dst) {
+	intel_bo_t *bo;
 
-    bo = to_intel_bo (dst->intel.drm.bo);
-    assert (bo != NULL);
+	bo = to_intel_bo (dst->intel.drm.bo);
+	assert (bo != NULL);
 
-    OUT_DWORD (_3DSTATE_BUF_INFO_CMD);
-    OUT_DWORD (BUF_3D_ID_COLOR_BACK |
-	       BUF_tiling (bo->tiling) |
-	       BUF_3D_PITCH (dst->intel.drm.stride));
-    OUT_RELOC (dst, I915_GEM_DOMAIN_RENDER, I915_GEM_DOMAIN_RENDER);
+	OUT_DWORD (_3DSTATE_BUF_INFO_CMD);
+	OUT_DWORD (BUF_3D_ID_COLOR_BACK |
+		   BUF_tiling (bo->tiling) |
+		   BUF_3D_PITCH (dst->intel.drm.stride));
+	OUT_RELOC (dst, I915_GEM_DOMAIN_RENDER, I915_GEM_DOMAIN_RENDER);
+
+	device->current_target = dst;
+    }
 
     if (dst->colorbuf != device->current_colorbuf) {
 	OUT_DWORD (_3DSTATE_DST_BUF_VARS_CMD);
@@ -2258,8 +2487,13 @@ i915_set_shader_target (i915_device_t *device,
 	OUT_DWORD (0);  /* origin */
 	device->current_size = size;
     }
+}
 
-    device->current_target = dst;
+static void
+i915_set_shader_target (i915_device_t *device,
+		        const i915_shader_t *shader)
+{
+    i915_set_dst (device, shader->target);
 }
 
 int
@@ -2319,47 +2553,9 @@ i915_shader_fini (i915_shader_t *shader)
 {
     i915_device_t *device = i915_device (shader->target);
 
-    switch (shader->source.type.pattern) {
-    case PATTERN_TEXTURE:
-    case PATTERN_BASE:
-    case PATTERN_LINEAR:
-    case PATTERN_RADIAL:
-	if (shader->source.base.bo != NULL)
-	    cairo_drm_bo_destroy (&device->intel.base.base, &shader->source.base.bo->base);
-	break;
-
-    default:
-    case PATTERN_CONSTANT:
-	break;
-    }
-
-    switch (shader->mask.type.pattern) {
-    case PATTERN_TEXTURE:
-    case PATTERN_BASE:
-    case PATTERN_LINEAR:
-    case PATTERN_RADIAL:
-	if (shader->mask.base.bo != NULL)
-	    cairo_drm_bo_destroy (&device->intel.base.base, &shader->mask.base.bo->base);
-	break;
-
-    default:
-    case PATTERN_CONSTANT:
-	break;
-    }
-
-    switch (shader->clip.type.pattern) {
-    case PATTERN_TEXTURE:
-    case PATTERN_BASE:
-    case PATTERN_LINEAR:
-    case PATTERN_RADIAL:
-	if (shader->clip.base.bo != NULL)
-	    cairo_drm_bo_destroy (&device->intel.base.base, &shader->clip.base.bo->base);
-	break;
-
-    default:
-    case PATTERN_CONSTANT:
-	break;
-    }
+    i915_shader_channel_fini (device, &shader->source);
+    i915_shader_channel_fini (device, &shader->mask);
+    i915_shader_channel_fini (device, &shader->clip);
 }
 
 void
@@ -2367,16 +2563,15 @@ i915_shader_set_clip (i915_shader_t *shader,
 		      cairo_clip_t *clip)
 {
     cairo_surface_t *clip_surface;
-    const cairo_rectangle_int_t *clip_extents;
+    int clip_x, clip_y;
     union i915_shader_channel *channel;
     i915_surface_t *s;
 
-    clip_surface = _cairo_clip_get_surface (clip, &shader->target->intel.drm.base);
+    clip_surface = _cairo_clip_get_surface (clip, &shader->target->intel.drm.base, &clip_x, &clip_y);
     assert (clip_surface->status == CAIRO_STATUS_SUCCESS);
     assert (clip_surface->type == CAIRO_SURFACE_TYPE_DRM);
 
     channel = &shader->clip;
-    channel->type.pattern = PATTERN_TEXTURE;
     channel->type.vertex = VS_TEXTURE_16;
     channel->base.texfmt = TEXCOORDFMT_2D_16;
     channel->base.content = CAIRO_CONTENT_ALPHA;
@@ -2385,7 +2580,7 @@ i915_shader_set_clip (i915_shader_t *shader,
     channel->surface.pixel = NONE;
 
     s = (i915_surface_t *) clip_surface;
-    channel->base.bo = intel_bo_reference (to_intel_bo (s->intel.drm.bo));
+    channel->base.bo = to_intel_bo (s->intel.drm.bo);
     channel->base.n_samplers = 1;
     channel->base.offset[0] = s->offset;
     channel->base.map[0] = s->map0;
@@ -2401,11 +2596,8 @@ i915_shader_set_clip (i915_shader_t *shader,
     cairo_matrix_init_scale (&shader->clip.base.matrix,
 			     1. / s->intel.drm.width,
 			     1. / s->intel.drm.height);
-
-    clip_extents = _cairo_clip_get_extents (clip);
     cairo_matrix_translate (&shader->clip.base.matrix,
-			    NEAREST_BIAS + clip_extents->x,
-			    NEAREST_BIAS + clip_extents->y);
+			    -clip_x, -clip_y);
 }
 
 static cairo_status_t
@@ -2440,7 +2632,7 @@ i915_shader_check_aperture (i915_shader_t *shader,
 }
 
 static void
-i915_shader_combine_mask (i915_shader_t *shader)
+i915_shader_combine_mask (i915_shader_t *shader, i915_device_t *device)
 {
     if (shader->mask.type.fragment == (i915_fragment_shader_t) -1 ||
 	shader->mask.type.fragment == FS_CONSTANT)
@@ -2459,24 +2651,22 @@ i915_shader_combine_mask (i915_shader_t *shader)
     if (shader->mask.type.fragment == FS_ONE ||
 	(shader->mask.base.content & CAIRO_CONTENT_ALPHA) == 0)
     {
-	shader->mask.type.vertex = (i915_vertex_shader_t) -1;
-	shader->mask.type.fragment = (i915_fragment_shader_t) -1;
-	shader->mask.base.texfmt = TEXCOORDFMT_NOT_PRESENT;
-	shader->mask.base.mode = 0;
+	i915_shader_channel_reset (device, &shader->mask);
     }
 
     if (shader->mask.type.fragment == FS_ZERO) {
+	i915_shader_channel_fini (device, &shader->source);
+
 	shader->source.type.fragment = FS_ZERO;
-	shader->source.type.vertex = VS_CONSTANT;
+	shader->source.type.vertex = VS_ZERO;
 	shader->source.base.texfmt = TEXCOORDFMT_NOT_PRESENT;
 	shader->source.base.mode = 0;
+	shader->source.base.n_samplers = 0;
     }
 
     if (shader->source.type.fragment == FS_ZERO) {
-	shader->mask.type.vertex = (i915_vertex_shader_t) -1;
-	shader->mask.type.fragment = (i915_fragment_shader_t) -1;
-	shader->mask.base.texfmt = TEXCOORDFMT_NOT_PRESENT;
-	shader->mask.base.mode = 0;
+	i915_shader_channel_reset (device, &shader->mask);
+	i915_shader_channel_reset (device, &shader->clip);
     }
 }
 
@@ -2500,7 +2690,6 @@ i915_shader_setup_dst (i915_shader_t *shader)
     shader->need_combine = TRUE;
 
     channel = &shader->dst;
-    channel->type.pattern = PATTERN_TEXTURE;
     channel->type.vertex = VS_TEXTURE_16;
     channel->base.texfmt = TEXCOORDFMT_2D_16;
     channel->base.content = shader->content;
@@ -2525,10 +2714,6 @@ i915_shader_setup_dst (i915_shader_t *shader)
     cairo_matrix_init_scale (&shader->dst.base.matrix,
 			     1. / s->intel.drm.width,
 			     1. / s->intel.drm.height);
-
-    cairo_matrix_translate (&shader->dst.base.matrix,
-			    NEAREST_BIAS,
-			    NEAREST_BIAS);
 }
 
 static void
@@ -2576,12 +2761,12 @@ i915_composite_vertex (float *v,
 
     *v++ = x; *v++ = y;
     switch (shader->source.type.vertex) {
+    case VS_ZERO:
     case VS_CONSTANT:
 	break;
     case VS_LINEAR:
 	*v++ = i915_shader_linear_texcoord (&shader->source.linear, x, y);
 	break;
-    case VS_RADIAL:
     case VS_TEXTURE:
 	s = x, t = y;
 	cairo_matrix_transform_point (&shader->source.base.matrix, &s, &t);
@@ -2594,15 +2779,11 @@ i915_composite_vertex (float *v,
 	break;
     }
     switch (shader->mask.type.vertex) {
+    case VS_ZERO:
     case VS_CONSTANT:
 	break;
     case VS_LINEAR:
 	*v++ = i915_shader_linear_texcoord (&shader->mask.linear, x, y);
-	break;
-    case VS_RADIAL:
-	s = x, t = y;
-	cairo_matrix_transform_point (&shader->mask.base.matrix, &s, &t);
-	*v++ = s; *v++ = t;
 	break;
     case VS_TEXTURE:
 	s = x, t = y;
@@ -2633,14 +2814,13 @@ i915_shader_add_rectangle_general (const i915_shader_t *shader,
     /* XXX overflow! */
 }
 
-static cairo_status_t
+void
 i915_vbo_flush (i915_device_t *device)
 {
+    assert (device->floats_per_vertex);
     assert (device->vertex_count);
 
     if (device->vbo == 0) {
-	assert (device->floats_per_vertex);
-
 	OUT_DWORD (_3DSTATE_LOAD_STATE_IMMEDIATE_1 |
 		   I1_LOAD_S (0) |
 		   I1_LOAD_S (1) |
@@ -2658,8 +2838,6 @@ i915_vbo_flush (i915_device_t *device)
 
     device->vertex_index += device->vertex_count;
     device->vertex_count = 0;
-
-    return CAIRO_STATUS_SUCCESS;
 }
 
 cairo_status_t
@@ -2669,9 +2847,22 @@ i915_shader_commit (i915_shader_t *shader,
     unsigned floats_per_vertex;
     cairo_status_t status;
 
-    i915_shader_combine_source (shader, device);
-    i915_shader_combine_mask (shader);
-    i915_shader_setup_dst (shader);
+    assert (CAIRO_MUTEX_IS_LOCKED (device->intel.base.base.mutex));
+
+    if (! shader->committed) {
+	device->shader = shader;
+
+	i915_shader_combine_mask (shader, device);
+	i915_shader_combine_source (shader, device);
+	i915_shader_setup_dst (shader);
+
+	shader->add_rectangle = i915_shader_add_rectangle_general;
+
+	if ((status = setjmp (shader->unwind)))
+	    return status;
+
+	shader->committed = TRUE;
+    }
 
     if (i915_shader_needs_update (shader, device)) {
 	if (i915_batch_space (device) < 256) {
@@ -2680,11 +2871,8 @@ i915_shader_commit (i915_shader_t *shader,
 		return status;
 	}
 
-	if (device->vertex_count) {
-	    status = i915_vbo_flush (device);
-	    if (unlikely (status))
-		return status;
-	}
+	if (device->vertex_count)
+	    i915_vbo_flush (device);
 
 	status = i915_shader_check_aperture (shader, device);
 	if (unlikely (status))
@@ -2698,9 +2886,6 @@ i915_shader_commit (i915_shader_t *shader,
 	i915_set_shader_program (device, shader);
     }
 
-    device->current_shader = shader;
-    shader->add_rectangle = i915_shader_add_rectangle_general;
-
     floats_per_vertex = 2 + i915_shader_num_texcoords (shader);
     if (device->floats_per_vertex == floats_per_vertex)
 	return CAIRO_STATUS_SUCCESS;
@@ -2713,11 +2898,8 @@ i915_shader_commit (i915_shader_t *shader,
 	goto update_shader;
     }
 
-    if (device->vertex_count) {
-	status = i915_vbo_flush (device);
-	if (unlikely (status))
-	    return status;
-    }
+    if (device->vertex_count)
+	i915_vbo_flush (device);
 
     if (device->vbo) {
 	device->batch_base[device->vbo_max_index] |= device->vertex_index;

@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -63,7 +63,7 @@ typedef void
 
 typedef cairo_surface_t *
 (*cairo_drm_surface_create_func_t) (cairo_drm_device_t *device,
-				    cairo_content_t content,
+				    cairo_format_t format,
 				    int width, int height);
 
 typedef cairo_surface_t *
@@ -172,16 +172,12 @@ _cairo_drm_bo_close (const cairo_drm_device_t *dev,
 
 cairo_private void
 _cairo_drm_surface_init (cairo_drm_surface_t *surface,
-			 cairo_drm_device_t *device);
+			 cairo_format_t format,
+			 int width, int height);
 
 cairo_private cairo_status_t
 _cairo_drm_surface_finish (cairo_drm_surface_t *surface);
 
-cairo_private cairo_surface_t *
-_cairo_drm_surface_create_similar (void			*abstract_src,
-				   cairo_content_t	 content,
-				   int			 width,
-				   int			 height);
 cairo_private void
 _cairo_drm_surface_get_font_options (void                  *abstract_surface,
 				     cairo_font_options_t  *options);

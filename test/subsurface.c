@@ -41,8 +41,8 @@ draw (cairo_t *cr, int width, int height)
 	cairo_text_extents_t extents;
 	char buf[2] = { text[i], '\0' };
 
-	region[i] = cairo_surface_create_for_region (cairo_get_target (cr),
-						     20 * i, 0, 20, 20);
+        region[i] = cairo_surface_create_for_rectangle (cairo_get_target (cr),
+                                                        20 * i, 0, 20, 20);
 
 	cr_region = cairo_create (region[i]);
 	cairo_surface_destroy (region[i]);
@@ -63,6 +63,11 @@ draw (cairo_t *cr, int width, int height)
 
     for (i = 0; i < 5; i++) {
 	cairo_set_source_surface (cr, region[5-i-1], 20 * i, 20);
+	cairo_paint (cr);
+    }
+
+    for (i = 0; i < 5; i++) {
+	cairo_set_source_surface (cr, region[5-i-1], 20 * i, 40);
 	cairo_paint_with_alpha (cr, .5);
     }
 
@@ -76,5 +81,5 @@ CAIRO_TEST (subsurface,
 	    "Tests clipping of both source and destination using subsurfaces",
 	    "subsurface", /* keywords */
 	    NULL, /* requirements */
-	    100, 40,
+	    100, 60,
 	    NULL, draw)

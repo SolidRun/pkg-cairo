@@ -53,6 +53,10 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include <signal.h>
 
 #if HAVE_FCFINI
@@ -63,71 +67,6 @@
 #define CAIRO_PERF_LOW_STD_DEV		0.05
 #define CAIRO_PERF_MIN_STD_DEV_COUNT	3
 #define CAIRO_PERF_STABLE_STD_DEV_COUNT	3
-
-/* Some targets just aren't that interesting for performance testing,
- * (not least because many of these surface types use a recording-surface
- * and as such defer the "real" rendering to later, so our timing
- * loops wouldn't count the real work, just the recording by the
- * recording-surface. */
-static cairo_bool_t
-target_is_measurable (const cairo_boilerplate_target_t *target)
-{
-    if (target->content != CAIRO_CONTENT_COLOR_ALPHA)
-	return FALSE;
-
-    switch ((int) target->expected_type) {
-    case CAIRO_SURFACE_TYPE_IMAGE:
-	if (strcmp (target->name, "pdf") == 0 ||
-	    strcmp (target->name, "ps") == 0)
-	{
-	    return FALSE;
-	}
-	else
-	{
-	    return TRUE;
-	}
-    case CAIRO_SURFACE_TYPE_XLIB:
-	if (strcmp (target->name, "xlib-fallback") == 0 ||
-	    strcmp (target->name, "xlib-reference") == 0)
-	{
-	    return FALSE;
-	}
-	else
-	{
-	    return TRUE;
-	}
-    case CAIRO_SURFACE_TYPE_XCB:
-    case CAIRO_SURFACE_TYPE_GLITZ:
-    case CAIRO_SURFACE_TYPE_QUARTZ:
-    case CAIRO_SURFACE_TYPE_WIN32:
-    case CAIRO_SURFACE_TYPE_BEOS:
-    case CAIRO_SURFACE_TYPE_DIRECTFB:
-#if CAIRO_VERSION > CAIRO_VERSION_ENCODE(1,1,2)
-    case CAIRO_SURFACE_TYPE_OS2:
-#endif
-#if CAIRO_HAS_QT_SURFACE
-    case CAIRO_SURFACE_TYPE_QT:
-#endif
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,9,3)
-    case CAIRO_INTERNAL_SURFACE_TYPE_NULL:
-#endif
-#if CAIRO_HAS_GL_SURFACE
-    case CAIRO_SURFACE_TYPE_GL:
-#endif
-#if CAIRO_HAS_DRM_SURFACE
-    case CAIRO_SURFACE_TYPE_DRM:
-#endif
-#if CAIRO_HAS_SKIA_SURFACE
-    case CAIRO_SURFACE_TYPE_SKIA:
-#endif
-	return TRUE;
-    case CAIRO_SURFACE_TYPE_PDF:
-    case CAIRO_SURFACE_TYPE_PS:
-    case CAIRO_SURFACE_TYPE_SVG:
-    default:
-	return FALSE;
-    }
-}
 
 cairo_bool_t
 cairo_perf_can_run (cairo_perf_t	*perf,
@@ -671,8 +610,10 @@ parse_options (cairo_perf_t *perf, int argc, char *argv[])
 
     if (verbose && perf->summary == NULL)
 	perf->summary = stderr;
+#if HAVE_UNISTD_H
     if (perf->summary && isatty (fileno (perf->summary)))
 	perf->summary_continuous = TRUE;
+#endif
 
     if (optind < argc) {
 	perf->names = &argv[optind];
@@ -687,6 +628,8 @@ static void
 cairo_perf_fini (cairo_perf_t *perf)
 {
     cairo_boilerplate_free_targets (perf->targets);
+    cairo_boilerplate_fini ();
+
     free (perf->times);
     cairo_debug_reset_static_data ();
 #if HAVE_FCFINI
@@ -702,9 +645,11 @@ have_trace_filenames (cairo_perf_t *perf)
     if (perf->num_names == 0)
 	return FALSE;
 
+#if HAVE_UNISTD_H
     for (i = 0; i < perf->num_names; i++)
 	if (access (perf->names[i], R_OK) == 0)
 	    return TRUE;
+#endif
 
     return FALSE;
 }
@@ -838,7 +783,7 @@ main (int argc, char *argv[])
     for (i = 0; i < perf.num_targets; i++) {
         const cairo_boilerplate_target_t *target = perf.targets[i];
 
-	if (! perf.list_only && ! target_is_measurable (target))
+	if (! perf.list_only && ! target->is_measurable)
 	    continue;
 
 	perf.target = target;

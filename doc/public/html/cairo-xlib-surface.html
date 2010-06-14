@@ -8,18 +8,8 @@
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-quartz-surface.html" title="Quartz Surfaces">
 <link rel="next" href="cairo-support.html" title="Utilities">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="cairo-drawing.html" title="Drawing">
-<link rel="chapter" href="cairo-fonts.html" title="Fonts">
-<link rel="chapter" href="cairo-surfaces.html" title="Surfaces">
-<link rel="chapter" href="cairo-support.html" title="Utilities">
-<link rel="index" href="index-all.html" title="Index">
-<link rel="index" href="index-1.2.html" title="Index of new symbols in 1.2">
-<link rel="index" href="index-1.4.html" title="Index of new symbols in 1.4">
-<link rel="index" href="index-1.6.html" title="Index of new symbols in 1.6">
-<link rel="index" href="index-1.8.html" title="Index of new symbols in 1.8">
-<link rel="appendix" href="language-bindings.html" title="Appendix A. Creating a language binding for cairo">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -32,8 +22,8 @@
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#cairo-xlib-surface.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#cairo-xlib-surface.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#cairo-xlib-surface.description" class="shortcut">Description</a>
 </td></tr>
 </table>
 <div class="refentry" title="XLib Surfaces">
@@ -47,33 +37,32 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="cairo-xlib-surface.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-#define             <a class="link" href="cairo-xlib-surface.html#CAIRO-HAS-XLIB-SURFACE--CAPS" title="CAIRO_HAS_XLIB_SURFACE">CAIRO_HAS_XLIB_SURFACE</a>
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-create" title="cairo_xlib_surface_create ()">cairo_xlib_surface_create</a>           (Display *dpy,
-                                                         Drawable drawable,
-                                                         Visual *visual,
-                                                         int width,
-                                                         int height);
-<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-create-for-bitmap" title="cairo_xlib_surface_create_for_bitmap ()">cairo_xlib_surface_create_for_bitmap</a>
-                                                        (Display *dpy,
-                                                         Pixmap bitmap,
-                                                         Screen *screen,
-                                                         int width,
-                                                         int height);
-void                <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-set-size" title="cairo_xlib_surface_set_size ()">cairo_xlib_surface_set_size</a>         (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
-                                                         int width,
-                                                         int height);
-Display *           <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-display" title="cairo_xlib_surface_get_display ()">cairo_xlib_surface_get_display</a>      (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
-Screen *            <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-screen" title="cairo_xlib_surface_get_screen ()">cairo_xlib_surface_get_screen</a>       (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
-void                <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-set-drawable" title="cairo_xlib_surface_set_drawable ()">cairo_xlib_surface_set_drawable</a>     (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
-                                                         Drawable drawable,
-                                                         int width,
-                                                         int height);
-Drawable            <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-drawable" title="cairo_xlib_surface_get_drawable ()">cairo_xlib_surface_get_drawable</a>     (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
-Visual *            <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-visual" title="cairo_xlib_surface_get_visual ()">cairo_xlib_surface_get_visual</a>       (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
-int                 <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-width" title="cairo_xlib_surface_get_width ()">cairo_xlib_surface_get_width</a>        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
-int                 <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-height" title="cairo_xlib_surface_get_height ()">cairo_xlib_surface_get_height</a>       (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
-int                 <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-depth" title="cairo_xlib_surface_get_depth ()">cairo_xlib_surface_get_depth</a>        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);
+<pre class="synopsis">#define             <a class="link" href="cairo-xlib-surface.html#CAIRO-HAS-XLIB-SURFACE:CAPS" title="CAIRO_HAS_XLIB_SURFACE">CAIRO_HAS_XLIB_SURFACE</a>
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-create" title="cairo_xlib_surface_create ()">cairo_xlib_surface_create</a>           (<em class="parameter"><code><span class="type">Display</span> *dpy</code></em>,
+                                                         <em class="parameter"><code><span class="type">Drawable</span> drawable</code></em>,
+                                                         <em class="parameter"><code><span class="type">Visual</span> *visual</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);
+<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-create-for-bitmap" title="cairo_xlib_surface_create_for_bitmap ()">cairo_xlib_surface_create_for_bitmap</a>
+                                                        (<em class="parameter"><code><span class="type">Display</span> *dpy</code></em>,
+                                                         <em class="parameter"><code><span class="type">Pixmap</span> bitmap</code></em>,
+                                                         <em class="parameter"><code><span class="type">Screen</span> *screen</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-set-size" title="cairo_xlib_surface_set_size ()">cairo_xlib_surface_set_size</a>         (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);
+<span class="returnvalue">Display</span> *           <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-display" title="cairo_xlib_surface_get_display ()">cairo_xlib_surface_get_display</a>      (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
+<span class="returnvalue">Screen</span> *            <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-screen" title="cairo_xlib_surface_get_screen ()">cairo_xlib_surface_get_screen</a>       (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-set-drawable" title="cairo_xlib_surface_set_drawable ()">cairo_xlib_surface_set_drawable</a>     (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
+                                                         <em class="parameter"><code><span class="type">Drawable</span> drawable</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);
+<span class="returnvalue">Drawable</span>            <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-drawable" title="cairo_xlib_surface_get_drawable ()">cairo_xlib_surface_get_drawable</a>     (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
+<span class="returnvalue">Visual</span> *            <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-visual" title="cairo_xlib_surface_get_visual ()">cairo_xlib_surface_get_visual</a>       (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
+<span class="returnvalue">int</span>                 <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-width" title="cairo_xlib_surface_get_width ()">cairo_xlib_surface_get_width</a>        (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
+<span class="returnvalue">int</span>                 <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-height" title="cairo_xlib_surface_get_height ()">cairo_xlib_surface_get_height</a>       (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
+<span class="returnvalue">int</span>                 <a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-get-depth" title="cairo_xlib_surface_get_depth ()">cairo_xlib_surface_get_depth</a>        (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -90,8 +79,9 @@ if it is available.
 <div class="refsect1" title="Details">
 <a name="cairo-xlib-surface.details"></a><h2>Details</h2>
 <div class="refsect2" title="CAIRO_HAS_XLIB_SURFACE">
-<a name="CAIRO-HAS-XLIB-SURFACE--CAPS"></a><h3>CAIRO_HAS_XLIB_SURFACE</h3>
-<pre class="programlisting">#define             CAIRO_HAS_XLIB_SURFACE</pre>
+<a name="CAIRO-HAS-XLIB-SURFACE:CAPS"></a><h3>CAIRO_HAS_XLIB_SURFACE</h3>
+<pre class="programlisting">#define CAIRO_HAS_XLIB_SURFACE 1
+</pre>
 <p>
 Defined if the Xlib surface backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -100,11 +90,11 @@ This macro can be used to conditionally compile backend-specific code.
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_create ()">
 <a name="cairo-xlib-surface-create"></a><h3>cairo_xlib_surface_create ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_xlib_surface_create           (Display *dpy,
-                                                         Drawable drawable,
-                                                         Visual *visual,
-                                                         int width,
-                                                         int height);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   cairo_xlib_surface_create           (<em class="parameter"><code><span class="type">Display</span> *dpy</code></em>,
+                                                         <em class="parameter"><code><span class="type">Drawable</span> drawable</code></em>,
+                                                         <em class="parameter"><code><span class="type">Visual</span> *visual</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);</pre>
 <p>
 Creates an Xlib surface that draws to the given drawable.
 The way that colors are represented in the drawable is specified
@@ -119,37 +109,36 @@ window changes.
 When <em class="parameter"><code>drawable</code></em> is a Window containing child windows then drawing to
 the created surface will be clipped by those child windows.  When
 the created surface is used as a source, the contents of the
-children will be included.</p>
-<p>
+children will be included.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dpy</code></em> :</span></p></td>
-<td> an X Display
+<td>an X Display
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>drawable</code></em> :</span></p></td>
-<td> an X Drawable, (a Pixmap or a Window)
+<td>an X Drawable, (a Pixmap or a Window)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>visual</code></em> :</span></p></td>
-<td> the visual to use for drawing to <em class="parameter"><code>drawable</code></em>. The depth
+<td>the visual to use for drawing to <em class="parameter"><code>drawable</code></em>. The depth
          of the visual must match the depth of the drawable.
          Currently, only TrueColor visuals are fully supported.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td> the current width of <em class="parameter"><code>drawable</code></em>.
+<td>the current width of <em class="parameter"><code>drawable</code></em>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td> the current height of <em class="parameter"><code>drawable</code></em>.
+<td>the current height of <em class="parameter"><code>drawable</code></em>.
 </td>
 </tr>
 <tr>
@@ -163,43 +152,42 @@ children will be included.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_create_for_bitmap ()">
 <a name="cairo-xlib-surface-create-for-bitmap"></a><h3>cairo_xlib_surface_create_for_bitmap ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *   cairo_xlib_surface_create_for_bitmap
-                                                        (Display *dpy,
-                                                         Pixmap bitmap,
-                                                         Screen *screen,
-                                                         int width,
-                                                         int height);</pre>
+<pre class="programlisting"><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   cairo_xlib_surface_create_for_bitmap
+                                                        (<em class="parameter"><code><span class="type">Display</span> *dpy</code></em>,
+                                                         <em class="parameter"><code><span class="type">Pixmap</span> bitmap</code></em>,
+                                                         <em class="parameter"><code><span class="type">Screen</span> *screen</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);</pre>
 <p>
 Creates an Xlib surface that draws to the given bitmap.
-This will be drawn to as a <a class="link" href="cairo-image-surface.html#CAIRO-FORMAT-A1--CAPS"><code class="literal">CAIRO_FORMAT_A1</code></a> object.</p>
-<p>
+This will be drawn to as a <a class="link" href="cairo-image-surface.html#CAIRO-FORMAT-A1:CAPS"><code class="literal">CAIRO_FORMAT_A1</code></a> object.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dpy</code></em> :</span></p></td>
-<td> an X Display
+<td>an X Display
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>bitmap</code></em> :</span></p></td>
-<td> an X Drawable, (a depth-1 Pixmap)
+<td>an X Drawable, (a depth-1 Pixmap)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>screen</code></em> :</span></p></td>
-<td> the X Screen associated with <em class="parameter"><code>bitmap</code></em>
+<td>the X Screen associated with <em class="parameter"><code>bitmap</code></em>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td> the current width of <em class="parameter"><code>bitmap</code></em>.
+<td>the current width of <em class="parameter"><code>bitmap</code></em>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td> the current height of <em class="parameter"><code>bitmap</code></em>.
+<td>the current height of <em class="parameter"><code>bitmap</code></em>.
 </td>
 </tr>
 <tr>
@@ -213,9 +201,9 @@ This will be drawn to as a <a class="link" href="cairo-image-surface.html#CAIRO-
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_set_size ()">
 <a name="cairo-xlib-surface-set-size"></a><h3>cairo_xlib_surface_set_size ()</h3>
-<pre class="programlisting">void                cairo_xlib_surface_set_size         (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
-                                                         int width,
-                                                         int height);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                cairo_xlib_surface_set_size         (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);</pre>
 <p>
 Informs cairo of the new size of the X Drawable underlying the
 surface. For a surface created for a Window (rather than a Pixmap),
@@ -226,25 +214,24 @@ ConfigureNotify events.)
 </p>
 <p>
 A Pixmap can never change size, so it is never necessary to call
-this function on a surface created for a Pixmap.</p>
-<p>
+this function on a surface created for a Pixmap.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> for the XLib backend
+<td>a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> for the XLib backend
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td> the new width of the surface
+<td>the new width of the surface
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td> the new height of the surface
+<td>the new height of the surface
 </td>
 </tr>
 </tbody>
@@ -253,17 +240,16 @@ this function on a surface created for a Pixmap.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_get_display ()">
 <a name="cairo-xlib-surface-get-display"></a><h3>cairo_xlib_surface_get_display ()</h3>
-<pre class="programlisting">Display *           cairo_xlib_surface_get_display      (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">Display</span> *           cairo_xlib_surface_get_display      (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
-Get the X Display for the underlying X Drawable.</p>
-<p>
+Get the X Display for the underlying X Drawable.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <span class="type">cairo_xlib_surface_t</span>
+<td>a <span class="type">cairo_xlib_surface_t</span>
 </td>
 </tr>
 <tr>
@@ -279,17 +265,16 @@ Get the X Display for the underlying X Drawable.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_get_screen ()">
 <a name="cairo-xlib-surface-get-screen"></a><h3>cairo_xlib_surface_get_screen ()</h3>
-<pre class="programlisting">Screen *            cairo_xlib_surface_get_screen       (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">Screen</span> *            cairo_xlib_surface_get_screen       (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
-Get the X Screen for the underlying X Drawable.</p>
-<p>
+Get the X Screen for the underlying X Drawable.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <span class="type">cairo_xlib_surface_t</span>
+<td>a <span class="type">cairo_xlib_surface_t</span>
 </td>
 </tr>
 <tr>
@@ -305,40 +290,39 @@ Get the X Screen for the underlying X Drawable.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_set_drawable ()">
 <a name="cairo-xlib-surface-set-drawable"></a><h3>cairo_xlib_surface_set_drawable ()</h3>
-<pre class="programlisting">void                cairo_xlib_surface_set_drawable     (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface,
-                                                         Drawable drawable,
-                                                         int width,
-                                                         int height);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                cairo_xlib_surface_set_drawable     (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
+                                                         <em class="parameter"><code><span class="type">Drawable</span> drawable</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> width</code></em>,
+                                                         <em class="parameter"><code><span class="type">int</span> height</code></em>);</pre>
 <p>
 Informs cairo of a new X Drawable underlying the
 surface. The drawable must match the display, screen
 and format of the existing drawable or the application
 will get X protocol errors and will probably terminate.
 No checks are done by this function to ensure this
-compatibility.</p>
-<p>
+compatibility.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> for the XLib backend
+<td>a <a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> for the XLib backend
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>drawable</code></em> :</span></p></td>
-<td> the new drawable for the surface
+<td>the new drawable for the surface
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td> the width of the new drawable
+<td>the width of the new drawable
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td> the height of the new drawable
+<td>the height of the new drawable
 </td>
 </tr>
 </tbody>
@@ -347,17 +331,16 @@ compatibility.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_get_drawable ()">
 <a name="cairo-xlib-surface-get-drawable"></a><h3>cairo_xlib_surface_get_drawable ()</h3>
-<pre class="programlisting">Drawable            cairo_xlib_surface_get_drawable     (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">Drawable</span>            cairo_xlib_surface_get_drawable     (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
-Get the underlying X Drawable used for the surface.</p>
-<p>
+Get the underlying X Drawable used for the surface.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <span class="type">cairo_xlib_surface_t</span>
+<td>a <span class="type">cairo_xlib_surface_t</span>
 </td>
 </tr>
 <tr>
@@ -373,22 +356,25 @@ Get the underlying X Drawable used for the surface.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_get_visual ()">
 <a name="cairo-xlib-surface-get-visual"></a><h3>cairo_xlib_surface_get_visual ()</h3>
-<pre class="programlisting">Visual *            cairo_xlib_surface_get_visual       (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">Visual</span> *            cairo_xlib_surface_get_visual       (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
-Get the X Visual used for underlying X Drawable.</p>
-<p>
+Gets the X Visual associated with <em class="parameter"><code>surface</code></em>, suitable for use with the
+underlying X Drawable.  If <em class="parameter"><code>surface</code></em> was created by
+<a class="link" href="cairo-xlib-surface.html#cairo-xlib-surface-create" title="cairo_xlib_surface_create ()"><code class="function">cairo_xlib_surface_create()</code></a>, the return value is the Visual passed to that
+constructor.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <span class="type">cairo_xlib_surface_t</span>
+<td>a <span class="type">cairo_xlib_surface_t</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the visual.
+<td> the Visual or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if there is no appropriate Visual for
+<em class="parameter"><code>surface</code></em>.
 
 </td>
 </tr>
@@ -399,17 +385,16 @@ Get the X Visual used for underlying X Drawable.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_get_width ()">
 <a name="cairo-xlib-surface-get-width"></a><h3>cairo_xlib_surface_get_width ()</h3>
-<pre class="programlisting">int                 cairo_xlib_surface_get_width        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">int</span>                 cairo_xlib_surface_get_width        (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
-Get the width of the X Drawable underlying the surface in pixels.</p>
-<p>
+Get the width of the X Drawable underlying the surface in pixels.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <span class="type">cairo_xlib_surface_t</span>
+<td>a <span class="type">cairo_xlib_surface_t</span>
 </td>
 </tr>
 <tr>
@@ -425,17 +410,16 @@ Get the width of the X Drawable underlying the surface in pixels.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_get_height ()">
 <a name="cairo-xlib-surface-get-height"></a><h3>cairo_xlib_surface_get_height ()</h3>
-<pre class="programlisting">int                 cairo_xlib_surface_get_height       (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">int</span>                 cairo_xlib_surface_get_height       (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
-Get the height of the X Drawable underlying the surface in pixels.</p>
-<p>
+Get the height of the X Drawable underlying the surface in pixels.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <span class="type">cairo_xlib_surface_t</span>
+<td>a <span class="type">cairo_xlib_surface_t</span>
 </td>
 </tr>
 <tr>
@@ -451,17 +435,16 @@ Get the height of the X Drawable underlying the surface in pixels.</p>
 <hr>
 <div class="refsect2" title="cairo_xlib_surface_get_depth ()">
 <a name="cairo-xlib-surface-get-depth"></a><h3>cairo_xlib_surface_get_depth ()</h3>
-<pre class="programlisting">int                 cairo_xlib_surface_get_depth        (<a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface);</pre>
+<pre class="programlisting"><span class="returnvalue">int</span>                 cairo_xlib_surface_get_depth        (<em class="parameter"><code><a class="link" href="cairo-surface.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>);</pre>
 <p>
-Get the number of bits used to represent each pixel value.</p>
-<p>
+Get the number of bits used to represent each pixel value.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>surface</code></em> :</span></p></td>
-<td> a <span class="type">cairo_xlib_surface_t</span>
+<td>a <span class="type">cairo_xlib_surface_t</span>
 </td>
 </tr>
 <tr>
@@ -486,6 +469,6 @@ Get the number of bits used to represent each pixel value.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.15</div>
 </body>
 </html>

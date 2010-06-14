@@ -71,6 +71,20 @@
 	  ((((uint32_t)(p)))              >> 24))
 #endif
 
+#if WORDS_BIGENDIAN
+#define le16(x) bswap_16 (x)
+#define le32(x) bswap_32 (x)
+#define be16(x) x
+#define be32(x) x
+#define to_be32(x) x
+#else
+#define le16(x) x
+#define le32(x) x
+#define be16(x) bswap_16 (x)
+#define be32(x) bswap_32 (x)
+#define to_be32(x) bswap_32 (x)
+#endif
+
 #if CAIRO_HAS_SYMBOL_LOOKUP
 #include "lookup-symbol.h"
 #endif
@@ -724,8 +738,11 @@ get_prog_name (char *buf, int length)
 
     file = fopen ("/proc/self/cmdline", "rb");
     if (file != NULL) {
-	fgets (buf, length, file);
+	slash = fgets (buf, length, file);
 	fclose (file);
+
+	if (slash == NULL)
+	    return;
     } else {
 	char const *name = getenv ("CAIRO_TRACE_PROG_NAME");
 	if (name != NULL) {
@@ -1133,12 +1150,6 @@ _get_font_face_id (cairo_font_face_t *font_face)
     return _get_id (FONT_FACE, font_face);
 }
 
-static bool
-_has_font_face_id (cairo_font_face_t *font_face)
-{
-    return _has_id (FONT_FACE, font_face);
-}
-
 static void
 _emit_font_face_id (cairo_font_face_t *font_face)
 {
@@ -1173,12 +1184,6 @@ _create_pattern_id (cairo_pattern_t *pattern)
     }
 
     return obj->token;
-}
-
-static long
-_get_pattern_id (cairo_pattern_t *pattern)
-{
-    return _get_id (PATTERN, pattern);
 }
 
 static void
@@ -1366,6 +1371,7 @@ _write_data_start (struct _data_stream *stream, uint32_t len)
     _write_base85_data_start (stream);
 
     _trace_printf ("<|");
+    len = to_be32 (len);
     _write_base85_data (stream, (unsigned char *) &len, sizeof (len));
 }
 
@@ -1439,8 +1445,10 @@ _format_to_string (cairo_format_t format)
 {
 #define f(name) case CAIRO_FORMAT_ ## name: return #name
     switch (format) {
+	f(INVALID);
 	f(ARGB32);
 	f(RGB24);
+	f(RGB16_565);
 	f(A8);
 	f(A1);
     }
@@ -1566,10 +1574,12 @@ _emit_image (cairo_surface_t *image,
     }
 
     switch (format) {
-    case CAIRO_FORMAT_A1:     len = (width + 7)/8; break;
-    case CAIRO_FORMAT_A8:     len =  width; break;
-    case CAIRO_FORMAT_RGB24:  len = 3*width; break;
+    case CAIRO_FORMAT_A1:        len = (width + 7)/8; break;
+    case CAIRO_FORMAT_A8:        len =  width; break;
+    case CAIRO_FORMAT_RGB16_565: len = 2*width; break;
+    case CAIRO_FORMAT_RGB24:     len = 3*width; break;
     default:
+    case CAIRO_FORMAT_INVALID:
     case CAIRO_FORMAT_ARGB32: len = 4*width; break;
     }
 
@@ -1590,6 +1600,12 @@ _emit_image (cairo_surface_t *image,
 	    data += stride;
 	}
 	break;
+    case CAIRO_FORMAT_RGB16_565:
+	for (row = height; row--; ) {
+	    _write_data (&stream, data, 2*width);
+	    data += stride;
+	}
+	break;
     case CAIRO_FORMAT_RGB24:
 	for (row = height; row--; ) {
 	    int col;
@@ -1607,6 +1623,7 @@ _emit_image (cairo_surface_t *image,
 	    data += stride;
 	}
 	break;
+    case CAIRO_FORMAT_INVALID:
     default:
 	break;
     }
@@ -1631,6 +1648,17 @@ _emit_image (cairo_surface_t *image,
     case CAIRO_FORMAT_A8:
 	for (row = height; row--; ) {
 	    _write_data (&stream, rowdata, width);
+	    data += stride;
+	}
+	break;
+    case CAIRO_FORMAT_RGB16_565: /* XXX endianness */
+	for (row = height; row--; ) {
+	    uint16_t *src = (uint16_t *) data;
+	    uint16_t *dst = (uint16_t *)rowdata;
+	    int col;
+	    for (col = 0; col < width; col++)
+		dst[col] = bswap_16 (src[col]);
+	    _write_data (&stream, rowdata, 2*width);
 	    data += stride;
 	}
 	break;
@@ -1659,6 +1687,7 @@ _emit_image (cairo_surface_t *image,
 	    data += stride;
 	}
 	break;
+    case CAIRO_FORMAT_INVALID:
     default:
 	break;
     }
@@ -1826,21 +1855,9 @@ _emit_context (cairo_t *cr)
 }
 
 static void
-_emit_font_face (cairo_font_face_t *font_face)
-{
-    _emit_current (_get_object (FONT_FACE, font_face));
-}
-
-static void
 _emit_pattern (cairo_pattern_t *pattern)
 {
     _emit_current (_get_object (PATTERN, pattern));
-}
-
-static void
-_emit_scaled_font (cairo_scaled_font_t *scaled_font)
-{
-    _emit_current (_get_object (SCALED_FONT, scaled_font));
 }
 
 static void
@@ -3477,6 +3494,42 @@ cairo_surface_create_similar (cairo_surface_t *other,
     return ret;
 }
 
+cairo_surface_t *
+cairo_surface_create_for_rectangle (cairo_surface_t *target,
+                                    double x, double y,
+                                    double width, double height)
+{
+    cairo_surface_t *ret;
+    long surface_id;
+
+    _enter_trace ();
+
+    ret = DLCALL (cairo_surface_create_for_rectangle, target, x, y, width, height);
+    surface_id = _create_surface_id (ret);
+
+    _emit_line_info ();
+    if (target != NULL && _write_lock ()) {
+	Object *obj;
+
+	obj = _get_object (SURFACE, target);
+	if (obj->defined)
+	    _trace_printf ("s%ld ", obj->token);
+	else if (current_stack_depth == obj->operand + 1)
+	    _trace_printf ("dup ");
+	else
+	    _trace_printf ("%d index ", current_stack_depth - obj->operand - 1);
+	_trace_printf ("%f %f %f %f subsurface %% s%ld\n",
+		       x, y, width, height,
+		       surface_id);
+
+	_push_operand (SURFACE, ret);
+	_write_unlock ();
+    }
+
+    _exit_trace ();
+    return ret;
+}
+
 static void CAIRO_PRINTF_FORMAT(2, 3)
 _emit_surface_op (cairo_surface_t *surface, const char *fmt, ...)
 {
@@ -4091,7 +4144,6 @@ FT_New_Memory_Face (FT_Library library, const FT_Byte *mem, FT_Long size, FT_Lon
  * FT_Open_Face(). So far this has not caused any issues, but it will one
  * day...
  */
-#if 0
 FT_Error
 FT_Open_Face (FT_Library library, const FT_Open_Args *args, FT_Long index, FT_Face *face)
 {
@@ -4100,21 +4152,36 @@ FT_Open_Face (FT_Library library, const FT_Open_Args *args, FT_Long index, FT_Fa
     _enter_trace ();
 
     ret = DLCALL (FT_Open_Face, library, args, index, face);
-    if (args->flags & FT_OPEN_MEMORY)
-	fprintf (stderr, "FT_Open_Face (mem=%p, %ld, %ld) = %p\n",
-		args->memory_base, args->memory_size,
-		index, *face);
-    else if (args->flags & FT_OPEN_STREAM)
-	fprintf (stderr, "FT_Open_Face (stream, %ld) = %p\n",
-		index, *face);
-    else if (args->flags & FT_OPEN_PATHNAME)
-	fprintf (stderr, "FT_Open_Face (path=%s, %ld) = %p\n",
-		args->pathname, index, *face);
+    if (ret == 0) {
+	Object *obj = _get_object (NONE, *face);
+	if (obj == NULL) {
+	    FtFaceData *data;
+
+	    data = malloc (sizeof (FtFaceData));
+	    data->index = index;
+	    if (args->flags & FT_OPEN_MEMORY) {
+		data->size = args->memory_size;
+		data->data = malloc (args->memory_size);
+		memcpy (data->data, args->memory_base, args->memory_size);
+	    } else if (args->flags & FT_OPEN_STREAM) {
+		fprintf (stderr, "FT_Open_Face (stream, %ld) = %p\n",
+			 index, *face);
+		abort ();
+	    } else if (args->flags & FT_OPEN_PATHNAME) {
+		data->size = 0;
+		data->data = NULL;
+		_ft_read_file (data, args->pathname);
+	    }
+
+	    obj = _type_object_create (NONE, *face);
+	    obj->data = data;
+	    obj->destroy = _ft_face_data_destroy;
+	}
+    }
 
     _exit_trace ();
     return ret;
 }
-#endif
 
 FT_Error
 FT_Done_Face (FT_Face face)

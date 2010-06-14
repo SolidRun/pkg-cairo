@@ -241,6 +241,101 @@ _cairo_boilerplate_xlib_create_surface (const char			 *name,
     return surface;
 }
 
+static cairo_surface_t *
+_cairo_boilerplate_xlib_window_create_surface (const char			 *name,
+					       cairo_content_t		  content,
+					       double				  width,
+					       double				  height,
+					       double				  max_width,
+					       double				  max_height,
+					       cairo_boilerplate_mode_t	  mode,
+					       int				  id,
+					       void				**closure)
+{
+    xlib_target_closure_t *xtc;
+    Display *dpy;
+    Screen *scr;
+    int screen, x, y;
+    XSetWindowAttributes attr;
+    cairo_surface_t *surface;
+
+    /* We're not yet bothering to support perf mode for the
+     * xlib-fallback surface. */
+    if (mode == CAIRO_BOILERPLATE_MODE_PERF)
+	return NULL;
+
+    /* We also don't support drawing with destination-alpha in the
+     * xlib-fallback surface. */
+    if (content == CAIRO_CONTENT_COLOR_ALPHA)
+	return NULL;
+
+    *closure = xtc = xmalloc (sizeof (xlib_target_closure_t));
+
+    width = ceil (width);
+    if (width < 1)
+	width = 1;
+
+    height = ceil (height);
+    if (height < 1)
+	height = 1;
+
+    xtc->dpy = dpy = XOpenDisplay (NULL);
+    if (xtc->dpy == NULL) {
+	CAIRO_BOILERPLATE_DEBUG (("Failed to open display: %s\n", XDisplayName(0)));
+	free (xtc);
+	return NULL;
+    }
+
+    /* This kills performance, but it makes debugging much
+     * easier. That's why we have it here only after explicitly not
+     * supporting PERF mode.*/
+    XSynchronize (dpy, 1);
+
+    screen = DefaultScreen (dpy);
+    if (! _cairo_boilerplate_xlib_check_screen_size (dpy, screen,
+		                                     width, height)) {
+	CAIRO_BOILERPLATE_DEBUG (("Surface is larger than the Screen.\n"));
+	XCloseDisplay (dpy);
+	free (xtc);
+	return NULL;
+    }
+
+    /* tile the windows so threads do not overlap */
+    scr = XScreenOfDisplay (dpy, screen);
+    x = y = 0;
+    if (id-- > 1) do {
+	x += max_width;
+	if (x + max_width > WidthOfScreen (scr)) {
+	    x = 0;
+	    y += max_height;
+	    if (y + max_height > HeightOfScreen (scr)) {
+		XCloseDisplay (dpy);
+		free (xtc);
+		return NULL;
+	    }
+	}
+    } while (--id);
+
+    attr.override_redirect = True;
+    xtc->drawable = XCreateWindow (dpy, DefaultRootWindow (dpy),
+				   x, y,
+				   width, height, 0,
+				   DefaultDepth (dpy, screen),
+				   InputOutput,
+				   DefaultVisual (dpy, screen),
+				   CWOverrideRedirect, &attr);
+    XMapWindow (dpy, xtc->drawable);
+    xtc->drawable_is_pixmap = FALSE;
+
+    surface = cairo_xlib_surface_create (dpy, xtc->drawable,
+					 DefaultVisual (dpy, screen),
+					 width, height);
+    if (cairo_surface_status (surface))
+	_cairo_boilerplate_xlib_cleanup (xtc);
+
+    return surface;
+}
+
 cairo_status_t
 cairo_boilerplate_xlib_surface_disable_render (cairo_surface_t *abstract_surface)
 {
@@ -269,8 +364,16 @@ cairo_boilerplate_xlib_surface_disable_render (cairo_surface_t *abstract_surface
 
     return CAIRO_STATUS_SUCCESS;
 }
+#else
+cairo_status_t
+cairo_boilerplate_xlib_surface_disable_render (cairo_surface_t *abstract_surface)
+{
+    return CAIRO_STATUS_SUCCESS;
+}
+#endif
 
 
+#if CAIRO_HAS_XLIB_SURFACE
 /* The xlib-fallback target differs from the xlib target in two ways:
  *
  * 1. It creates its surfaces without relying on the Render extension
@@ -376,60 +479,6 @@ _cairo_boilerplate_xlib_fallback_create_surface (const char			 *name,
 
     return surface;
 }
-
-static cairo_surface_t *
-_cairo_boilerplate_xlib_reference_create_surface (const char			 *name,
-						  cairo_content_t			  content,
-						  double				  width,
-						  double				  height,
-						  double				  max_width,
-						  double				  max_height,
-						  cairo_boilerplate_mode_t	  mode,
-						  int                               id,
-						  void				**closure)
-{
-    xlib_target_closure_t *xtc;
-    Display *dpy;
-    cairo_surface_t *surface;
-    const char *display;
-
-    display = getenv ("CAIRO_REFERENCE_DISPLAY");
-    if (display == NULL) {
-	return _cairo_boilerplate_xlib_fallback_create_surface (name, content,
-								width, height,
-								max_width,
-								max_height,
-								mode, id,
-								closure);
-    }
-
-    *closure = xtc = xcalloc (1, sizeof (xlib_target_closure_t));
-
-    width = ceil (width);
-    if (width < 1)
-	width = 1;
-
-    height = ceil (height);
-    if (height < 1)
-	height = 1;
-
-    xtc->dpy = dpy = XOpenDisplay (display);
-    if (xtc->dpy == NULL) {
-	free (xtc);
-	CAIRO_BOILERPLATE_DEBUG (("Failed to open display: %s\n", display));
-	return NULL;
-    }
-
-    if (mode == CAIRO_BOILERPLATE_MODE_TEST)
-	surface = _cairo_boilerplate_xlib_test_create_surface (dpy, content, width, height, xtc);
-    else /* mode == CAIRO_BOILERPLATE_MODE_PERF */
-	surface = _cairo_boilerplate_xlib_perf_create_surface (dpy, content, width, height, xtc);
-
-    if (surface == NULL || cairo_surface_status (surface))
-	_cairo_boilerplate_xlib_cleanup (xtc);
-
-    return surface;
-}
 #endif
 
 static const cairo_boilerplate_target_t targets[] = {
@@ -437,7 +486,7 @@ static const cairo_boilerplate_target_t targets[] = {
     /* Acceleration architectures may make the results differ by a
      * bit, so we set the error tolerance to 1. */
     {
-	"xlib", "xlib", NULL, "xlib-reference",
+	"xlib", "xlib", NULL, "xlib-fallback",
 	CAIRO_SURFACE_TYPE_XLIB, CAIRO_CONTENT_COLOR_ALPHA, 1,
 	"cairo_xlib_surface_create_with_xrender_format",
 	_cairo_boilerplate_xlib_create_surface,
@@ -445,10 +494,11 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xlib_cleanup,
-	_cairo_boilerplate_xlib_synchronize
+	_cairo_boilerplate_xlib_synchronize,
+	TRUE, FALSE, FALSE
     },
     {
-	"xlib", "xlib", NULL, "xlib-reference",
+	"xlib", "xlib", NULL, "xlib-fallback",
 	CAIRO_SURFACE_TYPE_XLIB, CAIRO_CONTENT_COLOR, 1,
 	"cairo_xlib_surface_create_with_xrender_format",
 	_cairo_boilerplate_xlib_create_surface,
@@ -456,21 +506,23 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xlib_cleanup,
-	_cairo_boilerplate_xlib_synchronize
-    },
-    {
-	"xlib-reference", "xlib", NULL, NULL,
-	CAIRO_SURFACE_TYPE_XLIB, CAIRO_CONTENT_COLOR, 1,
-	"cairo_xlib_surface_create",
-	_cairo_boilerplate_xlib_reference_create_surface,
-	NULL, NULL,
-	NULL, /* get_image */
-	cairo_surface_write_to_png,
-	_cairo_boilerplate_xlib_cleanup,
-	_cairo_boilerplate_xlib_synchronize
+	_cairo_boilerplate_xlib_synchronize,
+	FALSE, FALSE, FALSE
     },
 #endif
 #if CAIRO_HAS_XLIB_SURFACE
+    {
+	"xlib-window", "xlib", NULL, NULL,
+	CAIRO_SURFACE_TYPE_XLIB, CAIRO_CONTENT_COLOR, 1,
+	"cairo_xlib_surface_create",
+	_cairo_boilerplate_xlib_window_create_surface,
+	NULL, NULL,
+	_cairo_boilerplate_get_image_surface,
+	cairo_surface_write_to_png,
+	_cairo_boilerplate_xlib_cleanup,
+	_cairo_boilerplate_xlib_synchronize,
+	FALSE, FALSE, FALSE
+    },
     /* This is a fallback surface which uses xlib fallbacks instead of
      * the Render extension. */
     {
@@ -482,7 +534,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xlib_cleanup,
-	_cairo_boilerplate_xlib_synchronize
+	_cairo_boilerplate_xlib_synchronize,
+	FALSE, FALSE, FALSE
     },
 #endif
 };

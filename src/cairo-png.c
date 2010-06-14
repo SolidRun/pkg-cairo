@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -172,8 +172,7 @@ write_png (cairo_surface_t	*surface,
     /* Handle the various fallback formats (e.g. low bit-depth XServers)
      * by coercing them to a simpler format using pixman.
      */
-    clone = _cairo_image_surface_coerce (image,
-                                         _cairo_format_from_content (image->base.content));
+    clone = _cairo_image_surface_coerce (image);
     status = clone->base.status;
     if (unlikely (status))
         goto BAIL1;
@@ -231,6 +230,8 @@ write_png (cairo_surface_t	*surface,
 	png_set_packswap (png);
 #endif
 	break;
+    case CAIRO_FORMAT_INVALID:
+    case CAIRO_FORMAT_RGB16_565:
     default:
 	status = _cairo_error (CAIRO_STATUS_INVALID_FORMAT);
 	goto BAIL4;

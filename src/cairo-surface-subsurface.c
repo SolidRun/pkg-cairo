@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -36,17 +36,26 @@
 #include "cairoint.h"
 
 #include "cairo-error-private.h"
+#include "cairo-recording-surface-private.h"
 #include "cairo-surface-offset-private.h"
 #include "cairo-surface-subsurface-private.h"
+
+static const cairo_surface_backend_t _cairo_surface_subsurface_backend;
 
 static cairo_status_t
 _cairo_surface_subsurface_finish (void *abstract_surface)
 {
     cairo_surface_subsurface_t *surface = abstract_surface;
+    cairo_status_t status = CAIRO_STATUS_SUCCESS;
+
+    if (surface->owns_target) {
+	cairo_surface_finish (surface->target);
+	status = surface->target->status;
+    }
 
     cairo_surface_destroy (surface->target);
 
-    return CAIRO_STATUS_SUCCESS;
+    return status;
 }
 
 static cairo_surface_t *
@@ -69,7 +78,8 @@ _cairo_surface_subsurface_paint (void *abstract_surface,
     cairo_status_t status;
     cairo_clip_t target_clip;
 
-    status = _cairo_clip_rectangle (_cairo_clip_init_copy (&target_clip, clip), &rect);
+    _cairo_clip_init_copy (&target_clip, clip);
+    status = _cairo_clip_rectangle (&target_clip, &rect);
     if (unlikely (status))
 	goto CLEANUP;
 
@@ -93,7 +103,8 @@ _cairo_surface_subsurface_mask (void *abstract_surface,
     cairo_status_t status;
     cairo_clip_t target_clip;
 
-    status = _cairo_clip_rectangle (_cairo_clip_init_copy (&target_clip, clip), &rect);
+    _cairo_clip_init_copy (&target_clip, clip);
+    status = _cairo_clip_rectangle (&target_clip, &rect);
     if (unlikely (status))
 	goto CLEANUP;
 
@@ -120,7 +131,8 @@ _cairo_surface_subsurface_fill (void			*abstract_surface,
     cairo_status_t status;
     cairo_clip_t target_clip;
 
-    status = _cairo_clip_rectangle (_cairo_clip_init_copy (&target_clip, clip), &rect);
+    _cairo_clip_init_copy (&target_clip, clip);
+    status = _cairo_clip_rectangle (&target_clip, &rect);
     if (unlikely (status))
 	goto CLEANUP;
 
@@ -150,7 +162,8 @@ _cairo_surface_subsurface_stroke (void				*abstract_surface,
     cairo_status_t status;
     cairo_clip_t target_clip;
 
-    status = _cairo_clip_rectangle (_cairo_clip_init_copy (&target_clip, clip), &rect);
+    _cairo_clip_init_copy (&target_clip, clip);
+    status = _cairo_clip_rectangle (&target_clip, &rect);
     if (unlikely (status))
 	goto CLEANUP;
 
@@ -179,7 +192,8 @@ _cairo_surface_subsurface_glyphs (void			*abstract_surface,
     cairo_status_t status;
     cairo_clip_t target_clip;
 
-    status = _cairo_clip_rectangle (_cairo_clip_init_copy (&target_clip, clip), &rect);
+    _cairo_clip_init_copy (&target_clip, clip);
+    status = _cairo_clip_rectangle (&target_clip, &rect);
     if (unlikely (status))
 	goto CLEANUP;
 
@@ -279,6 +293,46 @@ _cairo_surface_subsurface_acquire_source_image (void                    *abstrac
     struct extra *extra;
     uint8_t *data;
 
+    if (surface->target->type == CAIRO_SURFACE_TYPE_RECORDING) {
+	cairo_recording_surface_t *meta = (cairo_recording_surface_t *) surface->target;
+	cairo_surface_t *snapshot;
+
+	snapshot = _cairo_surface_has_snapshot (&surface->base,
+						&_cairo_image_surface_backend);
+	if (snapshot != NULL) {
+	    *image_out = (cairo_image_surface_t *) cairo_surface_reference (snapshot);
+	    *extra_out = NULL;
+	    return CAIRO_STATUS_SUCCESS;
+	}
+
+	if (! _cairo_surface_has_snapshot (&meta->base,
+					   &_cairo_image_surface_backend))
+	{
+	    image = (cairo_image_surface_t *)
+		_cairo_image_surface_create_with_content (meta->content,
+							  surface->extents.width,
+							  surface->extents.height);
+	    if (unlikely (image->base.status))
+		return image->base.status;
+
+	    cairo_surface_set_device_offset (&image->base,
+					     -surface->extents.x,
+					     -surface->extents.y);
+
+	    status = _cairo_recording_surface_replay (&meta->base, &image->base);
+	    if (unlikely (status)) {
+		cairo_surface_destroy (&image->base);
+		return status;
+	    }
+
+	    _cairo_surface_attach_snapshot (&surface->base, &image->base, NULL);
+
+	    *image_out = image;
+	    *extra_out = NULL;
+	    return CAIRO_STATUS_SUCCESS;
+	}
+    }
+
     extra = malloc (sizeof (struct extra));
     if (unlikely (extra == NULL))
 	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
@@ -288,7 +342,7 @@ _cairo_surface_subsurface_acquire_source_image (void                    *abstrac
 	goto CLEANUP;
 
     /* only copy if we need to perform sub-byte manipulation */
-    if (PIXMAN_FORMAT_BPP (extra->image->pixman_format) > 8) {
+    if (PIXMAN_FORMAT_BPP (extra->image->pixman_format) >= 8) {
 	assert ((PIXMAN_FORMAT_BPP (extra->image->pixman_format) % 8) == 0);
 
 	data = extra->image->data + surface->extents.y * extra->image->stride;
@@ -312,13 +366,15 @@ _cairo_surface_subsurface_acquire_source_image (void                    *abstrac
 	if (unlikely ((status = image->base.status)))
 	    goto CLEANUP_IMAGE;
 
-	pixman_image_composite (PIXMAN_OP_SRC,
-				image->pixman_image, NULL, extra->image->pixman_image,
-				surface->extents.x, surface->extents.y,
-				0, 0,
-				0, 0,
-				surface->extents.width, surface->extents.height);
+	pixman_image_composite32 (PIXMAN_OP_SRC,
+                                  image->pixman_image, NULL, extra->image->pixman_image,
+                                  surface->extents.x, surface->extents.y,
+                                  0, 0,
+                                  0, 0,
+                                  surface->extents.width, surface->extents.height);
     }
+
+    image->base.is_clear = FALSE;
 
     *image_out = image;
     *extra_out = extra;
@@ -337,10 +393,13 @@ _cairo_surface_subsurface_release_source_image (void                   *abstract
 						void                   *abstract_extra)
 {
     cairo_surface_subsurface_t *surface = abstract_surface;
-    struct extra *extra = abstract_extra;
 
-    _cairo_surface_release_source_image (surface->target, extra->image, extra->image_extra);
-    free (extra);
+    if (abstract_extra != NULL) {
+	struct extra *extra = abstract_extra;
+
+	_cairo_surface_release_source_image (surface->target, extra->image, extra->image_extra);
+	free (extra);
+    }
 
     cairo_surface_destroy (&image->base);
 }
@@ -349,37 +408,23 @@ static cairo_surface_t *
 _cairo_surface_subsurface_snapshot (void *abstract_surface)
 {
     cairo_surface_subsurface_t *surface = abstract_surface;
-    cairo_image_surface_t *image, *clone;
-    void *image_extra;
-    cairo_status_t status;
+    cairo_surface_subsurface_t *snapshot;
 
-    /* XXX Alternatively we could snapshot the target and return a subsurface
-     * of that.
-     */
+    snapshot = malloc (sizeof (cairo_surface_subsurface_t));
+    if (unlikely (snapshot == NULL))
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
-    status = _cairo_surface_acquire_source_image (surface->target, &image, &image_extra);
-    if (unlikely (status))
-	return _cairo_surface_create_in_error (status);
+    _cairo_surface_init (&snapshot->base,
+			 &_cairo_surface_subsurface_backend,
+			 NULL, /* device */
+			 surface->target->content);
+    snapshot->target = _cairo_surface_snapshot (surface->target);
+    snapshot->owns_target = TRUE;
 
-    clone = (cairo_image_surface_t *)
-	_cairo_image_surface_create_with_pixman_format (NULL,
-							image->pixman_format,
-							surface->extents.width,
-							surface->extents.height,
-							0);
-    if (unlikely (clone->base.status))
-	return &clone->base;
+    snapshot->base.type = snapshot->target->type;
+    snapshot->extents = surface->extents;
 
-    pixman_image_composite (PIXMAN_OP_SRC,
-			    image->pixman_image, NULL, clone->pixman_image,
-			    surface->extents.x, surface->extents.y,
-			    0, 0,
-			    0, 0,
-			    surface->extents.width, surface->extents.height);
-
-    _cairo_surface_release_source_image (surface->target, image, image_extra);
-
-    return &clone->base;
+    return &snapshot->base;
 }
 
 static const cairo_surface_backend_t _cairo_surface_subsurface_backend = {
@@ -415,14 +460,39 @@ static const cairo_surface_backend_t _cairo_surface_subsurface_backend = {
     _cairo_surface_subsurface_snapshot,
 };
 
+/**
+ * cairo_surface_create_for_rectangle:
+ * @target: an existing surface for which the sub-surface will point to
+ * @x: the x-origin of the sub-surface from the top-left of the target surface (in device-space units)
+ * @y: the y-origin of the sub-surface from the top-left of the target surface (in device-space units)
+ * @width: width of the sub-surface (in device-space units)
+ * @height: height of the sub-surface (in device-space units)
+ *
+ * Create a new surface that is a rectangle within the target surface.
+ * All operations drawn to this surface are then clipped and translated
+ * onto the target surface. Nothing drawn via this sub-surface outside of
+ * its bounds is drawn onto the target surface, making this a useful method
+ * for passing constrained child surfaces to library routines that draw
+ * directly onto the parent surface, i.e. with no further backend allocations,
+ * double buffering or copies.
+ *
+ * Return value: a pointer to the newly allocated surface. The caller
+ * owns the surface and should call cairo_surface_destroy() when done
+ * with it.
+ *
+ * This function always returns a valid pointer, but it will return a
+ * pointer to a "nil" surface if @other is already in an error state
+ * or any other error occurs.
+ **/
 cairo_surface_t *
-cairo_surface_create_for_region (cairo_surface_t *target,
-				 int x, int y,
-				 int width, int height)
+cairo_surface_create_for_rectangle (cairo_surface_t *target,
+				    double x, double y,
+				    double width, double height)
 {
     cairo_surface_subsurface_t *surface;
     cairo_rectangle_int_t target_extents;
-    cairo_bool_t is_empty;
+    cairo_bool_t ret;
+    int tx, ty;
 
     if (unlikely (target->status))
 	return _cairo_surface_create_in_error (target->status);
@@ -437,13 +507,14 @@ cairo_surface_create_for_region (cairo_surface_t *target,
 			 target->content);
     surface->base.type = target->type;
 
-    surface->extents.x = x;
-    surface->extents.y = y;
-    surface->extents.width = width;
-    surface->extents.height = height;
+    /* XXX forced integer alignment */
+    surface->extents.x = ceil (x);
+    surface->extents.y = ceil (y);
+    surface->extents.width = floor (x + width) - surface->extents.x;
+    surface->extents.height = floor (y + height) - surface->extents.y;
 
     if (_cairo_surface_get_extents (target, &target_extents))
-        is_empty = _cairo_rectangle_intersect (&surface->extents, &target_extents);
+        ret = _cairo_rectangle_intersect (&surface->extents, &target_extents);
 
     if (target->backend->type == CAIRO_INTERNAL_SURFACE_TYPE_SUBSURFACE) {
 	/* Maintain subsurfaces as 1-depth */
@@ -451,9 +522,15 @@ cairo_surface_create_for_region (cairo_surface_t *target,
 	surface->extents.x += sub->extents.x;
 	surface->extents.y += sub->extents.y;
 	target = sub->target;
+    } else {
+	ret = _cairo_matrix_is_integer_translation (&target->device_transform, &tx, &ty);
+	assert (ret);
+	surface->extents.x += tx;
+	surface->extents.y += ty;
     }
 
     surface->target = cairo_surface_reference (target);
+    surface->owns_target = FALSE;
 
     return &surface->base;
 }

@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -155,7 +155,7 @@ typedef struct _cairo_surface cairo_surface_t;
  * cairo_xcb_device_create() creates a device that wraps the connection
  * to an X Windows System using the XCB library.
  *
- * The type of a surface can be queried with cairo_device_get_type().
+ * The type of a device can be queried with cairo_device_get_type().
  *
  * Memory management of #cairo_device_t is done with
  * cairo_device_reference() and cairo_device_destroy().
@@ -2026,6 +2026,20 @@ cairo_device_finish (cairo_device_t *device);
 cairo_public void
 cairo_device_destroy (cairo_device_t *device);
 
+cairo_public unsigned int
+cairo_device_get_reference_count (cairo_device_t *device);
+
+cairo_public void *
+cairo_device_get_user_data (cairo_device_t		 *device,
+			    const cairo_user_data_key_t *key);
+
+cairo_public cairo_status_t
+cairo_device_set_user_data (cairo_device_t		 *device,
+			    const cairo_user_data_key_t *key,
+			    void			 *user_data,
+			    cairo_destroy_func_t	  destroy);
+
+
 /* Surface manipulation */
 
 cairo_public cairo_surface_t *
@@ -2035,11 +2049,11 @@ cairo_surface_create_similar (cairo_surface_t  *other,
 			      int		height);
 
 cairo_public cairo_surface_t *
-cairo_surface_create_for_region (cairo_surface_t	*target,
-				 int			 x,
-				 int			 y,
-				 int			 width,
-				 int			 height);
+cairo_surface_create_for_rectangle (cairo_surface_t	*target,
+                                    double		 x,
+                                    double		 y,
+                                    double		 width,
+                                    double		 height);
 
 cairo_public cairo_surface_t *
 cairo_surface_reference (cairo_surface_t *surface);
@@ -2166,6 +2180,7 @@ cairo_surface_set_user_data (cairo_surface_t		 *surface,
 #define CAIRO_MIME_TYPE_JPEG "image/jpeg"
 #define CAIRO_MIME_TYPE_PNG "image/png"
 #define CAIRO_MIME_TYPE_JP2 "image/jp2"
+#define CAIRO_MIME_TYPE_URI "text/x-uri"
 
 cairo_public void
 cairo_surface_get_mime_data (cairo_surface_t		*surface,
@@ -2231,6 +2246,7 @@ cairo_surface_has_show_text_glyphs (cairo_surface_t *surface);
 
 /**
  * cairo_format_t:
+ * @CAIRO_FORMAT_INVALID: no such format exists or is supported.
  * @CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
  *   alpha in the upper 8 bits, then red, then green, then blue.
  *   The 32-bit quantities are stored native-endian. Pre-multiplied
@@ -2257,14 +2273,12 @@ cairo_surface_has_show_text_glyphs (cairo_surface_t *surface);
  * New entries may be added in future versions.
  **/
 typedef enum _cairo_format {
-    CAIRO_FORMAT_ARGB32,
-    CAIRO_FORMAT_RGB24,
-    CAIRO_FORMAT_A8,
-    CAIRO_FORMAT_A1
-    /* The value of 4 is reserved by a deprecated enum value.
-     * The next format added must have an explicit value of 5.
-    CAIRO_FORMAT_RGB16_565 = 4,
-    */
+    CAIRO_FORMAT_INVALID   = -1,
+    CAIRO_FORMAT_ARGB32    = 0,
+    CAIRO_FORMAT_RGB24     = 1,
+    CAIRO_FORMAT_A8        = 2,
+    CAIRO_FORMAT_A1        = 3,
+    CAIRO_FORMAT_RGB16_565 = 4
 } cairo_format_t;
 
 cairo_public cairo_surface_t *
@@ -2614,7 +2628,7 @@ cairo_public cairo_region_t *
 cairo_region_copy (const cairo_region_t *original);
 
 cairo_public cairo_region_t *
-cairo_region_reference (cairo_region_t *);
+cairo_region_reference (cairo_region_t *region);
 
 cairo_public void
 cairo_region_destroy (cairo_region_t *region);
@@ -2658,14 +2672,14 @@ cairo_region_subtract_rectangle (cairo_region_t *dst,
 				 const cairo_rectangle_int_t *rectangle);
 
 cairo_public cairo_status_t
-cairo_region_intersect (cairo_region_t *dst, cairo_region_t *other);
+cairo_region_intersect (cairo_region_t *dst, const cairo_region_t *other);
 
 cairo_public cairo_status_t
 cairo_region_intersect_rectangle (cairo_region_t *dst,
 				  const cairo_rectangle_int_t *rectangle);
 
 cairo_public cairo_status_t
-cairo_region_union (cairo_region_t *dst, cairo_region_t *other);
+cairo_region_union (cairo_region_t *dst, const cairo_region_t *other);
 
 cairo_public cairo_status_t
 cairo_region_union_rectangle (cairo_region_t *dst,

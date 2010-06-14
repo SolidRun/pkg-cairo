@@ -115,7 +115,7 @@ cairo_boilerplate_format_from_content (cairo_content_t content)
 	case CAIRO_CONTENT_ALPHA: format = CAIRO_FORMAT_A8; break;
 	default:
 	    assert (0); /* not reached */
-	    format = (cairo_format_t) -1;
+	    format = CAIRO_FORMAT_INVALID;
 	    break;
     }
 
@@ -149,6 +149,23 @@ _cairo_boilerplate_image_create_surface (const char			 *name,
     return cairo_image_surface_create (format, ceil (width), ceil (height));
 }
 
+static cairo_surface_t *
+_cairo_boilerplate_image16_create_surface (const char			 *name,
+					   cairo_content_t		  content,
+					   double			  width,
+					   double			  height,
+					   double			  max_width,
+					   double			  max_height,
+					   cairo_boilerplate_mode_t	  mode,
+					   int                            id,
+					   void				**closure)
+{
+    *closure = NULL;
+
+    /* XXX force CAIRO_CONTENT_COLOR */
+    return cairo_image_surface_create (CAIRO_FORMAT_RGB16_565, ceil (width), ceil (height));
+}
+
 #if CAIRO_HAS_RECORDING_SURFACE
 static cairo_surface_t *
 _cairo_boilerplate_recording_create_surface (const char		     *name,
@@ -163,13 +180,18 @@ _cairo_boilerplate_recording_create_surface (const char		     *name,
 {
     cairo_rectangle_t extents;
 
-    *closure = NULL;
-
     extents.x = 0;
     extents.y = 0;
     extents.width = width;
     extents.height = height;
-    return cairo_recording_surface_create (content, &extents);
+    return *closure = cairo_surface_reference (cairo_recording_surface_create (content, &extents));
+}
+
+static void
+_cairo_boilerplate_recording_surface_cleanup (void *closure)
+{
+    cairo_surface_finish (closure);
+    cairo_surface_destroy (closure);
 }
 #endif
 
@@ -205,6 +227,8 @@ _cairo_boilerplate_get_image_surface (cairo_surface_t *src,
 	if (test_name != NULL) {
 	    cairo_device_t *ctx;
 	    char *filename;
+
+            cairo_surface_destroy (surface);
 
 	    xasprintf (&filename, "%s.out.trace", test_name);
 	    ctx = cairo_script_create (filename);
@@ -301,7 +325,9 @@ static const cairo_boilerplate_target_t builtin_targets[] = {
 	NULL, _cairo_boilerplate_image_create_surface,
 	NULL, NULL,
 	_cairo_boilerplate_get_image_surface,
-	cairo_surface_write_to_png
+	cairo_surface_write_to_png,
+	NULL, NULL,
+	TRUE, FALSE, FALSE
     },
     {
 	"image", "image", NULL, NULL,
@@ -309,7 +335,19 @@ static const cairo_boilerplate_target_t builtin_targets[] = {
 	NULL, _cairo_boilerplate_image_create_surface,
 	NULL, NULL,
 	_cairo_boilerplate_get_image_surface,
-	cairo_surface_write_to_png
+	cairo_surface_write_to_png,
+	NULL, NULL,
+	FALSE, FALSE, FALSE
+    },
+    {
+	"image16", "image", NULL, NULL,
+	CAIRO_SURFACE_TYPE_IMAGE, CAIRO_CONTENT_COLOR, 0,
+	NULL, _cairo_boilerplate_image16_create_surface,
+	NULL, NULL,
+	_cairo_boilerplate_get_image_surface,
+	cairo_surface_write_to_png,
+	NULL, NULL,
+	TRUE, FALSE, FALSE
     },
 #if CAIRO_HAS_RECORDING_SURFACE
     {
@@ -320,8 +358,9 @@ static const cairo_boilerplate_target_t builtin_targets[] = {
 	NULL, NULL,
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
-	NULL, NULL,
-	FALSE, TRUE
+	_cairo_boilerplate_recording_surface_cleanup,
+	NULL,
+	FALSE, FALSE, TRUE
     },
     {
 	"recording", "image", NULL, NULL,
@@ -331,8 +370,9 @@ static const cairo_boilerplate_target_t builtin_targets[] = {
 	NULL, NULL,
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
-	NULL, NULL,
-	FALSE, TRUE
+	_cairo_boilerplate_recording_surface_cleanup,
+	NULL,
+	FALSE, FALSE, TRUE
     },
 #endif
 };
@@ -835,4 +875,17 @@ const char*
 cairo_boilerplate_version_string (void)
 {
     return CAIRO_VERSION_STRING;
+}
+
+void
+cairo_boilerplate_fini (void)
+{
+    while (cairo_boilerplate_targets != NULL) {
+	struct cairo_boilerplate_target_list *next;
+
+	next = cairo_boilerplate_targets->next;
+
+	free (cairo_boilerplate_targets);
+	cairo_boilerplate_targets = next;
+    }
 }

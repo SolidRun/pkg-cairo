@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -52,6 +52,7 @@ typedef struct _cairo_composite_rectangles cairo_composite_rectangles_t;
 typedef struct _cairo_clip cairo_clip_t;
 typedef struct _cairo_clip_path cairo_clip_path_t;
 typedef struct _cairo_color cairo_color_t;
+typedef struct _cairo_color_stop cairo_color_stop_t;
 typedef struct _cairo_device_backend cairo_device_backend_t;
 typedef struct _cairo_font_face_backend     cairo_font_face_backend_t;
 typedef struct _cairo_gstate cairo_gstate_t;
@@ -59,6 +60,7 @@ typedef struct _cairo_hash_entry cairo_hash_entry_t;
 typedef struct _cairo_hash_table cairo_hash_table_t;
 typedef struct _cairo_image_surface cairo_image_surface_t;
 typedef struct _cairo_mime_data cairo_mime_data_t;
+typedef struct _cairo_observer cairo_observer_t;
 typedef struct _cairo_output_stream cairo_output_stream_t;
 typedef struct _cairo_paginated_surface_backend cairo_paginated_surface_backend_t;
 typedef struct _cairo_path_fixed cairo_path_fixed_t;
@@ -74,6 +76,11 @@ typedef struct _cairo_unscaled_font_backend cairo_unscaled_font_backend_t;
 typedef struct _cairo_xlib_screen_info cairo_xlib_screen_info_t;
 
 typedef cairo_array_t cairo_user_data_array_t;
+
+struct _cairo_observer {
+    cairo_list_t link;
+    void (*callback) (cairo_observer_t *self, void *arg);
+};
 
 /**
  * cairo_hash_entry_t:
@@ -145,6 +152,20 @@ struct _cairo_color {
     unsigned short green_short;
     unsigned short blue_short;
     unsigned short alpha_short;
+};
+
+struct _cairo_color_stop {
+    /* unpremultiplied */
+    double red;
+    double green;
+    double blue;
+    double alpha;
+
+    /* unpremultipled, for convenience */
+    uint16_t red_short;
+    uint16_t green_short;
+    uint16_t blue_short;
+    uint16_t alpha_short;
 };
 
 typedef enum _cairo_paginated_mode {
@@ -341,7 +362,6 @@ struct _cairo_pattern {
 struct _cairo_solid_pattern {
     cairo_pattern_t base;
     cairo_color_t color;
-    cairo_content_t content;
 };
 
 typedef struct _cairo_surface_pattern {
@@ -352,7 +372,7 @@ typedef struct _cairo_surface_pattern {
 
 typedef struct _cairo_gradient_stop {
     double offset;
-    cairo_color_t color;
+    cairo_color_stop_t color;
 } cairo_gradient_stop_t;
 
 typedef struct _cairo_gradient_pattern {
@@ -415,6 +435,7 @@ typedef struct _cairo_scaled_glyph {
     int16_t                 x_advance;		/* device-space rounded X advance */
     int16_t                 y_advance;		/* device-space rounded Y advance */
 
+    unsigned int	    has_info;
     cairo_image_surface_t   *surface;		/* device-space image */
     cairo_path_fixed_t	    *path;		/* device-space outline */
     cairo_surface_t         *recording_surface;	/* device-space recording-surface */

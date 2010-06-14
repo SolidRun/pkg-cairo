@@ -40,14 +40,16 @@ draw (cairo_t *cr, int width, int height)
 					    60, 60);
     cr_region = cairo_create (similar);
     cairo_surface_destroy (similar);
+
     cairo_set_source_rgb (cr_region, .5, .5, .0);
     cairo_paint (cr_region);
     similar = cairo_surface_reference (cairo_get_target (cr_region));
     cairo_destroy (cr_region);
 
     /* fill the centre */
-    region = cairo_surface_create_for_region (similar, 20, 20, 20, 20);
+    region = cairo_surface_create_for_rectangle (similar, 20, 20, 20, 20);
     cairo_surface_destroy (similar);
+
     cr_region = cairo_create (region);
     cairo_surface_destroy (region);
 
@@ -69,6 +71,7 @@ draw (cairo_t *cr, int width, int height)
 
     cairo_set_source_surface (cr, cairo_get_target (cr_region), 20, 20);
     cairo_destroy (cr_region);
+
     cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
     cairo_paint (cr);
 

@@ -227,6 +227,20 @@ if CAIRO_HAS_DRM_SURFACE
 enabled_cairo_pkgconf += cairo-drm.pc
 endif
 
+unsupported_cairo_headers += $(cairo_drm_xr_headers)
+all_cairo_headers += $(cairo_drm_xr_headers)
+all_cairo_private += $(cairo_drm_xr_private)
+all_cairo_sources += $(cairo_drm_xr_sources)
+if CAIRO_HAS_DRM_XR_FUNCTIONS
+enabled_cairo_headers += $(cairo_drm_xr_headers)
+enabled_cairo_private += $(cairo_drm_xr_private)
+enabled_cairo_sources += $(cairo_drm_xr_sources)
+endif
+all_cairo_pkgconf += cairo-drm-xr.pc
+if CAIRO_HAS_DRM_XR_FUNCTIONS
+enabled_cairo_pkgconf += cairo-drm-xr.pc
+endif
+
 unsupported_cairo_headers += $(cairo_gallium_headers)
 all_cairo_headers += $(cairo_gallium_headers)
 all_cairo_private += $(cairo_gallium_private)

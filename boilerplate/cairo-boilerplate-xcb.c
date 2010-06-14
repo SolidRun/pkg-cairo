@@ -28,6 +28,8 @@
 
 #include <cairo-xcb.h>
 
+#include <assert.h>
+
 static const cairo_user_data_key_t xcb_closure_key;
 
 typedef struct _xcb_target_closure {
@@ -128,8 +130,10 @@ _cairo_boilerplate_xcb_create_surface (const char		 *name,
 	height = 1;
 
     xtc->c = c = xcb_connect(NULL,NULL);
-    if (xcb_connection_has_error(c))
+    if (c == NULL || xcb_connection_has_error(c)) {
+	free (xtc);
 	return NULL;
+    }
 
     root = xcb_setup_roots_iterator(xcb_get_setup(c)).data;
 
@@ -233,8 +237,10 @@ _cairo_boilerplate_xcb_create_window (const char		 *name,
 	height = 1;
 
     xtc->c = c = xcb_connect(NULL,NULL);
-    if (xcb_connection_has_error(c))
+    if (xcb_connection_has_error(c)) {
+	free (xtc);
 	return NULL;
+    }
 
     xtc->surface = NULL;
 
@@ -302,8 +308,10 @@ _cairo_boilerplate_xcb_create_window_db (const char		 *name,
 	height = 1;
 
     xtc->c = c = xcb_connect(NULL,NULL);
-    if (xcb_connection_has_error(c))
+    if (xcb_connection_has_error(c)) {
+	free (xtc);
 	return NULL;
+    }
 
     xtc->surface = NULL;
 
@@ -374,8 +382,10 @@ _cairo_boilerplate_xcb_create_render_0_0 (const char		 *name,
 	height = 1;
 
     xtc->c = c = xcb_connect(NULL,NULL);
-    if (xcb_connection_has_error(c))
+    if (xcb_connection_has_error(c)) {
+	free (xtc);
 	return NULL;
+    }
 
     root = xcb_setup_roots_iterator(xcb_get_setup(c)).data;
 
@@ -422,9 +432,16 @@ _cairo_boilerplate_xcb_create_render_0_0 (const char		 *name,
 							xtc->drawable,
 							render_format,
 							width, height);
+    if (cairo_surface_status (tmp)) {
+	free (formats);
+	xcb_disconnect (c);
+	free (xtc);
+	return tmp;
+    }
 
-    cairo_xcb_device_debug_cap_xrender_version (cairo_surface_get_device (tmp),
-                                                0, 0);
+    xtc->device = cairo_device_reference (cairo_surface_get_device (tmp));
+    cairo_xcb_device_debug_cap_xrender_version (xtc->device, 0, 0);
+
     /* recreate with impaired connection */
     surface = cairo_xcb_surface_create_with_xrender_format (c, root,
 							    xtc->drawable,
@@ -433,7 +450,8 @@ _cairo_boilerplate_xcb_create_render_0_0 (const char		 *name,
     free (formats);
     cairo_surface_destroy (tmp);
 
-    xtc->device = cairo_device_reference (cairo_surface_get_device (surface));
+    assert (cairo_surface_get_device (surface) == xtc->device);
+
     status = cairo_surface_set_user_data (surface, &xcb_closure_key, xtc, NULL);
     if (status == CAIRO_STATUS_SUCCESS)
 	return surface;
@@ -564,9 +582,15 @@ _cairo_boilerplate_xcb_finish_surface (cairo_surface_t		*surface)
 	if (ev->response_type == 0 /* trust me! */) {
 	    xcb_generic_error_t *error = (xcb_generic_error_t *) ev;
 
+#if XCB_GENERIC_ERROR_HAS_MAJOR_MINOR_CODES
 	    fprintf (stderr,
 		     "Detected error during xcb run: %d major=%d, minor=%d\n",
 		     error->error_code, error->major_code, error->minor_code);
+#else
+	    fprintf (stderr,
+		     "Detected error during xcb run: %d\n",
+		     error->error_code);
+#endif
 	    free (error);
 
 	    status = CAIRO_STATUS_WRITE_ERROR;
@@ -595,7 +619,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xcb_cleanup,
-	_cairo_boilerplate_xcb_synchronize
+	_cairo_boilerplate_xcb_synchronize,
+	TRUE, FALSE, FALSE
     },
     {
 	"xcb", "xlib", NULL, NULL,
@@ -607,7 +632,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xcb_cleanup,
-	_cairo_boilerplate_xcb_synchronize
+	_cairo_boilerplate_xcb_synchronize,
+	FALSE, FALSE, FALSE
     },
     {
 	"xcb-window", "xlib", NULL, NULL,
@@ -619,7 +645,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xcb_cleanup,
-	_cairo_boilerplate_xcb_synchronize
+	_cairo_boilerplate_xcb_synchronize,
+	FALSE, FALSE, FALSE
     },
     {
 	"xcb-window&", "xlib", NULL, NULL,
@@ -631,7 +658,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xcb_cleanup,
-	_cairo_boilerplate_xcb_synchronize
+	_cairo_boilerplate_xcb_synchronize,
+	FALSE, FALSE, FALSE
     },
     {
 	"xcb-render-0.0", "xlib-fallback", NULL, NULL,
@@ -643,7 +671,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xcb_cleanup,
-	_cairo_boilerplate_xcb_synchronize
+	_cairo_boilerplate_xcb_synchronize,
+	FALSE, FALSE, FALSE
     },
     {
 	"xcb-render-0.0", "xlib-fallback", NULL, NULL,
@@ -655,7 +684,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xcb_cleanup,
-	_cairo_boilerplate_xcb_synchronize
+	_cairo_boilerplate_xcb_synchronize,
+	FALSE, FALSE, FALSE
     },
     {
 	"xcb-fallback", "xlib-fallback", NULL, NULL,
@@ -667,7 +697,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_xcb_cleanup,
-	_cairo_boilerplate_xcb_synchronize
+	_cairo_boilerplate_xcb_synchronize,
+	FALSE, FALSE, FALSE
     },
 };
 CAIRO_BOILERPLATE (xcb, targets)

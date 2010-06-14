@@ -7,9 +7,10 @@
 <refmeta>
 <refentrytitle role="top_of_page" id="cairo-types.top_of_page">Types</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>CAIRO Library</refmiscinfo>
+<refmiscinfo>
+  CAIRO Library
+</refmiscinfo>
 </refmeta>
-
 <refnamediv>
 <refname>Types</refname>
 <refpurpose>Generic data types</refpurpose>
@@ -18,20 +19,11 @@
 <refsynopsisdiv id="cairo-types.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
-<synopsis>
-typedef             <link linkend="cairo-bool-t">cairo_bool_t</link>;
+<synopsis>typedef             <link linkend="cairo-bool-t">cairo_bool_t</link>;
                     <link linkend="cairo-user-data-key-t">cairo_user_data_key_t</link>;
-<link linkend="void">void</link>                (<link linkend="cairo-destroy-func-t">*cairo_destroy_func_t</link>)             (<link linkend="void">void</link> *data);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="cairo-destroy-func-t">*cairo_destroy_func_t</link>)             (<parameter><link linkend="void"><type>void</type></link> *data</parameter>);
 </synopsis>
 </refsynopsisdiv>
-
-
-
-
-
-
-
-
 
 <refsect1 id="cairo-types.description" role="desc">
 <title role="desc.title">Description</title>
@@ -39,12 +31,12 @@ typedef             <link linkend="cairo-bool-t">cairo_bool_t</link>;
 Generic data types used in the cairo API
 </para>
 </refsect1>
-
 <refsect1 id="cairo-types.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="cairo-bool-t" role="typedef">
 <title>cairo_bool_t</title>
-<indexterm zone="cairo-bool-t"><primary sortas="cairo_bool_t">cairo_bool_t</primary></indexterm><programlisting>typedef int cairo_bool_t;
+<indexterm zone="cairo-bool-t"><primary>cairo_bool_t</primary></indexterm>
+<programlisting>typedef int cairo_bool_t;
 </programlisting>
 <para>
 <link linkend="cairo-bool-t"><type>cairo_bool_t</type></link> is used for boolean values. Returns of type
@@ -57,12 +49,12 @@ value as a boolean condition.
  if (cairo_in_stroke (cr, x, y)) {
      /<!-- -->* do something *<!-- -->/
  }
-</programlisting></informalexample></para>
-<para>
+</programlisting></informalexample>
 </para></refsect2>
 <refsect2 id="cairo-user-data-key-t" role="struct">
 <title>cairo_user_data_key_t</title>
-<indexterm zone="cairo-user-data-key-t"><primary sortas="cairo_user_data_key_t">cairo_user_data_key_t</primary></indexterm><programlisting>typedef struct {
+<indexterm zone="cairo-user-data-key-t"><primary>cairo_user_data_key_t</primary></indexterm>
+<programlisting>typedef struct {
     int unused;
 } cairo_user_data_key_t;
 </programlisting>
@@ -71,32 +63,27 @@ value as a boolean condition.
 data structures.  The actual contents of the struct is never used,
 and there is no need to initialize the object; only the unique
 address of a <link linkend="cairo-data-key-t"><type>cairo_data_key_t</type></link> object is used.  Typically, you
-would just use the address of a static <link linkend="cairo-data-key-t"><type>cairo_data_key_t</type></link> object.</para>
-<para>
+would just use the address of a static <link linkend="cairo-data-key-t"><type>cairo_data_key_t</type></link> object.
 </para><variablelist role="struct">
-<varlistentry>
-<term><link linkend="int">int</link>&#160;<structfield>unused</structfield>;</term>
-<listitem><simpara> not used; ignore.
+<varlistentry><term><link linkend="int"><type>int</type></link>&#160;<structfield id="cairo-user-data-key-t.unused">unused</structfield>;</term>
+<listitem><simpara>not used; ignore.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-destroy-func-t" role="function">
 <title>cairo_destroy_func_t ()</title>
-<indexterm zone="cairo-destroy-func-t"><primary sortas="cairo_destroy_func_t">cairo_destroy_func_t</primary></indexterm><programlisting><link linkend="void">void</link>                (*cairo_destroy_func_t)             (<link linkend="void">void</link> *data);</programlisting>
+<indexterm zone="cairo-destroy-func-t"><primary>cairo_destroy_func_t</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*cairo_destroy_func_t)             (<parameter><link linkend="void"><type>void</type></link> *data</parameter>);</programlisting>
 <para>
 <link linkend="cairo-destroy-func-t"><type>cairo_destroy_func_t</type></link> the type of function which is called when a
 data element is destroyed. It is passed the pointer to the data
-element and should free any memory and resources allocated for it.</para>
-<para>
+element and should free any memory and resources allocated for it.
 </para><variablelist role="params">
 <varlistentry><term><parameter>data</parameter>&#160;:</term>
-<listitem><simpara> The data element being destroyed.
+<listitem><simpara>The data element being destroyed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
-
-
-
 
 </refentry>

@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -36,6 +36,8 @@
 
 #include <X11/X.h>
 #include <X11/Xutil.h> /* for XDestroyImage */
+
+static const cairo_user_data_key_t gl_closure_key;
 
 typedef struct _gl_target_closure {
     Display *dpy;
@@ -222,9 +224,111 @@ _cairo_boilerplate_gl_create_window (const char			 *name,
     return surface;
 }
 
+static cairo_surface_t *
+_cairo_boilerplate_gl_create_window_db (const char		 *name,
+					cairo_content_t		  content,
+					double			  width,
+					double			  height,
+					double			  max_width,
+					double			  max_height,
+					cairo_boilerplate_mode_t  mode,
+					int			  id,
+					void			**closure)
+{
+    int rgba_attribs[] = { GLX_RGBA,
+			   GLX_RED_SIZE, 1,
+			   GLX_GREEN_SIZE, 1,
+			   GLX_BLUE_SIZE, 1,
+			   GLX_ALPHA_SIZE, 1,
+			   GLX_DOUBLEBUFFER,
+			   None };
+    XVisualInfo *vi;
+    GLXContext ctx;
+    gl_target_closure_t *gltc;
+    cairo_surface_t *surface;
+    Display *dpy;
+    XSetWindowAttributes attr;
+    cairo_status_t status;
+
+    gltc = calloc (1, sizeof (gl_target_closure_t));
+    *closure = gltc;
+
+    if (width == 0)
+	width = 1;
+    if (height == 0)
+	height = 1;
+
+    dpy = XOpenDisplay (NULL);
+    gltc->dpy = dpy;
+    if (!gltc->dpy) {
+	fprintf (stderr, "Failed to open display: %s\n", XDisplayName(0));
+	free (gltc);
+	return NULL;
+    }
+
+    if (mode == CAIRO_BOILERPLATE_MODE_TEST)
+	XSynchronize (gltc->dpy, 1);
+
+    vi = glXChooseVisual (dpy, DefaultScreen (dpy), rgba_attribs);
+    if (vi == NULL) {
+	fprintf (stderr, "Failed to create RGBA, double-buffered visual\n");
+	XCloseDisplay (dpy);
+	free (gltc);
+	return NULL;
+    }
+
+    attr.colormap = XCreateColormap (dpy,
+				     RootWindow (dpy, vi->screen),
+				     vi->visual,
+				     AllocNone);
+    attr.border_pixel = 0;
+    attr.override_redirect = True;
+    gltc->drawable = XCreateWindow (dpy, DefaultRootWindow (dpy), 0, 0,
+				    width, height, 0, vi->depth,
+				    InputOutput, vi->visual,
+				    CWOverrideRedirect | CWBorderPixel | CWColormap,
+				    &attr);
+    XMapWindow (dpy, gltc->drawable);
+
+    ctx = glXCreateContext (dpy, vi, NULL, True);
+    XFree (vi);
+
+    gltc->ctx = ctx;
+    gltc->device = cairo_glx_device_create (dpy, ctx);
+
+    gltc->surface = cairo_gl_surface_create_for_window (gltc->device,
+							gltc->drawable,
+							ceil (width),
+							ceil (height));
+    surface = cairo_surface_create_similar (gltc->surface, content, width, height);
+    status = cairo_surface_set_user_data (surface, &gl_closure_key, gltc, NULL);
+    if (status == CAIRO_STATUS_SUCCESS)
+	return surface;
+
+    cairo_surface_destroy (surface);
+    _cairo_boilerplate_gl_cleanup (gltc);
+    return cairo_boilerplate_surface_create_in_error (status);
+}
+
 static cairo_status_t
 _cairo_boilerplate_gl_finish_window (cairo_surface_t		*surface)
 {
+    gl_target_closure_t *gltc = cairo_surface_get_user_data (surface,
+							     &gl_closure_key);
+
+    if (gltc != NULL && gltc->surface != NULL) {
+	cairo_t *cr;
+
+	cr = cairo_create (gltc->surface);
+	cairo_surface_set_device_offset (surface, 0, 0);
+	cairo_set_source_surface (cr, surface, 0, 0);
+	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint (cr);
+	cairo_destroy (cr);
+
+	surface = gltc->surface;
+    }
+
     cairo_gl_surface_swapbuffers (surface);
     return CAIRO_STATUS_SUCCESS;
 }
@@ -234,8 +338,90 @@ _cairo_boilerplate_gl_synchronize (void *closure)
 {
     gl_target_closure_t *gltc = closure;
 
-    cairo_gl_surface_glfinish (gltc->surface);
+    if (cairo_device_acquire (gltc->device))
+        return;
+
+    glFinish ();
+
+    cairo_device_release (gltc->device);
 }
+
+#if CAIRO_HAS_EGL_FUNCTIONS
+typedef struct _egl_target_closure {
+    EGLDisplay dpy;
+    EGLContext ctx;
+
+    cairo_device_t *device;
+    cairo_surface_t *surface;
+} egl_target_closure_t;
+
+static void
+_cairo_boilerplate_egl_cleanup (void *closure)
+{
+    egl_target_closure_t *gltc = closure;
+
+    cairo_device_finish (gltc->device);
+    cairo_device_destroy (gltc->device);
+
+    eglDestroyContext (gltc->dpy, gltc->ctx);
+    eglMakeCurrent (gltc->dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglTerminate (gltc->dpy);
+
+    free (gltc);
+}
+
+static cairo_surface_t *
+_cairo_boilerplate_egl_create_surface (const char		 *name,
+				      cairo_content_t		  content,
+				      double			  width,
+				      double			  height,
+				      double			  max_width,
+				      double			  max_height,
+				      cairo_boilerplate_mode_t	  mode,
+				      int			  id,
+				      void			**closure)
+{
+    egl_target_closure_t *gltc;
+    cairo_surface_t *surface;
+    int major, minor;
+    EGLConfig *configs;
+    EGLint numConfigs;
+
+    gltc = xcalloc (1, sizeof (gl_target_closure_t));
+    *closure = gltc;
+
+    gltc->dpy = eglGetDisplay (EGL_DEFAULT_DISPLAY);
+
+    if (! eglInitialize (gltc->dpy, &major, &minor)) {
+	free (gltc);
+	return NULL;
+    }
+
+    eglGetConfigs (gltc->dpy, NULL, 0, &numConfigs);
+    configs = xmalloc(sizeof(*configs) *numConfigs);
+    eglGetConfigs (gltc->dpy, configs, numConfigs, &numConfigs);
+
+    eglBindAPI (EGL_OPENGL_API);
+
+    gltc->ctx = eglCreateContext (gltc->dpy, configs[0], EGL_NO_CONTEXT, NULL);
+    if (gltc->ctx == EGL_NO_CONTEXT) {
+	eglTerminate (gltc->dpy);
+	free (gltc);
+	return NULL;
+    }
+
+    gltc->device = cairo_egl_device_create (gltc->dpy, gltc->ctx);
+
+    gltc->surface = surface = cairo_gl_surface_create (gltc->device,
+						       content,
+					               ceil (width),
+						       ceil (height));
+    if (cairo_surface_status (surface))
+	_cairo_boilerplate_egl_cleanup (gltc);
+
+    return surface;
+}
+#endif
 
 static const cairo_boilerplate_target_t targets[] = {
     {
@@ -247,7 +433,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_gl_cleanup,
-	_cairo_boilerplate_gl_synchronize
+	_cairo_boilerplate_gl_synchronize,
+	TRUE, FALSE, FALSE
     },
     {
 	"gl", "gl", NULL, NULL,
@@ -258,7 +445,8 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_gl_cleanup,
-	_cairo_boilerplate_gl_synchronize
+	_cairo_boilerplate_gl_synchronize,
+	FALSE, FALSE, FALSE
     },
     {
 	"gl-window", "gl", NULL, NULL,
@@ -270,7 +458,35 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_get_image_surface,
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_gl_cleanup,
-	_cairo_boilerplate_gl_synchronize
+	_cairo_boilerplate_gl_synchronize,
+	FALSE, FALSE, FALSE
     },
+    {
+	"gl-window&", "gl", NULL, NULL,
+	CAIRO_SURFACE_TYPE_GL, CAIRO_CONTENT_COLOR_ALPHA, 1,
+	"cairo_gl_surface_create_for_window",
+	_cairo_boilerplate_gl_create_window_db,
+	NULL,
+	_cairo_boilerplate_gl_finish_window,
+	_cairo_boilerplate_get_image_surface,
+	cairo_surface_write_to_png,
+	_cairo_boilerplate_gl_cleanup,
+	_cairo_boilerplate_gl_synchronize,
+	FALSE, FALSE, FALSE
+    },
+#if CAIRO_HAS_EGL_FUNCTIONS
+    {
+	"egl", "gl", NULL, NULL,
+	CAIRO_SURFACE_TYPE_GL, CAIRO_CONTENT_COLOR_ALPHA, 1,
+	"cairo_egl_device_create",
+	_cairo_boilerplate_egl_create_surface,
+	NULL, NULL,
+	_cairo_boilerplate_get_image_surface,
+	cairo_surface_write_to_png,
+	_cairo_boilerplate_egl_cleanup,
+	_cairo_boilerplate_gl_synchronize,
+	TRUE, FALSE, FALSE
+    },
+#endif
 };
 CAIRO_BOILERPLATE (gl, targets)

@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -481,6 +481,12 @@ _cairo_pdf_operators_clip (cairo_pdf_operators_t	*pdf_operators,
     const char *pdf_operator;
     cairo_status_t status;
 
+    if (pdf_operators->in_text_object) {
+	status = _cairo_pdf_operators_end_text (pdf_operators);
+	if (unlikely (status))
+	    return status;
+    }
+
     if (! path->has_current_point) {
 	/* construct an empty path */
 	_cairo_output_stream_printf (pdf_operators->stream, "0 0 m ");
@@ -494,14 +500,14 @@ _cairo_pdf_operators_clip (cairo_pdf_operators_t	*pdf_operators,
     }
 
     switch (fill_rule) {
+    default:
+	ASSERT_NOT_REACHED;
     case CAIRO_FILL_RULE_WINDING:
 	pdf_operator = "W";
 	break;
     case CAIRO_FILL_RULE_EVEN_ODD:
 	pdf_operator = "W*";
 	break;
-    default:
-	ASSERT_NOT_REACHED;
     }
 
     _cairo_output_stream_printf (pdf_operators->stream,
@@ -828,14 +834,14 @@ _cairo_pdf_operators_fill (cairo_pdf_operators_t	*pdf_operators,
 	return status;
 
     switch (fill_rule) {
+    default:
+	ASSERT_NOT_REACHED;
     case CAIRO_FILL_RULE_WINDING:
 	pdf_operator = "f";
 	break;
     case CAIRO_FILL_RULE_EVEN_ODD:
 	pdf_operator = "f*";
 	break;
-    default:
-	ASSERT_NOT_REACHED;
     }
 
     _cairo_output_stream_printf (pdf_operators->stream,
@@ -856,14 +862,14 @@ _cairo_pdf_operators_fill_stroke (cairo_pdf_operators_t		*pdf_operators,
     const char *operator;
 
     switch (fill_rule) {
+    default:
+	ASSERT_NOT_REACHED;
     case CAIRO_FILL_RULE_WINDING:
 	operator = "B";
 	break;
     case CAIRO_FILL_RULE_EVEN_ODD:
 	operator = "B*";
 	break;
-    default:
-	ASSERT_NOT_REACHED;
     }
 
     return _cairo_pdf_operators_emit_stroke (pdf_operators,
@@ -1375,8 +1381,7 @@ _cairo_pdf_operators_show_text_glyphs (cairo_pdf_operators_t	  *pdf_operators,
     status = cairo_matrix_invert (&pdf_operators->font_matrix_inverse);
     if (status == CAIRO_STATUS_INVALID_MATRIX)
 	return CAIRO_STATUS_SUCCESS;
-    if (unlikely (status))
-	return status;
+    assert (status == CAIRO_STATUS_SUCCESS);
 
     pdf_operators->is_new_text_object = FALSE;
     if (pdf_operators->in_text_object == FALSE) {

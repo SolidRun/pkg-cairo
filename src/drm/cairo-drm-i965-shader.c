@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the LGPL along with this library
  * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110-1335, USA
  * You should have received a copy of the MPL along with this library
  * in the file COPYING-MPL-1.1
  *
@@ -271,7 +271,6 @@ i965_surface_clone (i965_device_t *device,
 
     status = intel_bo_put_image (&device->intel,
 				 to_intel_bo (clone->intel.drm.bo),
-				 clone->intel.drm.stride,
 				 image,
 				 0, 0,
 				 image->width, image->height,
@@ -282,16 +281,15 @@ i965_surface_clone (i965_device_t *device,
 	return status;
     }
 
-    status = _cairo_surface_attach_snapshot (&image->base,
-					     &clone->intel.drm.base,
-					     intel_surface_detach_snapshot);
-    if (likely (status == CAIRO_STATUS_SUCCESS))
-	status = intel_snapshot_cache_insert (&device->intel, &clone->intel);
-
+    status = intel_snapshot_cache_insert (&device->intel, &clone->intel);
     if (unlikely (status)) {
 	cairo_surface_destroy (&clone->intel.drm.base);
 	return status;
     }
+
+    _cairo_surface_attach_snapshot (&image->base,
+				    &clone->intel.drm.base,
+				    intel_surface_detach_snapshot);
 
     *clone_out = clone;
     return CAIRO_STATUS_SUCCESS;
@@ -318,7 +316,6 @@ i965_surface_clone_subimage (i965_device_t *device,
 
     status = intel_bo_put_image (to_intel_device (clone->intel.drm.base.device),
 				 to_intel_bo (clone->intel.drm.bo),
-				 clone->intel.drm.stride,
 				 image,
 				 extents->x, extents->y,
 				 extents->width, extents->height,
@@ -669,8 +666,6 @@ i965_shader_acquire_surface (i965_shader_t *shader,
     src->base.matrix = pattern->base.matrix;
     if (src_x | src_y)
 	cairo_matrix_translate (&src->base.matrix, src_x, src_x);
-    if (src->base.filter == BRW_MAPFILTER_NEAREST)
-	cairo_matrix_translate (&src->base.matrix, NEAREST_BIAS, NEAREST_BIAS);
     cairo_matrix_init_scale (&m, 1. / src->base.width, 1. / src->base.height);
     cairo_matrix_multiply (&src->base.matrix, &src->base.matrix, &m);
 
@@ -762,10 +757,11 @@ i965_shader_set_clip (i965_shader_t *shader,
 		      cairo_clip_t *clip)
 {
     cairo_surface_t *clip_surface;
+    int clip_x, clip_y;
     union i965_shader_channel *channel;
     i965_surface_t *s;
 
-    clip_surface = _cairo_clip_get_surface (clip, &shader->target->intel.drm.base);
+    clip_surface = _cairo_clip_get_surface (clip, &shader->target->intel.drm.base, &clip_x, &clip_y);
     assert (clip_surface->status == CAIRO_STATUS_SUCCESS);
     assert (clip_surface->type == CAIRO_SURFACE_TYPE_DRM);
     s = (i965_surface_t *) clip_surface;
@@ -793,8 +789,7 @@ i965_shader_set_clip (i965_shader_t *shader,
 			     1. / s->intel.drm.height);
 
     cairo_matrix_translate (&shader->clip.base.matrix,
-			    NEAREST_BIAS + clip->path->extents.x,
-			    NEAREST_BIAS + clip->path->extents.y);
+			    -clip_x, -clip_y);
 }
 
 static cairo_bool_t
@@ -888,9 +883,6 @@ i965_shader_setup_dst (i965_shader_t *shader)
     cairo_matrix_init_scale (&channel->base.matrix,
 			     1. / s->intel.drm.width,
 			     1. / s->intel.drm.height);
-    cairo_matrix_translate (&channel->base.matrix,
-			    NEAREST_BIAS,
-			    NEAREST_BIAS);
 
     channel->surface.surface = &clone->intel.drm.base;
 
@@ -2073,9 +2065,12 @@ i965_get_card_format (cairo_format_t format)
 	return BRW_SURFACEFORMAT_B8G8R8A8_UNORM;
     case CAIRO_FORMAT_RGB24:
 	return BRW_SURFACEFORMAT_B8G8R8X8_UNORM;
+    case CAIRO_FORMAT_RGB16_565:
+	return BRW_SURFACEFORMAT_B5G6R5_UNORM;
     case CAIRO_FORMAT_A8:
 	return BRW_SURFACEFORMAT_A8_UNORM;
     case CAIRO_FORMAT_A1:
+    case CAIRO_FORMAT_INVALID:
     default:
 	ASSERT_NOT_REACHED;
 	return 0;
@@ -2089,9 +2084,12 @@ i965_get_dest_format (cairo_format_t format)
     case CAIRO_FORMAT_ARGB32:
     case CAIRO_FORMAT_RGB24:
         return BRW_SURFACEFORMAT_B8G8R8A8_UNORM;
+    case CAIRO_FORMAT_RGB16_565:
+        return BRW_SURFACEFORMAT_B5G6R5_UNORM;
     case CAIRO_FORMAT_A8:
         return BRW_SURFACEFORMAT_A8_UNORM;
     case CAIRO_FORMAT_A1:
+    case CAIRO_FORMAT_INVALID:
     default:
 	ASSERT_NOT_REACHED;
 	return 0;
@@ -2113,7 +2111,7 @@ i965_stream_add_pending_relocation (i965_stream_t *stream,
 
     stream->pending_relocations[n].offset = target_offset;
     stream->pending_relocations[n].read_domains = read_domains;
-    stream->pending_relocations[n].write_domain = write_domain;;
+    stream->pending_relocations[n].write_domain = write_domain;
     stream->pending_relocations[n].delta = delta;
 }
 
@@ -2511,14 +2509,17 @@ i965_emit_composite (i965_device_t *device,
     uint32_t draw_rectangle;
 
     if (i965_shader_needs_surface_update (shader, device)) {
-	/* Binding table pointers */
+	uint32_t offset;
+
+	offset = emit_binding_table (device, shader);
+
+	/* Only the PS uses the binding table */
 	OUT_BATCH (BRW_3DSTATE_BINDING_TABLE_POINTERS | 4);
 	OUT_BATCH (0); /* vs */
 	OUT_BATCH (0); /* gs */
 	OUT_BATCH (0); /* clip */
 	OUT_BATCH (0); /* sf */
-	/* Only the PS uses the binding table */
-	OUT_BATCH (emit_binding_table (device, shader));
+	OUT_BATCH (offset);
 
 	device->target = shader->target;
 	device->source = shader->source.base.bo;
@@ -2570,17 +2571,12 @@ i965_emit_composite (i965_device_t *device,
 	assert (size <= 64 * URB_CS_ENTRY_SIZE);
 	assert (((sizeof (float) * shader->constants_size + 31) & -32) == 32 * i965_shader_const_urb_length (shader));
 
-	OUT_BATCH (BRW_CONSTANT_BUFFER | (1 << 8));
-	assert ((device->constant.used & 63) == 0);
-	i965_stream_add_pending_relocation (&device->constant,
-					    device->batch.used,
-					    I915_GEM_DOMAIN_INSTRUCTION, 0,
-					    device->constant.used + size / 64 - 1);
-	OUT_BATCH (0); /* pending relocation */
-
-	device->constants = i965_stream_alloc (&device->constant, 0, size);
+	device->constants = i965_stream_alloc (&device->surface, 64, size);
 	memcpy (device->constants, shader->constants, size);
 	device->constants_size = shader->constants_size;
+
+	OUT_BATCH (BRW_CONSTANT_BUFFER | (1 << 8));
+	OUT_BATCH (i965_stream_offsetof (&device->surface, device->constants) + size / 64 - 1);
     }
 
     i965_emit_vertex_element (device, shader);
@@ -2593,6 +2589,8 @@ i965_flush_vertices (i965_device_t *device)
 
     if (device->vertex.used == device->vertex.committed)
 	return;
+
+    assert (device->vertex.used > device->vertex.committed);
 
     vertex_start = device->vertex.committed / device->vertex_size;
     vertex_count =
@@ -2628,10 +2626,6 @@ i965_flush_vertices (i965_device_t *device)
     OUT_BATCH (0);
 
     device->vertex.committed = device->vertex.used;
-
-#if 1
-    OUT_BATCH (MI_FLUSH);
-#endif
 }
 
 void
@@ -2721,13 +2715,6 @@ recheck:
 		  device->surface.num_relocations + 4 > device->surface.max_relocations))
     {
 	i965_stream_commit (device, &device->surface);
-	goto recheck;
-    }
-
-    if (unlikely (device->constant.used + sizeof (device->constants) > device->constant.size ||
-		  device->constant.num_pending_relocations == device->constant.max_pending_relocations))
-    {
-	i965_stream_commit (device, &device->constant);
 	goto recheck;
     }
 
@@ -2832,7 +2819,6 @@ i965_clipped_vertices (i965_device_t *device,
 	size = vertex_count * device->vertex_size;
 	ptr = intel_bo_map (&device->intel, vbo->bo);
 	memcpy (device->vertex.data + device->vertex.used, ptr, size);
-	intel_bo_unmap (vbo->bo);
 	device->vertex.committed = device->vertex.used += size;
 
 	for (i = 0; i < num_rectangles; i++) {
