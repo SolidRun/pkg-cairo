@@ -98,7 +98,7 @@ DIST_COMMON = README $(am__cairoinclude_HEADERS_DIST) \
 	$(top_srcdir)/build/Makefile.am.common \
 	$(top_srcdir)/src/Makefile.sources
 EXTRA_PROGRAMS =
-TESTS = $(am__EXEEXT_1) $(am__append_136)
+TESTS = $(am__EXEEXT_1) $(am__append_140)
 check_PROGRAMS = check-link$(EXEEXT)
 @BUILD_XCB_SHM_TRUE@am__append_1 = \
 @BUILD_XCB_SHM_TRUE@		    cairo-xcb-shm.c \
@@ -206,43 +206,47 @@ check_PROGRAMS = check-link$(EXEEXT)
 @CAIRO_HAS_GLX_FUNCTIONS_TRUE@am__append_97 = $(cairo_glx_private)
 @CAIRO_HAS_GLX_FUNCTIONS_TRUE@am__append_98 = $(cairo_glx_sources)
 @CAIRO_HAS_GLX_FUNCTIONS_TRUE@am__append_99 = cairo-glx.pc
-@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_100 = $(cairo_script_headers)
-@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_101 = $(cairo_script_private)
-@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_102 = $(cairo_script_sources)
-@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_103 = cairo-script.pc
-@CAIRO_HAS_FT_FONT_TRUE@am__append_104 = $(cairo_ft_headers)
-@CAIRO_HAS_FT_FONT_TRUE@am__append_105 = $(cairo_ft_private)
-@CAIRO_HAS_FT_FONT_TRUE@am__append_106 = $(cairo_ft_sources)
-@CAIRO_HAS_FT_FONT_TRUE@am__append_107 = cairo-ft.pc
-@CAIRO_HAS_FC_FONT_TRUE@am__append_108 = $(cairo_fc_headers)
-@CAIRO_HAS_FC_FONT_TRUE@am__append_109 = $(cairo_fc_private)
-@CAIRO_HAS_FC_FONT_TRUE@am__append_110 = $(cairo_fc_sources)
-@CAIRO_HAS_FC_FONT_TRUE@am__append_111 = cairo-fc.pc
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_112 = $(cairo_ps_headers)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_113 = $(cairo_ps_private)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_114 = $(cairo_ps_sources)
-@CAIRO_HAS_PS_SURFACE_TRUE@am__append_115 = cairo-ps.pc
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_116 = $(cairo_pdf_headers)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_117 = $(cairo_pdf_private)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_118 = $(cairo_pdf_sources)
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_119 = cairo-pdf.pc
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_120 = $(cairo_svg_headers)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_121 = $(cairo_svg_private)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_122 = $(cairo_svg_sources)
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_123 = cairo-svg.pc
-@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_124 = $(cairo_test_surfaces_private) $(cairo_test_surfaces_headers)
-@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_125 = $(cairo_test_surfaces_sources)
-@CAIRO_HAS_XML_SURFACE_TRUE@am__append_126 = $(cairo_xml_headers)
-@CAIRO_HAS_XML_SURFACE_TRUE@am__append_127 = $(cairo_xml_private)
-@CAIRO_HAS_XML_SURFACE_TRUE@am__append_128 = $(cairo_xml_sources)
-@CAIRO_HAS_XML_SURFACE_TRUE@am__append_129 = cairo-xml.pc
-@CAIRO_HAS_TRACE_TRUE@am__append_130 = $(cairo_trace_private) $(cairo_trace_headers)
-@CAIRO_HAS_TRACE_TRUE@am__append_131 = $(cairo_trace_sources)
-@CAIRO_HAS_INTERPRETER_TRUE@am__append_132 = $(cairo_interpreter_private) $(cairo_interpreter_headers)
-@CAIRO_HAS_INTERPRETER_TRUE@am__append_133 = $(cairo_interpreter_sources)
-@CAIRO_HAS_SYMBOL_LOOKUP_TRUE@am__append_134 = $(cairo_symbol_lookup_private) $(cairo_symbol_lookup_headers)
-@CAIRO_HAS_SYMBOL_LOOKUP_TRUE@am__append_135 = $(cairo_symbol_lookup_sources)
-@CROSS_COMPILING_FALSE@am__append_136 = check-link$(EXEEXT)
+@CAIRO_HAS_WGL_FUNCTIONS_TRUE@am__append_100 = $(cairo_wgl_headers)
+@CAIRO_HAS_WGL_FUNCTIONS_TRUE@am__append_101 = $(cairo_wgl_private)
+@CAIRO_HAS_WGL_FUNCTIONS_TRUE@am__append_102 = $(cairo_wgl_sources)
+@CAIRO_HAS_WGL_FUNCTIONS_TRUE@am__append_103 = cairo-wgl.pc
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_104 = $(cairo_script_headers)
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_105 = $(cairo_script_private)
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_106 = $(cairo_script_sources)
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_107 = cairo-script.pc
+@CAIRO_HAS_FT_FONT_TRUE@am__append_108 = $(cairo_ft_headers)
+@CAIRO_HAS_FT_FONT_TRUE@am__append_109 = $(cairo_ft_private)
+@CAIRO_HAS_FT_FONT_TRUE@am__append_110 = $(cairo_ft_sources)
+@CAIRO_HAS_FT_FONT_TRUE@am__append_111 = cairo-ft.pc
+@CAIRO_HAS_FC_FONT_TRUE@am__append_112 = $(cairo_fc_headers)
+@CAIRO_HAS_FC_FONT_TRUE@am__append_113 = $(cairo_fc_private)
+@CAIRO_HAS_FC_FONT_TRUE@am__append_114 = $(cairo_fc_sources)
+@CAIRO_HAS_FC_FONT_TRUE@am__append_115 = cairo-fc.pc
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_116 = $(cairo_ps_headers)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_117 = $(cairo_ps_private)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_118 = $(cairo_ps_sources)
+@CAIRO_HAS_PS_SURFACE_TRUE@am__append_119 = cairo-ps.pc
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_120 = $(cairo_pdf_headers)
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_121 = $(cairo_pdf_private)
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_122 = $(cairo_pdf_sources)
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__append_123 = cairo-pdf.pc
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_124 = $(cairo_svg_headers)
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_125 = $(cairo_svg_private)
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_126 = $(cairo_svg_sources)
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__append_127 = cairo-svg.pc
+@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_128 = $(cairo_test_surfaces_private) $(cairo_test_surfaces_headers)
+@CAIRO_HAS_TEST_SURFACES_TRUE@am__append_129 = $(cairo_test_surfaces_sources)
+@CAIRO_HAS_XML_SURFACE_TRUE@am__append_130 = $(cairo_xml_headers)
+@CAIRO_HAS_XML_SURFACE_TRUE@am__append_131 = $(cairo_xml_private)
+@CAIRO_HAS_XML_SURFACE_TRUE@am__append_132 = $(cairo_xml_sources)
+@CAIRO_HAS_XML_SURFACE_TRUE@am__append_133 = cairo-xml.pc
+@CAIRO_HAS_TRACE_TRUE@am__append_134 = $(cairo_trace_private) $(cairo_trace_headers)
+@CAIRO_HAS_TRACE_TRUE@am__append_135 = $(cairo_trace_sources)
+@CAIRO_HAS_INTERPRETER_TRUE@am__append_136 = $(cairo_interpreter_private) $(cairo_interpreter_headers)
+@CAIRO_HAS_INTERPRETER_TRUE@am__append_137 = $(cairo_interpreter_sources)
+@CAIRO_HAS_SYMBOL_LOOKUP_TRUE@am__append_138 = $(cairo_symbol_lookup_private) $(cairo_symbol_lookup_headers)
+@CAIRO_HAS_SYMBOL_LOOKUP_TRUE@am__append_139 = $(cairo_symbol_lookup_sources)
+@CROSS_COMPILING_FALSE@am__append_140 = check-link$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
@@ -279,9 +283,9 @@ CONFIG_CLEAN_FILES = cairo.pc cairo-xlib.pc cairo-xlib-xrender.pc \
 	cairo-win32.pc cairo-win32-font.pc cairo-skia.pc cairo-os2.pc \
 	cairo-beos.pc cairo-drm.pc cairo-drm-xr.pc cairo-gallium.pc \
 	cairo-xcb-drm.pc cairo-png.pc cairo-gl.pc cairo-directfb.pc \
-	cairo-vg.pc cairo-egl.pc cairo-glx.pc cairo-script.pc \
-	cairo-ft.pc cairo-fc.pc cairo-ps.pc cairo-pdf.pc cairo-svg.pc \
-	cairo-xml.pc
+	cairo-vg.pc cairo-egl.pc cairo-glx.pc cairo-wgl.pc \
+	cairo-script.pc cairo-ft.pc cairo-fc.pc cairo-ps.pc \
+	cairo-pdf.pc cairo-svg.pc cairo-xml.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -415,12 +419,12 @@ am__libcairo_la_SOURCES_DIST = cairo.h cairo-deprecated.h cairo-xlib.h \
 	cairo-gl-composite.c cairo-gl-device.c cairo-gl-glyphs.c \
 	cairo-gl-gradient.c cairo-gl-shaders.c cairo-gl-surface.c \
 	cairo-directfb-surface.c cairo-vg-surface.c \
-	cairo-egl-context.c cairo-glx-context.c cairo-script-surface.c \
-	cairo-ft-font.c cairo-ps-surface.c cairo-pdf-surface.c \
-	cairo-svg-surface.c test-fallback-surface.c \
-	test-fallback16-surface.c test-null-surface.c \
-	test-paginated-surface.c test-wrapping-surface.c \
-	cairo-xml-surface.c cairo-version.h
+	cairo-egl-context.c cairo-glx-context.c cairo-wgl-context.c \
+	cairo-script-surface.c cairo-ft-font.c cairo-ps-surface.c \
+	cairo-pdf-surface.c cairo-svg-surface.c \
+	test-fallback-surface.c test-fallback16-surface.c \
+	test-null-surface.c test-paginated-surface.c \
+	test-wrapping-surface.c cairo-xml-surface.c cairo-version.h
 am__objects_1 =
 @CAIRO_HAS_XLIB_SURFACE_TRUE@am__objects_2 = $(am__objects_1)
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__objects_3 = $(am__objects_1)
@@ -451,9 +455,9 @@ am__objects_23 = $(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_13) $(am__objects_1) $(am__objects_1) \
 	$(am__objects_1) $(am__objects_1) $(am__objects_14) \
 	$(am__objects_15) $(am__objects_16) $(am__objects_1) \
-	$(am__objects_1) $(am__objects_17) $(am__objects_18) \
-	$(am__objects_1) $(am__objects_19) $(am__objects_20) \
-	$(am__objects_21) $(am__objects_22)
+	$(am__objects_1) $(am__objects_1) $(am__objects_17) \
+	$(am__objects_18) $(am__objects_1) $(am__objects_19) \
+	$(am__objects_20) $(am__objects_21) $(am__objects_22)
 am__objects_24 = $(am__objects_1) $(am__objects_1)
 @CAIRO_HAS_DRM_SURFACE_TRUE@am__objects_25 = $(am__objects_1)
 @CAIRO_HAS_TEST_SURFACES_TRUE@am__objects_26 = $(am__objects_1)
@@ -465,16 +469,18 @@ am__objects_27 = $(am__objects_24) $(am__objects_2) $(am__objects_1) \
 	$(am__objects_25) $(am__objects_1) $(am__objects_1) \
 	$(am__objects_1) $(am__objects_1) $(am__objects_14) \
 	$(am__objects_1) $(am__objects_1) $(am__objects_1) \
-	$(am__objects_1) $(am__objects_1) $(am__objects_18) \
-	$(am__objects_1) $(am__objects_19) $(am__objects_20) \
-	$(am__objects_21) $(am__objects_26) $(am__objects_1) \
-	$(am__objects_1) $(am__objects_1) $(am__objects_1)
+	$(am__objects_1) $(am__objects_1) $(am__objects_1) \
+	$(am__objects_18) $(am__objects_1) $(am__objects_19) \
+	$(am__objects_20) $(am__objects_21) $(am__objects_26) \
+	$(am__objects_1) $(am__objects_1) $(am__objects_1) \
+	$(am__objects_1)
 am__objects_28 = cairo-cff-subset.lo cairo-scaled-font-subsets.lo \
 	cairo-truetype-subset.lo cairo-type1-fallback.lo \
 	cairo-type1-subset.lo cairo-type3-glyph-surface.lo
 am__objects_29 = cairo-pdf-operators.lo
 am__objects_30 = cairo-deflate-stream.lo
-@CAIRO_HAS_PDF_SURFACE_FALSE@@CAIRO_HAS_XML_SURFACE_TRUE@am__objects_31 = $(am__objects_30)
+@CAIRO_HAS_PDF_SURFACE_FALSE@@CAIRO_HAS_SCRIPT_SURFACE_FALSE@@CAIRO_HAS_XML_SURFACE_TRUE@am__objects_31 = $(am__objects_30)
+@CAIRO_HAS_PDF_SURFACE_FALSE@@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__objects_31 = $(am__objects_30)
 @CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_31 = $(am__objects_30)
 am__objects_32 = cairo-analysis-surface.lo cairo-arc.lo cairo-array.lo \
 	cairo-atomic.lo cairo-base64-stream.lo cairo-base85-stream.lo \
@@ -565,23 +571,25 @@ am__objects_67 = cairo-egl-context.lo
 @CAIRO_HAS_EGL_FUNCTIONS_TRUE@am__objects_68 = $(am__objects_67)
 am__objects_69 = cairo-glx-context.lo
 @CAIRO_HAS_GLX_FUNCTIONS_TRUE@am__objects_70 = $(am__objects_69)
-am__objects_71 = cairo-script-surface.lo
-@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__objects_72 = $(am__objects_71)
-am__objects_73 = cairo-ft-font.lo
-@CAIRO_HAS_FT_FONT_TRUE@am__objects_74 = $(am__objects_73)
-am__objects_75 = cairo-ps-surface.lo
-@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_76 = $(am__objects_75)
-am__objects_77 = cairo-pdf-surface.lo
-@CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_78 = $(am__objects_77)
-am__objects_79 = cairo-svg-surface.lo
-@CAIRO_HAS_SVG_SURFACE_TRUE@am__objects_80 = $(am__objects_79)
-am__objects_81 = test-fallback-surface.lo test-fallback16-surface.lo \
+am__objects_71 = cairo-wgl-context.lo
+@CAIRO_HAS_WGL_FUNCTIONS_TRUE@am__objects_72 = $(am__objects_71)
+am__objects_73 = cairo-script-surface.lo
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__objects_74 = $(am__objects_73)
+am__objects_75 = cairo-ft-font.lo
+@CAIRO_HAS_FT_FONT_TRUE@am__objects_76 = $(am__objects_75)
+am__objects_77 = cairo-ps-surface.lo
+@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_78 = $(am__objects_77)
+am__objects_79 = cairo-pdf-surface.lo
+@CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_80 = $(am__objects_79)
+am__objects_81 = cairo-svg-surface.lo
+@CAIRO_HAS_SVG_SURFACE_TRUE@am__objects_82 = $(am__objects_81)
+am__objects_83 = test-fallback-surface.lo test-fallback16-surface.lo \
 	test-null-surface.lo test-paginated-surface.lo \
 	test-wrapping-surface.lo
-@CAIRO_HAS_TEST_SURFACES_TRUE@am__objects_82 = $(am__objects_81)
-am__objects_83 = cairo-xml-surface.lo
-@CAIRO_HAS_XML_SURFACE_TRUE@am__objects_84 = $(am__objects_83)
-am__objects_85 = $(am__objects_32) $(am__objects_34) $(am__objects_1) \
+@CAIRO_HAS_TEST_SURFACES_TRUE@am__objects_84 = $(am__objects_83)
+am__objects_85 = cairo-xml-surface.lo
+@CAIRO_HAS_XML_SURFACE_TRUE@am__objects_86 = $(am__objects_85)
+am__objects_87 = $(am__objects_32) $(am__objects_34) $(am__objects_1) \
 	$(am__objects_37) $(am__objects_1) $(am__objects_1) \
 	$(am__objects_39) $(am__objects_41) $(am__objects_43) \
 	$(am__objects_45) $(am__objects_47) $(am__objects_49) \
@@ -590,11 +598,12 @@ am__objects_85 = $(am__objects_32) $(am__objects_34) $(am__objects_1) \
 	$(am__objects_1) $(am__objects_60) $(am__objects_62) \
 	$(am__objects_64) $(am__objects_66) $(am__objects_68) \
 	$(am__objects_70) $(am__objects_72) $(am__objects_74) \
-	$(am__objects_1) $(am__objects_76) $(am__objects_78) \
+	$(am__objects_76) $(am__objects_1) $(am__objects_78) \
 	$(am__objects_80) $(am__objects_82) $(am__objects_84) \
-	$(am__objects_1) $(am__objects_1) $(am__objects_1)
+	$(am__objects_86) $(am__objects_1) $(am__objects_1) \
+	$(am__objects_1)
 am_libcairo_la_OBJECTS = $(am__objects_23) $(am__objects_27) \
-	$(am__objects_85)
+	$(am__objects_87)
 nodist_libcairo_la_OBJECTS =
 libcairo_la_OBJECTS = $(am_libcairo_la_OBJECTS) \
 	$(nodist_libcairo_la_OBJECTS)
@@ -940,8 +949,9 @@ _cairo_font_subset_sources = \
         cairo-type3-glyph-surface.c \
 	$(NULL)
 
-cairo_glx_sources = cairo-glx-context.c
 cairo_egl_sources = cairo-egl-context.c
+cairo_glx_sources = cairo-glx-context.c
+cairo_wgl_sources = cairo-wgl-context.c
 _cairo_pdf_operators_private = cairo-pdf-operators-private.h
 _cairo_pdf_operators_sources = cairo-pdf-operators.c
 cairo_png_sources = cairo-png.c
@@ -955,6 +965,7 @@ cairo_pdf_headers = cairo-pdf.h
 cairo_pdf_private = cairo-pdf-surface-private.h
 cairo_pdf_sources = cairo-pdf-surface.c
 @CAIRO_HAS_PDF_SURFACE_TRUE@req_cairo_deflate_stream_sources = $(cairo_deflate_stream_sources)
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@req_cairo_deflate_stream_sources = $(cairo_deflate_stream_sources)
 @CAIRO_HAS_XML_SURFACE_TRUE@req_cairo_deflate_stream_sources = $(cairo_deflate_stream_sources)
 cairo_svg_headers = cairo-svg.h
 cairo_svg_private = cairo-svg-surface-private.h
@@ -1072,8 +1083,8 @@ supported_cairo_headers = $(cairo_headers) $(cairo_xlib_headers) \
 	$(cairo_quartz_headers) $(cairo_quartz_font_headers) \
 	$(cairo_win32_headers) $(cairo_win32_font_headers) \
 	$(cairo_png_headers) $(cairo_egl_headers) $(cairo_glx_headers) \
-	$(cairo_ft_headers) $(cairo_fc_headers) $(cairo_ps_headers) \
-	$(cairo_pdf_headers) $(cairo_svg_headers) \
+	$(cairo_wgl_headers) $(cairo_ft_headers) $(cairo_fc_headers) \
+	$(cairo_ps_headers) $(cairo_pdf_headers) $(cairo_svg_headers) \
 	$(cairo_image_headers) $(cairo_recording_headers) \
 	$(cairo_tee_headers) $(cairo_xml_headers) \
 	$(cairo_user_headers)
@@ -1098,11 +1109,12 @@ all_cairo_headers = $(cairo_headers) $(cairo_xlib_headers) \
 	$(cairo_xcb_drm_headers) $(cairo_png_headers) \
 	$(cairo_gl_headers) $(cairo_directfb_headers) \
 	$(cairo_vg_headers) $(cairo_egl_headers) $(cairo_glx_headers) \
-	$(cairo_script_headers) $(cairo_ft_headers) \
-	$(cairo_fc_headers) $(cairo_ps_headers) $(cairo_pdf_headers) \
-	$(cairo_svg_headers) $(cairo_image_headers) \
-	$(cairo_recording_headers) $(cairo_tee_headers) \
-	$(cairo_xml_headers) $(cairo_user_headers)
+	$(cairo_wgl_headers) $(cairo_script_headers) \
+	$(cairo_ft_headers) $(cairo_fc_headers) $(cairo_ps_headers) \
+	$(cairo_pdf_headers) $(cairo_svg_headers) \
+	$(cairo_image_headers) $(cairo_recording_headers) \
+	$(cairo_tee_headers) $(cairo_xml_headers) \
+	$(cairo_user_headers)
 all_cairo_private = $(cairo_private) $(cairo_xlib_private) \
 	$(cairo_xlib_xrender_private) $(cairo_xcb_private) \
 	$(cairo_xlib_xcb_private) $(cairo_xcb_shm_private) \
@@ -1115,15 +1127,16 @@ all_cairo_private = $(cairo_private) $(cairo_xlib_private) \
 	$(cairo_xcb_drm_private) $(cairo_png_private) \
 	$(cairo_gl_private) $(cairo_directfb_private) \
 	$(cairo_vg_private) $(cairo_egl_private) $(cairo_glx_private) \
-	$(cairo_script_private) $(cairo_ft_private) \
-	$(cairo_fc_private) $(cairo_ps_private) $(cairo_pdf_private) \
-	$(cairo_svg_private) $(cairo_test_surfaces_private) \
-	$(cairo_test_surfaces_headers) $(cairo_image_private) \
-	$(cairo_recording_private) $(cairo_tee_private) \
-	$(cairo_xml_private) $(cairo_user_private) \
-	$(cairo_trace_private) $(cairo_trace_headers) \
-	$(cairo_interpreter_private) $(cairo_interpreter_headers) \
-	$(cairo_symbol_lookup_private) $(cairo_symbol_lookup_headers)
+	$(cairo_wgl_private) $(cairo_script_private) \
+	$(cairo_ft_private) $(cairo_fc_private) $(cairo_ps_private) \
+	$(cairo_pdf_private) $(cairo_svg_private) \
+	$(cairo_test_surfaces_private) $(cairo_test_surfaces_headers) \
+	$(cairo_image_private) $(cairo_recording_private) \
+	$(cairo_tee_private) $(cairo_xml_private) \
+	$(cairo_user_private) $(cairo_trace_private) \
+	$(cairo_trace_headers) $(cairo_interpreter_private) \
+	$(cairo_interpreter_headers) $(cairo_symbol_lookup_private) \
+	$(cairo_symbol_lookup_headers)
 all_cairo_sources = $(cairo_sources) $(cairo_xlib_sources) \
 	$(cairo_xlib_xrender_sources) $(cairo_xcb_sources) \
 	$(cairo_xlib_xcb_sources) $(cairo_xcb_shm_sources) \
@@ -1136,13 +1149,14 @@ all_cairo_sources = $(cairo_sources) $(cairo_xlib_sources) \
 	$(cairo_xcb_drm_sources) $(cairo_png_sources) \
 	$(cairo_gl_sources) $(cairo_directfb_sources) \
 	$(cairo_vg_sources) $(cairo_egl_sources) $(cairo_glx_sources) \
-	$(cairo_script_sources) $(cairo_ft_sources) \
-	$(cairo_fc_sources) $(cairo_ps_sources) $(cairo_pdf_sources) \
-	$(cairo_svg_sources) $(cairo_test_surfaces_sources) \
-	$(cairo_image_sources) $(cairo_recording_sources) \
-	$(cairo_tee_sources) $(cairo_xml_sources) \
-	$(cairo_user_sources) $(cairo_trace_sources) \
-	$(cairo_interpreter_sources) $(cairo_symbol_lookup_sources)
+	$(cairo_wgl_sources) $(cairo_script_sources) \
+	$(cairo_ft_sources) $(cairo_fc_sources) $(cairo_ps_sources) \
+	$(cairo_pdf_sources) $(cairo_svg_sources) \
+	$(cairo_test_surfaces_sources) $(cairo_image_sources) \
+	$(cairo_recording_sources) $(cairo_tee_sources) \
+	$(cairo_xml_sources) $(cairo_user_sources) \
+	$(cairo_trace_sources) $(cairo_interpreter_sources) \
+	$(cairo_symbol_lookup_sources)
 enabled_cairo_files = $(enabled_cairo_headers) $(enabled_cairo_private) $(enabled_cairo_sources)
 enabled_cairo_headers = $(cairo_headers) $(am__append_4) \
 	$(am__append_8) $(am__append_12) $(am__append_16) \
@@ -1154,9 +1168,9 @@ enabled_cairo_headers = $(cairo_headers) $(am__append_4) \
 	$(am__append_80) $(am__append_84) $(am__append_88) \
 	$(am__append_92) $(am__append_96) $(am__append_100) \
 	$(am__append_104) $(am__append_108) $(am__append_112) \
-	$(am__append_116) $(am__append_120) $(cairo_image_headers) \
-	$(cairo_recording_headers) $(cairo_tee_headers) \
-	$(am__append_126) $(cairo_user_headers)
+	$(am__append_116) $(am__append_120) $(am__append_124) \
+	$(cairo_image_headers) $(cairo_recording_headers) \
+	$(cairo_tee_headers) $(am__append_130) $(cairo_user_headers)
 enabled_cairo_private = $(cairo_private) $(am__append_5) \
 	$(am__append_9) $(am__append_13) $(am__append_17) \
 	$(am__append_21) $(am__append_25) $(am__append_29) \
@@ -1167,10 +1181,11 @@ enabled_cairo_private = $(cairo_private) $(am__append_5) \
 	$(am__append_81) $(am__append_85) $(am__append_89) \
 	$(am__append_93) $(am__append_97) $(am__append_101) \
 	$(am__append_105) $(am__append_109) $(am__append_113) \
-	$(am__append_117) $(am__append_121) $(am__append_124) \
-	$(cairo_image_private) $(cairo_recording_private) \
-	$(cairo_tee_private) $(am__append_127) $(cairo_user_private) \
-	$(am__append_130) $(am__append_132) $(am__append_134)
+	$(am__append_117) $(am__append_121) $(am__append_125) \
+	$(am__append_128) $(cairo_image_private) \
+	$(cairo_recording_private) $(cairo_tee_private) \
+	$(am__append_131) $(cairo_user_private) $(am__append_134) \
+	$(am__append_136) $(am__append_138)
 enabled_cairo_sources = $(cairo_sources) $(am__append_6) \
 	$(am__append_10) $(am__append_14) $(am__append_18) \
 	$(am__append_22) $(am__append_26) $(am__append_30) \
@@ -1181,19 +1196,20 @@ enabled_cairo_sources = $(cairo_sources) $(am__append_6) \
 	$(am__append_82) $(am__append_86) $(am__append_90) \
 	$(am__append_94) $(am__append_98) $(am__append_102) \
 	$(am__append_106) $(am__append_110) $(am__append_114) \
-	$(am__append_118) $(am__append_122) $(am__append_125) \
-	$(cairo_image_sources) $(cairo_recording_sources) \
-	$(cairo_tee_sources) $(am__append_128) $(cairo_user_sources) \
-	$(am__append_131) $(am__append_133) $(am__append_135)
+	$(am__append_118) $(am__append_122) $(am__append_126) \
+	$(am__append_129) $(cairo_image_sources) \
+	$(cairo_recording_sources) $(cairo_tee_sources) \
+	$(am__append_132) $(cairo_user_sources) $(am__append_135) \
+	$(am__append_137) $(am__append_139)
 all_cairo_pkgconf = cairo.pc cairo-xlib.pc cairo-xlib-xrender.pc \
 	cairo-xcb.pc cairo-xlib-xcb.pc cairo-xcb-shm.pc cairo-qt.pc \
 	cairo-quartz.pc cairo-quartz-font.pc cairo-quartz-image.pc \
 	cairo-win32.pc cairo-win32-font.pc cairo-skia.pc cairo-os2.pc \
 	cairo-beos.pc cairo-drm.pc cairo-drm-xr.pc cairo-gallium.pc \
 	cairo-xcb-drm.pc cairo-png.pc cairo-gl.pc cairo-directfb.pc \
-	cairo-vg.pc cairo-egl.pc cairo-glx.pc cairo-script.pc \
-	cairo-ft.pc cairo-fc.pc cairo-ps.pc cairo-pdf.pc cairo-svg.pc \
-	cairo-xml.pc
+	cairo-vg.pc cairo-egl.pc cairo-glx.pc cairo-wgl.pc \
+	cairo-script.pc cairo-ft.pc cairo-fc.pc cairo-ps.pc \
+	cairo-pdf.pc cairo-svg.pc cairo-xml.pc
 enabled_cairo_pkgconf = cairo.pc $(am__append_7) $(am__append_11) \
 	$(am__append_15) $(am__append_19) $(am__append_23) \
 	$(am__append_27) $(am__append_31) $(am__append_35) \
@@ -1204,7 +1220,7 @@ enabled_cairo_pkgconf = cairo.pc $(am__append_7) $(am__append_11) \
 	$(am__append_87) $(am__append_91) $(am__append_95) \
 	$(am__append_99) $(am__append_103) $(am__append_107) \
 	$(am__append_111) $(am__append_115) $(am__append_119) \
-	$(am__append_123) $(am__append_129)
+	$(am__append_123) $(am__append_127) $(am__append_133)
 AM_CPPFLAGS = -I$(srcdir) $(CAIRO_CFLAGS)
 AM_LDFLAGS = $(CAIRO_LDFLAGS)
 @OS_WIN32_TRUE@export_symbols = -export-symbols cairo.def
@@ -1336,6 +1352,8 @@ cairo-vg.pc: $(top_builddir)/config.status $(srcdir)/cairo-features.pc.in
 cairo-egl.pc: $(top_builddir)/config.status $(srcdir)/cairo-features.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 cairo-glx.pc: $(top_builddir)/config.status $(srcdir)/cairo-features.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+cairo-wgl.pc: $(top_builddir)/config.status $(srcdir)/cairo-features.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 cairo-script.pc: $(top_builddir)/config.status $(srcdir)/cairo-features.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
@@ -1524,6 +1542,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-user-font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-vg-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-wgl-context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-wideint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-win32-font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-win32-printing-surface.Plo@am__quote@

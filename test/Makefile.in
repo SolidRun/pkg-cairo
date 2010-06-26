@@ -127,10 +127,11 @@ any2ppm_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(any2ppm_LDFLAGS) $(LDFLAGS) -o $@
 am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	cairo-test-runner.c buffer-diff.h cairo-test.h \
-	cairo-test-private.h a1-image-sample.c a1-mask.c \
-	a1-mask-sample.c a1-traps-sample.c a8-mask.c alpha-similar.c \
-	big-line.c big-trap.c bilevel-image.c bug-bo-rectangular.c \
-	caps.c caps-joins.c caps-joins-alpha.c caps-joins-curve.c \
+	cairo-test-private.h a1-bug.c a1-image-sample.c a1-mask.c \
+	a1-mask-sample.c a1-traps-sample.c a1-rasterisation.c \
+	a8-mask.c aliasing.c alpha-similar.c big-line.c big-trap.c \
+	bilevel-image.c bug-bo-rectangular.c bug-seams.c caps.c \
+	caps-joins.c caps-joins-alpha.c caps-joins-curve.c \
 	caps-sub-paths.c clear.c clear-source.c clip-all.c \
 	clip-contexts.c clip-disjoint.c clip-device-offset.c \
 	clip-empty.c clip-empty-group.c clip-empty-save.c clip-fill.c \
@@ -170,14 +171,15 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	get-group-target.c get-path-extents.c gradient-alpha.c \
 	gradient-constant-alpha.c gradient-zero-stops.c \
 	gradient-zero-stops-mask.c group-clip.c group-paint.c \
-	group-unaligned.c half-coverage.c huge-linear.c huge-radial.c \
-	image-surface-source.c implicit-close.c infinite-join.c \
-	in-fill-empty-trapezoid.c in-fill-trapezoid.c invalid-matrix.c \
-	inverse-text.c joins.c large-clip.c large-font.c \
-	large-source.c large-source-roi.c large-twin-antialias-mixed.c \
-	leaky-dash.c leaky-dashed-rectangle.c leaky-dashed-stroke.c \
-	leaky-polygon.c line-width.c line-width-scale.c \
-	line-width-zero.c linear-gradient.c linear-gradient-extend.c \
+	group-unaligned.c half-coverage.c halo.c huge-linear.c \
+	huge-radial.c image-surface-source.c implicit-close.c \
+	infinite-join.c in-fill-empty-trapezoid.c in-fill-trapezoid.c \
+	invalid-matrix.c inverse-text.c joins.c large-clip.c \
+	large-font.c large-source.c large-source-roi.c \
+	large-twin-antialias-mixed.c leaky-dash.c \
+	leaky-dashed-rectangle.c leaky-dashed-stroke.c leaky-polygon.c \
+	line-width.c line-width-scale.c line-width-zero.c \
+	linear-gradient.c linear-gradient-extend.c \
 	linear-gradient-one-stop.c linear-gradient-reflect.c \
 	linear-gradient-subset.c linear-step-function.c \
 	linear-uniform.c long-dashed-lines.c long-lines.c mask.c \
@@ -192,10 +194,11 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	partial-coverage.c path-append.c path-stroke-twice.c \
 	path-precision.c pattern-get-type.c pattern-getters.c \
 	pixman-rotate.c png.c push-group.c push-group-color.c \
-	radial-gradient.c radial-gradient-extend.c \
-	radial-gradient-mask.c radial-gradient-mask-source.c \
-	radial-gradient-one-stop.c radial-gradient-source.c \
-	random-intersections-eo.c random-intersections-nonzero.c \
+	push-group-path-offset.c radial-gradient.c \
+	radial-gradient-extend.c radial-gradient-mask.c \
+	radial-gradient-mask-source.c radial-gradient-one-stop.c \
+	radial-gradient-source.c random-intersections-eo.c \
+	random-intersections-nonzero.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c rectangle-rounding-error.c \
 	rectilinear-fill.c rectilinear-miter-limit.c \
@@ -292,16 +295,20 @@ am__objects_27 = cairo_test_suite-fallback-resolution.$(OBJEXT)
 @BUILD_ANY2PPM_TRUE@@CAIRO_HAS_PDF_SURFACE_FALSE@@CAIRO_HAS_PS_SURFACE_FALSE@@CAIRO_HAS_SVG_SURFACE_TRUE@am__objects_28 = $(am__objects_27)
 @BUILD_ANY2PPM_TRUE@@CAIRO_HAS_PDF_SURFACE_FALSE@@CAIRO_HAS_PS_SURFACE_TRUE@am__objects_28 = $(am__objects_27)
 @BUILD_ANY2PPM_TRUE@@CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_28 = $(am__objects_27)
-am__objects_29 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
+am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
+	cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-a1-mask.$(OBJEXT) \
 	cairo_test_suite-a1-mask-sample.$(OBJEXT) \
 	cairo_test_suite-a1-traps-sample.$(OBJEXT) \
+	cairo_test_suite-a1-rasterisation.$(OBJEXT) \
 	cairo_test_suite-a8-mask.$(OBJEXT) \
+	cairo_test_suite-aliasing.$(OBJEXT) \
 	cairo_test_suite-alpha-similar.$(OBJEXT) \
 	cairo_test_suite-big-line.$(OBJEXT) \
 	cairo_test_suite-big-trap.$(OBJEXT) \
 	cairo_test_suite-bilevel-image.$(OBJEXT) \
 	cairo_test_suite-bug-bo-rectangular.$(OBJEXT) \
+	cairo_test_suite-bug-seams.$(OBJEXT) \
 	cairo_test_suite-caps.$(OBJEXT) \
 	cairo_test_suite-caps-joins.$(OBJEXT) \
 	cairo_test_suite-caps-joins-alpha.$(OBJEXT) \
@@ -411,6 +418,7 @@ am__objects_29 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-group-paint.$(OBJEXT) \
 	cairo_test_suite-group-unaligned.$(OBJEXT) \
 	cairo_test_suite-half-coverage.$(OBJEXT) \
+	cairo_test_suite-halo.$(OBJEXT) \
 	cairo_test_suite-huge-linear.$(OBJEXT) \
 	cairo_test_suite-huge-radial.$(OBJEXT) \
 	cairo_test_suite-image-surface-source.$(OBJEXT) \
@@ -479,6 +487,7 @@ am__objects_29 = cairo_test_suite-a1-image-sample.$(OBJEXT) \
 	cairo_test_suite-png.$(OBJEXT) \
 	cairo_test_suite-push-group.$(OBJEXT) \
 	cairo_test_suite-push-group-color.$(OBJEXT) \
+	cairo_test_suite-push-group-path-offset.$(OBJEXT) \
 	cairo_test_suite-radial-gradient.$(OBJEXT) \
 	cairo_test_suite-radial-gradient-extend.$(OBJEXT) \
 	cairo_test_suite-radial-gradient-mask.$(OBJEXT) \
@@ -917,21 +926,21 @@ EXTRA_DIST = $(BUILT_SOURCES) $(noinst_SCRIPTS) COPYING \
 EXTRA_LTLIBRARIES = 
 MAINTAINERCLEANFILES = Makefile.in
 TESTS = cairo-test-suite$(EXEEXT)
-test_sources = a1-image-sample.c a1-mask.c a1-mask-sample.c \
-	a1-traps-sample.c a8-mask.c alpha-similar.c big-line.c \
-	big-trap.c bilevel-image.c bug-bo-rectangular.c caps.c \
-	caps-joins.c caps-joins-alpha.c caps-joins-curve.c \
-	caps-sub-paths.c clear.c clear-source.c clip-all.c \
-	clip-contexts.c clip-disjoint.c clip-device-offset.c \
-	clip-empty.c clip-empty-group.c clip-empty-save.c clip-fill.c \
-	clip-fill-no-op.c clip-fill-rule.c \
-	clip-fill-rule-pixel-aligned.c clip-fill-unbounded.c \
-	clip-group-shapes.c clip-image.c clip-nesting.c \
-	clip-operator.c clip-push-group.c clip-shape.c clip-stroke.c \
-	clip-stroke-no-op.c clip-stroke-unbounded.c clip-text.c \
-	clip-twice.c clip-twice-rectangle.c clip-unbounded.c \
-	clip-zero.c clipped-group.c clipped-surface.c close-path.c \
-	close-path-current-point.c \
+test_sources = a1-bug.c a1-image-sample.c a1-mask.c a1-mask-sample.c \
+	a1-traps-sample.c a1-rasterisation.c a8-mask.c aliasing.c \
+	alpha-similar.c big-line.c big-trap.c bilevel-image.c \
+	bug-bo-rectangular.c bug-seams.c caps.c caps-joins.c \
+	caps-joins-alpha.c caps-joins-curve.c caps-sub-paths.c clear.c \
+	clear-source.c clip-all.c clip-contexts.c clip-disjoint.c \
+	clip-device-offset.c clip-empty.c clip-empty-group.c \
+	clip-empty-save.c clip-fill.c clip-fill-no-op.c \
+	clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
+	clip-fill-unbounded.c clip-group-shapes.c clip-image.c \
+	clip-nesting.c clip-operator.c clip-push-group.c clip-shape.c \
+	clip-stroke.c clip-stroke-no-op.c clip-stroke-unbounded.c \
+	clip-text.c clip-twice.c clip-twice-rectangle.c \
+	clip-unbounded.c clip-zero.c clipped-group.c clipped-surface.c \
+	close-path.c close-path-current-point.c \
 	composite-integer-translate-source.c \
 	composite-integer-translate-over.c \
 	composite-integer-translate-over-repeat.c copy-path.c \
@@ -960,14 +969,15 @@ test_sources = a1-image-sample.c a1-mask.c a1-mask-sample.c \
 	get-group-target.c get-path-extents.c gradient-alpha.c \
 	gradient-constant-alpha.c gradient-zero-stops.c \
 	gradient-zero-stops-mask.c group-clip.c group-paint.c \
-	group-unaligned.c half-coverage.c huge-linear.c huge-radial.c \
-	image-surface-source.c implicit-close.c infinite-join.c \
-	in-fill-empty-trapezoid.c in-fill-trapezoid.c invalid-matrix.c \
-	inverse-text.c joins.c large-clip.c large-font.c \
-	large-source.c large-source-roi.c large-twin-antialias-mixed.c \
-	leaky-dash.c leaky-dashed-rectangle.c leaky-dashed-stroke.c \
-	leaky-polygon.c line-width.c line-width-scale.c \
-	line-width-zero.c linear-gradient.c linear-gradient-extend.c \
+	group-unaligned.c half-coverage.c halo.c huge-linear.c \
+	huge-radial.c image-surface-source.c implicit-close.c \
+	infinite-join.c in-fill-empty-trapezoid.c in-fill-trapezoid.c \
+	invalid-matrix.c inverse-text.c joins.c large-clip.c \
+	large-font.c large-source.c large-source-roi.c \
+	large-twin-antialias-mixed.c leaky-dash.c \
+	leaky-dashed-rectangle.c leaky-dashed-stroke.c leaky-polygon.c \
+	line-width.c line-width-scale.c line-width-zero.c \
+	linear-gradient.c linear-gradient-extend.c \
 	linear-gradient-one-stop.c linear-gradient-reflect.c \
 	linear-gradient-subset.c linear-step-function.c \
 	linear-uniform.c long-dashed-lines.c long-lines.c mask.c \
@@ -982,10 +992,11 @@ test_sources = a1-image-sample.c a1-mask.c a1-mask-sample.c \
 	partial-coverage.c path-append.c path-stroke-twice.c \
 	path-precision.c pattern-get-type.c pattern-getters.c \
 	pixman-rotate.c png.c push-group.c push-group-color.c \
-	radial-gradient.c radial-gradient-extend.c \
-	radial-gradient-mask.c radial-gradient-mask-source.c \
-	radial-gradient-one-stop.c radial-gradient-source.c \
-	random-intersections-eo.c random-intersections-nonzero.c \
+	push-group-path-offset.c radial-gradient.c \
+	radial-gradient-extend.c radial-gradient-mask.c \
+	radial-gradient-mask-source.c radial-gradient-one-stop.c \
+	radial-gradient-source.c random-intersections-eo.c \
+	random-intersections-nonzero.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c rectangle-rounding-error.c \
 	rectilinear-fill.c rectilinear-miter-limit.c \
@@ -1123,15 +1134,23 @@ cairo_test_suite_DEPENDENCIES =  \
 
 # All tests which have a reference image go here.
 REFERENCE_IMAGES = \
+	a1-bug.ref.png \
+	a1-bug.image16.ref.png \
+	a1-bug.xlib.ref.png \
 	a1-image-sample.ref.png \
 	a1-image-sample.gl.xfail.png \
 	a1-image-sample.quartz.xfail.png \
 	a1-mask.ref.png \
 	a1-mask-sample.ref.png \
 	a1-mask-sample.quartz.xfail.png \
+	a1-rasterisation-rectangles.ref.png \
+	a1-rasterisation-triangles.ref.png \
 	a1-traps-sample.ref.png \
 	a1-traps-sample.quartz.xfail.png \
 	a8-mask.ref.png \
+	aliasing.ref.png \
+	aliasing.image16.ref.png \
+	aliasing.xlib.ref.png \
 	alpha-similar.gl.argb32.xfail.png \
 	alpha-similar.gl.rgb24.xfail.png \
 	alpha-similar.pdf.argb32.xfail.png \
@@ -1150,6 +1169,9 @@ REFERENCE_IMAGES = \
 	bug-bo-rectangular.ref.png \
 	bug-bo-rectangular.image16.ref.png \
 	bug-bo-rectangular.ps.xfail.png \
+	bug-seams.ref.png \
+	bug-seams.xlib.ref.png \
+	bug-seams.xlib-fallback.ref.png \
 	bilevel-image.ref.png \
 	bitmap-font.ref.png \
 	bitmap-font.rgb24.ref.png \
@@ -1676,6 +1698,14 @@ REFERENCE_IMAGES = \
 	group-unaligned.svg.rgb24.xfail.png \
 	group-unaligned.xlib-fallback.ref.png \
 	group-unaligned.xlib.ref.png \
+	halo.ref.png \
+	halo.image16.ref.png \
+	halo.xlib.ref.png \
+	halo.ps.ref.png \
+	halo-transform.ref.png \
+	halo-transform.image16.ref.png \
+	halo-transform.xlib.ref.png \
+	halo-transform.ps.ref.png \
 	huge-linear.image16.ref.png \
 	huge-linear.pdf.ref.png \
 	huge-linear.ps3.ref.png \
@@ -1972,6 +2002,7 @@ REFERENCE_IMAGES = \
 	ps-surface-source.argb32.ref.png \
 	ps-surface-source.svg12.argb32.xfail.png \
 	ps-surface-source.svg12.rgb24.xfail.png \
+	push-group-path-offset.ref.png \
 	push-group.image16.ref.png \
 	push-group.quartz.argb32.ref.png \
 	push-group.quartz.rgb24.ref.png \
@@ -2549,11 +2580,14 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/any2ppm-any2ppm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/buffer-diff.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-bug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-image-sample.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-mask-sample.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-mask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-rasterisation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-traps-sample.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a8-mask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-aliasing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-alpha-similar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-big-line.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-big-trap.Po@am__quote@
@@ -2561,6 +2595,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-bitmap-font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-buffer-diff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-bug-bo-rectangular.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-bug-seams.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-cairo-test-constructors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-cairo-test-runner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-cairo-test.Po@am__quote@
@@ -2682,6 +2717,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-group-paint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-group-unaligned.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-half-coverage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-halo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-huge-linear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-huge-radial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-image-surface-source.Po@am__quote@
@@ -2758,6 +2794,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pthread-show-text.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pthread-similar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-push-group-color.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-push-group-path-offset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-push-group.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-quartz-surface-source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-radial-gradient-extend.Po@am__quote@
@@ -2947,6 +2984,20 @@ cairo_test_suite-cairo-test-runner.obj: cairo-test-runner.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-cairo-test-runner.obj `if test -f 'cairo-test-runner.c'; then $(CYGPATH_W) 'cairo-test-runner.c'; else $(CYGPATH_W) '$(srcdir)/cairo-test-runner.c'; fi`
 
+cairo_test_suite-a1-bug.o: a1-bug.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a1-bug.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-a1-bug.Tpo -c -o cairo_test_suite-a1-bug.o `test -f 'a1-bug.c' || echo '$(srcdir)/'`a1-bug.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-a1-bug.Tpo $(DEPDIR)/cairo_test_suite-a1-bug.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a1-bug.c' object='cairo_test_suite-a1-bug.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a1-bug.o `test -f 'a1-bug.c' || echo '$(srcdir)/'`a1-bug.c
+
+cairo_test_suite-a1-bug.obj: a1-bug.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a1-bug.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-a1-bug.Tpo -c -o cairo_test_suite-a1-bug.obj `if test -f 'a1-bug.c'; then $(CYGPATH_W) 'a1-bug.c'; else $(CYGPATH_W) '$(srcdir)/a1-bug.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-a1-bug.Tpo $(DEPDIR)/cairo_test_suite-a1-bug.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a1-bug.c' object='cairo_test_suite-a1-bug.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a1-bug.obj `if test -f 'a1-bug.c'; then $(CYGPATH_W) 'a1-bug.c'; else $(CYGPATH_W) '$(srcdir)/a1-bug.c'; fi`
+
 cairo_test_suite-a1-image-sample.o: a1-image-sample.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a1-image-sample.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-a1-image-sample.Tpo -c -o cairo_test_suite-a1-image-sample.o `test -f 'a1-image-sample.c' || echo '$(srcdir)/'`a1-image-sample.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-a1-image-sample.Tpo $(DEPDIR)/cairo_test_suite-a1-image-sample.Po
@@ -3003,6 +3054,20 @@ cairo_test_suite-a1-traps-sample.obj: a1-traps-sample.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a1-traps-sample.obj `if test -f 'a1-traps-sample.c'; then $(CYGPATH_W) 'a1-traps-sample.c'; else $(CYGPATH_W) '$(srcdir)/a1-traps-sample.c'; fi`
 
+cairo_test_suite-a1-rasterisation.o: a1-rasterisation.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a1-rasterisation.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-a1-rasterisation.Tpo -c -o cairo_test_suite-a1-rasterisation.o `test -f 'a1-rasterisation.c' || echo '$(srcdir)/'`a1-rasterisation.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-a1-rasterisation.Tpo $(DEPDIR)/cairo_test_suite-a1-rasterisation.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a1-rasterisation.c' object='cairo_test_suite-a1-rasterisation.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a1-rasterisation.o `test -f 'a1-rasterisation.c' || echo '$(srcdir)/'`a1-rasterisation.c
+
+cairo_test_suite-a1-rasterisation.obj: a1-rasterisation.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a1-rasterisation.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-a1-rasterisation.Tpo -c -o cairo_test_suite-a1-rasterisation.obj `if test -f 'a1-rasterisation.c'; then $(CYGPATH_W) 'a1-rasterisation.c'; else $(CYGPATH_W) '$(srcdir)/a1-rasterisation.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-a1-rasterisation.Tpo $(DEPDIR)/cairo_test_suite-a1-rasterisation.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a1-rasterisation.c' object='cairo_test_suite-a1-rasterisation.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a1-rasterisation.obj `if test -f 'a1-rasterisation.c'; then $(CYGPATH_W) 'a1-rasterisation.c'; else $(CYGPATH_W) '$(srcdir)/a1-rasterisation.c'; fi`
+
 cairo_test_suite-a8-mask.o: a8-mask.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a8-mask.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-a8-mask.Tpo -c -o cairo_test_suite-a8-mask.o `test -f 'a8-mask.c' || echo '$(srcdir)/'`a8-mask.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-a8-mask.Tpo $(DEPDIR)/cairo_test_suite-a8-mask.Po
@@ -3016,6 +3081,20 @@ cairo_test_suite-a8-mask.obj: a8-mask.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a8-mask.c' object='cairo_test_suite-a8-mask.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a8-mask.obj `if test -f 'a8-mask.c'; then $(CYGPATH_W) 'a8-mask.c'; else $(CYGPATH_W) '$(srcdir)/a8-mask.c'; fi`
+
+cairo_test_suite-aliasing.o: aliasing.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-aliasing.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-aliasing.Tpo -c -o cairo_test_suite-aliasing.o `test -f 'aliasing.c' || echo '$(srcdir)/'`aliasing.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-aliasing.Tpo $(DEPDIR)/cairo_test_suite-aliasing.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='aliasing.c' object='cairo_test_suite-aliasing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-aliasing.o `test -f 'aliasing.c' || echo '$(srcdir)/'`aliasing.c
+
+cairo_test_suite-aliasing.obj: aliasing.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-aliasing.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-aliasing.Tpo -c -o cairo_test_suite-aliasing.obj `if test -f 'aliasing.c'; then $(CYGPATH_W) 'aliasing.c'; else $(CYGPATH_W) '$(srcdir)/aliasing.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-aliasing.Tpo $(DEPDIR)/cairo_test_suite-aliasing.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='aliasing.c' object='cairo_test_suite-aliasing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-aliasing.obj `if test -f 'aliasing.c'; then $(CYGPATH_W) 'aliasing.c'; else $(CYGPATH_W) '$(srcdir)/aliasing.c'; fi`
 
 cairo_test_suite-alpha-similar.o: alpha-similar.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-alpha-similar.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-alpha-similar.Tpo -c -o cairo_test_suite-alpha-similar.o `test -f 'alpha-similar.c' || echo '$(srcdir)/'`alpha-similar.c
@@ -3086,6 +3165,20 @@ cairo_test_suite-bug-bo-rectangular.obj: bug-bo-rectangular.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bug-bo-rectangular.c' object='cairo_test_suite-bug-bo-rectangular.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-bug-bo-rectangular.obj `if test -f 'bug-bo-rectangular.c'; then $(CYGPATH_W) 'bug-bo-rectangular.c'; else $(CYGPATH_W) '$(srcdir)/bug-bo-rectangular.c'; fi`
+
+cairo_test_suite-bug-seams.o: bug-seams.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-bug-seams.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-bug-seams.Tpo -c -o cairo_test_suite-bug-seams.o `test -f 'bug-seams.c' || echo '$(srcdir)/'`bug-seams.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-bug-seams.Tpo $(DEPDIR)/cairo_test_suite-bug-seams.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bug-seams.c' object='cairo_test_suite-bug-seams.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-bug-seams.o `test -f 'bug-seams.c' || echo '$(srcdir)/'`bug-seams.c
+
+cairo_test_suite-bug-seams.obj: bug-seams.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-bug-seams.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-bug-seams.Tpo -c -o cairo_test_suite-bug-seams.obj `if test -f 'bug-seams.c'; then $(CYGPATH_W) 'bug-seams.c'; else $(CYGPATH_W) '$(srcdir)/bug-seams.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-bug-seams.Tpo $(DEPDIR)/cairo_test_suite-bug-seams.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bug-seams.c' object='cairo_test_suite-bug-seams.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-bug-seams.obj `if test -f 'bug-seams.c'; then $(CYGPATH_W) 'bug-seams.c'; else $(CYGPATH_W) '$(srcdir)/bug-seams.c'; fi`
 
 cairo_test_suite-caps.o: caps.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-caps.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-caps.Tpo -c -o cairo_test_suite-caps.o `test -f 'caps.c' || echo '$(srcdir)/'`caps.c
@@ -4613,6 +4706,20 @@ cairo_test_suite-half-coverage.obj: half-coverage.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-half-coverage.obj `if test -f 'half-coverage.c'; then $(CYGPATH_W) 'half-coverage.c'; else $(CYGPATH_W) '$(srcdir)/half-coverage.c'; fi`
 
+cairo_test_suite-halo.o: halo.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-halo.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-halo.Tpo -c -o cairo_test_suite-halo.o `test -f 'halo.c' || echo '$(srcdir)/'`halo.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-halo.Tpo $(DEPDIR)/cairo_test_suite-halo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='halo.c' object='cairo_test_suite-halo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-halo.o `test -f 'halo.c' || echo '$(srcdir)/'`halo.c
+
+cairo_test_suite-halo.obj: halo.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-halo.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-halo.Tpo -c -o cairo_test_suite-halo.obj `if test -f 'halo.c'; then $(CYGPATH_W) 'halo.c'; else $(CYGPATH_W) '$(srcdir)/halo.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-halo.Tpo $(DEPDIR)/cairo_test_suite-halo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='halo.c' object='cairo_test_suite-halo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-halo.obj `if test -f 'halo.c'; then $(CYGPATH_W) 'halo.c'; else $(CYGPATH_W) '$(srcdir)/halo.c'; fi`
+
 cairo_test_suite-huge-linear.o: huge-linear.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-huge-linear.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-huge-linear.Tpo -c -o cairo_test_suite-huge-linear.o `test -f 'huge-linear.c' || echo '$(srcdir)/'`huge-linear.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-huge-linear.Tpo $(DEPDIR)/cairo_test_suite-huge-linear.Po
@@ -5564,6 +5671,20 @@ cairo_test_suite-push-group-color.obj: push-group-color.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='push-group-color.c' object='cairo_test_suite-push-group-color.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-push-group-color.obj `if test -f 'push-group-color.c'; then $(CYGPATH_W) 'push-group-color.c'; else $(CYGPATH_W) '$(srcdir)/push-group-color.c'; fi`
+
+cairo_test_suite-push-group-path-offset.o: push-group-path-offset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-push-group-path-offset.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-push-group-path-offset.Tpo -c -o cairo_test_suite-push-group-path-offset.o `test -f 'push-group-path-offset.c' || echo '$(srcdir)/'`push-group-path-offset.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-push-group-path-offset.Tpo $(DEPDIR)/cairo_test_suite-push-group-path-offset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='push-group-path-offset.c' object='cairo_test_suite-push-group-path-offset.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-push-group-path-offset.o `test -f 'push-group-path-offset.c' || echo '$(srcdir)/'`push-group-path-offset.c
+
+cairo_test_suite-push-group-path-offset.obj: push-group-path-offset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-push-group-path-offset.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-push-group-path-offset.Tpo -c -o cairo_test_suite-push-group-path-offset.obj `if test -f 'push-group-path-offset.c'; then $(CYGPATH_W) 'push-group-path-offset.c'; else $(CYGPATH_W) '$(srcdir)/push-group-path-offset.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_test_suite-push-group-path-offset.Tpo $(DEPDIR)/cairo_test_suite-push-group-path-offset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='push-group-path-offset.c' object='cairo_test_suite-push-group-path-offset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-push-group-path-offset.obj `if test -f 'push-group-path-offset.c'; then $(CYGPATH_W) 'push-group-path-offset.c'; else $(CYGPATH_W) '$(srcdir)/push-group-path-offset.c'; fi`
 
 cairo_test_suite-radial-gradient.o: radial-gradient.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-radial-gradient.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-radial-gradient.Tpo -c -o cairo_test_suite-radial-gradient.o `test -f 'radial-gradient.c' || echo '$(srcdir)/'`radial-gradient.c

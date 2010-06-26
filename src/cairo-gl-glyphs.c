@@ -127,9 +127,10 @@ _cairo_gl_glyph_cache_lock (cairo_gl_glyph_cache_t *cache,
     return _cairo_rtree_pin (&cache->rtree, scaled_glyph->surface_private);
 }
 
-static cairo_gl_glyph_cache_t *
+static cairo_status_t
 cairo_gl_context_get_glyph_cache (cairo_gl_context_t *ctx,
-				  cairo_format_t format)
+				  cairo_format_t format,
+                                  cairo_gl_glyph_cache_t **cache_out)
 {
     cairo_gl_glyph_cache_t *cache;
     cairo_content_t content;
@@ -148,7 +149,7 @@ cairo_gl_context_get_glyph_cache (cairo_gl_context_t *ctx,
 	break;
     case CAIRO_FORMAT_INVALID:
 	ASSERT_NOT_REACHED;
-	return NULL;
+	return _cairo_error (CAIRO_STATUS_INVALID_FORMAT);
     }
 
     if (unlikely (cache->pattern.surface == NULL)) {
@@ -157,13 +158,19 @@ cairo_gl_context_get_glyph_cache (cairo_gl_context_t *ctx,
                                            content,
                                            GLYPH_CACHE_WIDTH,
                                            GLYPH_CACHE_HEIGHT);
+        if (unlikely (surface->status)) {
+            cairo_status_t status = surface->status;
+            cairo_surface_destroy (surface);
+            return status;
+        }
         _cairo_surface_release_device_reference (surface);
         _cairo_pattern_init_for_surface (&cache->pattern, surface);
         cairo_surface_destroy (surface);
         cache->pattern.base.has_component_alpha = (content == CAIRO_CONTENT_COLOR_ALPHA);
     }
 
-    return cache;
+    *cache_out = cache;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 static void
@@ -229,7 +236,7 @@ _render_glyphs (cairo_gl_surface_t	*dst,
     cairo_gl_glyph_cache_t *cache = NULL;
     cairo_gl_context_t *ctx;
     cairo_gl_composite_t setup;
-    cairo_status_t status, status_maybe_ignored;
+    cairo_status_t status;
     int i = 0;
 
     *has_component_alpha = FALSE;
@@ -293,8 +300,11 @@ _render_glyphs (cairo_gl_surface_t	*dst,
 	}
 
 	if (scaled_glyph->surface->format != last_format) {
-	    cache = cairo_gl_context_get_glyph_cache (ctx,
-						      scaled_glyph->surface->format);
+	    status = cairo_gl_context_get_glyph_cache (ctx,
+						       scaled_glyph->surface->format,
+                                                       &cache);
+            if (unlikely (status))
+                goto FINISH;
 
 	    last_format = scaled_glyph->surface->format;
 
@@ -306,14 +316,12 @@ _render_glyphs (cairo_gl_surface_t	*dst,
 
 	    *has_component_alpha |= cache->pattern.base.has_component_alpha;
 
-            status = _cairo_gl_composite_begin (&setup, &ctx);
-            if (unlikely (status))
-                goto FINISH;
-
             /* XXX: _cairo_gl_composite_begin() acquires the context a
              * second time. Need to refactor this loop so this doesn't happen.
              */
-            status = _cairo_gl_context_release (ctx);
+            status = _cairo_gl_composite_begin (&setup, &ctx);
+
+            status = _cairo_gl_context_release (ctx, status);
 	    if (unlikely (status))
 		goto FINISH;
 	}
@@ -351,9 +359,7 @@ _render_glyphs (cairo_gl_surface_t	*dst,
   FINISH:
     _cairo_scaled_font_thaw_cache (scaled_font);
 
-    status_maybe_ignored = _cairo_gl_context_release (ctx);
-    if (status == CAIRO_STATUS_SUCCESS)
-	status = status_maybe_ignored;
+    status = _cairo_gl_context_release (ctx, status);
 
     _cairo_gl_composite_fini (&setup);
 

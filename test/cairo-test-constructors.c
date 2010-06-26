@@ -4,16 +4,21 @@
 
 void _cairo_test_runner_register_tests (void);
 
+extern void _register_a1_bug (void);
 extern void _register_a1_image_sample (void);
 extern void _register_a1_mask (void);
 extern void _register_a1_mask_sample (void);
 extern void _register_a1_traps_sample (void);
+extern void _register_a1_rasterisation_rectangles (void);
+extern void _register_a1_rasterisation_triangles (void);
 extern void _register_a8_mask (void);
+extern void _register_aliasing (void);
 extern void _register_alpha_similar (void);
 extern void _register_big_line (void);
 extern void _register_big_trap (void);
 extern void _register_bilevel_image (void);
 extern void _register_bug_bo_rectangular (void);
+extern void _register_bug_seams (void);
 extern void _register_caps (void);
 extern void _register_caps_joins (void);
 extern void _register_caps_joins_alpha (void);
@@ -131,6 +136,8 @@ extern void _register_group_paint (void);
 extern void _register_group_unaligned (void);
 extern void _register_half_coverage_rectangles (void);
 extern void _register_half_coverage_triangles (void);
+extern void _register_halo (void);
+extern void _register_halo_transform (void);
 extern void _register_huge_linear (void);
 extern void _register_huge_radial (void);
 extern void _register_image_surface_source (void);
@@ -209,6 +216,7 @@ extern void _register_pixman_rotate (void);
 extern void _register_png (void);
 extern void _register_push_group (void);
 extern void _register_push_group_color (void);
+extern void _register_push_group_path_offset (void);
 extern void _register_radial_gradient (void);
 extern void _register_radial_gradient_extend (void);
 extern void _register_radial_gradient_mask (void);
@@ -325,6 +333,7 @@ extern void _register_ps_surface_source (void);
 extern void _register_svg_surface (void);
 extern void _register_svg_clip (void);
 extern void _register_svg_surface_source (void);
+extern void _register_test_fallback16_surface_source (void);
 extern void _register_xlib_surface (void);
 extern void _register_xlib_surface_source (void);
 extern void _register_get_xrender_format (void);
@@ -334,16 +343,21 @@ extern void _register_fallback_resolution (void);
 void
 _cairo_test_runner_register_tests (void)
 {
+    _register_a1_bug ();
     _register_a1_image_sample ();
     _register_a1_mask ();
     _register_a1_mask_sample ();
     _register_a1_traps_sample ();
+    _register_a1_rasterisation_rectangles ();
+    _register_a1_rasterisation_triangles ();
     _register_a8_mask ();
+    _register_aliasing ();
     _register_alpha_similar ();
     _register_big_line ();
     _register_big_trap ();
     _register_bilevel_image ();
     _register_bug_bo_rectangular ();
+    _register_bug_seams ();
     _register_caps ();
     _register_caps_joins ();
     _register_caps_joins_alpha ();
@@ -461,6 +475,8 @@ _cairo_test_runner_register_tests (void)
     _register_group_unaligned ();
     _register_half_coverage_rectangles ();
     _register_half_coverage_triangles ();
+    _register_halo ();
+    _register_halo_transform ();
     _register_huge_linear ();
     _register_huge_radial ();
     _register_image_surface_source ();
@@ -539,6 +555,7 @@ _cairo_test_runner_register_tests (void)
     _register_png ();
     _register_push_group ();
     _register_push_group_color ();
+    _register_push_group_path_offset ();
     _register_radial_gradient ();
     _register_radial_gradient_extend ();
     _register_radial_gradient_mask ();
@@ -655,6 +672,7 @@ _cairo_test_runner_register_tests (void)
     _register_svg_surface ();
     _register_svg_clip ();
     _register_svg_surface_source ();
+    _register_test_fallback16_surface_source ();
     _register_xlib_surface ();
     _register_xlib_surface_source ();
     _register_get_xrender_format ();

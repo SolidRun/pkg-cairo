@@ -131,15 +131,23 @@ CLEANFILES += $(BUILT_SOURCES)
 
 # All tests which have a reference image go here.
 REFERENCE_IMAGES = \
+	a1-bug.ref.png \
+	a1-bug.image16.ref.png \
+	a1-bug.xlib.ref.png \
 	a1-image-sample.ref.png \
 	a1-image-sample.gl.xfail.png \
 	a1-image-sample.quartz.xfail.png \
 	a1-mask.ref.png \
 	a1-mask-sample.ref.png \
 	a1-mask-sample.quartz.xfail.png \
+	a1-rasterisation-rectangles.ref.png \
+	a1-rasterisation-triangles.ref.png \
 	a1-traps-sample.ref.png \
 	a1-traps-sample.quartz.xfail.png \
 	a8-mask.ref.png \
+	aliasing.ref.png \
+	aliasing.image16.ref.png \
+	aliasing.xlib.ref.png \
 	alpha-similar.gl.argb32.xfail.png \
 	alpha-similar.gl.rgb24.xfail.png \
 	alpha-similar.pdf.argb32.xfail.png \
@@ -158,6 +166,9 @@ REFERENCE_IMAGES = \
 	bug-bo-rectangular.ref.png \
 	bug-bo-rectangular.image16.ref.png \
 	bug-bo-rectangular.ps.xfail.png \
+	bug-seams.ref.png \
+	bug-seams.xlib.ref.png \
+	bug-seams.xlib-fallback.ref.png \
 	bilevel-image.ref.png \
 	bitmap-font.ref.png \
 	bitmap-font.rgb24.ref.png \
@@ -684,6 +695,14 @@ REFERENCE_IMAGES = \
 	group-unaligned.svg.rgb24.xfail.png \
 	group-unaligned.xlib-fallback.ref.png \
 	group-unaligned.xlib.ref.png \
+	halo.ref.png \
+	halo.image16.ref.png \
+	halo.xlib.ref.png \
+	halo.ps.ref.png \
+	halo-transform.ref.png \
+	halo-transform.image16.ref.png \
+	halo-transform.xlib.ref.png \
+	halo-transform.ps.ref.png \
 	huge-linear.image16.ref.png \
 	huge-linear.pdf.ref.png \
 	huge-linear.ps3.ref.png \
@@ -980,6 +999,7 @@ REFERENCE_IMAGES = \
 	ps-surface-source.argb32.ref.png \
 	ps-surface-source.svg12.argb32.xfail.png \
 	ps-surface-source.svg12.rgb24.xfail.png \
+	push-group-path-offset.ref.png \
 	push-group.image16.ref.png \
 	push-group.quartz.argb32.ref.png \
 	push-group.quartz.rgb24.ref.png \

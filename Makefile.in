@@ -111,10 +111,11 @@ CONFIG_CLEAN_FILES = cairo-uninstalled.pc cairo-xlib-uninstalled.pc \
 	cairo-png-uninstalled.pc cairo-gl-uninstalled.pc \
 	cairo-directfb-uninstalled.pc cairo-vg-uninstalled.pc \
 	cairo-egl-uninstalled.pc cairo-glx-uninstalled.pc \
-	cairo-script-uninstalled.pc cairo-ft-uninstalled.pc \
-	cairo-fc-uninstalled.pc cairo-ps-uninstalled.pc \
-	cairo-pdf-uninstalled.pc cairo-svg-uninstalled.pc \
-	cairo-xml-uninstalled.pc build/shave build/shave-libtool
+	cairo-wgl-uninstalled.pc cairo-script-uninstalled.pc \
+	cairo-ft-uninstalled.pc cairo-fc-uninstalled.pc \
+	cairo-ps-uninstalled.pc cairo-pdf-uninstalled.pc \
+	cairo-svg-uninstalled.pc cairo-xml-uninstalled.pc build/shave \
+	build/shave-libtool
 CONFIG_CLEAN_VPATH_FILES =
 SOURCES =
 DIST_SOURCES =
@@ -557,6 +558,8 @@ cairo-vg-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-f
 cairo-egl-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-glx-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-wgl-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-script-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

@@ -194,8 +194,9 @@ _cairo_font_subset_sources = \
 cairo_private += $(_cairo_font_subset_private)
 cairo_sources += $(_cairo_font_subset_sources)
 
-cairo_glx_sources =
 cairo_egl_sources =
+cairo_glx_sources =
+cairo_wgl_sources =
 
 _cairo_pdf_operators_private = cairo-pdf-operators-private.h
 _cairo_pdf_operators_sources = cairo-pdf-operators.c
@@ -322,8 +323,9 @@ cairo_gl_sources = cairo-gl-composite.c \
 		   cairo-gl-shaders.c \
 		   cairo-gl-surface.c
 
-cairo_glx_sources += cairo-glx-context.c
 cairo_egl_sources += cairo-egl-context.c
+cairo_glx_sources += cairo-glx-context.c
+cairo_wgl_sources += cairo-wgl-context.c
 
 cairo_directfb_headers = cairo-directfb.h
 cairo_directfb_sources = cairo-directfb-surface.c
@@ -369,6 +371,9 @@ endif
 
 cairo_script_headers = cairo-script.h
 cairo_script_sources = cairo-script-surface.c
+if CAIRO_HAS_SCRIPT_SURFACE
+req_cairo_deflate_stream_sources = $(cairo_deflate_stream_sources)
+endif
 
 cairo_xml_headers = cairo-xml.h
 cairo_xml_sources = cairo-xml-surface.c
