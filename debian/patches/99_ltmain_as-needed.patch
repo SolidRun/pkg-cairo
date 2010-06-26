@@ -1,8 +1,8 @@
-diff --git a/build/ltmain.sh b/build/ltmain.sh
-index d88da2c..1067ecf 100755
---- a/build/ltmain.sh
-+++ b/build/ltmain.sh
-@@ -4716,6 +4716,11 @@ func_mode_link ()
+Index: cairo/build/ltmain.sh
+===================================================================
+--- cairo.orig/build/ltmain.sh	2010-06-26 16:12:17.428175248 +0200
++++ cairo/build/ltmain.sh	2010-06-26 16:13:17.044176141 +0200
+@@ -4716,6 +4716,11 @@
  	arg=$func_stripname_result
  	;;
  
@@ -14,7 +14,7 @@ index d88da2c..1067ecf 100755
        -Wl,*)
  	func_stripname '-Wl,' '' "$arg"
  	args=$func_stripname_result
-@@ -5070,6 +5075,15 @@ func_mode_link ()
+@@ -5070,6 +5075,15 @@
  	lib=
  	found=no
  	case $deplib in

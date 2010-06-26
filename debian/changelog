@@ -2,8 +2,15 @@ cairo (1.9.10-1) experimental; urgency=low
 
   * New upstream development release:
     + Use subpixel rendering settings for fonts (Closes: #555722).
+    + debian/patches/99_autoreconf.patch:
+      - Regenerated for the new version.
+    + debian/patches/01_no-private-symbol-export.patch,
+      debian/patches/03_no-cxx.patch,
+      debian/patches/05_am-maintainer-mode.patch,
+      debian/patches/99_ltmain_as-needed.patch:
+      - Refreshed.
 
- -- Sebastian Dröge <slomo@debian.org>  Sat, 26 Jun 2010 16:08:14 +0200
+ -- Sebastian Dröge <slomo@debian.org>  Sat, 26 Jun 2010 16:13:32 +0200
 
 cairo (1.9.8-1) experimental; urgency=low
 
