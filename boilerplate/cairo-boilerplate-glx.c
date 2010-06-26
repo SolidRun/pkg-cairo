@@ -67,15 +67,15 @@ _cairo_boilerplate_gl_cleanup (void *closure)
 }
 
 static cairo_surface_t *
-_cairo_boilerplate_gl_create_surface (const char		 *name,
-				      cairo_content_t		  content,
-				      double			  width,
-				      double			  height,
-				      double			  max_width,
-				      double			  max_height,
-				      cairo_boilerplate_mode_t	  mode,
-				      int			  id,
-				      void			**closure)
+_cairo_boilerplate_gl_create_surface (const char		*name,
+				      cairo_content_t		 content,
+				      double			 width,
+				      double			 height,
+				      double			 max_width,
+				      double			 max_height,
+				      cairo_boilerplate_mode_t	 mode,
+				      int			 id,
+				      void		       **closure)
 {
     int rgba_attribs[] = { GLX_RGBA,
 			   GLX_RED_SIZE, 1,
@@ -135,7 +135,7 @@ _cairo_boilerplate_gl_create_surface (const char		 *name,
 
     gltc->surface = surface = cairo_gl_surface_create (gltc->device,
 						       content,
-					               ceil (width),
+						       ceil (width),
 						       ceil (height));
     if (cairo_surface_status (surface))
 	_cairo_boilerplate_gl_cleanup (gltc);
@@ -144,15 +144,15 @@ _cairo_boilerplate_gl_create_surface (const char		 *name,
 }
 
 static cairo_surface_t *
-_cairo_boilerplate_gl_create_window (const char			 *name,
-				     cairo_content_t		  content,
-				     double			  width,
-				     double			  height,
-				     double			  max_width,
-				     double			  max_height,
-				     cairo_boilerplate_mode_t	  mode,
-				     int			  id,
-				     void			**closure)
+_cairo_boilerplate_gl_create_window (const char 	       *name,
+				     cairo_content_t		content,
+				     double			width,
+				     double			height,
+				     double			max_width,
+				     double			max_height,
+				     cairo_boilerplate_mode_t	mode,
+				     int			id,
+				     void		      **closure)
 {
     int rgba_attribs[] = { GLX_RGBA,
 			   GLX_RED_SIZE, 1,
@@ -225,15 +225,15 @@ _cairo_boilerplate_gl_create_window (const char			 *name,
 }
 
 static cairo_surface_t *
-_cairo_boilerplate_gl_create_window_db (const char		 *name,
-					cairo_content_t		  content,
-					double			  width,
-					double			  height,
-					double			  max_width,
-					double			  max_height,
-					cairo_boilerplate_mode_t  mode,
-					int			  id,
-					void			**closure)
+_cairo_boilerplate_gl_create_window_db (const char		  *name,
+					cairo_content_t 	   content,
+					double			   width,
+					double			   height,
+					double			   max_width,
+					double			   max_height,
+					cairo_boilerplate_mode_t   mode,
+					int			   id,
+					void			 **closure)
 {
     int rgba_attribs[] = { GLX_RGBA,
 			   GLX_RED_SIZE, 1,
@@ -311,7 +311,7 @@ _cairo_boilerplate_gl_create_window_db (const char		 *name,
 }
 
 static cairo_status_t
-_cairo_boilerplate_gl_finish_window (cairo_surface_t		*surface)
+_cairo_boilerplate_gl_finish_window (cairo_surface_t *surface)
 {
     gl_target_closure_t *gltc = cairo_surface_get_user_data (surface,
 							     &gl_closure_key);
@@ -339,89 +339,12 @@ _cairo_boilerplate_gl_synchronize (void *closure)
     gl_target_closure_t *gltc = closure;
 
     if (cairo_device_acquire (gltc->device))
-        return;
+	return;
 
     glFinish ();
 
     cairo_device_release (gltc->device);
 }
-
-#if CAIRO_HAS_EGL_FUNCTIONS
-typedef struct _egl_target_closure {
-    EGLDisplay dpy;
-    EGLContext ctx;
-
-    cairo_device_t *device;
-    cairo_surface_t *surface;
-} egl_target_closure_t;
-
-static void
-_cairo_boilerplate_egl_cleanup (void *closure)
-{
-    egl_target_closure_t *gltc = closure;
-
-    cairo_device_finish (gltc->device);
-    cairo_device_destroy (gltc->device);
-
-    eglDestroyContext (gltc->dpy, gltc->ctx);
-    eglMakeCurrent (gltc->dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    eglTerminate (gltc->dpy);
-
-    free (gltc);
-}
-
-static cairo_surface_t *
-_cairo_boilerplate_egl_create_surface (const char		 *name,
-				      cairo_content_t		  content,
-				      double			  width,
-				      double			  height,
-				      double			  max_width,
-				      double			  max_height,
-				      cairo_boilerplate_mode_t	  mode,
-				      int			  id,
-				      void			**closure)
-{
-    egl_target_closure_t *gltc;
-    cairo_surface_t *surface;
-    int major, minor;
-    EGLConfig *configs;
-    EGLint numConfigs;
-
-    gltc = xcalloc (1, sizeof (gl_target_closure_t));
-    *closure = gltc;
-
-    gltc->dpy = eglGetDisplay (EGL_DEFAULT_DISPLAY);
-
-    if (! eglInitialize (gltc->dpy, &major, &minor)) {
-	free (gltc);
-	return NULL;
-    }
-
-    eglGetConfigs (gltc->dpy, NULL, 0, &numConfigs);
-    configs = xmalloc(sizeof(*configs) *numConfigs);
-    eglGetConfigs (gltc->dpy, configs, numConfigs, &numConfigs);
-
-    eglBindAPI (EGL_OPENGL_API);
-
-    gltc->ctx = eglCreateContext (gltc->dpy, configs[0], EGL_NO_CONTEXT, NULL);
-    if (gltc->ctx == EGL_NO_CONTEXT) {
-	eglTerminate (gltc->dpy);
-	free (gltc);
-	return NULL;
-    }
-
-    gltc->device = cairo_egl_device_create (gltc->dpy, gltc->ctx);
-
-    gltc->surface = surface = cairo_gl_surface_create (gltc->device,
-						       content,
-					               ceil (width),
-						       ceil (height));
-    if (cairo_surface_status (surface))
-	_cairo_boilerplate_egl_cleanup (gltc);
-
-    return surface;
-}
-#endif
 
 static const cairo_boilerplate_target_t targets[] = {
     {
@@ -474,19 +397,5 @@ static const cairo_boilerplate_target_t targets[] = {
 	_cairo_boilerplate_gl_synchronize,
 	FALSE, FALSE, FALSE
     },
-#if CAIRO_HAS_EGL_FUNCTIONS
-    {
-	"egl", "gl", NULL, NULL,
-	CAIRO_SURFACE_TYPE_GL, CAIRO_CONTENT_COLOR_ALPHA, 1,
-	"cairo_egl_device_create",
-	_cairo_boilerplate_egl_create_surface,
-	NULL, NULL,
-	_cairo_boilerplate_get_image_surface,
-	cairo_surface_write_to_png,
-	_cairo_boilerplate_egl_cleanup,
-	_cairo_boilerplate_gl_synchronize,
-	TRUE, FALSE, FALSE
-    },
-#endif
 };
 CAIRO_BOILERPLATE (gl, targets)

@@ -335,12 +335,20 @@ CAIRO_ENABLE_SURFACE_BACKEND(gl, OpenGL, no, [
 	      gl_NONPKGCONFIG_LIBS="-lGL"
 	  fi])
 
+  # Disable system GLEW on UNIX since it assumes X and crashes with EGL
   have_glew="no"
-  # Disable system GLEW since it assumes X and crashes with EGL
-  #AC_CHECK_LIB(GLEW, glewInit,
-  #	       [AC_CHECK_HEADER(GL/glew.h, [have_glew="yes"], [])])
-  if test "x$have_glew" = "xyes"; then
-    gl_NONPKGCONFIG_LIBS="-lGLEW $gl_NONPKGCONFIG_LIBS"
+  case "$host" in
+    *-linux*|*-*bsd*|*-solaris*)
+      ;;
+    *)
+      AC_CHECK_HEADER(GL/glew.h,
+		      [AC_CHECK_LIB(GLEW, glewInit, [have_glew="GLEW"],
+				    [AC_CHECK_LIB(glew32, glewInit, [have_glew="glew32"],
+						  [])])])
+      ;;
+  esac
+  if test "x$have_glew" != "xno"; then
+    gl_NONPKGCONFIG_LIBS="-l$have_glew $gl_NONPKGCONFIG_LIBS"
     use_glew="yes (system library)"
   else
     CAIRO_ENABLE_FUNCTIONS(glew, GLEW, always)
@@ -348,6 +356,7 @@ CAIRO_ENABLE_SURFACE_BACKEND(gl, OpenGL, no, [
     CAIRO_CFLAGS="$CAIRO_CFLAGS -I\$(top_srcdir)/src/glew"
   fi
   need_glx_functions=yes
+  need_wgl_functions=yes
   need_egl_functions=yes
 ])
 
@@ -414,6 +423,14 @@ CAIRO_ENABLE_FUNCTIONS(glx, GLX, auto, [
     CFLAGS="$save_CFLAGS"
   else
       use_glx="no (not required by any backend)"
+  fi
+])
+
+CAIRO_ENABLE_FUNCTIONS(wgl, WGL, auto, [
+  if test "x$need_wgl_functions" = "xyes"; then
+    AC_CHECK_HEADER(windows.h,, [use_wgl="no (WGL headers not found)"])
+  else
+      use_wgl="no (not required by any backend)"
   fi
 ])
 

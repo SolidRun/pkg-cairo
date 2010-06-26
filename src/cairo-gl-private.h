@@ -223,23 +223,16 @@ typedef struct _cairo_gl_composite {
 
 cairo_private extern const cairo_surface_backend_t _cairo_gl_surface_backend;
 
-cairo_private const char *_cairo_gl_error_to_string (GLenum err);
-static cairo_always_inline cairo_status_t
-_do_cairo_gl_check_error (const char *file, int line)
+static cairo_always_inline GLenum
+_cairo_gl_get_error (void)
 {
-    cairo_status_t status = CAIRO_STATUS_SUCCESS;
-    GLenum err;
+    GLenum err = glGetError();
 
-    while (unlikely ((err = glGetError ()))) {
-	fprintf (stderr, "%s:%d: GL error 0x%04x: %s\n",
-		 file, line, (int) err,
-		 _cairo_gl_error_to_string (err));
-	status = _cairo_error (CAIRO_STATUS_DEVICE_ERROR);
-    }
+    if (unlikely (err))
+        while (glGetError ());
 
-    return status;
+    return err;
 }
-#define _cairo_gl_check_error() _do_cairo_gl_check_error(__FILE__, __LINE__)
 
 static inline cairo_device_t *
 _cairo_gl_context_create_in_error (cairo_status_t status)
@@ -291,18 +284,27 @@ _cairo_gl_context_acquire (cairo_device_t *device,
     if (unlikely (status))
 	return status;
 
-    assert (_cairo_gl_check_error () == CAIRO_STATUS_SUCCESS);
+    /* clear potential previous GL errors */
+    _cairo_gl_get_error ();
 
     *ctx = (cairo_gl_context_t *) device;
     return CAIRO_STATUS_SUCCESS;
 }
 
-static cairo_always_inline cairo_status_t
-_cairo_gl_context_release (cairo_gl_context_t *ctx)
+static cairo_always_inline cairo_warn cairo_status_t
+_cairo_gl_context_release (cairo_gl_context_t *ctx, cairo_status_t status)
 {
-    cairo_status_t status;
+    GLenum err;
 
-    status = _cairo_gl_check_error ();
+    err = _cairo_gl_get_error ();
+
+    if (unlikely (err)) {
+        cairo_status_t new_status;
+	new_status = _cairo_error (CAIRO_STATUS_DEVICE_ERROR);
+        if (status == CAIRO_STATUS_SUCCESS)
+            status = new_status;
+    }
+
     cairo_device_release (&(ctx)->base);
 
     return status;
