@@ -48,6 +48,16 @@
 #define ISFINITE(x) ((x) * (x) >= 0.) /* check for NaNs */
 #endif
 
+/**
+ * SECTION:cairo-scaled-font
+ * @Title: cairo_scaled_font_t
+ * @Short_Description: Font face at particular size and options
+ * @See_Also: #cairo_font_face_t, #cairo_matrix_t, #cairo_font_options_t
+ *
+ * #cairo_scaled_font_t represents a realization of a font face at a particular
+ * size and transformation and a certain set of font options.
+ */
+
 /* Global Glyph Cache
  *
  * We maintain a global pool of glyphs split between all active fonts. This
@@ -704,13 +714,12 @@ _cairo_scaled_font_init (cairo_scaled_font_t               *scaled_font,
 	 *
 	 * Also, the check for == 0. below may be too harsh...
 	 */
-        if (scaled_font->scale.xx == 0. && scaled_font->scale.xy == 0. &&
-	    scaled_font->scale.yx == 0. && scaled_font->scale.yy == 0.)
+        if (_cairo_matrix_is_scale_0 (&scaled_font->scale)) {
 	    cairo_matrix_init (&scaled_font->scale_inverse,
 			       0, 0, 0, 0,
 			       -scaled_font->scale.x0,
 			       -scaled_font->scale.y0);
-	else
+	} else
 	    return status;
     }
 

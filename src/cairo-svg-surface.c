@@ -53,6 +53,23 @@
 #include "cairo-surface-clipper-private.h"
 #include "cairo-svg-surface-private.h"
 
+/**
+ * SECTION:cairo-svg
+ * @Title: SVG Surfaces
+ * @Short_Description: Rendering SVG documents
+ * @See_Also: #cairo_surface_t
+ *
+ * The SVG surface is used to render cairo graphics to
+ * SVG files and is a multi-page vector surface backend.
+ */
+
+/**
+ * CAIRO_HAS_SVG_SURFACE:
+ *
+ * Defined if the SVG surface backend is available.
+ * This macro can be used to conditionally compile backend-specific code.
+ */
+
 typedef struct cairo_svg_page cairo_svg_page_t;
 
 static const int invalid_pattern_id = -1;
@@ -262,6 +279,11 @@ _extract_svg_surface (cairo_surface_t		 *surface,
 
     if (surface->status)
 	return FALSE;
+    if (surface->finished) {
+	status_ignored = _cairo_surface_set_error (surface,
+						   _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
+        return FALSE;
+    }
 
     if (! _cairo_surface_is_paginated (surface)) {
 	status_ignored = _cairo_surface_set_error (surface,
@@ -274,6 +296,11 @@ _extract_svg_surface (cairo_surface_t		 *surface,
 	status_ignored = _cairo_surface_set_error (surface,
 						   target->status);
 	return FALSE;
+    }
+    if (target->finished) {
+	status_ignored = _cairo_surface_set_error (surface,
+						   _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
+        return FALSE;
     }
 
     if (! _cairo_surface_is_svg (target)) {
@@ -1059,7 +1086,7 @@ _cairo_surface_base64_encode_jpeg (cairo_surface_t       *surface,
 				   cairo_output_stream_t *output)
 {
     const unsigned char *mime_data;
-    unsigned int mime_data_length;
+    unsigned long mime_data_length;
     cairo_image_info_t image_info;
     base64_write_closure_t info;
     cairo_status_t status;
@@ -1098,7 +1125,7 @@ _cairo_surface_base64_encode_png (cairo_surface_t       *surface,
 				  cairo_output_stream_t *output)
 {
     const unsigned char *mime_data;
-    unsigned int mime_data_length;
+    unsigned long mime_data_length;
     base64_write_closure_t info;
     cairo_status_t status;
 
@@ -1239,7 +1266,7 @@ _cairo_svg_surface_emit_surface (cairo_svg_document_t *document,
     cairo_bool_t is_bounded;
     cairo_status_t status;
     const unsigned char *uri;
-    unsigned int uri_len;
+    unsigned long uri_len;
 
     if (_cairo_user_data_array_get_data (&surface->user_data,
 					 (cairo_user_data_key_t *) document))

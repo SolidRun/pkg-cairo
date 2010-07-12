@@ -33,7 +33,7 @@
       overloading. What may seem like an obvious overload now may
       turn out to be strange with future additions to cairo.
       It might seem logical to make
-      <a class="link" href="cairo-context.html#cairo-set-source-rgb" title="cairo_set_source_rgb ()"><code class="function">cairo_set_source_rgb()</code></a>
+      <a class="link" href="cairo-cairo-t.html#cairo-set-source-rgb" title="cairo_set_source_rgb ()"><code class="function">cairo_set_source_rgb()</code></a>
 	an overload of <code class="function">cairo_set_source()</code>, but future plans to add
 	<code class="function">cairo_set_source_rgb_premultiplied()</code>,
       which will also take three doubles make this a bad idea. For
@@ -90,9 +90,9 @@ cairo_image_surface_create_from_png_stream (cairo_read_func_t	read_func,
 <p>
       Note that there are cases where all constructors for a type
       aren't overloaded together. For example
-      <a class="link" href="cairo-png-functions.html#cairo-image-surface-create-from-png" title="cairo_image_surface_create_from_png ()"><code class="function">cairo_image_surface_create_from_png()</code></a>
+      <a class="link" href="cairo-PNG-Support.html#cairo-image-surface-create-from-png" title="cairo_image_surface_create_from_png ()"><code class="function">cairo_image_surface_create_from_png()</code></a>
       should <span class="emphasis"><em>not</em></span> be overloaded together with
-      <a class="link" href="cairo-image-surface.html#cairo-image-surface-create" title="cairo_image_surface_create ()"><code class="function">cairo_image_surface_create()</code></a>.
+      <a class="link" href="cairo-Image-Surfaces.html#cairo-image-surface-create" title="cairo_image_surface_create ()"><code class="function">cairo_image_surface_create()</code></a>.
       In such cases, the remaining constructors will typically need to
       be bound as static methods. In Java, for example, we might have:
     </p>

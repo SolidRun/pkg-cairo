@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-win32-surface">
+<refentry id="cairo-Win32-Surfaces">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-win32-surface.top_of_page">Win32 Surfaces</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-Win32-Surfaces.top_of_page">Win32 Surfaces</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Microsoft Windows surface support</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-win32-surface.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-Win32-Surfaces.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-WIN32-SURFACE:CAPS">CAIRO_HAS_WIN32_SURFACE</link>
@@ -34,7 +34,7 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-win32-surface.description" role="desc">
+<refsect1 id="cairo-Win32-Surfaces.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The Microsoft Windows surface is used to render cairo graphics to
@@ -50,11 +50,11 @@ The surface returned by the other win32 constructors is of surface type
 <link linkend="CAIRO-SURFACE-TYPE-WIN32:CAPS"><literal>CAIRO_SURFACE_TYPE_WIN32</literal></link> and is a raster surface type.
 </para>
 </refsect1>
-<refsect1 id="cairo-win32-surface.details" role="details">
+<refsect1 id="cairo-Win32-Surfaces.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-WIN32-SURFACE:CAPS" role="macro">
 <title>CAIRO_HAS_WIN32_SURFACE</title>
-<indexterm zone="CAIRO-HAS-WIN32-SURFACE:CAPS"><primary>CAIRO_HAS_WIN32_SURFACE</primary></indexterm>
+<indexterm zone="CAIRO-HAS-WIN32-SURFACE:CAPS"><primary sortas="HAS_WIN32_SURFACE">CAIRO_HAS_WIN32_SURFACE</primary></indexterm>
 <programlisting>#define             CAIRO_HAS_WIN32_SURFACE</programlisting>
 <para>
 Defined if the Microsoft Windows surface backend is available.
@@ -62,7 +62,7 @@ This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
 <refsect2 id="cairo-win32-surface-create" role="function">
 <title>cairo_win32_surface_create ()</title>
-<indexterm zone="cairo-win32-surface-create"><primary>cairo_win32_surface_create</primary></indexterm>
+<indexterm zone="cairo-win32-surface-create"><primary sortas="win32_surface_create">cairo_win32_surface_create</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_win32_surface_create          (<parameter><link linkend="HDC:CAPS"><type>HDC</type></link> hdc</parameter>);</programlisting>
 <para>
 Creates a cairo surface that targets the given DC.  The DC will be
@@ -80,7 +80,7 @@ you will need to create one through
 </variablelist></refsect2>
 <refsect2 id="cairo-win32-surface-create-with-dib" role="function" condition="since:1.2">
 <title>cairo_win32_surface_create_with_dib ()</title>
-<indexterm zone="cairo-win32-surface-create-with-dib" role="1.2"><primary>cairo_win32_surface_create_with_dib</primary></indexterm>
+<indexterm zone="cairo-win32-surface-create-with-dib" role="1.2"><primary sortas="win32_surface_create_with_dib">cairo_win32_surface_create_with_dib</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_win32_surface_create_with_dib (<parameter><link linkend="cairo-format-t"><type>cairo_format_t</type></link> format</parameter>,
                                                          <parameter><link linkend="int"><type>int</type></link> width</parameter>,
                                                          <parameter><link linkend="int"><type>int</type></link> height</parameter>);</programlisting>
@@ -104,7 +104,7 @@ bitmap will be uninitialized.
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-win32-surface-create-with-ddb" role="function" condition="since:1.4">
 <title>cairo_win32_surface_create_with_ddb ()</title>
-<indexterm zone="cairo-win32-surface-create-with-ddb" role="1.4"><primary>cairo_win32_surface_create_with_ddb</primary></indexterm>
+<indexterm zone="cairo-win32-surface-create-with-ddb" role="1.4"><primary sortas="win32_surface_create_with_ddb">cairo_win32_surface_create_with_ddb</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_win32_surface_create_with_ddb (<parameter><link linkend="HDC:CAPS"><type>HDC</type></link> hdc</parameter>,
                                                          <parameter><link linkend="cairo-format-t"><type>cairo_format_t</type></link> format</parameter>,
                                                          <parameter><link linkend="int"><type>int</type></link> width</parameter>,
@@ -132,7 +132,7 @@ bitmap will be uninitialized.
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-win32-printing-surface-create" role="function" condition="since:1.6">
 <title>cairo_win32_printing_surface_create ()</title>
-<indexterm zone="cairo-win32-printing-surface-create" role="1.6"><primary>cairo_win32_printing_surface_create</primary></indexterm>
+<indexterm zone="cairo-win32-printing-surface-create" role="1.6"><primary sortas="win32_printing_surface_create">cairo_win32_printing_surface_create</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_win32_printing_surface_create (<parameter><link linkend="HDC:CAPS"><type>HDC</type></link> hdc</parameter>);</programlisting>
 <para>
 Creates a cairo surface that targets the given DC.  The DC will be
@@ -155,7 +155,7 @@ associated methods must be used for correct output.
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-win32-surface-get-dc" role="function" condition="since:1.2">
 <title>cairo_win32_surface_get_dc ()</title>
-<indexterm zone="cairo-win32-surface-get-dc" role="1.2"><primary>cairo_win32_surface_get_dc</primary></indexterm>
+<indexterm zone="cairo-win32-surface-get-dc" role="1.2"><primary sortas="win32_surface_get_dc">cairo_win32_surface_get_dc</primary></indexterm>
 <programlisting><link linkend="HDC:CAPS"><returnvalue>HDC</returnvalue></link>                 cairo_win32_surface_get_dc          (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>);</programlisting>
 <para>
 Returns the HDC associated with this surface, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none.
@@ -170,7 +170,7 @@ Also returns <link linkend="NULL:CAPS"><literal>NULL</literal></link> if the sur
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-win32-surface-get-image" role="function" condition="since:1.4">
 <title>cairo_win32_surface_get_image ()</title>
-<indexterm zone="cairo-win32-surface-get-image" role="1.4"><primary>cairo_win32_surface_get_image</primary></indexterm>
+<indexterm zone="cairo-win32-surface-get-image" role="1.4"><primary sortas="win32_surface_get_image">cairo_win32_surface_get_image</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_win32_surface_get_image       (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>);</programlisting>
 <para>
 Returns a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> image surface that refers to the same bits
@@ -187,13 +187,9 @@ or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if the win32 surface
 </variablelist><para role="since">Since 1.4</para></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-win32-surface.see-also">
+<refsect1 id="cairo-Win32-Surfaces.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </refsect1>
 
 </refentry>

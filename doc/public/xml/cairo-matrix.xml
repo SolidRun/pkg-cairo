@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-matrix">
+<refentry id="cairo-cairo-matrix-t">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-matrix.top_of_page">cairo_matrix_t</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-cairo-matrix-t.top_of_page">cairo_matrix_t</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Generic matrix operations</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-matrix.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-cairo-matrix-t.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>                    <link linkend="cairo-matrix-t">cairo_matrix_t</link>;
@@ -57,31 +57,33 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-matrix.description" role="desc">
+<refsect1 id="cairo-cairo-matrix-t.description" role="desc">
 <title role="desc.title">Description</title>
-  <para>
-    <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> is used throughout cairo to convert between different
-    coordinate spaces.  A <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> holds an affine transformation,
-    such as a scale, rotation, shear, or a combination of these.
-    The transformation of a point (<literal>x</literal>,<literal>y</literal>)
-    is given by:
-  </para>
-  <programlisting>
-    x_new = xx * x + xy * y + x0;
-    y_new = yx * x + yy * y + y0;
-  </programlisting>
-  <para>
-    The current transformation matrix of a <link linkend="cairo-t"><type>cairo_t</type></link>, represented as a
-    <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link>, defines the transformation from user-space
-    coordinates to device-space coordinates. See <link linkend="cairo-get-matrix"><function>cairo_get_matrix()</function></link> and
-    <link linkend="cairo-set-matrix"><function>cairo_set_matrix()</function></link>.
-  </para>
+<para>
+<link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> is used throughout cairo to convert between different
+coordinate spaces.  A <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> holds an affine transformation,
+such as a scale, rotation, shear, or a combination of these.
+The transformation of a point (<literal>x</literal>,<literal>y</literal>)
+is given by:
+</para>
+<para>
+<programlisting>
+x_new = xx * x + xy * y + x0;
+y_new = yx * x + yy * y + y0;
+</programlisting>
+</para>
+<para>
+The current transformation matrix of a <link linkend="cairo-t"><type>cairo_t</type></link>, represented as a
+<link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link>, defines the transformation from user-space
+coordinates to device-space coordinates. See <link linkend="cairo-get-matrix"><function>cairo_get_matrix()</function></link> and
+<link linkend="cairo-set-matrix"><function>cairo_set_matrix()</function></link>.
+</para>
 </refsect1>
-<refsect1 id="cairo-matrix.details" role="details">
+<refsect1 id="cairo-cairo-matrix-t.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="cairo-matrix-t" role="struct">
 <title>cairo_matrix_t</title>
-<indexterm zone="cairo-matrix-t"><primary>cairo_matrix_t</primary></indexterm>
+<indexterm zone="cairo-matrix-t"><primary sortas="matrix_t">cairo_matrix_t</primary></indexterm>
 <programlisting>typedef struct {
     double xx; double yx;
     double xy; double yy;
@@ -124,7 +126,7 @@ a point (x, y) is given by:
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-init" role="function">
 <title>cairo_matrix_init ()</title>
-<indexterm zone="cairo-matrix-init"><primary>cairo_matrix_init</primary></indexterm>
+<indexterm zone="cairo-matrix-init"><primary sortas="matrix_init">cairo_matrix_init</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_init                   (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> xx</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> yx</parameter>,
@@ -165,7 +167,7 @@ by:
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-init-identity" role="function">
 <title>cairo_matrix_init_identity ()</title>
-<indexterm zone="cairo-matrix-init-identity"><primary>cairo_matrix_init_identity</primary></indexterm>
+<indexterm zone="cairo-matrix-init-identity"><primary sortas="matrix_init_identity">cairo_matrix_init_identity</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_init_identity          (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>);</programlisting>
 <para>
 Modifies <parameter>matrix</parameter> to be an identity transformation.
@@ -176,7 +178,7 @@ Modifies <parameter>matrix</parameter> to be an identity transformation.
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-init-translate" role="function">
 <title>cairo_matrix_init_translate ()</title>
-<indexterm zone="cairo-matrix-init-translate"><primary>cairo_matrix_init_translate</primary></indexterm>
+<indexterm zone="cairo-matrix-init-translate"><primary sortas="matrix_init_translate">cairo_matrix_init_translate</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_init_translate         (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> tx</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> ty</parameter>);</programlisting>
@@ -196,7 +198,7 @@ Initializes <parameter>matrix</parameter> to a transformation that translates by
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-init-scale" role="function">
 <title>cairo_matrix_init_scale ()</title>
-<indexterm zone="cairo-matrix-init-scale"><primary>cairo_matrix_init_scale</primary></indexterm>
+<indexterm zone="cairo-matrix-init-scale"><primary sortas="matrix_init_scale">cairo_matrix_init_scale</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_init_scale             (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> sx</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> sy</parameter>);</programlisting>
@@ -216,7 +218,7 @@ in the X and Y dimensions, respectively.
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-init-rotate" role="function">
 <title>cairo_matrix_init_rotate ()</title>
-<indexterm zone="cairo-matrix-init-rotate"><primary>cairo_matrix_init_rotate</primary></indexterm>
+<indexterm zone="cairo-matrix-init-rotate"><primary sortas="matrix_init_rotate">cairo_matrix_init_rotate</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_init_rotate            (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> radians</parameter>);</programlisting>
 <para>
@@ -235,7 +237,7 @@ direction.
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-translate" role="function">
 <title>cairo_matrix_translate ()</title>
-<indexterm zone="cairo-matrix-translate"><primary>cairo_matrix_translate</primary></indexterm>
+<indexterm zone="cairo-matrix-translate"><primary sortas="matrix_translate">cairo_matrix_translate</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_translate              (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> tx</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> ty</parameter>);</programlisting>
@@ -257,7 +259,7 @@ to the coordinates.
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-scale" role="function">
 <title>cairo_matrix_scale ()</title>
-<indexterm zone="cairo-matrix-scale"><primary>cairo_matrix_scale</primary></indexterm>
+<indexterm zone="cairo-matrix-scale"><primary sortas="matrix_scale">cairo_matrix_scale</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_scale                  (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> sx</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> sy</parameter>);</programlisting>
@@ -278,7 +280,7 @@ by <parameter>sx</parameter> and <parameter>sy</parameter>, then apply the origi
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-rotate" role="function">
 <title>cairo_matrix_rotate ()</title>
-<indexterm zone="cairo-matrix-rotate"><primary>cairo_matrix_rotate</primary></indexterm>
+<indexterm zone="cairo-matrix-rotate"><primary sortas="matrix_rotate">cairo_matrix_rotate</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_rotate                 (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> radians</parameter>);</programlisting>
 <para>
@@ -300,7 +302,7 @@ direction.
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-invert" role="function">
 <title>cairo_matrix_invert ()</title>
-<indexterm zone="cairo-matrix-invert"><primary>cairo_matrix_invert</primary></indexterm>
+<indexterm zone="cairo-matrix-invert"><primary sortas="matrix_invert">cairo_matrix_invert</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      cairo_matrix_invert                 (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>);</programlisting>
 <para>
 Changes <parameter>matrix</parameter> to be the inverse of its original value. Not
@@ -318,7 +320,7 @@ then it has no inverse and this function will fail.
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-multiply" role="function">
 <title>cairo_matrix_multiply ()</title>
-<indexterm zone="cairo-matrix-multiply"><primary>cairo_matrix_multiply</primary></indexterm>
+<indexterm zone="cairo-matrix-multiply"><primary sortas="matrix_multiply">cairo_matrix_multiply</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_multiply               (<parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *result</parameter>,
                                                          <parameter>const <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *a</parameter>,
                                                          <parameter>const <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *b</parameter>);</programlisting>
@@ -344,7 +346,7 @@ It is allowable for <parameter>result</parameter> to be identical to either <par
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-transform-distance" role="function">
 <title>cairo_matrix_transform_distance ()</title>
-<indexterm zone="cairo-matrix-transform-distance"><primary>cairo_matrix_transform_distance</primary></indexterm>
+<indexterm zone="cairo-matrix-transform-distance"><primary sortas="matrix_transform_distance">cairo_matrix_transform_distance</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_transform_distance     (<parameter>const <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> *dx</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> *dy</parameter>);</programlisting>
@@ -378,7 +380,7 @@ to (<parameter>x2</parameter>,<parameter>y2</parameter>) then (<parameter>x1</pa
 </variablelist></refsect2>
 <refsect2 id="cairo-matrix-transform-point" role="function">
 <title>cairo_matrix_transform_point ()</title>
-<indexterm zone="cairo-matrix-transform-point"><primary>cairo_matrix_transform_point</primary></indexterm>
+<indexterm zone="cairo-matrix-transform-point"><primary sortas="matrix_transform_point">cairo_matrix_transform_point</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_matrix_transform_point        (<parameter>const <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *matrix</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> *x</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> *y</parameter>);</programlisting>
@@ -397,13 +399,9 @@ Transforms the point (<parameter>x</parameter>, <parameter>y</parameter>) by <pa
 </variablelist></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-matrix.see-also">
+<refsect1 id="cairo-cairo-matrix-t.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-t"><type>cairo_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-t"><type>cairo_t</type></link>
 </refsect1>
 
 </refentry>

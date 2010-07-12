@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-ps-surface">
+<refentry id="cairo-PostScript-Surfaces">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-ps-surface.top_of_page">PostScript Surfaces</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-PostScript-Surfaces.top_of_page">PostScript Surfaces</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Rendering PostScript documents</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-ps-surface.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-PostScript-Surfaces.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-PS-SURFACE:CAPS">CAIRO_HAS_PS_SURFACE</link>
@@ -47,18 +47,18 @@ const <link linkend="char"><returnvalue>char</returnvalue></link> *        <link
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-ps-surface.description" role="desc">
+<refsect1 id="cairo-PostScript-Surfaces.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The PostScript surface is used to render cairo graphics to Adobe
 PostScript files and is a multi-page vector surface backend.
 </para>
 </refsect1>
-<refsect1 id="cairo-ps-surface.details" role="details">
+<refsect1 id="cairo-PostScript-Surfaces.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-PS-SURFACE:CAPS" role="macro">
 <title>CAIRO_HAS_PS_SURFACE</title>
-<indexterm zone="CAIRO-HAS-PS-SURFACE:CAPS"><primary>CAIRO_HAS_PS_SURFACE</primary></indexterm>
+<indexterm zone="CAIRO-HAS-PS-SURFACE:CAPS"><primary sortas="HAS_PS_SURFACE">CAIRO_HAS_PS_SURFACE</primary></indexterm>
 <programlisting>#define CAIRO_HAS_PS_SURFACE 1
 </programlisting>
 <para>
@@ -67,7 +67,7 @@ This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
 <refsect2 id="cairo-ps-surface-create" role="function" condition="since:1.2">
 <title>cairo_ps_surface_create ()</title>
-<indexterm zone="cairo-ps-surface-create" role="1.2"><primary>cairo_ps_surface_create</primary></indexterm>
+<indexterm zone="cairo-ps-surface-create" role="1.2"><primary sortas="ps_surface_create">cairo_ps_surface_create</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_ps_surface_create             (<parameter>const <link linkend="char"><type>char</type></link> *filename</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> width_in_points</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> height_in_points</parameter>);</programlisting>
@@ -105,7 +105,7 @@ occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-create-for-stream" role="function" condition="since:1.2">
 <title>cairo_ps_surface_create_for_stream ()</title>
-<indexterm zone="cairo-ps-surface-create-for-stream" role="1.2"><primary>cairo_ps_surface_create_for_stream</primary></indexterm>
+<indexterm zone="cairo-ps-surface-create-for-stream" role="1.2"><primary sortas="ps_surface_create_for_stream">cairo_ps_surface_create_for_stream</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_ps_surface_create_for_stream  (<parameter><link linkend="cairo-write-func-t"><type>cairo_write_func_t</type></link> write_func</parameter>,
                                                          <parameter><link linkend="void"><type>void</type></link> *closure</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> width_in_points</parameter>,
@@ -147,7 +147,7 @@ occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-restrict-to-level" role="function" condition="since:1.6">
 <title>cairo_ps_surface_restrict_to_level ()</title>
-<indexterm zone="cairo-ps-surface-restrict-to-level" role="1.6"><primary>cairo_ps_surface_restrict_to_level</primary></indexterm>
+<indexterm zone="cairo-ps-surface-restrict-to-level" role="1.6"><primary sortas="ps_surface_restrict_to_level">cairo_ps_surface_restrict_to_level</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ps_surface_restrict_to_level  (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="cairo-ps-level-t"><type>cairo_ps_level_t</type></link> level</parameter>);</programlisting>
 <para>
@@ -170,7 +170,7 @@ surface.
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-level-t" role="enum">
 <title>enum cairo_ps_level_t</title>
-<indexterm zone="cairo-ps-level-t"><primary>cairo_ps_level_t</primary></indexterm>
+<indexterm zone="cairo-ps-level-t"><primary sortas="ps_level_t">cairo_ps_level_t</primary></indexterm>
 <programlisting>typedef enum _cairo_ps_level {
     CAIRO_PS_LEVEL_2,
     CAIRO_PS_LEVEL_3
@@ -194,7 +194,7 @@ conform to.
 </variablelist></refsect2>
 <refsect2 id="cairo-ps-get-levels" role="function" condition="since:1.6">
 <title>cairo_ps_get_levels ()</title>
-<indexterm zone="cairo-ps-get-levels" role="1.6"><primary>cairo_ps_get_levels</primary></indexterm>
+<indexterm zone="cairo-ps-get-levels" role="1.6"><primary sortas="ps_get_levels">cairo_ps_get_levels</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ps_get_levels                 (<parameter><link linkend="cairo-ps-level-t"><type>cairo_ps_level_t</type></link> const **levels</parameter>,
                                                          <parameter><link linkend="int"><type>int</type></link> *num_levels</parameter>);</programlisting>
 <para>
@@ -210,7 +210,7 @@ Used to retrieve the list of supported levels. See
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-level-to-string" role="function" condition="since:1.6">
 <title>cairo_ps_level_to_string ()</title>
-<indexterm zone="cairo-ps-level-to-string" role="1.6"><primary>cairo_ps_level_to_string</primary></indexterm>
+<indexterm zone="cairo-ps-level-to-string" role="1.6"><primary sortas="ps_level_to_string">cairo_ps_level_to_string</primary></indexterm>
 <programlisting>const <link linkend="char"><returnvalue>char</returnvalue></link> *        cairo_ps_level_to_string            (<parameter><link linkend="cairo-ps-level-t"><type>cairo_ps_level_t</type></link> level</parameter>);</programlisting>
 <para>
 Get the string representation of the given <parameter>level</parameter> id. This function
@@ -226,7 +226,7 @@ for a way to get the list of valid level ids.
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-surface-set-eps" role="function" condition="since:1.6">
 <title>cairo_ps_surface_set_eps ()</title>
-<indexterm zone="cairo-ps-surface-set-eps" role="1.6"><primary>cairo_ps_surface_set_eps</primary></indexterm>
+<indexterm zone="cairo-ps-surface-set-eps" role="1.6"><primary sortas="ps_surface_set_eps">cairo_ps_surface_set_eps</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ps_surface_set_eps            (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="cairo-bool-t"><type>cairo_bool_t</type></link> eps</parameter>);</programlisting>
 <para>
@@ -249,7 +249,7 @@ than one page.
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-surface-get-eps" role="function" condition="since:1.6">
 <title>cairo_ps_surface_get_eps ()</title>
-<indexterm zone="cairo-ps-surface-get-eps" role="1.6"><primary>cairo_ps_surface_get_eps</primary></indexterm>
+<indexterm zone="cairo-ps-surface-get-eps" role="1.6"><primary sortas="ps_surface_get_eps">cairo_ps_surface_get_eps</primary></indexterm>
 <programlisting><link linkend="cairo-bool-t"><returnvalue>cairo_bool_t</returnvalue></link>        cairo_ps_surface_get_eps            (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>);</programlisting>
 <para>
 Check whether the PostScript surface will output Encapsulated PostScript.
@@ -263,7 +263,7 @@ Check whether the PostScript surface will output Encapsulated PostScript.
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-surface-set-size" role="function" condition="since:1.2">
 <title>cairo_ps_surface_set_size ()</title>
-<indexterm zone="cairo-ps-surface-set-size" role="1.2"><primary>cairo_ps_surface_set_size</primary></indexterm>
+<indexterm zone="cairo-ps-surface-set-size" role="1.2"><primary sortas="ps_surface_set_size">cairo_ps_surface_set_size</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ps_surface_set_size           (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> width_in_points</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> height_in_points</parameter>);</programlisting>
@@ -290,7 +290,7 @@ surface or immediately after completing a page with either
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-dsc-begin-setup" role="function" condition="since:1.2">
 <title>cairo_ps_surface_dsc_begin_setup ()</title>
-<indexterm zone="cairo-ps-surface-dsc-begin-setup" role="1.2"><primary>cairo_ps_surface_dsc_begin_setup</primary></indexterm>
+<indexterm zone="cairo-ps-surface-dsc-begin-setup" role="1.2"><primary sortas="ps_surface_dsc_begin_setup">cairo_ps_surface_dsc_begin_setup</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ps_surface_dsc_begin_setup    (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>);</programlisting>
 <para>
 This function indicates that subsequent calls to
@@ -311,7 +311,7 @@ See <link linkend="cairo-ps-surface-dsc-comment"><function>cairo_ps_surface_dsc_
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-dsc-begin-page-setup" role="function" condition="since:1.2">
 <title>cairo_ps_surface_dsc_begin_page_setup ()</title>
-<indexterm zone="cairo-ps-surface-dsc-begin-page-setup" role="1.2"><primary>cairo_ps_surface_dsc_begin_page_setup</primary></indexterm>
+<indexterm zone="cairo-ps-surface-dsc-begin-page-setup" role="1.2"><primary sortas="ps_surface_dsc_begin_page_setup">cairo_ps_surface_dsc_begin_page_setup</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ps_surface_dsc_begin_page_setup
                                                         (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>);</programlisting>
 <para>
@@ -334,7 +334,7 @@ See <link linkend="cairo-ps-surface-dsc-comment"><function>cairo_ps_surface_dsc_
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-dsc-comment" role="function" condition="since:1.2">
 <title>cairo_ps_surface_dsc_comment ()</title>
-<indexterm zone="cairo-ps-surface-dsc-comment" role="1.2"><primary>cairo_ps_surface_dsc_comment</primary></indexterm>
+<indexterm zone="cairo-ps-surface-dsc-comment" role="1.2"><primary sortas="ps_surface_dsc_comment">cairo_ps_surface_dsc_comment</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ps_surface_dsc_comment        (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter>const <link linkend="char"><type>char</type></link> *comment</parameter>);</programlisting>
 <para>
@@ -443,13 +443,9 @@ cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *PageSize A5");
 </variablelist><para role="since">Since 1.2</para></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-ps-surface.see-also">
+<refsect1 id="cairo-PostScript-Surfaces.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </refsect1>
 
 </refentry>

@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-error-status">
+<refentry id="cairo-Error-handling">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-error-status.top_of_page">Error handling</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-Error-handling.top_of_page">Error handling</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Decoding cairo's status</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-error-status.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-Error-handling.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>enum                <link linkend="cairo-status-t">cairo_status_t</link>;
@@ -25,7 +25,7 @@ const <link linkend="char"><returnvalue>char</returnvalue></link> *        <link
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-error-status.description" role="desc">
+<refsect1 id="cairo-Error-handling.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 Cairo uses a single status type to represent all kinds of errors.  A status
@@ -41,11 +41,11 @@ underlying object is in an error status.  This means that no error handling
 code is required before or after each individual cairo function call.
 </para>
 </refsect1>
-<refsect1 id="cairo-error-status.details" role="details">
+<refsect1 id="cairo-Error-handling.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="cairo-status-t" role="enum">
 <title>enum cairo_status_t</title>
-<indexterm zone="cairo-status-t"><primary>cairo_status_t</primary></indexterm>
+<indexterm zone="cairo-status-t"><primary sortas="status_t">cairo_status_t</primary></indexterm>
 <programlisting>typedef enum _cairo_status {
     CAIRO_STATUS_SUCCESS = 0,
 
@@ -289,7 +289,7 @@ to get a human-readable representation of an error message.
 </variablelist></refsect2>
 <refsect2 id="cairo-status-to-string" role="function">
 <title>cairo_status_to_string ()</title>
-<indexterm zone="cairo-status-to-string"><primary>cairo_status_to_string</primary></indexterm>
+<indexterm zone="cairo-status-to-string"><primary sortas="status_to_string">cairo_status_to_string</primary></indexterm>
 <programlisting>const <link linkend="char"><returnvalue>char</returnvalue></link> *        cairo_status_to_string              (<parameter><link linkend="cairo-status-t"><type>cairo_status_t</type></link> status</parameter>);</programlisting>
 <para>
 Provides a human-readable description of a <link linkend="cairo-status-t"><type>cairo_status_t</type></link>.
@@ -302,7 +302,7 @@ Provides a human-readable description of a <link linkend="cairo-status-t"><type>
 </variablelist></refsect2>
 <refsect2 id="cairo-debug-reset-static-data" role="function">
 <title>cairo_debug_reset_static_data ()</title>
-<indexterm zone="cairo-debug-reset-static-data"><primary>cairo_debug_reset_static_data</primary></indexterm>
+<indexterm zone="cairo-debug-reset-static-data"><primary sortas="debug_reset_static_data">cairo_debug_reset_static_data</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_debug_reset_static_data       (<parameter><type>void</type></parameter>);</programlisting>
 <para>
 Resets all static data within cairo to its original state,
@@ -327,17 +327,11 @@ failure due to a hash table being destroyed when non-empty).
 </para></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-error-status.see-also">
+<refsect1 id="cairo-Error-handling.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-status"><function>cairo_status()</function></link></listitem>
-<listitem><link linkend="cairo-surface-status"><function>cairo_surface_status()</function></link></listitem>
-<listitem><link linkend="cairo-pattern-status"><function>cairo_pattern_status()</function></link></listitem>
-<listitem><link linkend="cairo-font-face-status"><function>cairo_font_face_status()</function></link></listitem>
-<listitem><link linkend="cairo-scaled-font-status"><function>cairo_scaled_font_status()</function></link></listitem>
-</itemizedlist>
-</para>
+cairo_status(), <link linkend="cairo-surface-status"><function>cairo_surface_status()</function></link>, <link linkend="cairo-pattern-status"><function>cairo_pattern_status()</function></link>,
+           <link linkend="cairo-font-face-status"><function>cairo_font_face_status()</function></link>, <link linkend="cairo-scaled-font-status"><function>cairo_scaled_font_status()</function></link>, 
+           <link linkend="cairo-region-status"><function>cairo_region_status()</function></link>
 </refsect1>
 
 </refentry>

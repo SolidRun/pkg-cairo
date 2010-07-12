@@ -44,6 +44,14 @@
 #include "cairo-list-private.h"
 #include "cairo-reference-count-private.h"
 
+/**
+ * SECTION:cairo-types
+ * @Title: Types
+ * @Short_Description: Generic data types
+ *
+ * This section lists generic data types used in the cairo API.
+ */
+
 typedef struct _cairo_array cairo_array_t;
 typedef struct _cairo_backend cairo_backend_t;
 typedef struct _cairo_boxes_t cairo_boxes_t;
@@ -366,7 +374,7 @@ typedef enum _cairo_image_transparency {
 struct _cairo_mime_data {
     cairo_reference_count_t ref_count;
     unsigned char *data;
-    unsigned int length;
+    unsigned long length;
     cairo_destroy_func_t destroy;
     void *closure;
 };

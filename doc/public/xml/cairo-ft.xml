@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-ft-font">
+<refentry id="cairo-FreeType-Fonts">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-ft-font.top_of_page">FreeType Fonts</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-FreeType-Fonts.top_of_page">FreeType Fonts</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Font support for FreeType</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-ft-font.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-FreeType-Fonts.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-FT-FONT:CAPS">CAIRO_HAS_FT_FONT</link>
@@ -33,18 +33,18 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-ft-font.description" role="desc">
+<refsect1 id="cairo-FreeType-Fonts.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The FreeType font backend is primarily used to render text on GNU/Linux
 systems, but can be used on other platforms too.
 </para>
 </refsect1>
-<refsect1 id="cairo-ft-font.details" role="details">
+<refsect1 id="cairo-FreeType-Fonts.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-FT-FONT:CAPS" role="macro">
 <title>CAIRO_HAS_FT_FONT</title>
-<indexterm zone="CAIRO-HAS-FT-FONT:CAPS"><primary>CAIRO_HAS_FT_FONT</primary></indexterm>
+<indexterm zone="CAIRO-HAS-FT-FONT:CAPS"><primary sortas="HAS_FT_FONT">CAIRO_HAS_FT_FONT</primary></indexterm>
 <programlisting>#define CAIRO_HAS_FT_FONT 1
 </programlisting>
 <para>
@@ -53,7 +53,7 @@ This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
 <refsect2 id="CAIRO-HAS-FC-FONT:CAPS" role="macro">
 <title>CAIRO_HAS_FC_FONT</title>
-<indexterm zone="CAIRO-HAS-FC-FONT:CAPS"><primary>CAIRO_HAS_FC_FONT</primary></indexterm>
+<indexterm zone="CAIRO-HAS-FC-FONT:CAPS"><primary sortas="HAS_FC_FONT">CAIRO_HAS_FC_FONT</primary></indexterm>
 <programlisting>#define CAIRO_HAS_FC_FONT 1
 </programlisting>
 <para>
@@ -63,7 +63,7 @@ This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
 <refsect2 id="cairo-ft-font-face-create-for-ft-face" role="function">
 <title>cairo_ft_font_face_create_for_ft_face ()</title>
-<indexterm zone="cairo-ft-font-face-create-for-ft-face"><primary>cairo_ft_font_face_create_for_ft_face</primary></indexterm>
+<indexterm zone="cairo-ft-font-face-create-for-ft-face"><primary sortas="ft_font_face_create_for_ft_face">cairo_ft_font_face_create_for_ft_face</primary></indexterm>
 <programlisting><link linkend="cairo-font-face-t"><returnvalue>cairo_font_face_t</returnvalue></link> * cairo_ft_font_face_create_for_ft_face
                                                         (<parameter><link linkend="FT-Face"><type>FT_Face</type></link> face</parameter>,
                                                          <parameter><link linkend="int"><type>int</type></link> load_flags</parameter>);</programlisting>
@@ -120,7 +120,7 @@ if (status) {
 </variablelist></refsect2>
 <refsect2 id="cairo-ft-font-face-create-for-pattern" role="function">
 <title>cairo_ft_font_face_create_for_pattern ()</title>
-<indexterm zone="cairo-ft-font-face-create-for-pattern"><primary>cairo_ft_font_face_create_for_pattern</primary></indexterm>
+<indexterm zone="cairo-ft-font-face-create-for-pattern"><primary sortas="ft_font_face_create_for_pattern">cairo_ft_font_face_create_for_pattern</primary></indexterm>
 <programlisting><link linkend="cairo-font-face-t"><returnvalue>cairo_font_face_t</returnvalue></link> * cairo_ft_font_face_create_for_pattern
                                                         (<parameter><link linkend="FcPattern"><type>FcPattern</type></link> *pattern</parameter>);</programlisting>
 <para>
@@ -167,7 +167,7 @@ if it needs to.  You are free to modify or free <parameter>pattern</parameter> a
 </variablelist></refsect2>
 <refsect2 id="cairo-ft-font-options-substitute" role="function">
 <title>cairo_ft_font_options_substitute ()</title>
-<indexterm zone="cairo-ft-font-options-substitute"><primary>cairo_ft_font_options_substitute</primary></indexterm>
+<indexterm zone="cairo-ft-font-options-substitute"><primary sortas="ft_font_options_substitute">cairo_ft_font_options_substitute</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ft_font_options_substitute    (<parameter>const <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link> *options</parameter>,
                                                          <parameter><link linkend="FcPattern"><type>FcPattern</type></link> *pattern</parameter>);</programlisting>
 <para>
@@ -186,7 +186,7 @@ before calling <link linkend="FcDefaultSubstitute"><function>FcDefaultSubstitute
 </variablelist></refsect2>
 <refsect2 id="cairo-ft-scaled-font-lock-face" role="function">
 <title>cairo_ft_scaled_font_lock_face ()</title>
-<indexterm zone="cairo-ft-scaled-font-lock-face"><primary>cairo_ft_scaled_font_lock_face</primary></indexterm>
+<indexterm zone="cairo-ft-scaled-font-lock-face"><primary sortas="ft_scaled_font_lock_face">cairo_ft_scaled_font_lock_face</primary></indexterm>
 <programlisting><link linkend="FT-Face"><returnvalue>FT_Face</returnvalue></link>             cairo_ft_scaled_font_lock_face      (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
 <link linkend="cairo-ft-scaled-font-lock-face"><function>cairo_ft_scaled_font_lock_face()</function></link> gets the <link linkend="FT-Face"><type>FT_Face</type></link> object from a FreeType
@@ -222,7 +222,7 @@ or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if <parameter>scaled
 </variablelist></refsect2>
 <refsect2 id="cairo-ft-scaled-font-unlock-face" role="function">
 <title>cairo_ft_scaled_font_unlock_face ()</title>
-<indexterm zone="cairo-ft-scaled-font-unlock-face"><primary>cairo_ft_scaled_font_unlock_face</primary></indexterm>
+<indexterm zone="cairo-ft-scaled-font-unlock-face"><primary sortas="ft_scaled_font_unlock_face">cairo_ft_scaled_font_unlock_face</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_ft_scaled_font_unlock_face    (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
 Releases a face obtained with <link linkend="cairo-ft-scaled-font-lock-face"><function>cairo_ft_scaled_font_lock_face()</function></link>.
@@ -236,13 +236,9 @@ Releases a face obtained with <link linkend="cairo-ft-scaled-font-lock-face"><fu
 </variablelist></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-ft-font.see-also">
+<refsect1 id="cairo-FreeType-Fonts.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>
 </refsect1>
 
 </refentry>

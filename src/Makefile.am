@@ -24,13 +24,31 @@ cairoinclude_HEADERS = $(enabled_cairo_headers)
 
 lib_LTLIBRARIES = libcairo.la
 
+if BUILD_CXX
+cairo_cxx_lib = libcairo_cxx.la
+else
+cairo_cxx_lib =
+endif
+
+noinst_LTLIBRARIES = $(cairo_cxx_lib)
+libcairo_cxx_la_SOURCES = \
+	$(enabled_cairo_headers) \
+	$(enabled_cairo_private) \
+	$(enabled_cairo_cxx_sources) \
+	$(NULL)
+libcairo_cxx_la_LDFLAGS = $(AM_LDFLAGS) $(export_symbols)
+libcairo_cxx_la_LIBADD = $(CAIRO_LIBS)
+libcairo_cxx_la_DEPENDENCIES = $(cairo_def_dependency)
+
+
 libcairo_la_SOURCES = \
 	$(enabled_cairo_headers) \
 	$(enabled_cairo_private) \
 	$(enabled_cairo_sources) \
 	$(NULL)
 libcairo_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(CAIRO_LIBTOOL_VERSION_INFO) -no-undefined $(export_symbols)
-libcairo_la_LIBADD = $(CAIRO_LIBS)
+libcairo_la_LIBADD = $(CAIRO_LIBS) \
+	$(cairo_cxx_lib)
 libcairo_la_DEPENDENCIES = $(cairo_def_dependency)
 
 # Special headers
@@ -67,7 +85,6 @@ TESTS_ENVIRONMENT = \
 	all_cairo_headers="$(all_cairo_headers)" \
 	all_cairo_private="$(all_cairo_private)" \
 	all_cairo_sources="$(all_cairo_sources)" \
-	enabled_cairo_files="$(enabled_cairo_files)" \
 	enabled_cairo_headers="$(enabled_cairo_headers)" \
 	enabled_cairo_private="$(enabled_cairo_private)" \
 	enabled_cairo_sources="$(enabled_cairo_sources)" \
