@@ -1,3 +1,17 @@
+cairo (1.9.12-1) experimental; urgency=low
+
+  * New upstream development release:
+    + debian/rules:
+      - Drop --disable-shave, cairo uses automake 1.11
+        silent rules now.
+    + debian/patches/03_no-cxx.patch,
+      debian/patches/05_am-maintainer-mode.patch,
+      debian/patches/99_autoreconf.patch:
+      - Dropped, first patch merged upstream and the
+        other two are not necessary anymore.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 12 Jul 2010 15:01:23 +0200
+
 cairo (1.9.10-1) experimental; urgency=low
 
   * New upstream development release:
