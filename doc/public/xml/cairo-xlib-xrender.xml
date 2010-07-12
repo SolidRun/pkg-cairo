@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-xlib-xrender-surface">
+<refentry id="cairo-XLib/XRender-Backend">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-xlib-xrender-surface.top_of_page">XLib/XRender Backend</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-XLib/XRender-Backend.top_of_page">XLib/XRender Backend</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>X Window System rendering using XLib and the X Render extension</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-xlib-xrender-surface.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-XLib/XRender-Backend.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS">CAIRO_HAS_XLIB_XRENDER_SURFACE</link>
@@ -32,7 +32,7 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-xlib-xrender-surface.description" role="desc">
+<refsect1 id="cairo-XLib/XRender-Backend.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The XLib surface is used to render cairo graphics to X Window System
@@ -43,11 +43,11 @@ Note that the XLib surface automatically takes advantage of X Render extension
 if it is available.
 </para>
 </refsect1>
-<refsect1 id="cairo-xlib-xrender-surface.details" role="details">
+<refsect1 id="cairo-XLib/XRender-Backend.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS" role="macro">
 <title>CAIRO_HAS_XLIB_XRENDER_SURFACE</title>
-<indexterm zone="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS"><primary>CAIRO_HAS_XLIB_XRENDER_SURFACE</primary></indexterm>
+<indexterm zone="CAIRO-HAS-XLIB-XRENDER-SURFACE:CAPS"><primary sortas="HAS_XLIB_XRENDER_SURFACE">CAIRO_HAS_XLIB_XRENDER_SURFACE</primary></indexterm>
 <programlisting>#define CAIRO_HAS_XLIB_XRENDER_SURFACE 1
 </programlisting>
 <para>
@@ -56,7 +56,7 @@ This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
 <refsect2 id="cairo-xlib-surface-create-with-xrender-format" role="function">
 <title>cairo_xlib_surface_create_with_xrender_format ()</title>
-<indexterm zone="cairo-xlib-surface-create-with-xrender-format"><primary>cairo_xlib_surface_create_with_xrender_format</primary></indexterm>
+<indexterm zone="cairo-xlib-surface-create-with-xrender-format"><primary sortas="xlib_surface_create_with_xrender_format">cairo_xlib_surface_create_with_xrender_format</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_xlib_surface_create_with_xrender_format
                                                         (<parameter><link linkend="Display"><type>Display</type></link> *dpy</parameter>,
                                                          <parameter><link linkend="Drawable"><type>Drawable</type></link> drawable</parameter>,
@@ -98,7 +98,7 @@ window changes.
 </variablelist></refsect2>
 <refsect2 id="cairo-xlib-surface-get-xrender-format" role="function" condition="since:1.6">
 <title>cairo_xlib_surface_get_xrender_format ()</title>
-<indexterm zone="cairo-xlib-surface-get-xrender-format" role="1.6"><primary>cairo_xlib_surface_get_xrender_format</primary></indexterm>
+<indexterm zone="cairo-xlib-surface-get-xrender-format" role="1.6"><primary sortas="xlib_surface_get_xrender_format">cairo_xlib_surface_get_xrender_format</primary></indexterm>
 <programlisting><link linkend="XRenderPictFormat"><returnvalue>XRenderPictFormat</returnvalue></link> * cairo_xlib_surface_get_xrender_format
                                                         (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>);</programlisting>
 <para>
@@ -118,13 +118,9 @@ or if the X Render extension is not available.
 </variablelist><para role="since">Since 1.6</para></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-xlib-xrender-surface.see-also">
+<refsect1 id="cairo-XLib/XRender-Backend.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </refsect1>
 
 </refentry>

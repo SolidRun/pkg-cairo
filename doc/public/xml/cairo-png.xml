@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-png-functions">
+<refentry id="cairo-PNG-Support">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-png-functions.top_of_page">PNG Support</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-PNG-Support.top_of_page">PNG Support</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Reading and writing PNG images</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-png-functions.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-PNG-Support.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-PNG-FUNCTIONS:CAPS">CAIRO_HAS_PNG_FUNCTIONS</link>
@@ -38,18 +38,18 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-png-functions.description" role="desc">
+<refsect1 id="cairo-PNG-Support.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The PNG functions allow reading PNG images into image surfaces, and writing
 any surface to a PNG file.
 </para>
 </refsect1>
-<refsect1 id="cairo-png-functions.details" role="details">
+<refsect1 id="cairo-PNG-Support.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-PNG-FUNCTIONS:CAPS" role="macro">
 <title>CAIRO_HAS_PNG_FUNCTIONS</title>
-<indexterm zone="CAIRO-HAS-PNG-FUNCTIONS:CAPS"><primary>CAIRO_HAS_PNG_FUNCTIONS</primary></indexterm>
+<indexterm zone="CAIRO-HAS-PNG-FUNCTIONS:CAPS"><primary sortas="HAS_PNG_FUNCTIONS">CAIRO_HAS_PNG_FUNCTIONS</primary></indexterm>
 <programlisting>#define CAIRO_HAS_PNG_FUNCTIONS 1
 </programlisting>
 <para>
@@ -59,7 +59,7 @@ PNG functions.
 </para></refsect2>
 <refsect2 id="cairo-image-surface-create-from-png" role="function">
 <title>cairo_image_surface_create_from_png ()</title>
-<indexterm zone="cairo-image-surface-create-from-png"><primary>cairo_image_surface_create_from_png</primary></indexterm>
+<indexterm zone="cairo-image-surface-create-from-png"><primary sortas="image_surface_create_from_png">cairo_image_surface_create_from_png</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_image_surface_create_from_png (<parameter>const <link linkend="char"><type>char</type></link> *filename</parameter>);</programlisting>
 <para>
 Creates a new image surface and initializes the contents to the
@@ -84,7 +84,7 @@ using <link linkend="cairo-status"><function>cairo_status()</function></link>.
 </variablelist></refsect2>
 <refsect2 id="cairo-read-func-t" role="function">
 <title>cairo_read_func_t ()</title>
-<indexterm zone="cairo-read-func-t"><primary>cairo_read_func_t</primary></indexterm>
+<indexterm zone="cairo-read-func-t"><primary sortas="read_func_t">cairo_read_func_t</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      (*cairo_read_func_t)                (<parameter><link linkend="void"><type>void</type></link> *closure</parameter>,
                                                          <parameter>unsigned <link linkend="char"><type>char</type></link> *data</parameter>,
                                                          <parameter>unsigned <link linkend="int"><type>int</type></link> length</parameter>);</programlisting>
@@ -111,7 +111,7 @@ length of the data in bytes.  The read function should return
 </variablelist></refsect2>
 <refsect2 id="cairo-image-surface-create-from-png-stream" role="function">
 <title>cairo_image_surface_create_from_png_stream ()</title>
-<indexterm zone="cairo-image-surface-create-from-png-stream"><primary>cairo_image_surface_create_from_png_stream</primary></indexterm>
+<indexterm zone="cairo-image-surface-create-from-png-stream"><primary sortas="image_surface_create_from_png_stream">cairo_image_surface_create_from_png_stream</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_image_surface_create_from_png_stream
                                                         (<parameter><link linkend="cairo-read-func-t"><type>cairo_read_func_t</type></link> read_func</parameter>,
                                                          <parameter><link linkend="void"><type>void</type></link> *closure</parameter>);</programlisting>
@@ -141,7 +141,7 @@ using <link linkend="cairo-status"><function>cairo_status()</function></link>.
 </variablelist></refsect2>
 <refsect2 id="cairo-surface-write-to-png" role="function">
 <title>cairo_surface_write_to_png ()</title>
-<indexterm zone="cairo-surface-write-to-png"><primary>cairo_surface_write_to_png</primary></indexterm>
+<indexterm zone="cairo-surface-write-to-png"><primary sortas="surface_write_to_png">cairo_surface_write_to_png</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      cairo_surface_write_to_png          (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter>const <link linkend="char"><type>char</type></link> *filename</parameter>);</programlisting>
 <para>
@@ -164,7 +164,7 @@ while attempting to write the file.
 </variablelist></refsect2>
 <refsect2 id="cairo-write-func-t" role="function">
 <title>cairo_write_func_t ()</title>
-<indexterm zone="cairo-write-func-t"><primary>cairo_write_func_t</primary></indexterm>
+<indexterm zone="cairo-write-func-t"><primary sortas="write_func_t">cairo_write_func_t</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      (*cairo_write_func_t)               (<parameter><link linkend="void"><type>void</type></link> *closure</parameter>,
                                                          <parameter>unsigned <link linkend="char"><type>char</type></link> *data</parameter>,
                                                          <parameter>unsigned <link linkend="int"><type>int</type></link> length</parameter>);</programlisting>
@@ -191,7 +191,7 @@ data in bytes.  The write function should return
 </variablelist></refsect2>
 <refsect2 id="cairo-surface-write-to-png-stream" role="function">
 <title>cairo_surface_write_to_png_stream ()</title>
-<indexterm zone="cairo-surface-write-to-png-stream"><primary>cairo_surface_write_to_png_stream</primary></indexterm>
+<indexterm zone="cairo-surface-write-to-png-stream"><primary sortas="surface_write_to_png_stream">cairo_surface_write_to_png_stream</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      cairo_surface_write_to_png_stream   (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="cairo-write-func-t"><type>cairo_write_func_t</type></link> write_func</parameter>,
                                                          <parameter><link linkend="void"><type>void</type></link> *closure</parameter>);</programlisting>
@@ -216,13 +216,9 @@ pixel contents.
 </variablelist></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-png-functions.see-also">
+<refsect1 id="cairo-PNG-Support.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </refsect1>
 
 </refentry>

@@ -53,9 +53,7 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/build/Makefile.am.analysis \
 	$(srcdir)/build/Makefile.am.changelog \
 	$(srcdir)/build/Makefile.am.releasing $(srcdir)/config.h.in \
-	$(top_srcdir)/build/Makefile.am.common \
-	$(top_srcdir)/build/shave-libtool.in \
-	$(top_srcdir)/build/shave.in $(top_srcdir)/configure \
+	$(top_srcdir)/build/Makefile.am.common $(top_srcdir)/configure \
 	$(top_srcdir)/src/cairo-features-uninstalled.pc.in \
 	$(top_srcdir)/src/cairo-uninstalled.pc.in AUTHORS COPYING \
 	ChangeLog INSTALL NEWS build/compile build/config.guess \
@@ -70,14 +68,11 @@ subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.compare.m4 \
-	$(top_srcdir)/build/aclocal.dolt.m4 \
 	$(top_srcdir)/build/aclocal.enable.m4 \
 	$(top_srcdir)/build/aclocal.float.m4 \
 	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
 	$(top_srcdir)/build/aclocal.pkg.m4 \
-	$(top_srcdir)/build/aclocal.shave.m4 \
-	$(top_srcdir)/build/ax-pthread.m4 \
 	$(top_srcdir)/build/libtool.m4 \
 	$(top_srcdir)/build/ltoptions.m4 \
 	$(top_srcdir)/build/ltsugar.m4 \
@@ -91,6 +86,7 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.analysis \
 	$(top_srcdir)/build/configure.ac.noversion \
+	$(top_srcdir)/build/configure.ac.pthread \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -114,9 +110,14 @@ CONFIG_CLEAN_FILES = cairo-uninstalled.pc cairo-xlib-uninstalled.pc \
 	cairo-wgl-uninstalled.pc cairo-script-uninstalled.pc \
 	cairo-ft-uninstalled.pc cairo-fc-uninstalled.pc \
 	cairo-ps-uninstalled.pc cairo-pdf-uninstalled.pc \
-	cairo-svg-uninstalled.pc cairo-xml-uninstalled.pc build/shave \
-	build/shave-libtool
+	cairo-svg-uninstalled.pc cairo-xml-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -173,7 +174,7 @@ distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
-AM_MAKEFLAGS = @AM_MAKEFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
@@ -210,7 +211,6 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
-DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -218,8 +218,6 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FC = @FC@
 FGREP = @FGREP@
 FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
@@ -248,17 +246,13 @@ LIBSPECTRE_LIBS = @LIBSPECTRE_LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LTCOMPILE = @LTCOMPILE@
-LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
-MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
-OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -275,10 +269,6 @@ PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
-PTHREAD_CC = @PTHREAD_CC@
-PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
-PTHREAD_LIBS = @PTHREAD_LIBS@
-Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -287,7 +277,6 @@ SHLIB_EXT = @SHLIB_EXT@
 SHM_LIBS = @SHM_LIBS@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
-V = @V@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VERSION = @VERSION@
@@ -309,7 +298,6 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
-ax_pthread_config = @ax_pthread_config@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -364,11 +352,14 @@ png_REQUIRES = @png_REQUIRES@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pthread_CFLAGS = @pthread_CFLAGS@
+pthread_LIBS = @pthread_LIBS@
 qt_CFLAGS = @qt_CFLAGS@
 qt_LIBS = @qt_LIBS@
+real_pthread_CFLAGS = @real_pthread_CFLAGS@
+real_pthread_LIBS = @real_pthread_LIBS@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-shavedir = @shavedir@
 shm_LIBS = @shm_LIBS@
 skia_DIR = @skia_DIR@
 srcdir = @srcdir@
@@ -392,7 +383,7 @@ xlib_xrender_LIBS = @xlib_xrender_LIBS@
 BUILT_SOURCES = 
 CLEANFILES = *.i *.s *.gch $(EXTRA_LTLIBRARIES) $(EXTRA_PROGRAMS) \
 	$(check_PROGRAMS)
-DISTCLEANFILES = $(BUILT_SOURCES) config.cache doltlibtool doltcompile \
+DISTCLEANFILES = $(BUILT_SOURCES) config.cache \
 	$(srcdir)/ChangeLog.cache-* ChangeLog.cache-*
 EXTRA_DIST = README.win32 Makefile.win32 build/Makefile.win32.common \
 	build/Makefile.win32.features build/Makefile.win32.features-h \
@@ -574,10 +565,6 @@ cairo-pdf-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-
 cairo-svg-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-xml-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-build/shave: $(top_builddir)/config.status $(top_srcdir)/build/shave.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-build/shave-libtool: $(top_builddir)/config.status $(top_srcdir)/build/shave-libtool.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 clean-checkPROGRAMS:

@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-quartz-surface">
+<refentry id="cairo-Quartz-Surfaces">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-quartz-surface.top_of_page">Quartz Surfaces</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-Quartz-Surfaces.top_of_page">Quartz Surfaces</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Rendering to Quartz surfaces</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-quartz-surface.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-Quartz-Surfaces.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-QUARTZ-SURFACE:CAPS">CAIRO_HAS_QUARTZ_SURFACE</link>
@@ -31,18 +31,18 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-quartz-surface.description" role="desc">
+<refsect1 id="cairo-Quartz-Surfaces.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The Quartz surface is used to render cairo graphics targeting the
 Apple OS X Quartz rendering system.
 </para>
 </refsect1>
-<refsect1 id="cairo-quartz-surface.details" role="details">
+<refsect1 id="cairo-Quartz-Surfaces.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-QUARTZ-SURFACE:CAPS" role="macro">
 <title>CAIRO_HAS_QUARTZ_SURFACE</title>
-<indexterm zone="CAIRO-HAS-QUARTZ-SURFACE:CAPS"><primary>CAIRO_HAS_QUARTZ_SURFACE</primary></indexterm>
+<indexterm zone="CAIRO-HAS-QUARTZ-SURFACE:CAPS"><primary sortas="HAS_QUARTZ_SURFACE">CAIRO_HAS_QUARTZ_SURFACE</primary></indexterm>
 <programlisting>#define             CAIRO_HAS_QUARTZ_SURFACE</programlisting>
 <para>
 Defined if the Quartz surface backend is available.
@@ -50,7 +50,7 @@ This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
 <refsect2 id="cairo-quartz-surface-create" role="function" condition="since:1.4">
 <title>cairo_quartz_surface_create ()</title>
-<indexterm zone="cairo-quartz-surface-create" role="1.4"><primary>cairo_quartz_surface_create</primary></indexterm>
+<indexterm zone="cairo-quartz-surface-create" role="1.4"><primary sortas="quartz_surface_create">cairo_quartz_surface_create</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_quartz_surface_create         (<parameter><link linkend="cairo-format-t"><type>cairo_format_t</type></link> format</parameter>,
                                                          <parameter>unsigned <link linkend="int"><type>int</type></link> width</parameter>,
                                                          <parameter>unsigned <link linkend="int"><type>int</type></link> height</parameter>);</programlisting>
@@ -75,7 +75,7 @@ rendering, will succeed on this surface.
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-quartz-surface-create-for-cg-context" role="function" condition="since:1.4">
 <title>cairo_quartz_surface_create_for_cg_context ()</title>
-<indexterm zone="cairo-quartz-surface-create-for-cg-context" role="1.4"><primary>cairo_quartz_surface_create_for_cg_context</primary></indexterm>
+<indexterm zone="cairo-quartz-surface-create-for-cg-context" role="1.4"><primary sortas="quartz_surface_create_for_cg_context">cairo_quartz_surface_create_for_cg_context</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_quartz_surface_create_for_cg_context
                                                         (<parameter><link linkend="CGContextRef"><type>CGContextRef</type></link> cgContext</parameter>,
                                                          <parameter>unsigned <link linkend="int"><type>int</type></link> width</parameter>,
@@ -114,7 +114,7 @@ as long as Quartz-compatible elements are used (such as Quartz fonts).
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-quartz-surface-get-cg-context" role="function" condition="since:1.4">
 <title>cairo_quartz_surface_get_cg_context ()</title>
-<indexterm zone="cairo-quartz-surface-get-cg-context" role="1.4"><primary>cairo_quartz_surface_get_cg_context</primary></indexterm>
+<indexterm zone="cairo-quartz-surface-get-cg-context" role="1.4"><primary sortas="quartz_surface_get_cg_context">cairo_quartz_surface_get_cg_context</primary></indexterm>
 <programlisting><link linkend="CGContextRef"><returnvalue>CGContextRef</returnvalue></link>        cairo_quartz_surface_get_cg_context (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>);</programlisting>
 <para>
 Returns the CGContextRef that the given Quartz surface is backed
@@ -129,13 +129,9 @@ by.
 </variablelist><para role="since">Since 1.4</para></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-quartz-surface.see-also">
+<refsect1 id="cairo-Quartz-Surfaces.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </refsect1>
 
 </refentry>

@@ -46,6 +46,53 @@
 #include "cairo-region-private.h"
 #include "cairo-tee-surface-private.h"
 
+/**
+ * SECTION:cairo-surface
+ * @Title: cairo_surface_t
+ * @Short_Description: Base class for surfaces
+ * @See_Also: #cairo_t, #cairo_pattern_t
+ *
+ * #cairo_surface_t is the abstract type representing all different drawing
+ * targets that cairo can render to.  The actual drawings are
+ * performed using a cairo <firstterm>context</firstterm>.
+ *
+ * A cairo surface is created by using <firstterm>backend</firstterm>-specific
+ * constructors, typically of the form
+ * cairo_<emphasis>backend</emphasis>_surface_create().
+ *
+ * Most surface types allow accessing the surface without using Cairo
+ * functions. If you do this, keep in mind that it is mandatory that you call
+ * cairo_surface_flush() before reading from or writing to the surface and that
+ * you must use cairo_surface_mark_dirty() after modifying it.
+ * <example>
+ * <title>Directly modifying an image surface</title>
+ * <programlisting>
+ * void
+ * modify_image_surface (cairo_surface_t *surface)
+ * {
+ *   unsigned char *data;
+ *   int width, height, stride;
+ *
+ *   // flush to ensure all writing to the image was done
+ *   cairo_surface_flush (surface);
+ *
+ *   // modify the image
+ *   data = cairo_image_surface_get_data (surface);
+ *   width = cairo_image_surface_get_width (surface);
+ *   height = cairo_image_surface_get_height (surface);
+ *   stride = cairo_image_surface_get_stride (surface);
+ *   modify_image_data (data, width, height, stride);
+ *
+ *   // mark the image dirty so Cairo clears its caches.
+ *   cairo_surface_mark_dirty (surface);
+ * }
+ * </programlisting>
+ * </example>
+ * Note that for other surface types it might be necessary to acquire the
+ * surface's device first. See cairo_device_acquire() for a discussion of
+ * devices.
+ */
+
 #define DEFINE_NIL_SURFACE(status, name)			\
 const cairo_surface_t name = {					\
     NULL,				/* backend */		\
@@ -224,7 +271,8 @@ _cairo_surface_allocate_unique_id (void)
  * This function returns the device for a @surface.
  * See #cairo_device_t.
  *
- * Return value: The device for @surface.
+ * Return value: The device for @surface or %NULL if the surface does
+ *               not have an associated device.
  *
  * Since: 1.10
  **/
@@ -453,6 +501,8 @@ cairo_surface_create_similar (cairo_surface_t  *other,
 {
     if (unlikely (other->status))
 	return _cairo_surface_create_in_error (other->status);
+    if (unlikely (other->finished))
+	return _cairo_surface_create_in_error (CAIRO_STATUS_SURFACE_FINISHED);
 
     if (unlikely (! CAIRO_CONTENT_VALID (content)))
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_INVALID_CONTENT));
@@ -765,7 +815,7 @@ void
 cairo_surface_get_mime_data (cairo_surface_t		*surface,
                              const char			*mime_type,
                              const unsigned char       **data,
-                             unsigned int		*length)
+                             unsigned long		*length)
 {
     cairo_user_data_slot_t *slots;
     int i, num_slots;
@@ -809,6 +859,38 @@ _cairo_mime_data_destroy (void *ptr)
 }
 
 /**
+ * CAIRO_MIME_TYPE_JP2:
+ *
+ * The Joint Photographic Experts Group (JPEG) 2000 image coding standard (ISO/IEC 15444-1).
+ *
+ * @Since: 1.10
+ */
+
+/**
+ * CAIRO_MIME_TYPE_JPEG:
+ *
+ * The Joint Photographic Experts Group (JPEG) image coding standard (ISO/IEC 10918-1).
+ *
+ * @Since: 1.10
+ */
+
+/**
+ * CAIRO_MIME_TYPE_PNG:
+ *
+ * The Portable Network Graphics image file format (ISO/IEC 15948).
+ *
+ * @Since: 1.10
+ */
+
+/**
+ * CAIRO_MIME_TYPE_URI:
+ *
+ * URI for an image file (unofficial MIME type).
+ *
+ * @Since: 1.10
+ */
+
+/**
  * cairo_surface_set_mime_data:
  * @surface: a #cairo_surface_t
  * @mime_type: the MIME type of the image data
@@ -846,7 +928,7 @@ cairo_status_t
 cairo_surface_set_mime_data (cairo_surface_t		*surface,
                              const char			*mime_type,
                              const unsigned char	*data,
-                             unsigned int		 length,
+                             unsigned long		 length,
 			     cairo_destroy_func_t	 destroy,
 			     void			*closure)
 {
@@ -855,6 +937,8 @@ cairo_surface_set_mime_data (cairo_surface_t		*surface,
 
     if (unlikely (surface->status))
 	return surface->status;
+    if (surface->finished)
+	return _cairo_surface_set_error (surface, _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
 
     status = _cairo_intern_string (&mime_type, -1);
     if (unlikely (status))
@@ -950,7 +1034,7 @@ _cairo_surface_set_font_options (cairo_surface_t       *surface,
 
     if (surface->finished) {
 	status = _cairo_surface_set_error (surface,
-		                           CAIRO_STATUS_SURFACE_FINISHED);
+		                           _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
 	return;
     }
 
@@ -1079,7 +1163,7 @@ cairo_surface_mark_dirty_rectangle (cairo_surface_t *surface,
     assert (surface->snapshot_of == NULL);
 
     if (surface->finished) {
-	status = _cairo_surface_set_error (surface, CAIRO_STATUS_SURFACE_FINISHED);
+	status = _cairo_surface_set_error (surface, _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
 	return;
     }
 
@@ -1138,7 +1222,7 @@ _cairo_surface_set_device_scale (cairo_surface_t *surface,
     assert (surface->snapshot_of == NULL);
 
     if (surface->finished) {
-	status = _cairo_surface_set_error (surface, CAIRO_STATUS_SURFACE_FINISHED);
+	status = _cairo_surface_set_error (surface, _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
 	return;
     }
 
@@ -1188,7 +1272,7 @@ cairo_surface_set_device_offset (cairo_surface_t *surface,
     assert (surface->snapshot_of == NULL);
 
     if (surface->finished) {
-	status = _cairo_surface_set_error (surface, CAIRO_STATUS_SURFACE_FINISHED);
+	status = _cairo_surface_set_error (surface, _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
 	return;
     }
 
@@ -1275,7 +1359,7 @@ cairo_surface_set_fallback_resolution (cairo_surface_t	*surface,
     assert (surface->snapshot_of == NULL);
 
     if (surface->finished) {
-	status = _cairo_surface_set_error (surface, CAIRO_STATUS_SURFACE_FINISHED);
+	status = _cairo_surface_set_error (surface, _cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
 	return;
     }
 
@@ -2346,13 +2430,13 @@ cairo_surface_show_page (cairo_surface_t *surface)
     if (surface->status)
 	return;
 
-    _cairo_surface_begin_modification (surface);
-
     if (surface->finished) {
 	status_ignored = _cairo_surface_set_error (surface,
 		                                 CAIRO_STATUS_SURFACE_FINISHED);
 	return;
     }
+
+    _cairo_surface_begin_modification (surface);
 
     /* It's fine if some backends don't implement show_page */
     if (surface->backend->show_page == NULL)

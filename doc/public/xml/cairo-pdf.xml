@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-pdf-surface">
+<refentry id="cairo-PDF-Surfaces">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-pdf-surface.top_of_page">PDF Surfaces</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-PDF-Surfaces.top_of_page">PDF Surfaces</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Rendering PDF documents</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-pdf-surface.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-PDF-Surfaces.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-PDF-SURFACE:CAPS">CAIRO_HAS_PDF_SURFACE</link>
@@ -40,18 +40,18 @@ const <link linkend="char"><returnvalue>char</returnvalue></link> *        <link
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-pdf-surface.description" role="desc">
+<refsect1 id="cairo-PDF-Surfaces.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The PDF surface is used to render cairo graphics to Adobe
 PDF files and is a multi-page vector surface backend.
 </para>
 </refsect1>
-<refsect1 id="cairo-pdf-surface.details" role="details">
+<refsect1 id="cairo-PDF-Surfaces.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="CAIRO-HAS-PDF-SURFACE:CAPS" role="macro">
 <title>CAIRO_HAS_PDF_SURFACE</title>
-<indexterm zone="CAIRO-HAS-PDF-SURFACE:CAPS"><primary>CAIRO_HAS_PDF_SURFACE</primary></indexterm>
+<indexterm zone="CAIRO-HAS-PDF-SURFACE:CAPS"><primary sortas="HAS_PDF_SURFACE">CAIRO_HAS_PDF_SURFACE</primary></indexterm>
 <programlisting>#define CAIRO_HAS_PDF_SURFACE 1
 </programlisting>
 <para>
@@ -60,7 +60,7 @@ This macro can be used to conditionally compile backend-specific code.
 </para></refsect2>
 <refsect2 id="cairo-pdf-surface-create" role="function" condition="since:1.2">
 <title>cairo_pdf_surface_create ()</title>
-<indexterm zone="cairo-pdf-surface-create" role="1.2"><primary>cairo_pdf_surface_create</primary></indexterm>
+<indexterm zone="cairo-pdf-surface-create" role="1.2"><primary sortas="pdf_surface_create">cairo_pdf_surface_create</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_pdf_surface_create            (<parameter>const <link linkend="char"><type>char</type></link> *filename</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> width_in_points</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> height_in_points</parameter>);</programlisting>
@@ -92,7 +92,7 @@ occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-pdf-surface-create-for-stream" role="function" condition="since:1.2">
 <title>cairo_pdf_surface_create_for_stream ()</title>
-<indexterm zone="cairo-pdf-surface-create-for-stream" role="1.2"><primary>cairo_pdf_surface_create_for_stream</primary></indexterm>
+<indexterm zone="cairo-pdf-surface-create-for-stream" role="1.2"><primary sortas="pdf_surface_create_for_stream">cairo_pdf_surface_create_for_stream</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_pdf_surface_create_for_stream (<parameter><link linkend="cairo-write-func-t"><type>cairo_write_func_t</type></link> write_func</parameter>,
                                                          <parameter><link linkend="void"><type>void</type></link> *closure</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> width_in_points</parameter>,
@@ -128,7 +128,7 @@ occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-pdf-surface-restrict-to-version" role="function" condition="since:1.10">
 <title>cairo_pdf_surface_restrict_to_version ()</title>
-<indexterm zone="cairo-pdf-surface-restrict-to-version" role="1.10"><primary>cairo_pdf_surface_restrict_to_version</primary></indexterm>
+<indexterm zone="cairo-pdf-surface-restrict-to-version" role="1.10"><primary sortas="pdf_surface_restrict_to_version">cairo_pdf_surface_restrict_to_version</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_pdf_surface_restrict_to_version
                                                         (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="cairo-pdf-version-t"><type>cairo_pdf_version_t</type></link> version</parameter>);</programlisting>
@@ -151,7 +151,7 @@ surface.
 </variablelist><para role="since">Since 1.10</para></refsect2>
 <refsect2 id="cairo-pdf-version-t" role="enum">
 <title>enum cairo_pdf_version_t</title>
-<indexterm zone="cairo-pdf-version-t"><primary>cairo_pdf_version_t</primary></indexterm>
+<indexterm zone="cairo-pdf-version-t"><primary sortas="pdf_version_t">cairo_pdf_version_t</primary></indexterm>
 <programlisting>typedef enum _cairo_pdf_version {
     CAIRO_PDF_VERSION_1_4,
     CAIRO_PDF_VERSION_1_5
@@ -177,7 +177,7 @@ Since 1.10
 </variablelist></refsect2>
 <refsect2 id="cairo-pdf-get-versions" role="function" condition="since:1.10">
 <title>cairo_pdf_get_versions ()</title>
-<indexterm zone="cairo-pdf-get-versions" role="1.10"><primary>cairo_pdf_get_versions</primary></indexterm>
+<indexterm zone="cairo-pdf-get-versions" role="1.10"><primary sortas="pdf_get_versions">cairo_pdf_get_versions</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_pdf_get_versions              (<parameter><link linkend="cairo-pdf-version-t"><type>cairo_pdf_version_t</type></link> const **versions</parameter>,
                                                          <parameter><link linkend="int"><type>int</type></link> *num_versions</parameter>);</programlisting>
 <para>
@@ -193,7 +193,7 @@ Used to retrieve the list of supported versions. See
 </variablelist><para role="since">Since 1.10</para></refsect2>
 <refsect2 id="cairo-pdf-version-to-string" role="function" condition="since:1.10">
 <title>cairo_pdf_version_to_string ()</title>
-<indexterm zone="cairo-pdf-version-to-string" role="1.10"><primary>cairo_pdf_version_to_string</primary></indexterm>
+<indexterm zone="cairo-pdf-version-to-string" role="1.10"><primary sortas="pdf_version_to_string">cairo_pdf_version_to_string</primary></indexterm>
 <programlisting>const <link linkend="char"><returnvalue>char</returnvalue></link> *        cairo_pdf_version_to_string         (<parameter><link linkend="cairo-pdf-version-t"><type>cairo_pdf_version_t</type></link> version</parameter>);</programlisting>
 <para>
 Get the string representation of the given <parameter>version</parameter> id. This function
@@ -209,7 +209,7 @@ for a way to get the list of valid version ids.
 </variablelist><para role="since">Since 1.10</para></refsect2>
 <refsect2 id="cairo-pdf-surface-set-size" role="function" condition="since:1.2">
 <title>cairo_pdf_surface_set_size ()</title>
-<indexterm zone="cairo-pdf-surface-set-size" role="1.2"><primary>cairo_pdf_surface_set_size</primary></indexterm>
+<indexterm zone="cairo-pdf-surface-set-size" role="1.2"><primary sortas="pdf_surface_set_size">cairo_pdf_surface_set_size</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_pdf_surface_set_size          (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> width_in_points</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> height_in_points</parameter>);</programlisting>
@@ -236,13 +236,9 @@ surface or immediately after completing a page with either
 </variablelist><para role="since">Since 1.2</para></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-pdf-surface.see-also">
+<refsect1 id="cairo-PDF-Surfaces.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
 </refsect1>
 
 </refentry>

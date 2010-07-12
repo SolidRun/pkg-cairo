@@ -23,8 +23,11 @@
 /* Define to 1 to enable cairo's cairo-script-interpreter feature */
 #undef CAIRO_HAS_INTERPRETER
 
-/* Define to 1 if we have pthread support */
+/* Define to 1 to enable cairo's pthread feature */
 #undef CAIRO_HAS_PTHREAD
+
+/* Define to 1 if we have full pthread support */
+#undef CAIRO_HAS_REAL_PTHREAD
 
 /* Define to 1 if libspectre is available */
 #undef CAIRO_HAS_SPECTRE
@@ -156,9 +159,6 @@
 /* Define to 1 if you have the `poppler_page_render' function. */
 #undef HAVE_POPPLER_PAGE_RENDER
 
-/* Define if you have POSIX threads libraries and header files. */
-#undef HAVE_PTHREAD
-
 /* Define to 1 if you have the `raise' function. */
 #undef HAVE_RAISE
 
@@ -264,10 +264,6 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
-
-/* Define to necessary symbol if this constant uses a non-standard name on
-   your system. */
-#undef PTHREAD_CREATE_JOINABLE
 
 /* Shared library file extension */
 #undef SHARED_LIB_EXT

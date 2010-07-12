@@ -159,6 +159,8 @@ typedef struct _cairo_surface cairo_surface_t;
  *
  * Memory management of #cairo_device_t is done with
  * cairo_device_reference() and cairo_device_destroy().
+ *
+ * Since: 1.10
  **/
 typedef struct _cairo_device cairo_device_t;
 
@@ -2186,13 +2188,13 @@ cairo_public void
 cairo_surface_get_mime_data (cairo_surface_t		*surface,
                              const char			*mime_type,
                              const unsigned char       **data,
-                             unsigned int		*length);
+                             unsigned long		*length);
 
 cairo_public cairo_status_t
 cairo_surface_set_mime_data (cairo_surface_t		*surface,
                              const char			*mime_type,
                              const unsigned char	*data,
-                             unsigned int		 length,
+                             unsigned long		 length,
 			     cairo_destroy_func_t	 destroy,
 			     void			*closure);
 
@@ -2601,7 +2603,32 @@ cairo_matrix_transform_point (const cairo_matrix_t *matrix,
 
 /* Region functions */
 
+/**
+ * cairo_region_t:
+ *
+ * A #cairo_region_t represents a set of integer-aligned rectangles.
+ *
+ * It allows set-theoretical operations like cairo_region_union() and
+ * cairo_region_intersect() to be performed on them.
+ *
+ * Memory management of #cairo_region_t is done with
+ * cairo_region_reference() and cairo_region_destroy().
+ *
+ * Since: 1.10
+ **/
 typedef struct _cairo_region cairo_region_t;
+
+/**
+ * cairo_rectangle_int_t:
+ * @x: X coordinate of the left side of the rectangle
+ * @y: Y coordinate of the the top side of the rectangle
+ * @width: width of the rectangle
+ * @height: height of the rectangle
+ *
+ * A data structure for holding a rectangle with integer coordinates.
+ *
+ * Since: 1.10
+ **/
 
 typedef struct _cairo_rectangle_int {
     int x, y;
@@ -2647,8 +2674,8 @@ cairo_public int
 cairo_region_num_rectangles (const cairo_region_t *region);
 
 cairo_public void
-cairo_region_get_rectangle (const cairo_region_t        *region,
-			    int                    nth_rectangle,
+cairo_region_get_rectangle (const cairo_region_t  *region,
+			    int                    nth,
 			    cairo_rectangle_int_t *rectangle);
 
 cairo_public cairo_bool_t
@@ -2685,6 +2712,12 @@ cairo_public cairo_status_t
 cairo_region_union_rectangle (cairo_region_t *dst,
 			      const cairo_rectangle_int_t *rectangle);
 
+cairo_public cairo_status_t
+cairo_region_xor (cairo_region_t *dst, const cairo_region_t *other);
+
+cairo_public cairo_status_t
+cairo_region_xor_rectangle (cairo_region_t *dst,
+			    const cairo_rectangle_int_t *rectangle);
 
 /* Functions to be used while debugging (not intended for use in production code) */
 cairo_public void

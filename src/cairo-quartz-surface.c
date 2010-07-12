@@ -48,14 +48,6 @@
 #define RTLD_DEFAULT ((void *) 0)
 #endif
 
-/* The 10.5 SDK includes a funky new definition of FloatToFixed which
- * causes all sorts of breakage; so reset to old-style definition
- */
-#ifdef FloatToFixed
-#undef FloatToFixed
-#define FloatToFixed(a)     ((Fixed)((float)(a) * fixed1))
-#endif
-
 #include <limits.h>
 
 #undef QUARTZ_DEBUG
@@ -67,6 +59,23 @@
 #endif
 
 #define IS_EMPTY(s) ((s)->extents.width == 0 || (s)->extents.height == 0)
+
+/**
+ * SECTION:cairo-quartz
+ * @Title: Quartz Surfaces
+ * @Short_Description: Rendering to Quartz surfaces
+ * @See_Also: #cairo_surface_t
+ *
+ * The Quartz surface is used to render cairo graphics targeting the
+ * Apple OS X Quartz rendering system.
+ */
+
+/**
+ * CAIRO_HAS_QUARTZ_SURFACE:
+ *
+ * Defined if the Quartz surface backend is available.
+ * This macro can be used to conditionally compile backend-specific code.
+ */
 
 /* This method is private, but it exists.  Its params are are exposed
  * as args to the NS* method, but not as CG.
@@ -88,10 +97,7 @@ enum PrivateCGCompositeMode {
 };
 typedef enum PrivateCGCompositeMode PrivateCGCompositeMode;
 CG_EXTERN void CGContextSetCompositeOperation (CGContextRef, PrivateCGCompositeMode);
-CG_EXTERN void CGContextResetCTM (CGContextRef);
 CG_EXTERN void CGContextSetCTM (CGContextRef, CGAffineTransform);
-CG_EXTERN void CGContextResetClip (CGContextRef);
-CG_EXTERN CGSize CGContextGetPatternPhase (CGContextRef);
 
 /* We need to work with the 10.3 SDK as well (and 10.3 machines; luckily, 10.3.9
  * has all the stuff we care about, just some of it isn't exported in the SDK.
@@ -117,14 +123,9 @@ static void (*CGContextClipToMaskPtr) (CGContextRef, CGRect, CGImageRef) = NULL;
 static void (*CGContextDrawTiledImagePtr) (CGContextRef, CGRect, CGImageRef) = NULL;
 static unsigned int (*CGContextGetTypePtr) (CGContextRef) = NULL;
 static void (*CGContextSetShouldAntialiasFontsPtr) (CGContextRef, bool) = NULL;
-static bool (*CGContextGetShouldAntialiasFontsPtr) (CGContextRef) = NULL;
-static bool (*CGContextGetShouldSmoothFontsPtr) (CGContextRef) = NULL;
 static void (*CGContextSetAllowsFontSmoothingPtr) (CGContextRef, bool) = NULL;
 static bool (*CGContextGetAllowsFontSmoothingPtr) (CGContextRef) = NULL;
 static CGPathRef (*CGContextCopyPathPtr) (CGContextRef) = NULL;
-static void (*CGContextReplacePathWithClipPathPtr) (CGContextRef) = NULL;
-
-static SInt32 _cairo_quartz_osx_version = 0x0;
 
 static cairo_bool_t _cairo_quartz_symbol_lookup_done = FALSE;
 
@@ -153,17 +154,9 @@ static void quartz_ensure_symbols(void)
     CGContextDrawTiledImagePtr = dlsym(RTLD_DEFAULT, "CGContextDrawTiledImage");
     CGContextGetTypePtr = dlsym(RTLD_DEFAULT, "CGContextGetType");
     CGContextSetShouldAntialiasFontsPtr = dlsym(RTLD_DEFAULT, "CGContextSetShouldAntialiasFonts");
-    CGContextGetShouldAntialiasFontsPtr = dlsym(RTLD_DEFAULT, "CGContextGetShouldAntialiasFonts");
-    CGContextGetShouldSmoothFontsPtr = dlsym(RTLD_DEFAULT, "CGContextGetShouldSmoothFonts");
     CGContextCopyPathPtr = dlsym(RTLD_DEFAULT, "CGContextCopyPath");
-    CGContextReplacePathWithClipPathPtr = dlsym(RTLD_DEFAULT, "CGContextReplacePathWithClipPath");
     CGContextGetAllowsFontSmoothingPtr = dlsym(RTLD_DEFAULT, "CGContextGetAllowsFontSmoothing");
     CGContextSetAllowsFontSmoothingPtr = dlsym(RTLD_DEFAULT, "CGContextSetAllowsFontSmoothing");
-
-    if (Gestalt(gestaltSystemVersion, &_cairo_quartz_osx_version) != noErr) {
-	// assume 10.4
-	_cairo_quartz_osx_version = 0x1040;
-    }
 
     _cairo_quartz_symbol_lookup_done = TRUE;
 }
@@ -680,8 +673,9 @@ _cairo_quartz_fixup_unbounded_operation (cairo_quartz_surface_t *surface,
     } else if (op->op == UNBOUNDED_SHOW_GLYPHS) {
 	CGContextSetFont (cgc, op->u.show_glyphs.font);
 	CGContextSetFontSize (cgc, 1.0);
-	CGContextSetTextMatrix (cgc, op->u.show_glyphs.textTransform);
+	CGContextSetTextMatrix (cgc, CGAffineTransformIdentity);
 	CGContextTranslateCTM (cgc, op->u.show_glyphs.origin.x, op->u.show_glyphs.origin.y);
+	CGContextConcatCTM (cgc, op->u.show_glyphs.textTransform);
 
 	if (op->u.show_glyphs.isClipping) {
 	    /* Note that the comment in show_glyphs about kCGTextClip
@@ -2482,13 +2476,14 @@ _cairo_quartz_surface_show_glyphs_cg (void *abstract_surface,
 				      cairo_clip_t *clip,
 				      int *remaining_glyphs)
 {
-    CGAffineTransform textTransform, ctm;
+    CGAffineTransform textTransform, ctm, invTextTransform;
 #define STATIC_BUF_SIZE 64
     CGGlyph glyphs_static[STATIC_BUF_SIZE];
     CGSize cg_advances_static[STATIC_BUF_SIZE];
     CGGlyph *cg_glyphs = &glyphs_static[0];
     CGSize *cg_advances = &cg_advances_static[0];
 
+    cairo_rectangle_int_t glyph_extents;
     cairo_quartz_surface_t *surface = (cairo_quartz_surface_t *) abstract_surface;
     cairo_int_status_t rv = CAIRO_STATUS_SUCCESS;
     cairo_quartz_action_t action;
@@ -2518,11 +2513,10 @@ _cairo_quartz_surface_show_glyphs_cg (void *abstract_surface,
 
     CGContextSaveGState (surface->cgContext);
 
-    if (_cairo_quartz_source_needs_extents (source))
+    if (_cairo_quartz_source_needs_extents (source) &&
+	!_cairo_scaled_font_glyph_device_extents (scaled_font, glyphs, num_glyphs,
+						  &glyph_extents, NULL))
     {
-        cairo_rectangle_int_t glyph_extents;
-        _cairo_scaled_font_glyph_device_extents (scaled_font, glyphs, num_glyphs,
-                                                 &glyph_extents, NULL);
         action = _cairo_quartz_setup_source (surface, source, &glyph_extents);
     } else {
         action = _cairo_quartz_setup_source (surface, source, NULL);
@@ -2581,20 +2575,14 @@ _cairo_quartz_surface_show_glyphs_cg (void *abstract_surface,
 	}
     }
 
-    textTransform = CGAffineTransformMake (scaled_font->font_matrix.xx,
-					   scaled_font->font_matrix.yx,
-					   scaled_font->font_matrix.xy,
-					   scaled_font->font_matrix.yy,
-					   0., 0.);
-    textTransform = CGAffineTransformScale (textTransform, 1.0, -1.0);
-    textTransform = CGAffineTransformConcat (CGAffineTransformMake(scaled_font->ctm.xx,
-								   -scaled_font->ctm.yx,
-								   -scaled_font->ctm.xy,
-								   scaled_font->ctm.yy,
-								   0., 0.),
-					     textTransform);
+    textTransform = CGAffineTransformMake (scaled_font->scale.xx,
+					   scaled_font->scale.yx,
+					   -scaled_font->scale.xy,
+					   -scaled_font->scale.yy,
+					   0, 0);
+    _cairo_quartz_cairo_matrix_to_quartz (&scaled_font->scale_inverse, &invTextTransform);
 
-    CGContextSetTextMatrix (surface->cgContext, textTransform);
+    CGContextSetTextMatrix (surface->cgContext, CGAffineTransformIdentity);
 
     /* Convert our glyph positions to glyph advances.  We need n-1 advances,
      * since the advance at index 0 is applied after glyph 0. */
@@ -2607,32 +2595,15 @@ _cairo_quartz_surface_show_glyphs_cg (void *abstract_surface,
 	cairo_quartz_float_t xf = glyphs[i].x;
 	cairo_quartz_float_t yf = glyphs[i].y;
 	cg_glyphs[i] = glyphs[i].index;
-	cg_advances[i-1].width = xf - xprev;
-	cg_advances[i-1].height = yf - yprev;
+	cg_advances[i - 1] = CGSizeApplyAffineTransform(CGSizeMake (xf - xprev, yf - yprev), invTextTransform);
 	xprev = xf;
 	yprev = yf;
     }
 
-    if (_cairo_quartz_osx_version >= 0x1050 && isClipping) {
-	/* If we're clipping, OSX 10.5 (at least as of 10.5.2) has a
-	 * bug (apple bug ID #5834794) where the glyph
-	 * advances/positions are not transformed by the text matrix
-	 * if kCGTextClip is being used.  So, we pre-transform here.
-	 * 10.4 does not have this problem (as of 10.4.11).
-	 */
-	for (i = 0; i < num_glyphs - 1; i++)
-	    cg_advances[i] = CGSizeApplyAffineTransform(cg_advances[i], textTransform);
-    }
-
-#if 0
-    for (i = 0; i < num_glyphs; i++) {
-	ND((stderr, "[%d: %d %f,%f]\n", i, cg_glyphs[i], cg_advances[i].width, cg_advances[i].height));
-    }
-#endif
-
     /* Translate to the first glyph's position before drawing */
     ctm = CGContextGetCTM (surface->cgContext);
     CGContextTranslateCTM (surface->cgContext, glyphs[0].x, glyphs[0].y);
+    CGContextConcatCTM (surface->cgContext, textTransform);
 
     CGContextShowGlyphsWithAdvances (surface->cgContext,
 				     cg_glyphs,

@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-user-font">
+<refentry id="cairo-User-Fonts">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-user-font.top_of_page">User Fonts</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-User-Fonts.top_of_page">User Fonts</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Font support with font data provided by the user</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-user-font.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-User-Fonts.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-USER-FONT:CAPS">CAIRO_HAS_USER_FONT</link>
@@ -65,21 +65,20 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-user-font.description" role="desc">
+<refsect1 id="cairo-User-Fonts.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The user-font feature allows the cairo user to provide drawings for glyphs
 in a font.  This is most useful in implementing fonts in non-standard
 formats, like SVG fonts and Flash fonts, but can also be used by games and
 other application to draw "funky" fonts.
-<!-- Include samples here -->
 </para>
 </refsect1>
-<refsect1 id="cairo-user-font.details" role="details">
+<refsect1 id="cairo-User-Fonts.details" role="details">
 <title role="details.title">Details</title>
-<refsect2 id="CAIRO-HAS-USER-FONT:CAPS" role="macro" condition="since:1.8">
+<refsect2 id="CAIRO-HAS-USER-FONT:CAPS" role="macro">
 <title>CAIRO_HAS_USER_FONT</title>
-<indexterm zone="CAIRO-HAS-USER-FONT:CAPS" role="1.8"><primary>CAIRO_HAS_USER_FONT</primary></indexterm>
+<indexterm zone="CAIRO-HAS-USER-FONT:CAPS"><primary sortas="HAS_USER_FONT">CAIRO_HAS_USER_FONT</primary></indexterm>
 <programlisting>#define CAIRO_HAS_USER_FONT 1
 </programlisting>
 <para>
@@ -87,10 +86,13 @@ Defined if the user font backend is available.
 This macro can be used to conditionally compile backend-specific code.
 The user font backend is always built in versions of cairo that support
 this feature (1.8 and later).
-</para><para role="since">Since 1.8</para></refsect2>
+</para>
+<para>
+<parameter>Since</parameter>: 1.8
+</para></refsect2>
 <refsect2 id="cairo-user-scaled-font-init-func-t" role="function" condition="since:1.8">
 <title>cairo_user_scaled_font_init_func_t ()</title>
-<indexterm zone="cairo-user-scaled-font-init-func-t" role="1.8"><primary>cairo_user_scaled_font_init_func_t</primary></indexterm>
+<indexterm zone="cairo-user-scaled-font-init-func-t" role="1.8"><primary sortas="user_scaled_font_init_func_t">cairo_user_scaled_font_init_func_t</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      (*cairo_user_scaled_font_init_func_t)
                                                         (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><link linkend="cairo-t"><type>cairo_t</type></link> *cr</parameter>,
@@ -137,7 +139,7 @@ in deadlock.
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-scaled-font-render-glyph-func-t" role="function" condition="since:1.8">
 <title>cairo_user_scaled_font_render_glyph_func_t ()</title>
-<indexterm zone="cairo-user-scaled-font-render-glyph-func-t" role="1.8"><primary>cairo_user_scaled_font_render_glyph_func_t</primary></indexterm>
+<indexterm zone="cairo-user-scaled-font-render-glyph-func-t" role="1.8"><primary sortas="user_scaled_font_render_glyph_func_t">cairo_user_scaled_font_render_glyph_func_t</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      (*cairo_user_scaled_font_render_glyph_func_t)
                                                         (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><type>unsigned long </type> glyph</parameter>,
@@ -197,7 +199,7 @@ done to <parameter>cr</parameter> in the callback.
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-scaled-font-text-to-glyphs-func-t" role="function" condition="since:1.8">
 <title>cairo_user_scaled_font_text_to_glyphs_func_t ()</title>
-<indexterm zone="cairo-user-scaled-font-text-to-glyphs-func-t" role="1.8"><primary>cairo_user_scaled_font_text_to_glyphs_func_t</primary></indexterm>
+<indexterm zone="cairo-user-scaled-font-text-to-glyphs-func-t" role="1.8"><primary sortas="user_scaled_font_text_to_glyphs_func_t">cairo_user_scaled_font_text_to_glyphs_func_t</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      (*cairo_user_scaled_font_text_to_glyphs_func_t)
                                                         (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter>const <link linkend="char"><type>char</type></link> *utf8</parameter>,
@@ -291,7 +293,7 @@ or <link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-scaled-font-unicode-to-glyph-func-t" role="function" condition="since:1.8">
 <title>cairo_user_scaled_font_unicode_to_glyph_func_t ()</title>
-<indexterm zone="cairo-user-scaled-font-unicode-to-glyph-func-t" role="1.8"><primary>cairo_user_scaled_font_unicode_to_glyph_func_t</primary></indexterm>
+<indexterm zone="cairo-user-scaled-font-unicode-to-glyph-func-t" role="1.8"><primary sortas="user_scaled_font_unicode_to_glyph_func_t">cairo_user_scaled_font_unicode_to_glyph_func_t</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      (*cairo_user_scaled_font_unicode_to_glyph_func_t)
                                                         (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><type>unsigned long </type> unicode</parameter>,
@@ -343,7 +345,7 @@ or <link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-create" role="function" condition="since:1.8">
 <title>cairo_user_font_face_create ()</title>
-<indexterm zone="cairo-user-font-face-create" role="1.8"><primary>cairo_user_font_face_create</primary></indexterm>
+<indexterm zone="cairo-user-font-face-create" role="1.8"><primary sortas="user_font_face_create">cairo_user_font_face_create</primary></indexterm>
 <programlisting><link linkend="cairo-font-face-t"><returnvalue>cairo_font_face_t</returnvalue></link> * cairo_user_font_face_create         (<parameter><type>void</type></parameter>);</programlisting>
 <para>
 Creates a new user font-face.
@@ -366,7 +368,7 @@ and access it from the user-font callbacks by using
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-init-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_init_func ()</title>
-<indexterm zone="cairo-user-font-face-set-init-func" role="1.8"><primary>cairo_user_font_face_set_init_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-set-init-func" role="1.8"><primary sortas="user_font_face_set_init_func">cairo_user_font_face_set_init_func</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_user_font_face_set_init_func  (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-init-func-t"><type>cairo_user_scaled_font_init_func_t</type></link> init_func</parameter>);</programlisting>
 <para>
@@ -388,7 +390,7 @@ is created from it.
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-init-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_init_func ()</title>
-<indexterm zone="cairo-user-font-face-get-init-func" role="1.8"><primary>cairo_user_font_face_get_init_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-get-init-func" role="1.8"><primary sortas="user_font_face_get_init_func">cairo_user_font_face_get_init_func</primary></indexterm>
 <programlisting><link linkend="cairo-user-scaled-font-init-func-t"><returnvalue>cairo_user_scaled_font_init_func_t</returnvalue></link>  cairo_user_font_face_get_init_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
@@ -404,7 +406,7 @@ or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an er
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-render-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_render_glyph_func ()</title>
-<indexterm zone="cairo-user-font-face-set-render-glyph-func" role="1.8"><primary>cairo_user_font_face_set_render_glyph_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-set-render-glyph-func" role="1.8"><primary sortas="user_font_face_set_render_glyph_func">cairo_user_font_face_set_render_glyph_func</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_user_font_face_set_render_glyph_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-render-glyph-func-t"><type>cairo_user_scaled_font_render_glyph_func_t</type></link> render_glyph_func</parameter>);</programlisting>
@@ -432,7 +434,7 @@ If the callback is <link linkend="NULL:CAPS"><literal>NULL</literal></link> and 
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-render-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_render_glyph_func ()</title>
-<indexterm zone="cairo-user-font-face-get-render-glyph-func" role="1.8"><primary>cairo_user_font_face_get_render_glyph_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-get-render-glyph-func" role="1.8"><primary sortas="user_font_face_get_render_glyph_func">cairo_user_font_face_get_render_glyph_func</primary></indexterm>
 <programlisting><link linkend="cairo-user-scaled-font-render-glyph-func-t"><returnvalue>cairo_user_scaled_font_render_glyph_func_t</returnvalue></link>  cairo_user_font_face_get_render_glyph_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
@@ -448,7 +450,7 @@ or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an er
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-unicode-to-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_unicode_to_glyph_func ()</title>
-<indexterm zone="cairo-user-font-face-set-unicode-to-glyph-func" role="1.8"><primary>cairo_user_font_face_set_unicode_to_glyph_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-set-unicode-to-glyph-func" role="1.8"><primary sortas="user_font_face_set_unicode_to_glyph_func">cairo_user_font_face_set_unicode_to_glyph_func</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_user_font_face_set_unicode_to_glyph_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><type>cairo_user_scaled_font_unicode_to_glyph_func_t</type></link> unicode_to_glyph_func</parameter>);</programlisting>
@@ -471,7 +473,7 @@ is created from it.
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-unicode-to-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_unicode_to_glyph_func ()</title>
-<indexterm zone="cairo-user-font-face-get-unicode-to-glyph-func" role="1.8"><primary>cairo_user_font_face_get_unicode_to_glyph_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-get-unicode-to-glyph-func" role="1.8"><primary sortas="user_font_face_get_unicode_to_glyph_func">cairo_user_font_face_get_unicode_to_glyph_func</primary></indexterm>
 <programlisting><link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><returnvalue>cairo_user_scaled_font_unicode_to_glyph_func_t</returnvalue></link>  cairo_user_font_face_get_unicode_to_glyph_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
@@ -487,7 +489,7 @@ or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an er
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-text-to-glyphs-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_text_to_glyphs_func ()</title>
-<indexterm zone="cairo-user-font-face-set-text-to-glyphs-func" role="1.8"><primary>cairo_user_font_face_set_text_to_glyphs_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-set-text-to-glyphs-func" role="1.8"><primary sortas="user_font_face_set_text_to_glyphs_func">cairo_user_font_face_set_text_to_glyphs_func</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_user_font_face_set_text_to_glyphs_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-text-to-glyphs-func-t"><type>cairo_user_scaled_font_text_to_glyphs_func_t</type></link> text_to_glyphs_func</parameter>);</programlisting>
@@ -510,7 +512,7 @@ is created from it.
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-text-to-glyphs-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_text_to_glyphs_func ()</title>
-<indexterm zone="cairo-user-font-face-get-text-to-glyphs-func" role="1.8"><primary>cairo_user_font_face_get_text_to_glyphs_func</primary></indexterm>
+<indexterm zone="cairo-user-font-face-get-text-to-glyphs-func" role="1.8"><primary sortas="user_font_face_get_text_to_glyphs_func">cairo_user_font_face_get_text_to_glyphs_func</primary></indexterm>
 <programlisting><link linkend="cairo-user-scaled-font-text-to-glyphs-func-t"><returnvalue>cairo_user_scaled_font_text_to_glyphs_func_t</returnvalue></link>  cairo_user_font_face_get_text_to_glyphs_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>

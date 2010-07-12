@@ -1,30 +1,20 @@
 <!-- ##### SECTION Title ##### -->
-cairo_t
+cairo
 
 <!-- ##### SECTION Short_Description ##### -->
-The cairo drawing context
+
 
 <!-- ##### SECTION Long_Description ##### -->
+<para>
 
-  <para>
-    #cairo_t is the main object used when drawing with cairo. To
-    draw with cairo, you create a #cairo_t, set the target surface,
-    and drawing options for the #cairo_t, create shapes with
-    functions like cairo_move_to() and cairo_line_to(), and then
-    draw shapes with cairo_stroke() or cairo_fill().
-  </para>
-  <para>
-    #cairo_t<!-- -->'s can be pushed to a stack via cairo_save().
-    They may then safely be changed, without loosing the current state.
-    Use cairo_restore() to restore to the saved state.
-  </para>
+</para>
+
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-<itemizedlist>
-<listitem>#cairo_surface_t</listitem>
-</itemizedlist>
+
 </para>
+
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -464,6 +454,17 @@ The cairo drawing context
 @y1: 
 @x2: 
 @y2: 
+
+
+<!-- ##### FUNCTION cairo_in_clip ##### -->
+<para>
+
+</para>
+
+@cr: 
+@x: 
+@y: 
+@Returns: 
 
 
 <!-- ##### FUNCTION cairo_reset_clip ##### -->

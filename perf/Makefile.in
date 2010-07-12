@@ -51,14 +51,11 @@ subdir = perf
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.compare.m4 \
-	$(top_srcdir)/build/aclocal.dolt.m4 \
 	$(top_srcdir)/build/aclocal.enable.m4 \
 	$(top_srcdir)/build/aclocal.float.m4 \
 	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
 	$(top_srcdir)/build/aclocal.pkg.m4 \
-	$(top_srcdir)/build/aclocal.shave.m4 \
-	$(top_srcdir)/build/ax-pthread.m4 \
 	$(top_srcdir)/build/libtool.m4 \
 	$(top_srcdir)/build/ltoptions.m4 \
 	$(top_srcdir)/build/ltsugar.m4 \
@@ -72,6 +69,7 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/configure.ac.system \
 	$(top_srcdir)/build/configure.ac.analysis \
 	$(top_srcdir)/build/configure.ac.noversion \
+	$(top_srcdir)/build/configure.ac.pthread \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -82,6 +80,9 @@ CONFIG_CLEAN_VPATH_FILES =
 libcairoperf_la_LIBADD =
 am_libcairoperf_la_OBJECTS = cairo-perf-report.lo cairo-stats.lo
 libcairoperf_la_OBJECTS = $(am_libcairoperf_la_OBJECTS)
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
 am_cairo_perf_chart_OBJECTS = cairo-perf-chart.$(OBJEXT)
 cairo_perf_chart_OBJECTS = $(am_cairo_perf_chart_OBJECTS)
 cairo_perf_chart_LDADD = $(LDADD)
@@ -111,8 +112,8 @@ am__DEPENDENCIES_2 = libcairoperf.la \
 	$(top_builddir)/boilerplate/libcairoboilerplate.la \
 	$(top_builddir)/src/libcairo.la $(am__DEPENDENCIES_1)
 cairo_perf_graph_files_DEPENDENCIES = $(am__DEPENDENCIES_2)
-cairo_perf_graph_files_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+cairo_perf_graph_files_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(cairo_perf_graph_files_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__cairo_perf_micro_SOURCES_DIST = cairo-perf-micro.c cairo-perf.h \
@@ -167,10 +168,26 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libcairoperf_la_SOURCES) $(cairo_perf_chart_SOURCES) \
 	$(cairo_perf_compare_backends_SOURCES) \
 	$(cairo_perf_diff_files_SOURCES) \
@@ -190,7 +207,7 @@ red=; grn=; lgn=; blu=; std=
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
-AM_MAKEFLAGS = @AM_MAKEFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
@@ -227,7 +244,6 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
-DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -235,8 +251,6 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FC = @FC@
 FGREP = @FGREP@
 FIND = @FIND@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
@@ -265,17 +279,13 @@ LIBSPECTRE_LIBS = @LIBSPECTRE_LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LTCOMPILE = @LTCOMPILE@
-LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LTP = @LTP@
 LTP_GENHTML = @LTP_GENHTML@
-MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
-OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -292,10 +302,6 @@ PKGCONFIG_REQUIRES = @PKGCONFIG_REQUIRES@
 PKG_CONFIG = @PKG_CONFIG@
 POPPLER_CFLAGS = @POPPLER_CFLAGS@
 POPPLER_LIBS = @POPPLER_LIBS@
-PTHREAD_CC = @PTHREAD_CC@
-PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
-PTHREAD_LIBS = @PTHREAD_LIBS@
-Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -304,7 +310,6 @@ SHLIB_EXT = @SHLIB_EXT@
 SHM_LIBS = @SHM_LIBS@
 SHTOOL = @SHTOOL@
 STRIP = @STRIP@
-V = @V@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VERSION = @VERSION@
@@ -326,7 +331,6 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
-ax_pthread_config = @ax_pthread_config@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -381,11 +385,14 @@ png_REQUIRES = @png_REQUIRES@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pthread_CFLAGS = @pthread_CFLAGS@
+pthread_LIBS = @pthread_LIBS@
 qt_CFLAGS = @qt_CFLAGS@
 qt_LIBS = @qt_LIBS@
+real_pthread_CFLAGS = @real_pthread_CFLAGS@
+real_pthread_LIBS = @real_pthread_LIBS@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-shavedir = @shavedir@
 shm_LIBS = @shm_LIBS@
 skia_DIR = @skia_DIR@
 srcdir = @srcdir@
@@ -535,7 +542,7 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 libcairoperf.la: $(libcairoperf_la_OBJECTS) $(libcairoperf_la_DEPENDENCIES) 
-	$(LINK)  $(libcairoperf_la_OBJECTS) $(libcairoperf_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK)  $(libcairoperf_la_OBJECTS) $(libcairoperf_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -547,25 +554,25 @@ clean-checkPROGRAMS:
 	rm -f $$list
 cairo-perf-chart$(EXEEXT): $(cairo_perf_chart_OBJECTS) $(cairo_perf_chart_DEPENDENCIES) 
 	@rm -f cairo-perf-chart$(EXEEXT)
-	$(LINK) $(cairo_perf_chart_OBJECTS) $(cairo_perf_chart_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(cairo_perf_chart_OBJECTS) $(cairo_perf_chart_LDADD) $(LIBS)
 cairo-perf-compare-backends$(EXEEXT): $(cairo_perf_compare_backends_OBJECTS) $(cairo_perf_compare_backends_DEPENDENCIES) 
 	@rm -f cairo-perf-compare-backends$(EXEEXT)
-	$(LINK) $(cairo_perf_compare_backends_OBJECTS) $(cairo_perf_compare_backends_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(cairo_perf_compare_backends_OBJECTS) $(cairo_perf_compare_backends_LDADD) $(LIBS)
 cairo-perf-diff-files$(EXEEXT): $(cairo_perf_diff_files_OBJECTS) $(cairo_perf_diff_files_DEPENDENCIES) 
 	@rm -f cairo-perf-diff-files$(EXEEXT)
-	$(LINK) $(cairo_perf_diff_files_OBJECTS) $(cairo_perf_diff_files_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(cairo_perf_diff_files_OBJECTS) $(cairo_perf_diff_files_LDADD) $(LIBS)
 cairo-perf-graph-files$(EXEEXT): $(cairo_perf_graph_files_OBJECTS) $(cairo_perf_graph_files_DEPENDENCIES) 
 	@rm -f cairo-perf-graph-files$(EXEEXT)
-	$(cairo_perf_graph_files_LINK) $(cairo_perf_graph_files_OBJECTS) $(cairo_perf_graph_files_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(cairo_perf_graph_files_LINK) $(cairo_perf_graph_files_OBJECTS) $(cairo_perf_graph_files_LDADD) $(LIBS)
 cairo-perf-micro$(EXEEXT): $(cairo_perf_micro_OBJECTS) $(cairo_perf_micro_DEPENDENCIES) 
 	@rm -f cairo-perf-micro$(EXEEXT)
-	$(LINK) $(cairo_perf_micro_OBJECTS) $(cairo_perf_micro_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(cairo_perf_micro_OBJECTS) $(cairo_perf_micro_LDADD) $(LIBS)
 cairo-perf-print$(EXEEXT): $(cairo_perf_print_OBJECTS) $(cairo_perf_print_DEPENDENCIES) 
 	@rm -f cairo-perf-print$(EXEEXT)
-	$(LINK) $(cairo_perf_print_OBJECTS) $(cairo_perf_print_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(cairo_perf_print_OBJECTS) $(cairo_perf_print_LDADD) $(LIBS)
 cairo-perf-trace$(EXEEXT): $(cairo_perf_trace_OBJECTS) $(cairo_perf_trace_DEPENDENCIES) 
 	@rm -f cairo-perf-trace$(EXEEXT)
-	$(LINK) $(cairo_perf_trace_OBJECTS) $(cairo_perf_trace_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(cairo_perf_trace_OBJECTS) $(cairo_perf_trace_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -615,428 +622,489 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zrusin.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 cairo_perf_graph_files-cairo-perf-graph-files.o: cairo-perf-graph-files.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-files.o -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-files.o `test -f 'cairo-perf-graph-files.c' || echo '$(srcdir)/'`cairo-perf-graph-files.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-files.o -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-files.o `test -f 'cairo-perf-graph-files.c' || echo '$(srcdir)/'`cairo-perf-graph-files.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cairo-perf-graph-files.c' object='cairo_perf_graph_files-cairo-perf-graph-files.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -c -o cairo_perf_graph_files-cairo-perf-graph-files.o `test -f 'cairo-perf-graph-files.c' || echo '$(srcdir)/'`cairo-perf-graph-files.c
 
 cairo_perf_graph_files-cairo-perf-graph-files.obj: cairo-perf-graph-files.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-files.obj -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-files.obj `if test -f 'cairo-perf-graph-files.c'; then $(CYGPATH_W) 'cairo-perf-graph-files.c'; else $(CYGPATH_W) '$(srcdir)/cairo-perf-graph-files.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-files.obj -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-files.obj `if test -f 'cairo-perf-graph-files.c'; then $(CYGPATH_W) 'cairo-perf-graph-files.c'; else $(CYGPATH_W) '$(srcdir)/cairo-perf-graph-files.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-files.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cairo-perf-graph-files.c' object='cairo_perf_graph_files-cairo-perf-graph-files.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -c -o cairo_perf_graph_files-cairo-perf-graph-files.obj `if test -f 'cairo-perf-graph-files.c'; then $(CYGPATH_W) 'cairo-perf-graph-files.c'; else $(CYGPATH_W) '$(srcdir)/cairo-perf-graph-files.c'; fi`
 
 cairo_perf_graph_files-cairo-perf-graph-widget.o: cairo-perf-graph-widget.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-widget.o -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-widget.o `test -f 'cairo-perf-graph-widget.c' || echo '$(srcdir)/'`cairo-perf-graph-widget.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-widget.o -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-widget.o `test -f 'cairo-perf-graph-widget.c' || echo '$(srcdir)/'`cairo-perf-graph-widget.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cairo-perf-graph-widget.c' object='cairo_perf_graph_files-cairo-perf-graph-widget.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -c -o cairo_perf_graph_files-cairo-perf-graph-widget.o `test -f 'cairo-perf-graph-widget.c' || echo '$(srcdir)/'`cairo-perf-graph-widget.c
 
 cairo_perf_graph_files-cairo-perf-graph-widget.obj: cairo-perf-graph-widget.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-widget.obj -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-widget.obj `if test -f 'cairo-perf-graph-widget.c'; then $(CYGPATH_W) 'cairo-perf-graph-widget.c'; else $(CYGPATH_W) '$(srcdir)/cairo-perf-graph-widget.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -MT cairo_perf_graph_files-cairo-perf-graph-widget.obj -MD -MP -MF $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo -c -o cairo_perf_graph_files-cairo-perf-graph-widget.obj `if test -f 'cairo-perf-graph-widget.c'; then $(CYGPATH_W) 'cairo-perf-graph-widget.c'; else $(CYGPATH_W) '$(srcdir)/cairo-perf-graph-widget.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Tpo $(DEPDIR)/cairo_perf_graph_files-cairo-perf-graph-widget.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cairo-perf-graph-widget.c' object='cairo_perf_graph_files-cairo-perf-graph-widget.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_perf_graph_files_CFLAGS) $(CFLAGS) -c -o cairo_perf_graph_files-cairo-perf-graph-widget.obj `if test -f 'cairo-perf-graph-widget.c'; then $(CYGPATH_W) 'cairo-perf-graph-widget.c'; else $(CYGPATH_W) '$(srcdir)/cairo-perf-graph-widget.c'; fi`
 
 cairo-perf-cover.o: micro/cairo-perf-cover.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-perf-cover.o -MD -MP -MF $(DEPDIR)/cairo-perf-cover.Tpo -c -o cairo-perf-cover.o `test -f 'micro/cairo-perf-cover.c' || echo '$(srcdir)/'`micro/cairo-perf-cover.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo-perf-cover.Tpo $(DEPDIR)/cairo-perf-cover.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-perf-cover.o -MD -MP -MF $(DEPDIR)/cairo-perf-cover.Tpo -c -o cairo-perf-cover.o `test -f 'micro/cairo-perf-cover.c' || echo '$(srcdir)/'`micro/cairo-perf-cover.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo-perf-cover.Tpo $(DEPDIR)/cairo-perf-cover.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/cairo-perf-cover.c' object='cairo-perf-cover.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cairo-perf-cover.o `test -f 'micro/cairo-perf-cover.c' || echo '$(srcdir)/'`micro/cairo-perf-cover.c
 
 cairo-perf-cover.obj: micro/cairo-perf-cover.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-perf-cover.obj -MD -MP -MF $(DEPDIR)/cairo-perf-cover.Tpo -c -o cairo-perf-cover.obj `if test -f 'micro/cairo-perf-cover.c'; then $(CYGPATH_W) 'micro/cairo-perf-cover.c'; else $(CYGPATH_W) '$(srcdir)/micro/cairo-perf-cover.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo-perf-cover.Tpo $(DEPDIR)/cairo-perf-cover.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-perf-cover.obj -MD -MP -MF $(DEPDIR)/cairo-perf-cover.Tpo -c -o cairo-perf-cover.obj `if test -f 'micro/cairo-perf-cover.c'; then $(CYGPATH_W) 'micro/cairo-perf-cover.c'; else $(CYGPATH_W) '$(srcdir)/micro/cairo-perf-cover.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo-perf-cover.Tpo $(DEPDIR)/cairo-perf-cover.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/cairo-perf-cover.c' object='cairo-perf-cover.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cairo-perf-cover.obj `if test -f 'micro/cairo-perf-cover.c'; then $(CYGPATH_W) 'micro/cairo-perf-cover.c'; else $(CYGPATH_W) '$(srcdir)/micro/cairo-perf-cover.c'; fi`
 
 box-outline.o: micro/box-outline.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT box-outline.o -MD -MP -MF $(DEPDIR)/box-outline.Tpo -c -o box-outline.o `test -f 'micro/box-outline.c' || echo '$(srcdir)/'`micro/box-outline.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/box-outline.Tpo $(DEPDIR)/box-outline.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT box-outline.o -MD -MP -MF $(DEPDIR)/box-outline.Tpo -c -o box-outline.o `test -f 'micro/box-outline.c' || echo '$(srcdir)/'`micro/box-outline.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/box-outline.Tpo $(DEPDIR)/box-outline.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/box-outline.c' object='box-outline.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o box-outline.o `test -f 'micro/box-outline.c' || echo '$(srcdir)/'`micro/box-outline.c
 
 box-outline.obj: micro/box-outline.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT box-outline.obj -MD -MP -MF $(DEPDIR)/box-outline.Tpo -c -o box-outline.obj `if test -f 'micro/box-outline.c'; then $(CYGPATH_W) 'micro/box-outline.c'; else $(CYGPATH_W) '$(srcdir)/micro/box-outline.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/box-outline.Tpo $(DEPDIR)/box-outline.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT box-outline.obj -MD -MP -MF $(DEPDIR)/box-outline.Tpo -c -o box-outline.obj `if test -f 'micro/box-outline.c'; then $(CYGPATH_W) 'micro/box-outline.c'; else $(CYGPATH_W) '$(srcdir)/micro/box-outline.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/box-outline.Tpo $(DEPDIR)/box-outline.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/box-outline.c' object='box-outline.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o box-outline.obj `if test -f 'micro/box-outline.c'; then $(CYGPATH_W) 'micro/box-outline.c'; else $(CYGPATH_W) '$(srcdir)/micro/box-outline.c'; fi`
 
 composite-checker.o: micro/composite-checker.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT composite-checker.o -MD -MP -MF $(DEPDIR)/composite-checker.Tpo -c -o composite-checker.o `test -f 'micro/composite-checker.c' || echo '$(srcdir)/'`micro/composite-checker.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/composite-checker.Tpo $(DEPDIR)/composite-checker.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT composite-checker.o -MD -MP -MF $(DEPDIR)/composite-checker.Tpo -c -o composite-checker.o `test -f 'micro/composite-checker.c' || echo '$(srcdir)/'`micro/composite-checker.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/composite-checker.Tpo $(DEPDIR)/composite-checker.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/composite-checker.c' object='composite-checker.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o composite-checker.o `test -f 'micro/composite-checker.c' || echo '$(srcdir)/'`micro/composite-checker.c
 
 composite-checker.obj: micro/composite-checker.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT composite-checker.obj -MD -MP -MF $(DEPDIR)/composite-checker.Tpo -c -o composite-checker.obj `if test -f 'micro/composite-checker.c'; then $(CYGPATH_W) 'micro/composite-checker.c'; else $(CYGPATH_W) '$(srcdir)/micro/composite-checker.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/composite-checker.Tpo $(DEPDIR)/composite-checker.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT composite-checker.obj -MD -MP -MF $(DEPDIR)/composite-checker.Tpo -c -o composite-checker.obj `if test -f 'micro/composite-checker.c'; then $(CYGPATH_W) 'micro/composite-checker.c'; else $(CYGPATH_W) '$(srcdir)/micro/composite-checker.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/composite-checker.Tpo $(DEPDIR)/composite-checker.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/composite-checker.c' object='composite-checker.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o composite-checker.obj `if test -f 'micro/composite-checker.c'; then $(CYGPATH_W) 'micro/composite-checker.c'; else $(CYGPATH_W) '$(srcdir)/micro/composite-checker.c'; fi`
 
 fill.o: micro/fill.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fill.o -MD -MP -MF $(DEPDIR)/fill.Tpo -c -o fill.o `test -f 'micro/fill.c' || echo '$(srcdir)/'`micro/fill.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/fill.Tpo $(DEPDIR)/fill.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fill.o -MD -MP -MF $(DEPDIR)/fill.Tpo -c -o fill.o `test -f 'micro/fill.c' || echo '$(srcdir)/'`micro/fill.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fill.Tpo $(DEPDIR)/fill.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/fill.c' object='fill.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fill.o `test -f 'micro/fill.c' || echo '$(srcdir)/'`micro/fill.c
 
 fill.obj: micro/fill.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fill.obj -MD -MP -MF $(DEPDIR)/fill.Tpo -c -o fill.obj `if test -f 'micro/fill.c'; then $(CYGPATH_W) 'micro/fill.c'; else $(CYGPATH_W) '$(srcdir)/micro/fill.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/fill.Tpo $(DEPDIR)/fill.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fill.obj -MD -MP -MF $(DEPDIR)/fill.Tpo -c -o fill.obj `if test -f 'micro/fill.c'; then $(CYGPATH_W) 'micro/fill.c'; else $(CYGPATH_W) '$(srcdir)/micro/fill.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fill.Tpo $(DEPDIR)/fill.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/fill.c' object='fill.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fill.obj `if test -f 'micro/fill.c'; then $(CYGPATH_W) 'micro/fill.c'; else $(CYGPATH_W) '$(srcdir)/micro/fill.c'; fi`
 
 long-lines.o: micro/long-lines.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-lines.o -MD -MP -MF $(DEPDIR)/long-lines.Tpo -c -o long-lines.o `test -f 'micro/long-lines.c' || echo '$(srcdir)/'`micro/long-lines.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/long-lines.Tpo $(DEPDIR)/long-lines.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-lines.o -MD -MP -MF $(DEPDIR)/long-lines.Tpo -c -o long-lines.o `test -f 'micro/long-lines.c' || echo '$(srcdir)/'`micro/long-lines.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/long-lines.Tpo $(DEPDIR)/long-lines.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/long-lines.c' object='long-lines.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o long-lines.o `test -f 'micro/long-lines.c' || echo '$(srcdir)/'`micro/long-lines.c
 
 long-lines.obj: micro/long-lines.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-lines.obj -MD -MP -MF $(DEPDIR)/long-lines.Tpo -c -o long-lines.obj `if test -f 'micro/long-lines.c'; then $(CYGPATH_W) 'micro/long-lines.c'; else $(CYGPATH_W) '$(srcdir)/micro/long-lines.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/long-lines.Tpo $(DEPDIR)/long-lines.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-lines.obj -MD -MP -MF $(DEPDIR)/long-lines.Tpo -c -o long-lines.obj `if test -f 'micro/long-lines.c'; then $(CYGPATH_W) 'micro/long-lines.c'; else $(CYGPATH_W) '$(srcdir)/micro/long-lines.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/long-lines.Tpo $(DEPDIR)/long-lines.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/long-lines.c' object='long-lines.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o long-lines.obj `if test -f 'micro/long-lines.c'; then $(CYGPATH_W) 'micro/long-lines.c'; else $(CYGPATH_W) '$(srcdir)/micro/long-lines.c'; fi`
 
 mosaic.o: micro/mosaic.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mosaic.o -MD -MP -MF $(DEPDIR)/mosaic.Tpo -c -o mosaic.o `test -f 'micro/mosaic.c' || echo '$(srcdir)/'`micro/mosaic.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mosaic.Tpo $(DEPDIR)/mosaic.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mosaic.o -MD -MP -MF $(DEPDIR)/mosaic.Tpo -c -o mosaic.o `test -f 'micro/mosaic.c' || echo '$(srcdir)/'`micro/mosaic.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mosaic.Tpo $(DEPDIR)/mosaic.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/mosaic.c' object='mosaic.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mosaic.o `test -f 'micro/mosaic.c' || echo '$(srcdir)/'`micro/mosaic.c
 
 mosaic.obj: micro/mosaic.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mosaic.obj -MD -MP -MF $(DEPDIR)/mosaic.Tpo -c -o mosaic.obj `if test -f 'micro/mosaic.c'; then $(CYGPATH_W) 'micro/mosaic.c'; else $(CYGPATH_W) '$(srcdir)/micro/mosaic.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mosaic.Tpo $(DEPDIR)/mosaic.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mosaic.obj -MD -MP -MF $(DEPDIR)/mosaic.Tpo -c -o mosaic.obj `if test -f 'micro/mosaic.c'; then $(CYGPATH_W) 'micro/mosaic.c'; else $(CYGPATH_W) '$(srcdir)/micro/mosaic.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mosaic.Tpo $(DEPDIR)/mosaic.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/mosaic.c' object='mosaic.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mosaic.obj `if test -f 'micro/mosaic.c'; then $(CYGPATH_W) 'micro/mosaic.c'; else $(CYGPATH_W) '$(srcdir)/micro/mosaic.c'; fi`
 
 paint.o: micro/paint.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint.o -MD -MP -MF $(DEPDIR)/paint.Tpo -c -o paint.o `test -f 'micro/paint.c' || echo '$(srcdir)/'`micro/paint.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/paint.Tpo $(DEPDIR)/paint.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint.o -MD -MP -MF $(DEPDIR)/paint.Tpo -c -o paint.o `test -f 'micro/paint.c' || echo '$(srcdir)/'`micro/paint.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/paint.Tpo $(DEPDIR)/paint.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/paint.c' object='paint.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o paint.o `test -f 'micro/paint.c' || echo '$(srcdir)/'`micro/paint.c
 
 paint.obj: micro/paint.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint.obj -MD -MP -MF $(DEPDIR)/paint.Tpo -c -o paint.obj `if test -f 'micro/paint.c'; then $(CYGPATH_W) 'micro/paint.c'; else $(CYGPATH_W) '$(srcdir)/micro/paint.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/paint.Tpo $(DEPDIR)/paint.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint.obj -MD -MP -MF $(DEPDIR)/paint.Tpo -c -o paint.obj `if test -f 'micro/paint.c'; then $(CYGPATH_W) 'micro/paint.c'; else $(CYGPATH_W) '$(srcdir)/micro/paint.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/paint.Tpo $(DEPDIR)/paint.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/paint.c' object='paint.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o paint.obj `if test -f 'micro/paint.c'; then $(CYGPATH_W) 'micro/paint.c'; else $(CYGPATH_W) '$(srcdir)/micro/paint.c'; fi`
 
 paint-with-alpha.o: micro/paint-with-alpha.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint-with-alpha.o -MD -MP -MF $(DEPDIR)/paint-with-alpha.Tpo -c -o paint-with-alpha.o `test -f 'micro/paint-with-alpha.c' || echo '$(srcdir)/'`micro/paint-with-alpha.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/paint-with-alpha.Tpo $(DEPDIR)/paint-with-alpha.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint-with-alpha.o -MD -MP -MF $(DEPDIR)/paint-with-alpha.Tpo -c -o paint-with-alpha.o `test -f 'micro/paint-with-alpha.c' || echo '$(srcdir)/'`micro/paint-with-alpha.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/paint-with-alpha.Tpo $(DEPDIR)/paint-with-alpha.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/paint-with-alpha.c' object='paint-with-alpha.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o paint-with-alpha.o `test -f 'micro/paint-with-alpha.c' || echo '$(srcdir)/'`micro/paint-with-alpha.c
 
 paint-with-alpha.obj: micro/paint-with-alpha.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint-with-alpha.obj -MD -MP -MF $(DEPDIR)/paint-with-alpha.Tpo -c -o paint-with-alpha.obj `if test -f 'micro/paint-with-alpha.c'; then $(CYGPATH_W) 'micro/paint-with-alpha.c'; else $(CYGPATH_W) '$(srcdir)/micro/paint-with-alpha.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/paint-with-alpha.Tpo $(DEPDIR)/paint-with-alpha.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT paint-with-alpha.obj -MD -MP -MF $(DEPDIR)/paint-with-alpha.Tpo -c -o paint-with-alpha.obj `if test -f 'micro/paint-with-alpha.c'; then $(CYGPATH_W) 'micro/paint-with-alpha.c'; else $(CYGPATH_W) '$(srcdir)/micro/paint-with-alpha.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/paint-with-alpha.Tpo $(DEPDIR)/paint-with-alpha.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/paint-with-alpha.c' object='paint-with-alpha.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o paint-with-alpha.obj `if test -f 'micro/paint-with-alpha.c'; then $(CYGPATH_W) 'micro/paint-with-alpha.c'; else $(CYGPATH_W) '$(srcdir)/micro/paint-with-alpha.c'; fi`
 
 mask.o: micro/mask.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mask.o -MD -MP -MF $(DEPDIR)/mask.Tpo -c -o mask.o `test -f 'micro/mask.c' || echo '$(srcdir)/'`micro/mask.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mask.Tpo $(DEPDIR)/mask.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mask.o -MD -MP -MF $(DEPDIR)/mask.Tpo -c -o mask.o `test -f 'micro/mask.c' || echo '$(srcdir)/'`micro/mask.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mask.Tpo $(DEPDIR)/mask.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/mask.c' object='mask.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mask.o `test -f 'micro/mask.c' || echo '$(srcdir)/'`micro/mask.c
 
 mask.obj: micro/mask.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mask.obj -MD -MP -MF $(DEPDIR)/mask.Tpo -c -o mask.obj `if test -f 'micro/mask.c'; then $(CYGPATH_W) 'micro/mask.c'; else $(CYGPATH_W) '$(srcdir)/micro/mask.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mask.Tpo $(DEPDIR)/mask.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mask.obj -MD -MP -MF $(DEPDIR)/mask.Tpo -c -o mask.obj `if test -f 'micro/mask.c'; then $(CYGPATH_W) 'micro/mask.c'; else $(CYGPATH_W) '$(srcdir)/micro/mask.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mask.Tpo $(DEPDIR)/mask.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/mask.c' object='mask.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mask.obj `if test -f 'micro/mask.c'; then $(CYGPATH_W) 'micro/mask.c'; else $(CYGPATH_W) '$(srcdir)/micro/mask.c'; fi`
 
 pattern_create_radial.o: micro/pattern_create_radial.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pattern_create_radial.o -MD -MP -MF $(DEPDIR)/pattern_create_radial.Tpo -c -o pattern_create_radial.o `test -f 'micro/pattern_create_radial.c' || echo '$(srcdir)/'`micro/pattern_create_radial.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/pattern_create_radial.Tpo $(DEPDIR)/pattern_create_radial.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pattern_create_radial.o -MD -MP -MF $(DEPDIR)/pattern_create_radial.Tpo -c -o pattern_create_radial.o `test -f 'micro/pattern_create_radial.c' || echo '$(srcdir)/'`micro/pattern_create_radial.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pattern_create_radial.Tpo $(DEPDIR)/pattern_create_radial.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/pattern_create_radial.c' object='pattern_create_radial.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pattern_create_radial.o `test -f 'micro/pattern_create_radial.c' || echo '$(srcdir)/'`micro/pattern_create_radial.c
 
 pattern_create_radial.obj: micro/pattern_create_radial.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pattern_create_radial.obj -MD -MP -MF $(DEPDIR)/pattern_create_radial.Tpo -c -o pattern_create_radial.obj `if test -f 'micro/pattern_create_radial.c'; then $(CYGPATH_W) 'micro/pattern_create_radial.c'; else $(CYGPATH_W) '$(srcdir)/micro/pattern_create_radial.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/pattern_create_radial.Tpo $(DEPDIR)/pattern_create_radial.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pattern_create_radial.obj -MD -MP -MF $(DEPDIR)/pattern_create_radial.Tpo -c -o pattern_create_radial.obj `if test -f 'micro/pattern_create_radial.c'; then $(CYGPATH_W) 'micro/pattern_create_radial.c'; else $(CYGPATH_W) '$(srcdir)/micro/pattern_create_radial.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pattern_create_radial.Tpo $(DEPDIR)/pattern_create_radial.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/pattern_create_radial.c' object='pattern_create_radial.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pattern_create_radial.obj `if test -f 'micro/pattern_create_radial.c'; then $(CYGPATH_W) 'micro/pattern_create_radial.c'; else $(CYGPATH_W) '$(srcdir)/micro/pattern_create_radial.c'; fi`
 
 rectangles.o: micro/rectangles.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rectangles.o -MD -MP -MF $(DEPDIR)/rectangles.Tpo -c -o rectangles.o `test -f 'micro/rectangles.c' || echo '$(srcdir)/'`micro/rectangles.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rectangles.Tpo $(DEPDIR)/rectangles.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rectangles.o -MD -MP -MF $(DEPDIR)/rectangles.Tpo -c -o rectangles.o `test -f 'micro/rectangles.c' || echo '$(srcdir)/'`micro/rectangles.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rectangles.Tpo $(DEPDIR)/rectangles.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/rectangles.c' object='rectangles.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rectangles.o `test -f 'micro/rectangles.c' || echo '$(srcdir)/'`micro/rectangles.c
 
 rectangles.obj: micro/rectangles.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rectangles.obj -MD -MP -MF $(DEPDIR)/rectangles.Tpo -c -o rectangles.obj `if test -f 'micro/rectangles.c'; then $(CYGPATH_W) 'micro/rectangles.c'; else $(CYGPATH_W) '$(srcdir)/micro/rectangles.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rectangles.Tpo $(DEPDIR)/rectangles.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rectangles.obj -MD -MP -MF $(DEPDIR)/rectangles.Tpo -c -o rectangles.obj `if test -f 'micro/rectangles.c'; then $(CYGPATH_W) 'micro/rectangles.c'; else $(CYGPATH_W) '$(srcdir)/micro/rectangles.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rectangles.Tpo $(DEPDIR)/rectangles.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/rectangles.c' object='rectangles.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rectangles.obj `if test -f 'micro/rectangles.c'; then $(CYGPATH_W) 'micro/rectangles.c'; else $(CYGPATH_W) '$(srcdir)/micro/rectangles.c'; fi`
 
 rounded-rectangles.o: micro/rounded-rectangles.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rounded-rectangles.o -MD -MP -MF $(DEPDIR)/rounded-rectangles.Tpo -c -o rounded-rectangles.o `test -f 'micro/rounded-rectangles.c' || echo '$(srcdir)/'`micro/rounded-rectangles.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rounded-rectangles.Tpo $(DEPDIR)/rounded-rectangles.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rounded-rectangles.o -MD -MP -MF $(DEPDIR)/rounded-rectangles.Tpo -c -o rounded-rectangles.o `test -f 'micro/rounded-rectangles.c' || echo '$(srcdir)/'`micro/rounded-rectangles.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rounded-rectangles.Tpo $(DEPDIR)/rounded-rectangles.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/rounded-rectangles.c' object='rounded-rectangles.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rounded-rectangles.o `test -f 'micro/rounded-rectangles.c' || echo '$(srcdir)/'`micro/rounded-rectangles.c
 
 rounded-rectangles.obj: micro/rounded-rectangles.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rounded-rectangles.obj -MD -MP -MF $(DEPDIR)/rounded-rectangles.Tpo -c -o rounded-rectangles.obj `if test -f 'micro/rounded-rectangles.c'; then $(CYGPATH_W) 'micro/rounded-rectangles.c'; else $(CYGPATH_W) '$(srcdir)/micro/rounded-rectangles.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rounded-rectangles.Tpo $(DEPDIR)/rounded-rectangles.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rounded-rectangles.obj -MD -MP -MF $(DEPDIR)/rounded-rectangles.Tpo -c -o rounded-rectangles.obj `if test -f 'micro/rounded-rectangles.c'; then $(CYGPATH_W) 'micro/rounded-rectangles.c'; else $(CYGPATH_W) '$(srcdir)/micro/rounded-rectangles.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rounded-rectangles.Tpo $(DEPDIR)/rounded-rectangles.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/rounded-rectangles.c' object='rounded-rectangles.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rounded-rectangles.obj `if test -f 'micro/rounded-rectangles.c'; then $(CYGPATH_W) 'micro/rounded-rectangles.c'; else $(CYGPATH_W) '$(srcdir)/micro/rounded-rectangles.c'; fi`
 
 stroke.o: micro/stroke.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT stroke.o -MD -MP -MF $(DEPDIR)/stroke.Tpo -c -o stroke.o `test -f 'micro/stroke.c' || echo '$(srcdir)/'`micro/stroke.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/stroke.Tpo $(DEPDIR)/stroke.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT stroke.o -MD -MP -MF $(DEPDIR)/stroke.Tpo -c -o stroke.o `test -f 'micro/stroke.c' || echo '$(srcdir)/'`micro/stroke.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/stroke.Tpo $(DEPDIR)/stroke.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/stroke.c' object='stroke.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o stroke.o `test -f 'micro/stroke.c' || echo '$(srcdir)/'`micro/stroke.c
 
 stroke.obj: micro/stroke.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT stroke.obj -MD -MP -MF $(DEPDIR)/stroke.Tpo -c -o stroke.obj `if test -f 'micro/stroke.c'; then $(CYGPATH_W) 'micro/stroke.c'; else $(CYGPATH_W) '$(srcdir)/micro/stroke.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/stroke.Tpo $(DEPDIR)/stroke.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT stroke.obj -MD -MP -MF $(DEPDIR)/stroke.Tpo -c -o stroke.obj `if test -f 'micro/stroke.c'; then $(CYGPATH_W) 'micro/stroke.c'; else $(CYGPATH_W) '$(srcdir)/micro/stroke.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/stroke.Tpo $(DEPDIR)/stroke.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/stroke.c' object='stroke.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o stroke.obj `if test -f 'micro/stroke.c'; then $(CYGPATH_W) 'micro/stroke.c'; else $(CYGPATH_W) '$(srcdir)/micro/stroke.c'; fi`
 
 subimage_copy.o: micro/subimage_copy.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT subimage_copy.o -MD -MP -MF $(DEPDIR)/subimage_copy.Tpo -c -o subimage_copy.o `test -f 'micro/subimage_copy.c' || echo '$(srcdir)/'`micro/subimage_copy.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/subimage_copy.Tpo $(DEPDIR)/subimage_copy.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT subimage_copy.o -MD -MP -MF $(DEPDIR)/subimage_copy.Tpo -c -o subimage_copy.o `test -f 'micro/subimage_copy.c' || echo '$(srcdir)/'`micro/subimage_copy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/subimage_copy.Tpo $(DEPDIR)/subimage_copy.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/subimage_copy.c' object='subimage_copy.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o subimage_copy.o `test -f 'micro/subimage_copy.c' || echo '$(srcdir)/'`micro/subimage_copy.c
 
 subimage_copy.obj: micro/subimage_copy.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT subimage_copy.obj -MD -MP -MF $(DEPDIR)/subimage_copy.Tpo -c -o subimage_copy.obj `if test -f 'micro/subimage_copy.c'; then $(CYGPATH_W) 'micro/subimage_copy.c'; else $(CYGPATH_W) '$(srcdir)/micro/subimage_copy.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/subimage_copy.Tpo $(DEPDIR)/subimage_copy.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT subimage_copy.obj -MD -MP -MF $(DEPDIR)/subimage_copy.Tpo -c -o subimage_copy.obj `if test -f 'micro/subimage_copy.c'; then $(CYGPATH_W) 'micro/subimage_copy.c'; else $(CYGPATH_W) '$(srcdir)/micro/subimage_copy.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/subimage_copy.Tpo $(DEPDIR)/subimage_copy.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/subimage_copy.c' object='subimage_copy.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o subimage_copy.obj `if test -f 'micro/subimage_copy.c'; then $(CYGPATH_W) 'micro/subimage_copy.c'; else $(CYGPATH_W) '$(srcdir)/micro/subimage_copy.c'; fi`
 
 tessellate.o: micro/tessellate.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tessellate.o -MD -MP -MF $(DEPDIR)/tessellate.Tpo -c -o tessellate.o `test -f 'micro/tessellate.c' || echo '$(srcdir)/'`micro/tessellate.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/tessellate.Tpo $(DEPDIR)/tessellate.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tessellate.o -MD -MP -MF $(DEPDIR)/tessellate.Tpo -c -o tessellate.o `test -f 'micro/tessellate.c' || echo '$(srcdir)/'`micro/tessellate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/tessellate.Tpo $(DEPDIR)/tessellate.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/tessellate.c' object='tessellate.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tessellate.o `test -f 'micro/tessellate.c' || echo '$(srcdir)/'`micro/tessellate.c
 
 tessellate.obj: micro/tessellate.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tessellate.obj -MD -MP -MF $(DEPDIR)/tessellate.Tpo -c -o tessellate.obj `if test -f 'micro/tessellate.c'; then $(CYGPATH_W) 'micro/tessellate.c'; else $(CYGPATH_W) '$(srcdir)/micro/tessellate.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/tessellate.Tpo $(DEPDIR)/tessellate.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tessellate.obj -MD -MP -MF $(DEPDIR)/tessellate.Tpo -c -o tessellate.obj `if test -f 'micro/tessellate.c'; then $(CYGPATH_W) 'micro/tessellate.c'; else $(CYGPATH_W) '$(srcdir)/micro/tessellate.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/tessellate.Tpo $(DEPDIR)/tessellate.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/tessellate.c' object='tessellate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tessellate.obj `if test -f 'micro/tessellate.c'; then $(CYGPATH_W) 'micro/tessellate.c'; else $(CYGPATH_W) '$(srcdir)/micro/tessellate.c'; fi`
 
 text.o: micro/text.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT text.o -MD -MP -MF $(DEPDIR)/text.Tpo -c -o text.o `test -f 'micro/text.c' || echo '$(srcdir)/'`micro/text.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/text.Tpo $(DEPDIR)/text.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT text.o -MD -MP -MF $(DEPDIR)/text.Tpo -c -o text.o `test -f 'micro/text.c' || echo '$(srcdir)/'`micro/text.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/text.Tpo $(DEPDIR)/text.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/text.c' object='text.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o text.o `test -f 'micro/text.c' || echo '$(srcdir)/'`micro/text.c
 
 text.obj: micro/text.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT text.obj -MD -MP -MF $(DEPDIR)/text.Tpo -c -o text.obj `if test -f 'micro/text.c'; then $(CYGPATH_W) 'micro/text.c'; else $(CYGPATH_W) '$(srcdir)/micro/text.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/text.Tpo $(DEPDIR)/text.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT text.obj -MD -MP -MF $(DEPDIR)/text.Tpo -c -o text.obj `if test -f 'micro/text.c'; then $(CYGPATH_W) 'micro/text.c'; else $(CYGPATH_W) '$(srcdir)/micro/text.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/text.Tpo $(DEPDIR)/text.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/text.c' object='text.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o text.obj `if test -f 'micro/text.c'; then $(CYGPATH_W) 'micro/text.c'; else $(CYGPATH_W) '$(srcdir)/micro/text.c'; fi`
 
 glyphs.o: micro/glyphs.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT glyphs.o -MD -MP -MF $(DEPDIR)/glyphs.Tpo -c -o glyphs.o `test -f 'micro/glyphs.c' || echo '$(srcdir)/'`micro/glyphs.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/glyphs.Tpo $(DEPDIR)/glyphs.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT glyphs.o -MD -MP -MF $(DEPDIR)/glyphs.Tpo -c -o glyphs.o `test -f 'micro/glyphs.c' || echo '$(srcdir)/'`micro/glyphs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/glyphs.Tpo $(DEPDIR)/glyphs.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/glyphs.c' object='glyphs.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o glyphs.o `test -f 'micro/glyphs.c' || echo '$(srcdir)/'`micro/glyphs.c
 
 glyphs.obj: micro/glyphs.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT glyphs.obj -MD -MP -MF $(DEPDIR)/glyphs.Tpo -c -o glyphs.obj `if test -f 'micro/glyphs.c'; then $(CYGPATH_W) 'micro/glyphs.c'; else $(CYGPATH_W) '$(srcdir)/micro/glyphs.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/glyphs.Tpo $(DEPDIR)/glyphs.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT glyphs.obj -MD -MP -MF $(DEPDIR)/glyphs.Tpo -c -o glyphs.obj `if test -f 'micro/glyphs.c'; then $(CYGPATH_W) 'micro/glyphs.c'; else $(CYGPATH_W) '$(srcdir)/micro/glyphs.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/glyphs.Tpo $(DEPDIR)/glyphs.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/glyphs.c' object='glyphs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o glyphs.obj `if test -f 'micro/glyphs.c'; then $(CYGPATH_W) 'micro/glyphs.c'; else $(CYGPATH_W) '$(srcdir)/micro/glyphs.c'; fi`
 
 twin.o: micro/twin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT twin.o -MD -MP -MF $(DEPDIR)/twin.Tpo -c -o twin.o `test -f 'micro/twin.c' || echo '$(srcdir)/'`micro/twin.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/twin.Tpo $(DEPDIR)/twin.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT twin.o -MD -MP -MF $(DEPDIR)/twin.Tpo -c -o twin.o `test -f 'micro/twin.c' || echo '$(srcdir)/'`micro/twin.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/twin.Tpo $(DEPDIR)/twin.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/twin.c' object='twin.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o twin.o `test -f 'micro/twin.c' || echo '$(srcdir)/'`micro/twin.c
 
 twin.obj: micro/twin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT twin.obj -MD -MP -MF $(DEPDIR)/twin.Tpo -c -o twin.obj `if test -f 'micro/twin.c'; then $(CYGPATH_W) 'micro/twin.c'; else $(CYGPATH_W) '$(srcdir)/micro/twin.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/twin.Tpo $(DEPDIR)/twin.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT twin.obj -MD -MP -MF $(DEPDIR)/twin.Tpo -c -o twin.obj `if test -f 'micro/twin.c'; then $(CYGPATH_W) 'micro/twin.c'; else $(CYGPATH_W) '$(srcdir)/micro/twin.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/twin.Tpo $(DEPDIR)/twin.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/twin.c' object='twin.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o twin.obj `if test -f 'micro/twin.c'; then $(CYGPATH_W) 'micro/twin.c'; else $(CYGPATH_W) '$(srcdir)/micro/twin.c'; fi`
 
 unaligned-clip.o: micro/unaligned-clip.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT unaligned-clip.o -MD -MP -MF $(DEPDIR)/unaligned-clip.Tpo -c -o unaligned-clip.o `test -f 'micro/unaligned-clip.c' || echo '$(srcdir)/'`micro/unaligned-clip.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/unaligned-clip.Tpo $(DEPDIR)/unaligned-clip.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT unaligned-clip.o -MD -MP -MF $(DEPDIR)/unaligned-clip.Tpo -c -o unaligned-clip.o `test -f 'micro/unaligned-clip.c' || echo '$(srcdir)/'`micro/unaligned-clip.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unaligned-clip.Tpo $(DEPDIR)/unaligned-clip.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/unaligned-clip.c' object='unaligned-clip.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o unaligned-clip.o `test -f 'micro/unaligned-clip.c' || echo '$(srcdir)/'`micro/unaligned-clip.c
 
 unaligned-clip.obj: micro/unaligned-clip.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT unaligned-clip.obj -MD -MP -MF $(DEPDIR)/unaligned-clip.Tpo -c -o unaligned-clip.obj `if test -f 'micro/unaligned-clip.c'; then $(CYGPATH_W) 'micro/unaligned-clip.c'; else $(CYGPATH_W) '$(srcdir)/micro/unaligned-clip.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/unaligned-clip.Tpo $(DEPDIR)/unaligned-clip.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT unaligned-clip.obj -MD -MP -MF $(DEPDIR)/unaligned-clip.Tpo -c -o unaligned-clip.obj `if test -f 'micro/unaligned-clip.c'; then $(CYGPATH_W) 'micro/unaligned-clip.c'; else $(CYGPATH_W) '$(srcdir)/micro/unaligned-clip.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unaligned-clip.Tpo $(DEPDIR)/unaligned-clip.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/unaligned-clip.c' object='unaligned-clip.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o unaligned-clip.obj `if test -f 'micro/unaligned-clip.c'; then $(CYGPATH_W) 'micro/unaligned-clip.c'; else $(CYGPATH_W) '$(srcdir)/micro/unaligned-clip.c'; fi`
 
 world-map.o: micro/world-map.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT world-map.o -MD -MP -MF $(DEPDIR)/world-map.Tpo -c -o world-map.o `test -f 'micro/world-map.c' || echo '$(srcdir)/'`micro/world-map.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/world-map.Tpo $(DEPDIR)/world-map.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT world-map.o -MD -MP -MF $(DEPDIR)/world-map.Tpo -c -o world-map.o `test -f 'micro/world-map.c' || echo '$(srcdir)/'`micro/world-map.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/world-map.Tpo $(DEPDIR)/world-map.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/world-map.c' object='world-map.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o world-map.o `test -f 'micro/world-map.c' || echo '$(srcdir)/'`micro/world-map.c
 
 world-map.obj: micro/world-map.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT world-map.obj -MD -MP -MF $(DEPDIR)/world-map.Tpo -c -o world-map.obj `if test -f 'micro/world-map.c'; then $(CYGPATH_W) 'micro/world-map.c'; else $(CYGPATH_W) '$(srcdir)/micro/world-map.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/world-map.Tpo $(DEPDIR)/world-map.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT world-map.obj -MD -MP -MF $(DEPDIR)/world-map.Tpo -c -o world-map.obj `if test -f 'micro/world-map.c'; then $(CYGPATH_W) 'micro/world-map.c'; else $(CYGPATH_W) '$(srcdir)/micro/world-map.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/world-map.Tpo $(DEPDIR)/world-map.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/world-map.c' object='world-map.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o world-map.obj `if test -f 'micro/world-map.c'; then $(CYGPATH_W) 'micro/world-map.c'; else $(CYGPATH_W) '$(srcdir)/micro/world-map.c'; fi`
 
 zrusin.o: micro/zrusin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT zrusin.o -MD -MP -MF $(DEPDIR)/zrusin.Tpo -c -o zrusin.o `test -f 'micro/zrusin.c' || echo '$(srcdir)/'`micro/zrusin.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/zrusin.Tpo $(DEPDIR)/zrusin.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT zrusin.o -MD -MP -MF $(DEPDIR)/zrusin.Tpo -c -o zrusin.o `test -f 'micro/zrusin.c' || echo '$(srcdir)/'`micro/zrusin.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/zrusin.Tpo $(DEPDIR)/zrusin.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/zrusin.c' object='zrusin.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o zrusin.o `test -f 'micro/zrusin.c' || echo '$(srcdir)/'`micro/zrusin.c
 
 zrusin.obj: micro/zrusin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT zrusin.obj -MD -MP -MF $(DEPDIR)/zrusin.Tpo -c -o zrusin.obj `if test -f 'micro/zrusin.c'; then $(CYGPATH_W) 'micro/zrusin.c'; else $(CYGPATH_W) '$(srcdir)/micro/zrusin.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/zrusin.Tpo $(DEPDIR)/zrusin.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT zrusin.obj -MD -MP -MF $(DEPDIR)/zrusin.Tpo -c -o zrusin.obj `if test -f 'micro/zrusin.c'; then $(CYGPATH_W) 'micro/zrusin.c'; else $(CYGPATH_W) '$(srcdir)/micro/zrusin.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/zrusin.Tpo $(DEPDIR)/zrusin.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/zrusin.c' object='zrusin.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o zrusin.obj `if test -f 'micro/zrusin.c'; then $(CYGPATH_W) 'micro/zrusin.c'; else $(CYGPATH_W) '$(srcdir)/micro/zrusin.c'; fi`
 
 long-dashed-lines.o: micro/long-dashed-lines.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-dashed-lines.o -MD -MP -MF $(DEPDIR)/long-dashed-lines.Tpo -c -o long-dashed-lines.o `test -f 'micro/long-dashed-lines.c' || echo '$(srcdir)/'`micro/long-dashed-lines.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/long-dashed-lines.Tpo $(DEPDIR)/long-dashed-lines.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-dashed-lines.o -MD -MP -MF $(DEPDIR)/long-dashed-lines.Tpo -c -o long-dashed-lines.o `test -f 'micro/long-dashed-lines.c' || echo '$(srcdir)/'`micro/long-dashed-lines.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/long-dashed-lines.Tpo $(DEPDIR)/long-dashed-lines.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/long-dashed-lines.c' object='long-dashed-lines.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o long-dashed-lines.o `test -f 'micro/long-dashed-lines.c' || echo '$(srcdir)/'`micro/long-dashed-lines.c
 
 long-dashed-lines.obj: micro/long-dashed-lines.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-dashed-lines.obj -MD -MP -MF $(DEPDIR)/long-dashed-lines.Tpo -c -o long-dashed-lines.obj `if test -f 'micro/long-dashed-lines.c'; then $(CYGPATH_W) 'micro/long-dashed-lines.c'; else $(CYGPATH_W) '$(srcdir)/micro/long-dashed-lines.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/long-dashed-lines.Tpo $(DEPDIR)/long-dashed-lines.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT long-dashed-lines.obj -MD -MP -MF $(DEPDIR)/long-dashed-lines.Tpo -c -o long-dashed-lines.obj `if test -f 'micro/long-dashed-lines.c'; then $(CYGPATH_W) 'micro/long-dashed-lines.c'; else $(CYGPATH_W) '$(srcdir)/micro/long-dashed-lines.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/long-dashed-lines.Tpo $(DEPDIR)/long-dashed-lines.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/long-dashed-lines.c' object='long-dashed-lines.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o long-dashed-lines.obj `if test -f 'micro/long-dashed-lines.c'; then $(CYGPATH_W) 'micro/long-dashed-lines.c'; else $(CYGPATH_W) '$(srcdir)/micro/long-dashed-lines.c'; fi`
 
 dragon.o: micro/dragon.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dragon.o -MD -MP -MF $(DEPDIR)/dragon.Tpo -c -o dragon.o `test -f 'micro/dragon.c' || echo '$(srcdir)/'`micro/dragon.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dragon.Tpo $(DEPDIR)/dragon.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dragon.o -MD -MP -MF $(DEPDIR)/dragon.Tpo -c -o dragon.o `test -f 'micro/dragon.c' || echo '$(srcdir)/'`micro/dragon.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dragon.Tpo $(DEPDIR)/dragon.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/dragon.c' object='dragon.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dragon.o `test -f 'micro/dragon.c' || echo '$(srcdir)/'`micro/dragon.c
 
 dragon.obj: micro/dragon.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dragon.obj -MD -MP -MF $(DEPDIR)/dragon.Tpo -c -o dragon.obj `if test -f 'micro/dragon.c'; then $(CYGPATH_W) 'micro/dragon.c'; else $(CYGPATH_W) '$(srcdir)/micro/dragon.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dragon.Tpo $(DEPDIR)/dragon.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dragon.obj -MD -MP -MF $(DEPDIR)/dragon.Tpo -c -o dragon.obj `if test -f 'micro/dragon.c'; then $(CYGPATH_W) 'micro/dragon.c'; else $(CYGPATH_W) '$(srcdir)/micro/dragon.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dragon.Tpo $(DEPDIR)/dragon.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/dragon.c' object='dragon.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dragon.obj `if test -f 'micro/dragon.c'; then $(CYGPATH_W) 'micro/dragon.c'; else $(CYGPATH_W) '$(srcdir)/micro/dragon.c'; fi`
 
 pythagoras-tree.o: micro/pythagoras-tree.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pythagoras-tree.o -MD -MP -MF $(DEPDIR)/pythagoras-tree.Tpo -c -o pythagoras-tree.o `test -f 'micro/pythagoras-tree.c' || echo '$(srcdir)/'`micro/pythagoras-tree.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/pythagoras-tree.Tpo $(DEPDIR)/pythagoras-tree.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pythagoras-tree.o -MD -MP -MF $(DEPDIR)/pythagoras-tree.Tpo -c -o pythagoras-tree.o `test -f 'micro/pythagoras-tree.c' || echo '$(srcdir)/'`micro/pythagoras-tree.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pythagoras-tree.Tpo $(DEPDIR)/pythagoras-tree.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/pythagoras-tree.c' object='pythagoras-tree.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pythagoras-tree.o `test -f 'micro/pythagoras-tree.c' || echo '$(srcdir)/'`micro/pythagoras-tree.c
 
 pythagoras-tree.obj: micro/pythagoras-tree.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pythagoras-tree.obj -MD -MP -MF $(DEPDIR)/pythagoras-tree.Tpo -c -o pythagoras-tree.obj `if test -f 'micro/pythagoras-tree.c'; then $(CYGPATH_W) 'micro/pythagoras-tree.c'; else $(CYGPATH_W) '$(srcdir)/micro/pythagoras-tree.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/pythagoras-tree.Tpo $(DEPDIR)/pythagoras-tree.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pythagoras-tree.obj -MD -MP -MF $(DEPDIR)/pythagoras-tree.Tpo -c -o pythagoras-tree.obj `if test -f 'micro/pythagoras-tree.c'; then $(CYGPATH_W) 'micro/pythagoras-tree.c'; else $(CYGPATH_W) '$(srcdir)/micro/pythagoras-tree.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pythagoras-tree.Tpo $(DEPDIR)/pythagoras-tree.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/pythagoras-tree.c' object='pythagoras-tree.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pythagoras-tree.obj `if test -f 'micro/pythagoras-tree.c'; then $(CYGPATH_W) 'micro/pythagoras-tree.c'; else $(CYGPATH_W) '$(srcdir)/micro/pythagoras-tree.c'; fi`
 
 intersections.o: micro/intersections.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT intersections.o -MD -MP -MF $(DEPDIR)/intersections.Tpo -c -o intersections.o `test -f 'micro/intersections.c' || echo '$(srcdir)/'`micro/intersections.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/intersections.Tpo $(DEPDIR)/intersections.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT intersections.o -MD -MP -MF $(DEPDIR)/intersections.Tpo -c -o intersections.o `test -f 'micro/intersections.c' || echo '$(srcdir)/'`micro/intersections.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/intersections.Tpo $(DEPDIR)/intersections.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/intersections.c' object='intersections.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o intersections.o `test -f 'micro/intersections.c' || echo '$(srcdir)/'`micro/intersections.c
 
 intersections.obj: micro/intersections.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT intersections.obj -MD -MP -MF $(DEPDIR)/intersections.Tpo -c -o intersections.obj `if test -f 'micro/intersections.c'; then $(CYGPATH_W) 'micro/intersections.c'; else $(CYGPATH_W) '$(srcdir)/micro/intersections.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/intersections.Tpo $(DEPDIR)/intersections.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT intersections.obj -MD -MP -MF $(DEPDIR)/intersections.Tpo -c -o intersections.obj `if test -f 'micro/intersections.c'; then $(CYGPATH_W) 'micro/intersections.c'; else $(CYGPATH_W) '$(srcdir)/micro/intersections.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/intersections.Tpo $(DEPDIR)/intersections.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/intersections.c' object='intersections.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o intersections.obj `if test -f 'micro/intersections.c'; then $(CYGPATH_W) 'micro/intersections.c'; else $(CYGPATH_W) '$(srcdir)/micro/intersections.c'; fi`
 
 spiral.o: micro/spiral.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT spiral.o -MD -MP -MF $(DEPDIR)/spiral.Tpo -c -o spiral.o `test -f 'micro/spiral.c' || echo '$(srcdir)/'`micro/spiral.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/spiral.Tpo $(DEPDIR)/spiral.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT spiral.o -MD -MP -MF $(DEPDIR)/spiral.Tpo -c -o spiral.o `test -f 'micro/spiral.c' || echo '$(srcdir)/'`micro/spiral.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/spiral.Tpo $(DEPDIR)/spiral.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/spiral.c' object='spiral.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o spiral.o `test -f 'micro/spiral.c' || echo '$(srcdir)/'`micro/spiral.c
 
 spiral.obj: micro/spiral.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT spiral.obj -MD -MP -MF $(DEPDIR)/spiral.Tpo -c -o spiral.obj `if test -f 'micro/spiral.c'; then $(CYGPATH_W) 'micro/spiral.c'; else $(CYGPATH_W) '$(srcdir)/micro/spiral.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/spiral.Tpo $(DEPDIR)/spiral.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT spiral.obj -MD -MP -MF $(DEPDIR)/spiral.Tpo -c -o spiral.obj `if test -f 'micro/spiral.c'; then $(CYGPATH_W) 'micro/spiral.c'; else $(CYGPATH_W) '$(srcdir)/micro/spiral.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/spiral.Tpo $(DEPDIR)/spiral.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='micro/spiral.c' object='spiral.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o spiral.obj `if test -f 'micro/spiral.c'; then $(CYGPATH_W) 'micro/spiral.c'; else $(CYGPATH_W) '$(srcdir)/micro/spiral.c'; fi`
 
 cairo-hash.o: ../src/cairo-hash.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-hash.o -MD -MP -MF $(DEPDIR)/cairo-hash.Tpo -c -o cairo-hash.o `test -f '../src/cairo-hash.c' || echo '$(srcdir)/'`../src/cairo-hash.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo-hash.Tpo $(DEPDIR)/cairo-hash.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-hash.o -MD -MP -MF $(DEPDIR)/cairo-hash.Tpo -c -o cairo-hash.o `test -f '../src/cairo-hash.c' || echo '$(srcdir)/'`../src/cairo-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo-hash.Tpo $(DEPDIR)/cairo-hash.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/cairo-hash.c' object='cairo-hash.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cairo-hash.o `test -f '../src/cairo-hash.c' || echo '$(srcdir)/'`../src/cairo-hash.c
 
 cairo-hash.obj: ../src/cairo-hash.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-hash.obj -MD -MP -MF $(DEPDIR)/cairo-hash.Tpo -c -o cairo-hash.obj `if test -f '../src/cairo-hash.c'; then $(CYGPATH_W) '../src/cairo-hash.c'; else $(CYGPATH_W) '$(srcdir)/../src/cairo-hash.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cairo-hash.Tpo $(DEPDIR)/cairo-hash.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cairo-hash.obj -MD -MP -MF $(DEPDIR)/cairo-hash.Tpo -c -o cairo-hash.obj `if test -f '../src/cairo-hash.c'; then $(CYGPATH_W) '../src/cairo-hash.c'; else $(CYGPATH_W) '$(srcdir)/../src/cairo-hash.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo-hash.Tpo $(DEPDIR)/cairo-hash.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/cairo-hash.c' object='cairo-hash.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cairo-hash.obj `if test -f '../src/cairo-hash.c'; then $(CYGPATH_W) '../src/cairo-hash.c'; else $(CYGPATH_W) '$(srcdir)/../src/cairo-hash.c'; fi`

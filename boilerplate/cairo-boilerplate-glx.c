@@ -346,6 +346,27 @@ _cairo_boilerplate_gl_synchronize (void *closure)
     cairo_device_release (gltc->device);
 }
 
+static char *
+_cairo_boilerplate_gl_describe (void *closure)
+{
+    gl_target_closure_t *gltc = closure;
+    char *s;
+    const GLubyte *vendor, *renderer, *version;
+
+    if (cairo_device_acquire (gltc->device))
+	return NULL;
+
+    vendor   = glGetString (GL_VENDOR);
+    renderer = glGetString (GL_RENDERER);
+    version  = glGetString (GL_VERSION);
+
+    xasprintf (&s, "%s %s %s", vendor, renderer, version);
+
+    cairo_device_release (gltc->device);
+
+    return s;
+}
+
 static const cairo_boilerplate_target_t targets[] = {
     {
 	"gl", "gl", NULL, NULL,
@@ -357,6 +378,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_gl_cleanup,
 	_cairo_boilerplate_gl_synchronize,
+        _cairo_boilerplate_gl_describe,
 	TRUE, FALSE, FALSE
     },
     {
@@ -369,6 +391,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_gl_cleanup,
 	_cairo_boilerplate_gl_synchronize,
+        _cairo_boilerplate_gl_describe,
 	FALSE, FALSE, FALSE
     },
     {
@@ -382,6 +405,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_gl_cleanup,
 	_cairo_boilerplate_gl_synchronize,
+        _cairo_boilerplate_gl_describe,
 	FALSE, FALSE, FALSE
     },
     {
@@ -395,6 +419,7 @@ static const cairo_boilerplate_target_t targets[] = {
 	cairo_surface_write_to_png,
 	_cairo_boilerplate_gl_cleanup,
 	_cairo_boilerplate_gl_synchronize,
+        _cairo_boilerplate_gl_describe,
 	FALSE, FALSE, FALSE
     },
 };

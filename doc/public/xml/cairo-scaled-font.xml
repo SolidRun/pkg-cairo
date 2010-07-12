@@ -3,9 +3,9 @@
                 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
-<refentry id="cairo-scaled-font">
+<refentry id="cairo-cairo-scaled-font-t">
 <refmeta>
-<refentrytitle role="top_of_page" id="cairo-scaled-font.top_of_page">cairo_scaled_font_t</refentrytitle>
+<refentrytitle role="top_of_page" id="cairo-cairo-scaled-font-t.top_of_page">cairo_scaled_font_t</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   CAIRO Library
@@ -16,7 +16,7 @@
 <refpurpose>Font face at particular size and options</refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="cairo-scaled-font.synopsis" role="synopsis">
+<refsynopsisdiv id="cairo-cairo-scaled-font-t.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>typedef             <link linkend="cairo-scaled-font-t">cairo_scaled_font_t</link>;
@@ -69,18 +69,18 @@ unsigned <link linkend="int"><returnvalue>int</returnvalue></link>        <link 
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="cairo-scaled-font.description" role="desc">
+<refsect1 id="cairo-cairo-scaled-font-t.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> represents a realization of a font face at a particular
 size and transformation and a certain set of font options.
 </para>
 </refsect1>
-<refsect1 id="cairo-scaled-font.details" role="details">
+<refsect1 id="cairo-cairo-scaled-font-t.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="cairo-scaled-font-t" role="typedef">
 <title>cairo_scaled_font_t</title>
-<indexterm zone="cairo-scaled-font-t"><primary>cairo_scaled_font_t</primary></indexterm>
+<indexterm zone="cairo-scaled-font-t"><primary sortas="scaled_font_t">cairo_scaled_font_t</primary></indexterm>
 <programlisting>typedef struct _cairo_scaled_font cairo_scaled_font_t;
 </programlisting>
 <para>
@@ -100,7 +100,7 @@ Memory management of <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font
 </para></refsect2>
 <refsect2 id="cairo-scaled-font-create" role="function">
 <title>cairo_scaled_font_create ()</title>
-<indexterm zone="cairo-scaled-font-create"><primary>cairo_scaled_font_create</primary></indexterm>
+<indexterm zone="cairo-scaled-font-create"><primary sortas="scaled_font_create">cairo_scaled_font_create</primary></indexterm>
 <programlisting><link linkend="cairo-scaled-font-t"><returnvalue>cairo_scaled_font_t</returnvalue></link> * cairo_scaled_font_create          (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter>const <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *font_matrix</parameter>,
                                                          <parameter>const <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *ctm</parameter>,
@@ -134,7 +134,7 @@ be used.
 </variablelist></refsect2>
 <refsect2 id="cairo-scaled-font-reference" role="function">
 <title>cairo_scaled_font_reference ()</title>
-<indexterm zone="cairo-scaled-font-reference"><primary>cairo_scaled_font_reference</primary></indexterm>
+<indexterm zone="cairo-scaled-font-reference"><primary sortas="scaled_font_reference">cairo_scaled_font_reference</primary></indexterm>
 <programlisting><link linkend="cairo-scaled-font-t"><returnvalue>cairo_scaled_font_t</returnvalue></link> * cairo_scaled_font_reference       (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
 Increases the reference count on <parameter>scaled_font</parameter> by one. This prevents
@@ -154,7 +154,7 @@ this function does nothing)
 </variablelist></refsect2>
 <refsect2 id="cairo-scaled-font-destroy" role="function">
 <title>cairo_scaled_font_destroy ()</title>
-<indexterm zone="cairo-scaled-font-destroy"><primary>cairo_scaled_font_destroy</primary></indexterm>
+<indexterm zone="cairo-scaled-font-destroy"><primary sortas="scaled_font_destroy">cairo_scaled_font_destroy</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_destroy           (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
 Decreases the reference count on <parameter>font</parameter> by one. If the result
@@ -167,7 +167,7 @@ See <link linkend="cairo-scaled-font-reference"><function>cairo_scaled_font_refe
 </variablelist></refsect2>
 <refsect2 id="cairo-scaled-font-status" role="function">
 <title>cairo_scaled_font_status ()</title>
-<indexterm zone="cairo-scaled-font-status"><primary>cairo_scaled_font_status</primary></indexterm>
+<indexterm zone="cairo-scaled-font-status"><primary sortas="scaled_font_status">cairo_scaled_font_status</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      cairo_scaled_font_status            (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
 Checks whether an error has previously occurred for this
@@ -182,7 +182,7 @@ scaled_font.
 </variablelist></refsect2>
 <refsect2 id="cairo-font-extents-t" role="struct">
 <title>cairo_font_extents_t</title>
-<indexterm zone="cairo-font-extents-t"><primary>cairo_font_extents_t</primary></indexterm>
+<indexterm zone="cairo-font-extents-t"><primary sortas="font_extents_t">cairo_font_extents_t</primary></indexterm>
 <programlisting>typedef struct {
     double ascent;
     double descent;
@@ -249,7 +249,7 @@ matrix), but otherwise will remain unchanged.
 </variablelist></refsect2>
 <refsect2 id="cairo-scaled-font-extents" role="function">
 <title>cairo_scaled_font_extents ()</title>
-<indexterm zone="cairo-scaled-font-extents"><primary>cairo_scaled_font_extents</primary></indexterm>
+<indexterm zone="cairo-scaled-font-extents"><primary sortas="scaled_font_extents">cairo_scaled_font_extents</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_extents           (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><link linkend="cairo-font-extents-t"><type>cairo_font_extents_t</type></link> *extents</parameter>);</programlisting>
 <para>
@@ -264,7 +264,7 @@ Gets the metrics for a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_fo
 </variablelist></refsect2>
 <refsect2 id="cairo-text-extents-t" role="struct">
 <title>cairo_text_extents_t</title>
-<indexterm zone="cairo-text-extents-t"><primary>cairo_text_extents_t</primary></indexterm>
+<indexterm zone="cairo-text-extents-t"><primary sortas="text_extents_t">cairo_text_extents_t</primary></indexterm>
 <programlisting>typedef struct {
     double x_bearing;
     double y_bearing;
@@ -320,7 +320,7 @@ but otherwise will remain unchanged.
 </variablelist></refsect2>
 <refsect2 id="cairo-scaled-font-text-extents" role="function" condition="since:1.2">
 <title>cairo_scaled_font_text_extents ()</title>
-<indexterm zone="cairo-scaled-font-text-extents" role="1.2"><primary>cairo_scaled_font_text_extents</primary></indexterm>
+<indexterm zone="cairo-scaled-font-text-extents" role="1.2"><primary sortas="scaled_font_text_extents">cairo_scaled_font_text_extents</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_text_extents      (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter>const <link linkend="char"><type>char</type></link> *utf8</parameter>,
                                                          <parameter><link linkend="cairo-text-extents-t"><type>cairo_text_extents_t</type></link> *extents</parameter>);</programlisting>
@@ -353,7 +353,7 @@ affect the x_advance and y_advance values.
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-scaled-font-glyph-extents" role="function">
 <title>cairo_scaled_font_glyph_extents ()</title>
-<indexterm zone="cairo-scaled-font-glyph-extents"><primary>cairo_scaled_font_glyph_extents</primary></indexterm>
+<indexterm zone="cairo-scaled-font-glyph-extents"><primary sortas="scaled_font_glyph_extents">cairo_scaled_font_glyph_extents</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_glyph_extents     (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter>const <link linkend="cairo-glyph-t"><type>cairo_glyph_t</type></link> *glyphs</parameter>,
                                                          <parameter><link linkend="int"><type>int</type></link> num_glyphs</parameter>,
@@ -386,7 +386,7 @@ rectangle (extents.width and extents.height).
 </variablelist></refsect2>
 <refsect2 id="cairo-scaled-font-text-to-glyphs" role="function" condition="since:1.8">
 <title>cairo_scaled_font_text_to_glyphs ()</title>
-<indexterm zone="cairo-scaled-font-text-to-glyphs" role="1.8"><primary>cairo_scaled_font_text_to_glyphs</primary></indexterm>
+<indexterm zone="cairo-scaled-font-text-to-glyphs" role="1.8"><primary sortas="scaled_font_text_to_glyphs">cairo_scaled_font_text_to_glyphs</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      cairo_scaled_font_text_to_glyphs    (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> x</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> y</parameter>,
@@ -559,7 +559,7 @@ set on <parameter>scaled_font</parameter>.
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-font-face" role="function" condition="since:1.2">
 <title>cairo_scaled_font_get_font_face ()</title>
-<indexterm zone="cairo-scaled-font-get-font-face" role="1.2"><primary>cairo_scaled_font_get_font_face</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-font-face" role="1.2"><primary sortas="scaled_font_get_font_face">cairo_scaled_font_get_font_face</primary></indexterm>
 <programlisting><link linkend="cairo-font-face-t"><returnvalue>cairo_font_face_t</returnvalue></link> * cairo_scaled_font_get_font_face     (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
 Gets the font face that this scaled font uses.  This is the
@@ -575,7 +575,7 @@ created.
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-font-options" role="function" condition="since:1.2">
 <title>cairo_scaled_font_get_font_options ()</title>
-<indexterm zone="cairo-scaled-font-get-font-options" role="1.2"><primary>cairo_scaled_font_get_font_options</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-font-options" role="1.2"><primary sortas="scaled_font_get_font_options">cairo_scaled_font_get_font_options</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_get_font_options  (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link> *options</parameter>);</programlisting>
 <para>
@@ -591,7 +591,7 @@ Stores the font options with which <parameter>scaled_font</parameter> was create
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-font-matrix" role="function" condition="since:1.2">
 <title>cairo_scaled_font_get_font_matrix ()</title>
-<indexterm zone="cairo-scaled-font-get-font-matrix" role="1.2"><primary>cairo_scaled_font_get_font_matrix</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-font-matrix" role="1.2"><primary sortas="scaled_font_get_font_matrix">cairo_scaled_font_get_font_matrix</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_get_font_matrix   (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *font_matrix</parameter>);</programlisting>
 <para>
@@ -607,7 +607,7 @@ Stores the font matrix with which <parameter>scaled_font</parameter> was created
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-ctm" role="function" condition="since:1.2">
 <title>cairo_scaled_font_get_ctm ()</title>
-<indexterm zone="cairo-scaled-font-get-ctm" role="1.2"><primary>cairo_scaled_font_get_ctm</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-ctm" role="1.2"><primary sortas="scaled_font_get_ctm">cairo_scaled_font_get_ctm</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_get_ctm           (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *ctm</parameter>);</programlisting>
 <para>
@@ -625,7 +625,7 @@ function returns always has 0,0 as x0,y0.
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-scale-matrix" role="function" condition="since:1.8">
 <title>cairo_scaled_font_get_scale_matrix ()</title>
-<indexterm zone="cairo-scaled-font-get-scale-matrix" role="1.8"><primary>cairo_scaled_font_get_scale_matrix</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-scale-matrix" role="1.8"><primary sortas="scaled_font_get_scale_matrix">cairo_scaled_font_get_scale_matrix</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_scaled_font_get_scale_matrix  (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> *scale_matrix</parameter>);</programlisting>
 <para>
@@ -643,7 +643,7 @@ font space to device space.
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-type" role="function" condition="since:1.2">
 <title>cairo_scaled_font_get_type ()</title>
-<indexterm zone="cairo-scaled-font-get-type" role="1.2"><primary>cairo_scaled_font_get_type</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-type" role="1.2"><primary sortas="scaled_font_get_type">cairo_scaled_font_get_type</primary></indexterm>
 <programlisting><link linkend="cairo-font-type-t"><returnvalue>cairo_font_type_t</returnvalue></link>   cairo_scaled_font_get_type          (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
 This function returns the type of the backend used to create
@@ -659,7 +659,7 @@ However, this function never returns <link linkend="CAIRO-FONT-TYPE-TOY:CAPS"><l
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-reference-count" role="function" condition="since:1.4">
 <title>cairo_scaled_font_get_reference_count ()</title>
-<indexterm zone="cairo-scaled-font-get-reference-count" role="1.4"><primary>cairo_scaled_font_get_reference_count</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-reference-count" role="1.4"><primary sortas="scaled_font_get_reference_count">cairo_scaled_font_get_reference_count</primary></indexterm>
 <programlisting>unsigned <link linkend="int"><returnvalue>int</returnvalue></link>        cairo_scaled_font_get_reference_count
                                                         (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>);</programlisting>
 <para>
@@ -675,7 +675,7 @@ object is a nil object, 0 will be returned.
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-scaled-font-set-user-data" role="function" condition="since:1.4">
 <title>cairo_scaled_font_set_user_data ()</title>
-<indexterm zone="cairo-scaled-font-set-user-data" role="1.4"><primary>cairo_scaled_font_set_user_data</primary></indexterm>
+<indexterm zone="cairo-scaled-font-set-user-data" role="1.4"><primary sortas="scaled_font_set_user_data">cairo_scaled_font_set_user_data</primary></indexterm>
 <programlisting><link linkend="cairo-status-t"><returnvalue>cairo_status_t</returnvalue></link>      cairo_scaled_font_set_user_data     (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter>const <link linkend="cairo-user-data-key-t"><type>cairo_user_data_key_t</type></link> *key</parameter>,
                                                          <parameter><link linkend="void"><type>void</type></link> *user_data</parameter>,
@@ -706,7 +706,7 @@ slot could not be allocated for the user data.
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-scaled-font-get-user-data" role="function" condition="since:1.4">
 <title>cairo_scaled_font_get_user_data ()</title>
-<indexterm zone="cairo-scaled-font-get-user-data" role="1.4"><primary>cairo_scaled_font_get_user_data</primary></indexterm>
+<indexterm zone="cairo-scaled-font-get-user-data" role="1.4"><primary sortas="scaled_font_get_user_data">cairo_scaled_font_get_user_data</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link> *              cairo_scaled_font_get_user_data     (<parameter><link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> *scaled_font</parameter>,
                                                          <parameter>const <link linkend="cairo-user-data-key-t"><type>cairo_user_data_key_t</type></link> *key</parameter>);</programlisting>
 <para>
@@ -727,15 +727,9 @@ attached to
 </variablelist><para role="since">Since 1.4</para></refsect2>
 
 </refsect1>
-<refsect1 id="cairo-scaled-font.see-also">
+<refsect1 id="cairo-cairo-scaled-font-t.see-also">
 <title>See Also</title>
-<para>
-<itemizedlist>
-<listitem><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link></listitem>
-<listitem><link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link></listitem>
-<listitem><link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link></listitem>
-</itemizedlist>
-</para>
+<link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>, <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link>, <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link>
 </refsect1>
 
 </refentry>
