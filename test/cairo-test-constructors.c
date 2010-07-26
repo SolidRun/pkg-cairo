@@ -197,6 +197,7 @@ extern void _register_paint (void);
 extern void _register_paint_repeat (void);
 extern void _register_paint_source_alpha (void);
 extern void _register_paint_with_alpha (void);
+extern void _register_partial_clip_text (void);
 extern void _register_partial_coverage_rectangles (void);
 extern void _register_partial_coverage_intersecting_quads (void);
 extern void _register_partial_coverage_intersecting_triangles (void);
@@ -536,6 +537,7 @@ _cairo_test_runner_register_tests (void)
     _register_paint_repeat ();
     _register_paint_source_alpha ();
     _register_paint_with_alpha ();
+    _register_partial_clip_text ();
     _register_partial_coverage_rectangles ();
     _register_partial_coverage_intersecting_quads ();
     _register_partial_coverage_intersecting_triangles ();
