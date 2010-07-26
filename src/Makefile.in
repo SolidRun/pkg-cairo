@@ -1428,7 +1428,7 @@ libcairo_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(CAIRO_LIBTOOL_VERSION_INFO) 
 libcairo_la_LIBADD = $(CAIRO_LIBS) \
 	$(cairo_cxx_lib)
 
-libcairo_la_DEPENDENCIES = $(cairo_def_dependency)
+libcairo_la_DEPENDENCIES = $(cairo_def_dependency) $(cairo_cxx_lib)
 nodist_cairoinclude_HEADERS = cairo-features.h
 nodist_libcairo_la_SOURCES = cairo-features.h
 pkgconfigdir = $(libdir)/pkgconfig

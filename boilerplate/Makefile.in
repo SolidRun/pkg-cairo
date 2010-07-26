@@ -227,10 +227,6 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @BUILD_CXX_TRUE@am__DEPENDENCIES_1 = libcairoboilerplate_cxx.la
 am__DEPENDENCIES_2 =
-libcairoboilerplate_la_DEPENDENCIES = $(top_builddir)/src/libcairo.la \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
 am__libcairoboilerplate_la_SOURCES_DIST = cairo-boilerplate-getopt.h \
 	cairo-boilerplate-scaled-font.h cairo-boilerplate-system.h \
 	cairo-boilerplate.h cairo-boilerplate-xlib.h \
@@ -963,6 +959,10 @@ libcairoboilerplate_la_LIBADD = $(top_builddir)/src/libcairo.la \
 libcairoboilerplate_cxx_la_LIBADD = $(top_builddir)/src/libcairo.la \
 	$(CAIRO_LIBS) \
 	$(CAIROBOILERPLATE_LIBS) \
+	$(NULL)
+
+libcairoboilerplate_la_DEPENDENCIES = \
+	$(cxx_boilerplate_lib) \
 	$(NULL)
 
 

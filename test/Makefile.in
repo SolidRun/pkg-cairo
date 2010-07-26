@@ -188,10 +188,10 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	operator-source.c over-above-source.c over-around-source.c \
 	over-below-source.c over-between-source.c overlapping-glyphs.c \
 	paint.c paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
-	partial-coverage.c path-append.c path-stroke-twice.c \
-	path-precision.c pattern-get-type.c pattern-getters.c \
-	pixman-rotate.c png.c push-group.c push-group-color.c \
-	push-group-path-offset.c radial-gradient.c \
+	partial-clip-text.c partial-coverage.c path-append.c \
+	path-stroke-twice.c path-precision.c pattern-get-type.c \
+	pattern-getters.c pixman-rotate.c png.c push-group.c \
+	push-group-color.c push-group-path-offset.c radial-gradient.c \
 	radial-gradient-extend.c radial-gradient-mask.c \
 	radial-gradient-mask-source.c radial-gradient-one-stop.c \
 	radial-gradient-source.c random-intersections-eo.c \
@@ -475,6 +475,7 @@ am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
 	cairo_test_suite-paint-repeat.$(OBJEXT) \
 	cairo_test_suite-paint-source-alpha.$(OBJEXT) \
 	cairo_test_suite-paint-with-alpha.$(OBJEXT) \
+	cairo_test_suite-partial-clip-text.$(OBJEXT) \
 	cairo_test_suite-partial-coverage.$(OBJEXT) \
 	cairo_test_suite-path-append.$(OBJEXT) \
 	cairo_test_suite-path-stroke-twice.$(OBJEXT) \
@@ -996,10 +997,10 @@ test_sources = a1-bug.c a1-image-sample.c a1-mask.c a1-mask-sample.c \
 	operator-source.c over-above-source.c over-around-source.c \
 	over-below-source.c over-between-source.c overlapping-glyphs.c \
 	paint.c paint-repeat.c paint-source-alpha.c paint-with-alpha.c \
-	partial-coverage.c path-append.c path-stroke-twice.c \
-	path-precision.c pattern-get-type.c pattern-getters.c \
-	pixman-rotate.c png.c push-group.c push-group-color.c \
-	push-group-path-offset.c radial-gradient.c \
+	partial-clip-text.c partial-coverage.c path-append.c \
+	path-stroke-twice.c path-precision.c pattern-get-type.c \
+	pattern-getters.c pixman-rotate.c png.c push-group.c \
+	push-group-color.c push-group-path-offset.c radial-gradient.c \
 	radial-gradient-extend.c radial-gradient-mask.c \
 	radial-gradient-mask-source.c radial-gradient-one-stop.c \
 	radial-gradient-source.c random-intersections-eo.c \
@@ -1970,6 +1971,9 @@ REFERENCE_IMAGES = \
 	paint-with-alpha.ref.png \
 	paint-with-alpha.svg.ref.png \
 	paint.ref.png \
+	partial-clip-text.ref.png \
+	partial-clip-text.ps.ref.png \
+	partial-clip-text.svg.ref.png \
 	partial-coverage-half-reference.ref.png \
 	partial-coverage-half-triangles.ref.png \
 	partial-coverage-intersecting-quads.ref.png \
@@ -2793,6 +2797,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-paint-source-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-paint-with-alpha.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-paint.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-partial-clip-text.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-partial-coverage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-path-append.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-path-precision.Po@am__quote@
@@ -5939,6 +5944,22 @@ cairo_test_suite-paint-with-alpha.obj: paint-with-alpha.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='paint-with-alpha.c' object='cairo_test_suite-paint-with-alpha.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-paint-with-alpha.obj `if test -f 'paint-with-alpha.c'; then $(CYGPATH_W) 'paint-with-alpha.c'; else $(CYGPATH_W) '$(srcdir)/paint-with-alpha.c'; fi`
+
+cairo_test_suite-partial-clip-text.o: partial-clip-text.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-partial-clip-text.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-partial-clip-text.Tpo -c -o cairo_test_suite-partial-clip-text.o `test -f 'partial-clip-text.c' || echo '$(srcdir)/'`partial-clip-text.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-partial-clip-text.Tpo $(DEPDIR)/cairo_test_suite-partial-clip-text.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='partial-clip-text.c' object='cairo_test_suite-partial-clip-text.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-partial-clip-text.o `test -f 'partial-clip-text.c' || echo '$(srcdir)/'`partial-clip-text.c
+
+cairo_test_suite-partial-clip-text.obj: partial-clip-text.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-partial-clip-text.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-partial-clip-text.Tpo -c -o cairo_test_suite-partial-clip-text.obj `if test -f 'partial-clip-text.c'; then $(CYGPATH_W) 'partial-clip-text.c'; else $(CYGPATH_W) '$(srcdir)/partial-clip-text.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-partial-clip-text.Tpo $(DEPDIR)/cairo_test_suite-partial-clip-text.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='partial-clip-text.c' object='cairo_test_suite-partial-clip-text.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-partial-clip-text.obj `if test -f 'partial-clip-text.c'; then $(CYGPATH_W) 'partial-clip-text.c'; else $(CYGPATH_W) '$(srcdir)/partial-clip-text.c'; fi`
 
 cairo_test_suite-partial-coverage.o: partial-coverage.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-partial-coverage.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-partial-coverage.Tpo -c -o cairo_test_suite-partial-coverage.o `test -f 'partial-coverage.c' || echo '$(srcdir)/'`partial-coverage.c
