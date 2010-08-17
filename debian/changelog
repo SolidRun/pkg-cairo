@@ -1,3 +1,16 @@
+cairo (1.8.10-5) unstable; urgency=low
+
+  * debian/patches/02_iceweasel-buggy-repeat.patch:
+    + Patch from Mozilla to work around a display bug in iceweasel with
+      some buggy X11 video drivers (Closes: #495620).
+      http://mxr.mozilla.org/firefox/source/gfx/cairo/buggy-repeat.patch
+
+      After squeeze this patch will again be dropped because it's
+      just a hacky workaround for a real problem in some X11 video
+      drivers.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 17 Aug 2010 05:48:52 +0200
+
 cairo (1.8.10-4) unstable; urgency=low
 
   * debian/rules:
