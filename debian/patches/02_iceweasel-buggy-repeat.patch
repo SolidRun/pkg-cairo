@@ -1,16 +1,17 @@
-diff --git a/gfx/cairo/cairo/src/cairo-xlib-display.c b/gfx/cairo/cairo/src/cairo-xlib-display.c
---- cairo/src/cairo-xlib-display.c
-+++ cairo/src/cairo-xlib-display.c
-@@ -63,6 +63,8 @@ struct _cairo_xlib_job {
- };
+Index: cairo/src/cairo-xlib-display.c
+===================================================================
+--- cairo.orig/src/cairo-xlib-display.c	2010-08-17 05:52:51.868996101 +0200
++++ cairo/src/cairo-xlib-display.c	2010-08-17 05:52:54.692995371 +0200
+@@ -66,6 +66,8 @@
  
  static cairo_xlib_display_t *_cairo_xlib_display_list;
-+
-+static int buggy_repeat_force = -1;
  
++static int buggy_repeat_force = -1;
++
  static void
- _cairo_xlib_call_close_display_hooks (cairo_xlib_display_t *display)
-@@ -302,6 +304,17 @@ _cairo_xlib_display_get (Display *dpy)
+ _cairo_xlib_remove_close_display_hook_internal (cairo_xlib_display_t *display,
+ 						cairo_xlib_hook_t *hook);
+@@ -338,6 +340,17 @@
  	    display->buggy_repeat = TRUE;
      }
  
