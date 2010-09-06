@@ -33,8 +33,9 @@ cairo (1.10.0-1) experimental; urgency=low
       debian/libcairo-gobject2.symbols,
       debian/libcairo-gobject2.install:
       - Add GObject library.
-  * debian/rules:
-    + Adjust timestamps of all files to make autoconf/automake happy.
+    + debian/patches/02_am-maintainer-mode.patch:
+      - Add AM_MAINTAINER_MODE again to configure.ac to
+        prevent build problems.
 
  -- Sebastian Dröge <slomo@debian.org>  Mon, 06 Sep 2010 21:52:00 +0200
 

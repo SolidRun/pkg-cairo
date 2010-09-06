@@ -1,0 +1,12 @@
+Index: cairo/configure.ac
+===================================================================
+--- cairo.orig/configure.ac	2010-09-06 23:47:04.384406681 +0200
++++ cairo/configure.ac	2010-09-06 23:47:15.719410978 +0200
+@@ -10,6 +10,7 @@
+ AC_CONFIG_AUX_DIR(build)
+ AC_CONFIG_MACRO_DIR(build)
+ AM_INIT_AUTOMAKE([1.9.6 gnu -Wall no-define])
++AM_MAINTAINER_MODE
+ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+ AC_LIBTOOL_WIN32_DLL dnl Must be called before AC_PROG_LIBTOOL
+ AC_PROG_LIBTOOL dnl ([1.4]) Don't remove!
