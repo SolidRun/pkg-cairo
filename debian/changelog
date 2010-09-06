@@ -30,8 +30,11 @@ cairo (1.10.0-1) experimental; urgency=low
       debian/patches/99_autoreconf.patch:
       - Refreshed.
     + debian/control,
+      debian/libcairo-gobject2.symbols,
       debian/libcairo-gobject2.install:
       - Add GObject library.
+  * debian/rules:
+    + Adjust timestamps of all files to make autoconf/automake happy.
 
  -- Sebastian Dröge <slomo@debian.org>  Mon, 06 Sep 2010 21:52:00 +0200
 
