@@ -85,28 +85,67 @@ be used by applications.
 Putting this all together, a function that works with devices should
 look something like this:
 </p>
-<div class="informalexample"><pre class="programlisting">
-void
-my_device_modifying_function (cairo_device_t *device)
-{
-  cairo_status_t status;
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="type">void</span>
+<span class="function">my_device_modifying_function</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">cairo_device_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">device</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">cairo_status_t</span><span class="normal"> status</span><span class="symbol">;</span>
 
-  // Ensure the device is properly reset
-  cairo_device_flush (device);
-  // Try to acquire the device
-  status = cairo_device_acquire (device);
-  if (status != CAIRO_STATUS_SUCCESS) {
-    printf ("Failed to acquire the device: %s\n", cairo_status_to_string (status));
-    return;
-  }
+<span class="normal">  </span><span class="comment">// Ensure the device is properly reset</span>
+<span class="normal">  </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-device-t.html#cairo-device-flush">cairo_device_flush</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">device</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="comment">// Try to acquire the device</span>
+<span class="normal">  status </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-device-t.html#cairo-device-acquire">cairo_device_acquire</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">device</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">status </span><span class="symbol">!=</span><span class="normal"> <a href="/usr/share/gtk-doc/html/cairo/cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS">CAIRO_STATUS_SUCCESS</a></span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="function">printf</span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Failed to acquire the device: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Error-handling.html#cairo-status-to-string">cairo_status_to_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">status</span><span class="symbol">));</span>
+<span class="normal">    </span><span class="keyword">return</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="cbracket">}</span>
 
-  // Do the custom operations on the device here.
-  // But do not call any Cairo functions that might acquire devices.
-  
-  // Release the device when done.
-  cairo_device_release (device);
-}
-</pre></div>
+<span class="normal">  </span><span class="comment">// Do the custom operations on the device here.</span>
+<span class="normal">  </span><span class="comment">// But do not call any Cairo functions that might acquire devices.</span>
+<span class="normal">  </span>
+<span class="normal">  </span><span class="comment">// Release the device when done.</span>
+<span class="normal">  </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-device-t.html#cairo-device-release">cairo_device_release</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">device</span><span class="symbol">);</span>
+<span class="cbracket">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+</p>
+<p>
+</p>
+<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Note</h3>
+<p>Please refer to the documentation of each backend for
+additional usage requirements, guarantees provided, and
+interactions with existing surface API of the device functions for
+surfaces of that type.
+</p>
+</div>
 <p>
 </p>
 </div>
@@ -271,28 +310,12 @@ This function may acquire devices.
 <div class="refsect2" title="enum cairo_device_type_t">
 <a name="cairo-device-type-t"></a><h3>enum cairo_device_type_t</h3>
 <pre class="programlisting">typedef enum _cairo_device_type {
-    CAIRO_DEVICE_TYPE_IMAGE,
-    CAIRO_DEVICE_TYPE_PDF,
-    CAIRO_DEVICE_TYPE_PS,
-    CAIRO_DEVICE_TYPE_XLIB,
-    CAIRO_DEVICE_TYPE_XCB,
-    CAIRO_DEVICE_TYPE_GLITZ,
-    CAIRO_DEVICE_TYPE_QUARTZ,
-    CAIRO_DEVICE_TYPE_WIN32,
-    CAIRO_DEVICE_TYPE_BEOS,
-    CAIRO_DEVICE_TYPE_DIRECTFB,
-    CAIRO_DEVICE_TYPE_SVG,
-    CAIRO_DEVICE_TYPE_OS2,
-    CAIRO_DEVICE_TYPE_WIN32_PRINTING,
-    CAIRO_DEVICE_TYPE_QUARTZ_IMAGE,
-    CAIRO_DEVICE_TYPE_SCRIPT,
-    CAIRO_DEVICE_TYPE_QT,
-    CAIRO_DEVICE_TYPE_RECORDING,
-    CAIRO_DEVICE_TYPE_VG,
-    CAIRO_DEVICE_TYPE_GL,
     CAIRO_DEVICE_TYPE_DRM,
+    CAIRO_DEVICE_TYPE_GL,
+    CAIRO_DEVICE_TYPE_SCRIPT,
+    CAIRO_DEVICE_TYPE_XCB,
+    CAIRO_DEVICE_TYPE_XLIB,
     CAIRO_DEVICE_TYPE_XML,
-    CAIRO_DEVICE_TYPE_SKIA
 } cairo_device_type_t;
 </pre>
 <p>
@@ -320,93 +343,8 @@ New entries may be added in future versions.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-IMAGE:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_IMAGE</code></span></p></td>
-<td>The surface is of type image
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-PDF:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_PDF</code></span></p></td>
-<td>The surface is of type pdf
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-PS:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_PS</code></span></p></td>
-<td>The surface is of type ps
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-XLIB:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_XLIB</code></span></p></td>
-<td>The surface is of type xlib
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-XCB:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_XCB</code></span></p></td>
-<td>The surface is of type xcb
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-GLITZ:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_GLITZ</code></span></p></td>
-<td>The surface is of type glitz
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-QUARTZ:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_QUARTZ</code></span></p></td>
-<td>The surface is of type quartz
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-WIN32:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_WIN32</code></span></p></td>
-<td>The surface is of type win32
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-BEOS:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_BEOS</code></span></p></td>
-<td>The surface is of type beos
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-DIRECTFB:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_DIRECTFB</code></span></p></td>
-<td>The surface is of type directfb
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-SVG:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_SVG</code></span></p></td>
-<td>The surface is of type svg
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-OS2:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_OS2</code></span></p></td>
-<td>The surface is of type os2
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-WIN32-PRINTING:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_WIN32_PRINTING</code></span></p></td>
-<td>The surface is a win32 printing surface
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-QUARTZ-IMAGE:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_QUARTZ_IMAGE</code></span></p></td>
-<td>The surface is of type quartz_image
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-SCRIPT:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_SCRIPT</code></span></p></td>
-<td>The surface is of type script
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-QT:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_QT</code></span></p></td>
-<td>The surface is of type Qt
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-RECORDING:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_RECORDING</code></span></p></td>
-<td>The surface is of type recording
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-VG:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_VG</code></span></p></td>
-<td>The surface is a OpenVG surface
+<td><p><a name="CAIRO-DEVICE-TYPE-DRM:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_DRM</code></span></p></td>
+<td>The surface is of type Direct Render Manager
 </td>
 </tr>
 <tr>
@@ -415,18 +353,24 @@ New entries may be added in future versions.
 </td>
 </tr>
 <tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-DRM:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_DRM</code></span></p></td>
-<td>The surface is of type Direct Render Manager
+<td><p><a name="CAIRO-DEVICE-TYPE-SCRIPT:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_SCRIPT</code></span></p></td>
+<td>The surface is of type script
+</td>
+</tr>
+<tr>
+<td><p><a name="CAIRO-DEVICE-TYPE-XCB:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_XCB</code></span></p></td>
+<td>The surface is of type xcb
+</td>
+</tr>
+<tr>
+<td><p><a name="CAIRO-DEVICE-TYPE-XLIB:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_XLIB</code></span></p></td>
+<td>The surface is of type xlib
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-DEVICE-TYPE-XML:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_XML</code></span></p></td>
 <td>The surface is of type XML
-</td>
-</tr>
-<tr>
-<td><p><a name="CAIRO-DEVICE-TYPE-SKIA:CAPS"></a><span class="term"><code class="literal">CAIRO_DEVICE_TYPE_SKIA</code></span></p></td>
-<td>The surface is of type Skia
+  <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-create-for-rectangle" title="cairo_surface_create_for_rectangle ()"><code class="function">cairo_surface_create_for_rectangle()</code></a>
 </td>
 </tr>
 </tbody>
@@ -494,7 +438,7 @@ object is a nil object, 0 will be returned.
                                                          <em class="parameter"><code><a class="link" href="cairo-Types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()"><span class="type">cairo_destroy_func_t</span></a> destroy</code></em>);</pre>
 <p>
 Attach user data to <em class="parameter"><code>device</code></em>.  To remove user data from a surface,
-call this function with the key that was used to set it and <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+call this function with the key that was used to set it and <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 for <em class="parameter"><code>data</code></em>.
 </p>
 <div class="variablelist"><table border="0">
@@ -541,7 +485,7 @@ slot could not be allocated for the user data.
 <p>
 Return user data previously attached to <em class="parameter"><code>device</code></em> using the
 specified key.  If no user data has been attached with the given
-key this function returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
+key this function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -559,7 +503,7 @@ attached to
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the user data previously attached or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
+<td> the user data previously attached or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 
 </td>
 </tr>

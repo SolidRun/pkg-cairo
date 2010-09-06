@@ -58,7 +58,7 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/src/cairo-uninstalled.pc.in AUTHORS COPYING \
 	ChangeLog INSTALL NEWS build/compile build/config.guess \
 	build/config.sub build/depcomp build/install-sh \
-	build/ltmain.sh build/missing depcomp missing
+	build/ltmain.sh build/missing
 EXTRA_PROGRAMS =
 TESTS =
 check_PROGRAMS =
@@ -110,7 +110,8 @@ CONFIG_CLEAN_FILES = cairo-uninstalled.pc cairo-xlib-uninstalled.pc \
 	cairo-wgl-uninstalled.pc cairo-script-uninstalled.pc \
 	cairo-ft-uninstalled.pc cairo-fc-uninstalled.pc \
 	cairo-ps-uninstalled.pc cairo-pdf-uninstalled.pc \
-	cairo-svg-uninstalled.pc cairo-xml-uninstalled.pc
+	cairo-svg-uninstalled.pc cairo-tee-uninstalled.pc \
+	cairo-xml-uninstalled.pc cairo-gobject-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
@@ -225,6 +226,8 @@ FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FREETYPE_LIBS = @FREETYPE_LIBS@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GS = @GS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -338,7 +341,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mesa_DIR = @mesa_DIR@
 mkdir_p = @mkdir_p@
@@ -564,7 +566,11 @@ cairo-pdf-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-svg-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-tee-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 cairo-xml-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+cairo-gobject-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/src/cairo-features-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 clean-checkPROGRAMS:

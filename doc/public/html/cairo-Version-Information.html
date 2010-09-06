@@ -62,38 +62,71 @@ or as a "snapshot" tar file as opposed to a "release" tar file).
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
- _____ Major. Always 1, until we invent a new scheme.
-/  ___ Minor. Even/Odd = Release/Snapshot (tar files) or Branch/Head (git)
-| /  _ Micro. Even/Odd = Tar-file/git
-| | /
-1.0.0
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">_____ Major</span><span class="symbol">.</span><span class="normal"> Always </span><span class="number">1</span><span class="symbol">,</span><span class="normal"> until we invent a </span><span class="usertype">new</span><span class="normal"> scheme</span><span class="symbol">.</span>
+<span class="symbol">/</span><span class="normal">  ___ Minor</span><span class="symbol">.</span><span class="normal"> Even</span><span class="symbol">/</span><span class="normal">Odd </span><span class="symbol">=</span><span class="normal"> Release</span><span class="symbol">/</span><span class="function">Snapshot</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">tar</span><span class="normal"> files</span><span class="symbol">)</span><span class="normal"> </span><span class="usertype">or</span><span class="normal"> Branch</span><span class="symbol">/</span><span class="function">Head</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">git</span><span class="symbol">)</span>
+<span class="symbol">|</span><span class="normal"> </span><span class="symbol">/</span><span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-I18N.html#gettext-macro">_</a> Micro</span><span class="symbol">.</span><span class="normal"> Even</span><span class="symbol">/</span><span class="normal">Odd </span><span class="symbol">=</span><span class="normal"> Tar</span><span class="symbol">-</span><span class="normal">file</span><span class="symbol">/</span><span class="normal">git</span>
+<span class="symbol">|</span><span class="normal"> </span><span class="symbol">|</span><span class="normal"> </span><span class="symbol">/</span>
+<span class="number">1.0</span><span class="symbol">.</span><span class="number">0</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
 Here are a few examples of versions that one might see.
 </p>
-<div class="informalexample"><pre class="programlisting">
-Releases
---------
-1.0.0 - A major release
-1.0.2 - A subsequent maintenance release
-1.2.0 - Another major release
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">Releases</span>
+<span class="symbol">--------</span>
+<span class="number">1.0</span><span class="symbol">.</span><span class="number">0</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> A major release</span>
+<span class="number">1.0</span><span class="symbol">.</span><span class="number">2</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> A subsequent maintenance release</span>
+<span class="number">1.2</span><span class="symbol">.</span><span class="number">0</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> Another major release</span>
 
-Snapshots
----------
-1.1.2 - A snapshot (working toward the 1.2.0 release)
+<span class="normal">Snapshots</span>
+<span class="symbol">---------</span>
+<span class="number">1.1</span><span class="symbol">.</span><span class="number">2</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> </span><span class="usertype">A</span><span class="normal"> </span><span class="function">snapshot</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">working toward the </span><span class="number">1.2</span><span class="symbol">.</span><span class="number">0</span><span class="normal"> release</span><span class="symbol">)</span>
 
-In-progress development (eg. from git)
---------------------------------------
-1.0.1 - Development on a maintenance branch (toward 1.0.2 release)
-1.1.1 - Development on head (toward 1.1.2 snapshot and 1.2.0 release)
-</pre></div>
+<span class="normal">In</span><span class="symbol">-</span><span class="usertype">progress</span><span class="normal"> </span><span class="function">development</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">eg</span><span class="symbol">.</span><span class="normal"> </span><span class="usertype">from</span><span class="normal"> git</span><span class="symbol">)</span>
+<span class="symbol">--------------------------------------</span>
+<span class="number">1.0</span><span class="symbol">.</span><span class="number">1</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> Development on a </span><span class="usertype">maintenance</span><span class="normal"> </span><span class="function">branch</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">toward </span><span class="number">1.0</span><span class="symbol">.</span><span class="number">2</span><span class="normal"> release</span><span class="symbol">)</span>
+<span class="number">1.1</span><span class="symbol">.</span><span class="number">1</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> Development </span><span class="usertype">on</span><span class="normal"> </span><span class="function">head</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">toward </span><span class="number">1.1</span><span class="symbol">.</span><span class="number">2</span><span class="normal"> snapshot and </span><span class="number">1.2</span><span class="symbol">.</span><span class="number">0</span><span class="normal"> release</span><span class="symbol">)</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <div class="refsect2" title="Compatibility">
-<a name="id3080893"></a><h3>Compatibility</h3>
+<a name="id3076756"></a><h3>Compatibility</h3>
 <p>
 The API/ABI compatibility guarantees for various versions are as
 follows. First, let's assume some cairo-using application code that is
@@ -121,7 +154,7 @@ rather the many states between snapshots and releases.
 </div>
 <hr>
 <div class="refsect2" title="Examining the version">
-<a name="id3080931"></a><h3>Examining the version</h3>
+<a name="id3076795"></a><h3>Examining the version</h3>
 <p>
 Cairo provides the ability to examine the version at either
 compile-time or run-time and in both a human-readable form as well as
@@ -130,17 +163,33 @@ macro <a class="link" href="cairo-Version-Information.html#CAIRO-VERSION-ENCODE:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-Compile-time
-------------
-CAIRO_VERSION_STRING    Human-readable
-CAIRO_VERSION           Encoded, suitable for comparison
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">Compile</span><span class="symbol">-</span><span class="normal">time</span>
+<span class="symbol">------------</span>
+<span class="usertype">CAIRO_VERSION_STRING</span><span class="normal">    Human</span><span class="symbol">-</span><span class="normal">readable</span>
+<span class="usertype">CAIRO_VERSION</span><span class="normal">           Encoded</span><span class="symbol">,</span><span class="normal"> suitable </span><span class="keyword">for</span><span class="normal"> comparison</span>
 
-Run-time
---------
-cairo_version_string()  Human-readable
-cairo_version()         Encoded, suitable for comparison
-</pre></div>
+<span class="normal">Run</span><span class="symbol">-</span><span class="normal">time</span>
+<span class="symbol">--------</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#cairo-version-string">cairo_version_string</a></span><span class="symbol">()</span><span class="normal">  Human</span><span class="symbol">-</span><span class="normal">readable</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#cairo-version">cairo_version</a></span><span class="symbol">()</span><span class="normal">         Encoded</span><span class="symbol">,</span><span class="normal"> suitable </span><span class="keyword">for</span><span class="normal"> comparison</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
@@ -149,14 +198,27 @@ to 1.0.0 could be achieved at compile-time or run-time as follows:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-##if CAIRO_VERSION &gt;= CAIRO_VERSION_ENCODE(1, 0, 0)
-printf ("Compiling with suitable cairo version: %s\n", %CAIRO_VERSION_STRING);
-##endif
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="preproc">#</span><span class="normal">#</span><span class="usertype">if</span><span class="normal"> <a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#CAIRO-VERSION:CAPS">CAIRO_VERSION</a> </span><span class="symbol">&gt;=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#CAIRO-VERSION-ENCODE:CAPS">CAIRO_VERSION_ENCODE</a></span><span class="symbol">(</span><span class="number">1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">)</span>
+<span class="function">printf</span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Compiling with suitable cairo version: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">%</span><span class="normal"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#CAIRO-VERSION-STRING:CAPS">CAIRO_VERSION_STRING</a></span><span class="symbol">);</span>
+<span class="preproc">#</span><span class="normal">#endif</span>
 
-if (cairo_version() &gt;= CAIRO_VERSION_ENCODE(1, 0, 0))
-    printf ("Running with suitable cairo version: %s\n", cairo_version_string ());
-</pre></div>
+<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#cairo-version">cairo_version</a></span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&gt;=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#CAIRO-VERSION-ENCODE:CAPS">CAIRO_VERSION_ENCODE</a></span><span class="symbol">(</span><span class="number">1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">))</span>
+<span class="normal">    </span><span class="function">printf</span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Running with suitable cairo version: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#cairo-version-string">cairo_version_string</a></span><span class="normal"> </span><span class="symbol">());</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 </div>
@@ -292,9 +354,17 @@ or equal to version X.Y.Z could be performed as follows:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-if (cairo_version() &gt;= CAIRO_VERSION_ENCODE(X,Y,Z)) {...}
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#cairo-version">cairo_version</a></span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&gt;=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Version-Information.html#CAIRO-VERSION-ENCODE:CAPS">CAIRO_VERSION_ENCODE</a></span><span class="symbol">(</span><span class="normal">X</span><span class="symbol">,</span><span class="normal">Y</span><span class="symbol">,</span><span class="normal">Z</span><span class="symbol">))</span><span class="normal"> </span><span class="cbracket">{</span><span class="symbol">...</span><span class="cbracket">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>

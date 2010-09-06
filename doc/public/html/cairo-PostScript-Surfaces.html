@@ -103,7 +103,7 @@ vary. See <a class="link" href="cairo-PostScript-Surfaces.html#cairo-ps-surface-
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>filename</code></em> :</span></p></td>
-<td>a filename for the PS output (must be writable), <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> may be
+<td>a filename for the PS output (must be writable), <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> may be
            used to specify no output. This will generate a PS surface that
            may be queried and used as a source, without generating a
            temporary file.
@@ -157,7 +157,7 @@ output can vary. See <a class="link" href="cairo-PostScript-Surfaces.html#cairo-
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>write_func</code></em> :</span></p></td>
-<td>a <a class="link" href="cairo-PNG-Support.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> to accept the output data, may be <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>a <a class="link" href="cairo-PNG-Support.html#cairo-write-func-t" title="cairo_write_func_t ()"><span class="type">cairo_write_func_t</span></a> to accept the output data, may be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
              to indicate a no-op <em class="parameter"><code>write_func</code></em>. With a no-op <em class="parameter"><code>write_func</code></em>,
              the surface may be queried or used as a source without
              generating any temporary files.
@@ -288,7 +288,7 @@ Used to retrieve the list of supported levels. See
 <pre class="programlisting">const <span class="returnvalue">char</span> *        cairo_ps_level_to_string            (<em class="parameter"><code><a class="link" href="cairo-PostScript-Surfaces.html#cairo-ps-level-t" title="enum cairo_ps_level_t"><span class="type">cairo_ps_level_t</span></a> level</code></em>);</pre>
 <p>
 Get the string representation of the given <em class="parameter"><code>level</code></em> id. This function
-will return <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>level</code></em> id isn't valid. See <a class="link" href="cairo-PostScript-Surfaces.html#cairo-ps-get-levels" title="cairo_ps_get_levels ()"><code class="function">cairo_ps_get_levels()</code></a>
+will return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>level</code></em> id isn't valid. See <a class="link" href="cairo-PostScript-Surfaces.html#cairo-ps-get-levels" title="cairo_ps_get_levels ()"><code class="function">cairo_ps_get_levels()</code></a>
 for a way to get the list of valid level ids.
 </p>
 <div class="variablelist"><table border="0">
@@ -315,7 +315,7 @@ for a way to get the list of valid level ids.
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_ps_surface_set_eps            (<em class="parameter"><code><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
                                                          <em class="parameter"><code><a class="link" href="cairo-Types.html#cairo-bool-t" title="cairo_bool_t"><span class="type">cairo_bool_t</span></a> eps</code></em>);</pre>
 <p>
-If <em class="parameter"><code>eps</code></em> is <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, the PostScript surface will output Encapsulated
+If <em class="parameter"><code>eps</code></em> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, the PostScript surface will output Encapsulated
 PostScript.
 </p>
 <p>
@@ -336,7 +336,7 @@ than one page.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>eps</code></em> :</span></p></td>
 <td>
-<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to output EPS format PostScript
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to output EPS format PostScript
 </td>
 </tr>
 </tbody>
@@ -360,7 +360,7 @@ Check whether the PostScript surface will output Encapsulated PostScript.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the surface will output Encapsulated PostScript.
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the surface will output Encapsulated PostScript.
 
 </td>
 </tr>
@@ -545,26 +545,51 @@ Here is an example sequence showing how this function might be used:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface = cairo_ps_surface_create (filename, width, height);
-...
-cairo_ps_surface_dsc_comment (surface, "%%Title: My excellent document");
-cairo_ps_surface_dsc_comment (surface, "%%Copyright: Copyright (C) 2006 Cairo Lover")
-...
-cairo_ps_surface_dsc_begin_setup (surface);
-cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *MediaColor White");
-...
-cairo_ps_surface_dsc_begin_page_setup (surface);
-cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *PageSize A3");
-cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *InputSlot LargeCapacity");
-cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *MediaType Glossy");
-cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *MediaColor Blue");
-... draw to first page here ..
-cairo_show_page (cr);
-...
-cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *PageSize A5");
-...
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="usertype">a</span><span class="normal"> class</span><span class="symbol">=</span><span class="string">"link"</span><span class="normal"> href</span><span class="symbol">=</span><span class="string">"cairo-cairo-surface-t.html#cairo-surface-t"</span><span class="normal"> title</span><span class="symbol">=</span><span class="string">"cairo_surface_t"</span><span class="symbol">&gt;</span><span class="usertype">cairo_surface_t&lt;/a&gt;</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">surface </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-create">cairo_ps_surface_create</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">filename</span><span class="symbol">,</span><span class="normal"> width</span><span class="symbol">,</span><span class="normal"> height</span><span class="symbol">);</span>
+<span class="symbol">...</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%Title: My excellent document"</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%Copyright: Copyright (C) 2006 Cairo Lover"</span><span class="symbol">)</span>
+<span class="symbol">...</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-begin-setup">cairo_ps_surface_dsc_begin_setup</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%IncludeFeature: *MediaColor White"</span><span class="symbol">);</span>
+<span class="symbol">...</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-begin-page-setup">cairo_ps_surface_dsc_begin_page_setup</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%IncludeFeature: *PageSize A3"</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%IncludeFeature: *InputSlot LargeCapacity"</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%IncludeFeature: *MediaType Glossy"</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%IncludeFeature: *MediaColor Blue"</span><span class="symbol">);</span>
+<span class="symbol">...</span><span class="normal"> draw to first </span><span class="usertype">page</span><span class="normal"> here </span><span class="symbol">..</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-show-page">cairo_show_page</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
+<span class="symbol">...</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html#cairo-ps-surface-dsc-comment">cairo_ps_surface_dsc_comment</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">surface</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%%IncludeFeature: *PageSize A5"</span><span class="symbol">);</span>
+<span class="symbol">...</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <div class="variablelist"><table border="0">

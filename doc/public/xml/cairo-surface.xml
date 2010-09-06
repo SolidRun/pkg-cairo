@@ -286,9 +286,9 @@ pointer to a "nil" surface if <parameter>other</parameter> is already in an erro
 or any other error occurs.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2 id="cairo-surface-create-for-rectangle" role="function">
+<refsect2 id="cairo-surface-create-for-rectangle" role="function" condition="since:1.10">
 <title>cairo_surface_create_for_rectangle ()</title>
-<indexterm zone="cairo-surface-create-for-rectangle"><primary sortas="surface_create_for_rectangle">cairo_surface_create_for_rectangle</primary></indexterm>
+<indexterm zone="cairo-surface-create-for-rectangle" role="1.10"><primary sortas="surface_create_for_rectangle">cairo_surface_create_for_rectangle</primary></indexterm>
 <programlisting><link linkend="cairo-surface-t"><returnvalue>cairo_surface_t</returnvalue></link> *   cairo_surface_create_for_rectangle  (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *target</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> x</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> y</parameter>,
@@ -302,6 +302,12 @@ its bounds is drawn onto the target surface, making this a useful method
 for passing constrained child surfaces to library routines that draw
 directly onto the parent surface, i.e. with no further backend allocations,
 double buffering or copies.
+</para>
+<para>
+<note><para>The semantics of subsurfaces have not been finalized yet
+unless the rectangle is in full device units, is contained within
+the extents of the target surface, and the target or subsurface's
+device transforms are not changed.</para></note>
 </para><variablelist role="params">
 <varlistentry><term><parameter>target</parameter>&#160;:</term>
 <listitem><simpara>an existing surface for which the sub-surface will point to
@@ -325,8 +331,9 @@ with it.
 This function always returns a valid pointer, but it will return a
 pointer to a "nil" surface if <parameter>other</parameter> is already in an error state
 or any other error occurs.
+
 </simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</variablelist><para role="since">Since 1.10</para></refsect2>
 <refsect2 id="cairo-surface-reference" role="function">
 <title>cairo_surface_reference ()</title>
 <indexterm zone="cairo-surface-reference"><primary sortas="surface_reference">cairo_surface_reference</primary></indexterm>
@@ -662,7 +669,8 @@ resolution if never set.
     CAIRO_SURFACE_TYPE_DRM,
     CAIRO_SURFACE_TYPE_TEE,
     CAIRO_SURFACE_TYPE_XML,
-    CAIRO_SURFACE_TYPE_SKIA
+    CAIRO_SURFACE_TYPE_SKIA,
+    CAIRO_SURFACE_TYPE_SUBSURFACE
 } cairo_surface_type_t;
 </programlisting>
 <para>
@@ -805,6 +813,12 @@ New entries may be added in future versions.
 <varlistentry id="CAIRO-SURFACE-TYPE-SKIA:CAPS" role="constant">
 <term><literal>CAIRO_SURFACE_TYPE_SKIA</literal></term>
 <listitem><simpara>The surface is of type Skia, since 1.10
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-SURFACE-TYPE-SUBSURFACE:CAPS" role="constant">
+<term><literal>CAIRO_SURFACE_TYPE_SUBSURFACE</literal></term>
+<listitem><simpara>The surface is a subsurface created with
+  <link linkend="cairo-surface-create-for-rectangle"><function>cairo_surface_create_for_rectangle()</function></link>, since 1.10
 </simpara></listitem>
 </varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>

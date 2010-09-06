@@ -541,7 +541,7 @@ destroyed if there are no other references to it.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>a <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a>, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to restore to the default font
+<td>a <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to restore to the default font
 </td>
 </tr>
 </tbody>
@@ -568,7 +568,7 @@ Gets the current font face for a <a class="link" href="cairo-cairo-t.html#cairo-
 cairo. To keep a reference to it, you must call
 <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-reference" title="cairo_font_face_reference ()"><code class="function">cairo_font_face_reference()</code></a>.
 
-This function never returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. If memory cannot be allocated, a
+This function never returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. If memory cannot be allocated, a
 special "nil" <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> object will be returned on which
 <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-status" title="cairo_font_face_status ()"><code class="function">cairo_font_face_status()</code></a> returns <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>. Using
 this nil object will cause its error state to propagate to other
@@ -630,7 +630,7 @@ Gets the current scaled font for a <a class="link" href="cairo-cairo-t.html#cair
 cairo. To keep a reference to it, you must call
 <a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-reference" title="cairo_scaled_font_reference ()"><code class="function">cairo_scaled_font_reference()</code></a>.
 
-This function never returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. If memory cannot be allocated, a
+This function never returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. If memory cannot be allocated, a
 special "nil" <a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a> object will be returned on which
 <a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-status" title="cairo_scaled_font_status ()"><code class="function">cairo_scaled_font_status()</code></a> returns <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>. Using
 this nil object will cause its error state to propagate to other
@@ -685,7 +685,7 @@ serious text-using applications. See <a class="link" href="cairo-text.html#cairo
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8</code></em> :</span></p></td>
-<td>a NUL-terminated string of text encoded in UTF-8, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>a NUL-terminated string of text encoded in UTF-8, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 </tbody>
@@ -862,7 +862,7 @@ affect the x_advance and y_advance values.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8</code></em> :</span></p></td>
-<td>a NUL-terminated string of text encoded in UTF-8, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>a NUL-terminated string of text encoded in UTF-8, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
@@ -1058,8 +1058,8 @@ For all other uses, user can use their own allocation method
 for glyphs.
 </p>
 <p>
-This function returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>num_glyphs</code></em> is not positive,
-or if out of memory.  That means, the <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> return value
+This function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>num_glyphs</code></em> is not positive,
+or if out of memory.  That means, the <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> return value
 signals out-of-memory only if <em class="parameter"><code>num_glyphs</code></em> was positive.
 </p>
 <div class="variablelist"><table border="0">
@@ -1097,7 +1097,7 @@ for glyphs.
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>glyphs</code></em> :</span></p></td>
-<td>array of glyphs to free, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>array of glyphs to free, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr></tbody>
 </table></div>
@@ -1116,8 +1116,8 @@ For all other uses, user can use their own allocation method
 for text clusters.
 </p>
 <p>
-This function returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>num_clusters</code></em> is not positive,
-or if out of memory.  That means, the <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> return value
+This function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>num_clusters</code></em> is not positive,
+or if out of memory.  That means, the <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> return value
 signals out-of-memory only if <em class="parameter"><code>num_clusters</code></em> was positive.
 </p>
 <div class="variablelist"><table border="0">
@@ -1155,7 +1155,7 @@ for text clusters.
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>clusters</code></em> :</span></p></td>
-<td>array of text clusters to free, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>array of text clusters to free, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr></tbody>
 </table></div>
