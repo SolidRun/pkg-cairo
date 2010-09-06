@@ -279,7 +279,7 @@ CAIRO_ENABLE_FUNCTIONS(png, PNG, yes, [
   AC_ARG_VAR([png_REQUIRES], [module name for libpng to search for using pkg-config])
   if test "x$png_REQUIRES" = x; then
     # libpng13 is GnuWin32's libpng-1.2.8 :-(
-    for l in libpng12 libpng13 libpng10 libpng; do
+    for l in libpng libpng14 libpng12 libpng13 libpng10; do
       if $PKG_CONFIG --exists $l ; then
         png_REQUIRES=$l
         use_png=yes
@@ -614,7 +614,7 @@ CAIRO_ENABLE(test_surfaces, test surfaces, no)
 dnl ===========================================================================
 
 CAIRO_ENABLE_SURFACE_BACKEND(image, image, always, [
-  pixman_REQUIRES="pixman-1 >= 0.17.5"
+  pixman_REQUIRES="pixman-1 >= 0.18.4"
   PKG_CHECK_MODULES(pixman, $pixman_REQUIRES, , [AC_MSG_RESULT(no)
   use_image="no (requires $pixman_REQUIRES http://cairographics.org/releases/)"])
   image_REQUIRES=$pixman_REQUIRES
@@ -625,8 +625,8 @@ CAIRO_ENABLE_SURFACE_BACKEND(image, image, always, [
 dnl ===========================================================================
 
 CAIRO_ENABLE_SURFACE_BACKEND(recording, recording, always)
-CAIRO_ENABLE_SURFACE_BACKEND(tee, tee, always)
-CAIRO_ENABLE_SURFACE_BACKEND(xml, xml, yes, [
+CAIRO_ENABLE_SURFACE_BACKEND(tee, tee, no)
+CAIRO_ENABLE_SURFACE_BACKEND(xml, xml, no, [
     use_xml=$have_libz
     xml_NONPKGCONFIG_LIBS=-lz
 ])
@@ -650,6 +650,20 @@ AC_SUBST(pthread_LIBS)
 AC_SUBST(real_pthread_CFLAGS)
 AC_SUBST(real_pthread_LIBS)
 
+
+dnl ===========================================================================
+dnl Build gobject integration library
+
+CAIRO_ENABLE_FUNCTIONS(gobject, gobject, auto, [
+  gobject_REQUIRES="gobject-2.0 glib-2.0"
+  PKG_CHECK_MODULES(GOBJECT, $gobject_REQUIRES, , [AC_MSG_RESULT(no)
+  use_gobject="no (requires $gobject_REQUIRES http://download.gnome.org/pub/GNOME/sources/glib/)"])
+  gobject_NONPKGCONFIG_EXTRA_LIBS="-L\${libdir} -lcairo-gobject"
+])
+dnl I'm too lazy to fix the caching properly
+if test "x$use_gobject" = "xyes"; then
+  PKG_CHECK_MODULES(GOBJECT, $gobject_REQUIRES)
+fi
 
 dnl ===========================================================================
 dnl Default to quick testing during development, but force a full test before
@@ -791,6 +805,7 @@ test/pdiff/Makefile
 perf/Makefile
 util/Makefile
 util/cairo-fdr/Makefile
+util/cairo-gobject/Makefile
 util/cairo-script/Makefile
 util/cairo-script/examples/Makefile
 util/cairo-sphinx/Makefile

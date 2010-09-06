@@ -140,9 +140,9 @@ New entries may be added in future versions.
 </tr>
 <tr>
 <td><p><a name="CAIRO-FORMAT-RGB16-565:CAPS"></a><span class="term"><code class="literal">CAIRO_FORMAT_RGB16_565</code></span></p></td>
-<td>This format value is deprecated. It has
-  never been properly implemented in cairo and should not be used
-  by applications. (since 1.2)
+<td>each pixel is a 16-bit quantity
+  with red in the upper 5 bits, then green in the middle
+  6 bits, and blue in the lower 5 bits.
 </td>
 </tr>
 </tbody>
@@ -160,17 +160,33 @@ within cairo. Typical usage will be of the form:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-int stride;
-unsigned char *data;
-<a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t" title="cairo_surface_t">cairo_surface_t</a> *surface;
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="type">int</span><span class="normal"> stride</span><span class="symbol">;</span>
+<span class="type">unsigned</span><span class="normal"> </span><span class="type">char</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">data</span><span class="symbol">;</span>
+<span class="symbol">&lt;</span><span class="usertype">a</span><span class="normal"> class</span><span class="symbol">=</span><span class="string">"link"</span><span class="normal"> href</span><span class="symbol">=</span><span class="string">"cairo-cairo-surface-t.html#cairo-surface-t"</span><span class="normal"> title</span><span class="symbol">=</span><span class="string">"cairo_surface_t"</span><span class="symbol">&gt;</span><span class="usertype">cairo_surface_t&lt;/a&gt;</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">surface</span><span class="symbol">;</span>
 
-stride = cairo_format_stride_for_width (format, width);
-data = malloc (stride * height);
-surface = cairo_image_surface_create_for_data (data, format,
-					  width, height,
-					  stride);
-</pre></div>
+<span class="normal">stride </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Image-Surfaces.html#cairo-format-stride-for-width">cairo_format_stride_for_width</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">format</span><span class="symbol">,</span><span class="normal"> width</span><span class="symbol">);</span>
+<span class="normal">data </span><span class="symbol">=</span><span class="normal"> </span><span class="function">malloc</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">stride </span><span class="symbol">*</span><span class="normal"> height</span><span class="symbol">);</span>
+<span class="normal">surface </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Image-Surfaces.html#cairo-image-surface-create-for-data">cairo_image_surface_create_for_data</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">data</span><span class="symbol">,</span><span class="normal"> format</span><span class="symbol">,</span>
+<span class="normal">                      width</span><span class="symbol">,</span><span class="normal"> height</span><span class="symbol">,</span>
+<span class="normal">                      stride</span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -340,7 +356,7 @@ inspection or modification.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a pointer to the image data of this surface or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td> a pointer to the image data of this surface or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 if <em class="parameter"><code>surface</code></em> is not an image surface, or if <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-finish" title="cairo_surface_finish ()"><code class="function">cairo_surface_finish()</code></a>
 has been called.
 

@@ -1759,6 +1759,20 @@ _extents_to_linear_parameter (const cairo_linear_pattern_t *linear,
 }
 
 static cairo_bool_t
+_linear_pattern_is_degenerate (const cairo_linear_pattern_t *linear)
+{
+    return linear->p1.x == linear->p2.x && linear->p1.y == linear->p2.y;
+}
+
+static cairo_bool_t
+_radial_pattern_is_degenerate (const cairo_radial_pattern_t *radial)
+{
+    return radial->r1 == radial->r2 &&
+	(radial->r1 == 0 /* && radial->r2 == 0 */ ||
+	 (radial->c1.x == radial->c2.x && radial->c1.y == radial->c2.y));
+}
+
+static cairo_bool_t
 _gradient_is_clear (const cairo_gradient_pattern_t *gradient,
 		    const cairo_rectangle_int_t *extents)
 {
@@ -1777,7 +1791,7 @@ _gradient_is_clear (const cairo_gradient_pattern_t *gradient,
 	if (gradient->base.extend == CAIRO_EXTEND_NONE) {
 	    cairo_linear_pattern_t *linear = (cairo_linear_pattern_t *) gradient;
 	    /* EXTEND_NONE degenerate linear gradients are clear */
-	    if (linear->p1.x == linear->p2.x && linear->p1.y == linear->p2.y)
+	    if (_linear_pattern_is_degenerate (linear))
 		return TRUE;
 
 	    if (extents != NULL) {
@@ -1790,8 +1804,7 @@ _gradient_is_clear (const cairo_gradient_pattern_t *gradient,
     } else {
 	cairo_radial_pattern_t *radial = (cairo_radial_pattern_t *) gradient;
 	/* degenerate radial gradients are clear */
-	if (((radial->c1.x == radial->c2.x && radial->c1.y == radial->c2.y) ||
-	     radial->r1 == 0) && radial->r1 == radial->r2)
+	if (_radial_pattern_is_degenerate (radial))
 	    return TRUE;
 	/* TODO: check actual intersection */
     }
@@ -1801,6 +1814,116 @@ _gradient_is_clear (const cairo_gradient_pattern_t *gradient,
 	    return FALSE;
 
     return TRUE;
+}
+
+static void
+_gradient_color_average (const cairo_gradient_pattern_t *gradient,
+			 cairo_color_t *color)
+{
+    double delta0, delta1;
+    double r, g, b, a;
+    unsigned int i, start = 1, end;
+
+    assert (gradient->n_stops > 0);
+    assert (gradient->base.extend != CAIRO_EXTEND_NONE);
+
+    if (gradient->n_stops == 1) {
+	_cairo_color_init_rgba (color,
+				gradient->stops[0].color.red,
+				gradient->stops[0].color.green,
+				gradient->stops[0].color.blue,
+				gradient->stops[0].color.alpha);
+	return;
+    }
+
+    end = gradient->n_stops - 1;
+
+    switch (gradient->base.extend) {
+    case CAIRO_EXTEND_REPEAT:
+      /*
+       * Sa, Sb and Sy, Sz are the first two and last two stops respectively.
+       * The weight of the first and last stop can be computed as the area of
+       * the following triangles (taken with height 1, since the whole [0-1]
+       * will have total weight 1 this way): b*h/2
+       *
+       *              +                   +
+       *            / |\                / | \
+       *          /   | \             /   |   \
+       *        /     |  \          /     |     \
+       * ~~~~~+---+---+---+~~~~~~~+-------+---+---+~~~~~
+       *   -1+Sz  0  Sa   Sb      Sy     Sz   1  1+Sa
+       *
+       * For the first stop: (Sb-(-1+Sz)/2 = (1+Sb-Sz)/2
+       * For the last stop: ((1+Sa)-Sy)/2 = (1+Sa-Sy)/2
+       * Halving the result is done after summing up all the areas.
+       */
+	delta0 = 1.0 + gradient->stops[1].offset - gradient->stops[end].offset;
+	delta1 = 1.0 + gradient->stops[0].offset - gradient->stops[end-1].offset;
+	break;
+
+    case CAIRO_EXTEND_REFLECT:
+      /*
+       * Sa, Sb and Sy, Sz are the first two and last two stops respectively.
+       * The weight of the first and last stop can be computed as the area of
+       * the following trapezoids (taken with height 1, since the whole [0-1]
+       * will have total weight 1 this way): (b+B)*h/2
+       *
+       * +-------+                   +---+
+       * |       |\                / |   |
+       * |       | \             /   |   |
+       * |       |  \          /     |   |
+       * +-------+---+~~~~~~~+-------+---+
+       * 0      Sa   Sb      Sy     Sz   1
+       *
+       * For the first stop: (Sa+Sb)/2
+       * For the last stop: ((1-Sz) + (1-Sy))/2 = (2-Sy-Sz)/2
+       * Halving the result is done after summing up all the areas.
+       */
+	delta0 = gradient->stops[0].offset + gradient->stops[1].offset;
+	delta1 = 2.0 - gradient->stops[end-1].offset - gradient->stops[end].offset;
+	break;
+
+    case CAIRO_EXTEND_PAD:
+      /* PAD is computed as the average of the first and last stop:
+       *  - take both of them with weight 1 (they will be halved
+       *    after the whole sum has been computed).
+       *  - avoid summing any of the inner stops.
+       */
+	delta0 = delta1 = 1.0;
+	start = end;
+	break;
+
+    case CAIRO_EXTEND_NONE:
+    default:
+	ASSERT_NOT_REACHED;
+	_cairo_color_init_rgba (color, 0, 0, 0, 0);
+	return;
+    }
+
+    r = delta0 * gradient->stops[0].color.red;
+    g = delta0 * gradient->stops[0].color.green;
+    b = delta0 * gradient->stops[0].color.blue;
+    a = delta0 * gradient->stops[0].color.alpha;
+
+    for (i = start; i < end; ++i) {
+      /* Inner stops weight is the same as the area of the triangle they influence
+       * (which goes from the stop before to the stop after), again with height 1
+       * since the whole must sum up to 1: b*h/2
+       * Halving is done after the whole sum has been computed.
+       */
+	double delta = gradient->stops[i+1].offset - gradient->stops[i-1].offset;
+	r += delta * gradient->stops[i].color.red;
+	g += delta * gradient->stops[i].color.green;
+	b += delta * gradient->stops[i].color.blue;
+	a += delta * gradient->stops[i].color.alpha;
+    }
+
+    r += delta1 * gradient->stops[end].color.red;
+    g += delta1 * gradient->stops[end].color.green;
+    b += delta1 * gradient->stops[end].color.blue;
+    a += delta1 * gradient->stops[end].color.alpha;
+
+    _cairo_color_init_rgba (color, r * .5, g * .5, b * .5, a * .5);
 }
 
 /**
@@ -1825,10 +1948,15 @@ _cairo_gradient_pattern_is_solid (const cairo_gradient_pattern_t *gradient,
     assert (gradient->base.type == CAIRO_PATTERN_TYPE_LINEAR ||
 	    gradient->base.type == CAIRO_PATTERN_TYPE_RADIAL);
 
-    /* TODO: radial, degenerate linear */
+    /* TODO: radial */
     if (gradient->base.type == CAIRO_PATTERN_TYPE_LINEAR) {
+	cairo_linear_pattern_t *linear = (cairo_linear_pattern_t *) gradient;
+	if (_linear_pattern_is_degenerate (linear)) {
+	    _gradient_color_average (gradient, color);
+	    return TRUE;
+	}
+
 	if (gradient->base.extend == CAIRO_EXTEND_NONE) {
-	    cairo_linear_pattern_t *linear = (cairo_linear_pattern_t *) gradient;
 	    double t[2];
 
 	    /* We already know that the pattern is not clear, thus if some
@@ -1944,7 +2072,7 @@ _gradient_is_opaque (const cairo_gradient_pattern_t *gradient,
 	    cairo_linear_pattern_t *linear = (cairo_linear_pattern_t *) gradient;
 
 	    /* EXTEND_NONE degenerate radial gradients are clear */
-	    if (linear->p1.x == linear->p2.x && linear->p1.y == linear->p2.y)
+	    if (_linear_pattern_is_degenerate (linear))
 		return FALSE;
 
 	    if (extents == NULL)

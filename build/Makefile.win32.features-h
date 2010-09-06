@@ -103,13 +103,18 @@ ifeq ($(CAIRO_HAS_TEST_SURFACES),1)
 endif
 	@echo "#define CAIRO_HAS_IMAGE_SURFACE 1" >> src/cairo-features.h
 	@echo "#define CAIRO_HAS_RECORDING_SURFACE 1" >> src/cairo-features.h
+ifeq ($(CAIRO_HAS_TEE_SURFACE),1)
 	@echo "#define CAIRO_HAS_TEE_SURFACE 1" >> src/cairo-features.h
+endif
 ifeq ($(CAIRO_HAS_XML_SURFACE),1)
 	@echo "#define CAIRO_HAS_XML_SURFACE 1" >> src/cairo-features.h
 endif
 	@echo "#define CAIRO_HAS_USER_FONT 1" >> src/cairo-features.h
 ifeq ($(CAIRO_HAS_PTHREAD),1)
 	@echo "#define CAIRO_HAS_PTHREAD 1" >> src/cairo-features.h
+endif
+ifeq ($(CAIRO_HAS_GOBJECT_FUNCTIONS),1)
+	@echo "#define CAIRO_HAS_GOBJECT_FUNCTIONS 1" >> src/cairo-features.h
 endif
 ifeq ($(CAIRO_HAS_TRACE),1)
 	@echo "#define CAIRO_HAS_TRACE 1" >> src/cairo-features.h

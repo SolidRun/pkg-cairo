@@ -90,6 +90,13 @@ my_device_modifying_function (cairo_device_t *device)
 }
 </programlisting></informalexample>
 </para>
+<para>
+<note><para>Please refer to the documentation of each backend for
+additional usage requirements, guarantees provided, and
+interactions with existing surface API of the device functions for
+surfaces of that type.
+</para></note>
+</para>
 </refsect1>
 <refsect1 id="cairo-cairo-device-t.details" role="details">
 <title role="details.title">Details</title>
@@ -211,28 +218,12 @@ This function may acquire devices.
 <title>enum cairo_device_type_t</title>
 <indexterm zone="cairo-device-type-t" role="1.10"><primary sortas="device_type_t">cairo_device_type_t</primary></indexterm>
 <programlisting>typedef enum _cairo_device_type {
-    CAIRO_DEVICE_TYPE_IMAGE,
-    CAIRO_DEVICE_TYPE_PDF,
-    CAIRO_DEVICE_TYPE_PS,
-    CAIRO_DEVICE_TYPE_XLIB,
-    CAIRO_DEVICE_TYPE_XCB,
-    CAIRO_DEVICE_TYPE_GLITZ,
-    CAIRO_DEVICE_TYPE_QUARTZ,
-    CAIRO_DEVICE_TYPE_WIN32,
-    CAIRO_DEVICE_TYPE_BEOS,
-    CAIRO_DEVICE_TYPE_DIRECTFB,
-    CAIRO_DEVICE_TYPE_SVG,
-    CAIRO_DEVICE_TYPE_OS2,
-    CAIRO_DEVICE_TYPE_WIN32_PRINTING,
-    CAIRO_DEVICE_TYPE_QUARTZ_IMAGE,
-    CAIRO_DEVICE_TYPE_SCRIPT,
-    CAIRO_DEVICE_TYPE_QT,
-    CAIRO_DEVICE_TYPE_RECORDING,
-    CAIRO_DEVICE_TYPE_VG,
-    CAIRO_DEVICE_TYPE_GL,
     CAIRO_DEVICE_TYPE_DRM,
+    CAIRO_DEVICE_TYPE_GL,
+    CAIRO_DEVICE_TYPE_SCRIPT,
+    CAIRO_DEVICE_TYPE_XCB,
+    CAIRO_DEVICE_TYPE_XLIB,
     CAIRO_DEVICE_TYPE_XML,
-    CAIRO_DEVICE_TYPE_SKIA
 } cairo_device_type_t;
 </programlisting>
 <para>
@@ -256,94 +247,9 @@ the wrong type is undefined.
 <para>
 New entries may be added in future versions.
 </para><variablelist role="enum">
-<varlistentry id="CAIRO-DEVICE-TYPE-IMAGE:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_IMAGE</literal></term>
-<listitem><simpara>The surface is of type image
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-PDF:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_PDF</literal></term>
-<listitem><simpara>The surface is of type pdf
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-PS:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_PS</literal></term>
-<listitem><simpara>The surface is of type ps
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-XLIB:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_XLIB</literal></term>
-<listitem><simpara>The surface is of type xlib
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-XCB:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_XCB</literal></term>
-<listitem><simpara>The surface is of type xcb
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-GLITZ:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_GLITZ</literal></term>
-<listitem><simpara>The surface is of type glitz
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-QUARTZ:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_QUARTZ</literal></term>
-<listitem><simpara>The surface is of type quartz
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-WIN32:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_WIN32</literal></term>
-<listitem><simpara>The surface is of type win32
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-BEOS:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_BEOS</literal></term>
-<listitem><simpara>The surface is of type beos
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-DIRECTFB:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_DIRECTFB</literal></term>
-<listitem><simpara>The surface is of type directfb
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-SVG:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_SVG</literal></term>
-<listitem><simpara>The surface is of type svg
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-OS2:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_OS2</literal></term>
-<listitem><simpara>The surface is of type os2
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-WIN32-PRINTING:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_WIN32_PRINTING</literal></term>
-<listitem><simpara>The surface is a win32 printing surface
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-QUARTZ-IMAGE:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_QUARTZ_IMAGE</literal></term>
-<listitem><simpara>The surface is of type quartz_image
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-SCRIPT:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_SCRIPT</literal></term>
-<listitem><simpara>The surface is of type script
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-QT:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_QT</literal></term>
-<listitem><simpara>The surface is of type Qt
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-RECORDING:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_RECORDING</literal></term>
-<listitem><simpara>The surface is of type recording
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-VG:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_VG</literal></term>
-<listitem><simpara>The surface is a OpenVG surface
+<varlistentry id="CAIRO-DEVICE-TYPE-DRM:CAPS" role="constant">
+<term><literal>CAIRO_DEVICE_TYPE_DRM</literal></term>
+<listitem><simpara>The surface is of type Direct Render Manager
 </simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-DEVICE-TYPE-GL:CAPS" role="constant">
@@ -351,19 +257,25 @@ New entries may be added in future versions.
 <listitem><simpara>The surface is of type OpenGL
 </simpara></listitem>
 </varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-DRM:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_DRM</literal></term>
-<listitem><simpara>The surface is of type Direct Render Manager
+<varlistentry id="CAIRO-DEVICE-TYPE-SCRIPT:CAPS" role="constant">
+<term><literal>CAIRO_DEVICE_TYPE_SCRIPT</literal></term>
+<listitem><simpara>The surface is of type script
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-DEVICE-TYPE-XCB:CAPS" role="constant">
+<term><literal>CAIRO_DEVICE_TYPE_XCB</literal></term>
+<listitem><simpara>The surface is of type xcb
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-DEVICE-TYPE-XLIB:CAPS" role="constant">
+<term><literal>CAIRO_DEVICE_TYPE_XLIB</literal></term>
+<listitem><simpara>The surface is of type xlib
 </simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-DEVICE-TYPE-XML:CAPS" role="constant">
 <term><literal>CAIRO_DEVICE_TYPE_XML</literal></term>
 <listitem><simpara>The surface is of type XML
-</simpara></listitem>
-</varlistentry>
-<varlistentry id="CAIRO-DEVICE-TYPE-SKIA:CAPS" role="constant">
-<term><literal>CAIRO_DEVICE_TYPE_SKIA</literal></term>
-<listitem><simpara>The surface is of type Skia
+  <link linkend="cairo-surface-create-for-rectangle"><function>cairo_surface_create_for_rectangle()</function></link>
 </simpara></listitem>
 </varlistentry>
 </variablelist><para role="since">Since 1.10</para></refsect2>

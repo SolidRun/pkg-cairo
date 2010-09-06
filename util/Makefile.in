@@ -39,14 +39,15 @@ EXTRA_PROGRAMS = show-traps$(EXEEXT) show-edges$(EXEEXT) \
 	show-events$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2)
 TESTS =
 check_PROGRAMS =
-@CAIRO_HAS_INTERPRETER_TRUE@am__append_1 = cairo-script
-@CAIRO_HAS_TRACE_TRUE@am__append_2 = cairo-trace
-@CAIRO_HAS_SCRIPT_SURFACE_TRUE@@CAIRO_HAS_TRACE_TRUE@am__append_3 = cairo-fdr
-@BUILD_SPHINX_TRUE@@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_4 = cairo-sphinx
-@CAIRO_HAS_INTERPRETER_TRUE@am__append_5 = trace-to-xml xml-to-trace
+@CAIRO_HAS_GOBJECT_FUNCTIONS_TRUE@am__append_1 = cairo-gobject
+@CAIRO_HAS_INTERPRETER_TRUE@am__append_2 = cairo-script
+@CAIRO_HAS_TRACE_TRUE@am__append_3 = cairo-trace
+@CAIRO_HAS_SCRIPT_SURFACE_TRUE@@CAIRO_HAS_TRACE_TRUE@am__append_4 = cairo-fdr
+@BUILD_SPHINX_TRUE@@CAIRO_HAS_SCRIPT_SURFACE_TRUE@am__append_5 = cairo-sphinx
+@CAIRO_HAS_INTERPRETER_TRUE@am__append_6 = trace-to-xml xml-to-trace
 
 #malloc_stats_la_LIBADD  = $(backtrace_symbols_la_LIBADD) backtrace-symbols.lo
-@HAVE_GTK_TRUE@am__append_6 = font-view
+@HAVE_GTK_TRUE@am__append_7 = font-view
 subdir = util
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
@@ -171,7 +172,8 @@ ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
 red=; grn=; lgn=; blu=; std=
-DIST_SUBDIRS = . cairo-script cairo-trace cairo-fdr cairo-sphinx
+DIST_SUBDIRS = . cairo-gobject cairo-script cairo-trace cairo-fdr \
+	cairo-sphinx
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -251,6 +253,8 @@ FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FREETYPE_LIBS = @FREETYPE_LIBS@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GS = @GS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -364,7 +368,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mesa_DIR = @mesa_DIR@
 mkdir_p = @mkdir_p@
@@ -414,7 +417,7 @@ EXTRA_DIST = COPYING xr2cairo cairo-api-update cairo-view waterfall
 EXTRA_LTLIBRARIES = malloc-stats.la backtrace-symbols.la
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = . $(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4)
+	$(am__append_4) $(am__append_5)
 AM_CPPFLAGS = -I$(top_srcdir)/src \
 	      -I$(top_builddir)/src \
 	      -I$(top_srcdir)/util/cairo-script	\

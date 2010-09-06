@@ -1941,28 +1941,13 @@ cairo_device_reference (cairo_device_t *device);
 
 /**
  * cairo_device_type_t:
- * @CAIRO_DEVICE_TYPE_IMAGE: The surface is of type image
- * @CAIRO_DEVICE_TYPE_PDF: The surface is of type pdf
- * @CAIRO_DEVICE_TYPE_PS: The surface is of type ps
- * @CAIRO_DEVICE_TYPE_XLIB: The surface is of type xlib
- * @CAIRO_DEVICE_TYPE_XCB: The surface is of type xcb
- * @CAIRO_DEVICE_TYPE_GLITZ: The surface is of type glitz
- * @CAIRO_DEVICE_TYPE_QUARTZ: The surface is of type quartz
- * @CAIRO_DEVICE_TYPE_WIN32: The surface is of type win32
- * @CAIRO_DEVICE_TYPE_BEOS: The surface is of type beos
- * @CAIRO_DEVICE_TYPE_DIRECTFB: The surface is of type directfb
- * @CAIRO_DEVICE_TYPE_SVG: The surface is of type svg
- * @CAIRO_DEVICE_TYPE_OS2: The surface is of type os2
- * @CAIRO_DEVICE_TYPE_WIN32_PRINTING: The surface is a win32 printing surface
- * @CAIRO_DEVICE_TYPE_QUARTZ_IMAGE: The surface is of type quartz_image
- * @CAIRO_DEVICE_TYPE_SCRIPT: The surface is of type script
- * @CAIRO_DEVICE_TYPE_QT: The surface is of type Qt
- * @CAIRO_DEVICE_TYPE_RECORDING: The surface is of type recording
- * @CAIRO_DEVICE_TYPE_VG: The surface is a OpenVG surface
- * @CAIRO_DEVICE_TYPE_GL: The surface is of type OpenGL
  * @CAIRO_DEVICE_TYPE_DRM: The surface is of type Direct Render Manager
+ * @CAIRO_DEVICE_TYPE_GL: The surface is of type OpenGL
+ * @CAIRO_DEVICE_TYPE_SCRIPT: The surface is of type script
+ * @CAIRO_DEVICE_TYPE_XCB: The surface is of type xcb
+ * @CAIRO_DEVICE_TYPE_XLIB: The surface is of type xlib
  * @CAIRO_DEVICE_TYPE_XML: The surface is of type XML
- * @CAIRO_DEVICE_TYPE_SKIA: The surface is of type Skia
+ *   cairo_surface_create_for_rectangle()
  *
  * #cairo_device_type_t is used to describe the type of a given
  * device. The devices types are also known as "backends" within cairo.
@@ -1983,28 +1968,12 @@ cairo_device_reference (cairo_device_t *device);
  * Since: 1.10
  **/
 typedef enum _cairo_device_type {
-    CAIRO_DEVICE_TYPE_IMAGE,
-    CAIRO_DEVICE_TYPE_PDF,
-    CAIRO_DEVICE_TYPE_PS,
-    CAIRO_DEVICE_TYPE_XLIB,
-    CAIRO_DEVICE_TYPE_XCB,
-    CAIRO_DEVICE_TYPE_GLITZ,
-    CAIRO_DEVICE_TYPE_QUARTZ,
-    CAIRO_DEVICE_TYPE_WIN32,
-    CAIRO_DEVICE_TYPE_BEOS,
-    CAIRO_DEVICE_TYPE_DIRECTFB,
-    CAIRO_DEVICE_TYPE_SVG,
-    CAIRO_DEVICE_TYPE_OS2,
-    CAIRO_DEVICE_TYPE_WIN32_PRINTING,
-    CAIRO_DEVICE_TYPE_QUARTZ_IMAGE,
-    CAIRO_DEVICE_TYPE_SCRIPT,
-    CAIRO_DEVICE_TYPE_QT,
-    CAIRO_DEVICE_TYPE_RECORDING,
-    CAIRO_DEVICE_TYPE_VG,
-    CAIRO_DEVICE_TYPE_GL,
     CAIRO_DEVICE_TYPE_DRM,
+    CAIRO_DEVICE_TYPE_GL,
+    CAIRO_DEVICE_TYPE_SCRIPT,
+    CAIRO_DEVICE_TYPE_XCB,
+    CAIRO_DEVICE_TYPE_XLIB,
     CAIRO_DEVICE_TYPE_XML,
-    CAIRO_DEVICE_TYPE_SKIA
 } cairo_device_type_t;
 
 cairo_public cairo_device_type_t
@@ -2100,6 +2069,8 @@ cairo_surface_status (cairo_surface_t *surface);
  * @CAIRO_SURFACE_TYPE_TEE: The surface is of type 'tee' (a multiplexing surface), since 1.10
  * @CAIRO_SURFACE_TYPE_XML: The surface is of type XML (for debugging), since 1.10
  * @CAIRO_SURFACE_TYPE_SKIA: The surface is of type Skia, since 1.10
+ * @CAIRO_SURFACE_TYPE_SUBSURFACE: The surface is a subsurface created with
+ *   cairo_surface_create_for_rectangle(), since 1.10
  *
  * #cairo_surface_type_t is used to describe the type of a given
  * surface. The surface types are also known as "backends" or "surface
@@ -2147,7 +2118,8 @@ typedef enum _cairo_surface_type {
     CAIRO_SURFACE_TYPE_DRM,
     CAIRO_SURFACE_TYPE_TEE,
     CAIRO_SURFACE_TYPE_XML,
-    CAIRO_SURFACE_TYPE_SKIA
+    CAIRO_SURFACE_TYPE_SKIA,
+    CAIRO_SURFACE_TYPE_SUBSURFACE
 } cairo_surface_type_t;
 
 cairo_public cairo_surface_type_t
@@ -2265,9 +2237,9 @@ cairo_surface_has_show_text_glyphs (cairo_surface_t *surface);
  *   endianess of the platform. On a big-endian machine, the
  *   first pixel is in the uppermost bit, on a little-endian
  *   machine the first pixel is in the least-significant bit.
- * @CAIRO_FORMAT_RGB16_565: This format value is deprecated. It has
- *   never been properly implemented in cairo and should not be used
- *   by applications. (since 1.2)
+ * @CAIRO_FORMAT_RGB16_565: each pixel is a 16-bit quantity
+ *   with red in the upper 5 bits, then green in the middle
+ *   6 bits, and blue in the lower 5 bits.
  *
  * #cairo_format_t is used to identify the memory format of
  * image data.
@@ -2337,23 +2309,6 @@ cairo_recording_surface_ink_extents (cairo_surface_t *surface,
                                      double *y0,
                                      double *width,
                                      double *height);
-
-/* Tee-surface functions */
-
-cairo_public cairo_surface_t *
-cairo_tee_surface_create (cairo_surface_t *master);
-
-cairo_public void
-cairo_tee_surface_add (cairo_surface_t *surface,
-		       cairo_surface_t *target);
-
-cairo_public void
-cairo_tee_surface_remove (cairo_surface_t *surface,
-			  cairo_surface_t *target);
-
-cairo_public cairo_surface_t *
-cairo_tee_surface_index (cairo_surface_t *surface,
-			 int index);
 
 /* Pattern creation functions */
 

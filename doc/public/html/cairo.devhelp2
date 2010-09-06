@@ -345,7 +345,7 @@
     <keyword type="typedef" name="cairo_surface_t" link="cairo-cairo-surface-t.html#cairo-surface-t"/>
     <keyword type="enum" name="enum cairo_content_t" link="cairo-cairo-surface-t.html#cairo-content-t"/>
     <keyword type="function" name="cairo_surface_create_similar ()" link="cairo-cairo-surface-t.html#cairo-surface-create-similar"/>
-    <keyword type="function" name="cairo_surface_create_for_rectangle ()" link="cairo-cairo-surface-t.html#cairo-surface-create-for-rectangle"/>
+    <keyword type="function" name="cairo_surface_create_for_rectangle ()" link="cairo-cairo-surface-t.html#cairo-surface-create-for-rectangle" since="1.10"/>
     <keyword type="function" name="cairo_surface_reference ()" link="cairo-cairo-surface-t.html#cairo-surface-reference"/>
     <keyword type="function" name="cairo_surface_destroy ()" link="cairo-cairo-surface-t.html#cairo-surface-destroy"/>
     <keyword type="function" name="cairo_surface_status ()" link="cairo-cairo-surface-t.html#cairo-surface-status"/>
@@ -454,8 +454,8 @@
     <keyword type="enum" name="enum cairo_status_t" link="cairo-Error-handling.html#cairo-status-t"/>
     <keyword type="function" name="cairo_status_to_string ()" link="cairo-Error-handling.html#cairo-status-to-string"/>
     <keyword type="function" name="cairo_debug_reset_static_data ()" link="cairo-Error-handling.html#cairo-debug-reset-static-data"/>
-    <keyword type="" name="Compatibility" link="cairo-Version-Information.html#id3080893"/>
-    <keyword type="" name="Examining the version" link="cairo-Version-Information.html#id3080931"/>
+    <keyword type="" name="Compatibility" link="cairo-Version-Information.html#id3076756"/>
+    <keyword type="" name="Examining the version" link="cairo-Version-Information.html#id3076795"/>
     <keyword type="macro" name="CAIRO_VERSION" link="cairo-Version-Information.html#CAIRO-VERSION:CAPS"/>
     <keyword type="macro" name="CAIRO_VERSION_MAJOR" link="cairo-Version-Information.html#CAIRO-VERSION-MAJOR:CAPS"/>
     <keyword type="macro" name="CAIRO_VERSION_MINOR" link="cairo-Version-Information.html#CAIRO-VERSION-MINOR:CAPS"/>
@@ -555,28 +555,12 @@
     <keyword type="constant" name="CAIRO_HINT_METRICS_DEFAULT" link="cairo-cairo-font-options-t.html#CAIRO-HINT-METRICS-DEFAULT:CAPS"/>
     <keyword type="constant" name="CAIRO_HINT_METRICS_OFF" link="cairo-cairo-font-options-t.html#CAIRO-HINT-METRICS-OFF:CAPS"/>
     <keyword type="constant" name="CAIRO_HINT_METRICS_ON" link="cairo-cairo-font-options-t.html#CAIRO-HINT-METRICS-ON:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_IMAGE" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-IMAGE:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_PDF" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-PDF:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_PS" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-PS:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_XLIB" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XLIB:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_XCB" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XCB:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_GLITZ" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-GLITZ:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_QUARTZ" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-QUARTZ:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_WIN32" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-WIN32:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_BEOS" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-BEOS:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_DIRECTFB" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-DIRECTFB:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_SVG" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-SVG:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_OS2" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-OS2:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_WIN32_PRINTING" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-WIN32-PRINTING:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_QUARTZ_IMAGE" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-QUARTZ-IMAGE:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_SCRIPT" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-SCRIPT:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_QT" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-QT:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_RECORDING" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-RECORDING:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_VG" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-VG:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_GL" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-GL:CAPS"/>
     <keyword type="constant" name="CAIRO_DEVICE_TYPE_DRM" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-DRM:CAPS"/>
+    <keyword type="constant" name="CAIRO_DEVICE_TYPE_GL" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-GL:CAPS"/>
+    <keyword type="constant" name="CAIRO_DEVICE_TYPE_SCRIPT" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-SCRIPT:CAPS"/>
+    <keyword type="constant" name="CAIRO_DEVICE_TYPE_XCB" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XCB:CAPS"/>
+    <keyword type="constant" name="CAIRO_DEVICE_TYPE_XLIB" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XLIB:CAPS"/>
     <keyword type="constant" name="CAIRO_DEVICE_TYPE_XML" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XML:CAPS"/>
-    <keyword type="constant" name="CAIRO_DEVICE_TYPE_SKIA" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-SKIA:CAPS"/>
     <keyword type="constant" name="CAIRO_CONTENT_COLOR" link="cairo-cairo-surface-t.html#CAIRO-CONTENT-COLOR:CAPS"/>
     <keyword type="constant" name="CAIRO_CONTENT_ALPHA" link="cairo-cairo-surface-t.html#CAIRO-CONTENT-ALPHA:CAPS"/>
     <keyword type="constant" name="CAIRO_CONTENT_COLOR_ALPHA" link="cairo-cairo-surface-t.html#CAIRO-CONTENT-COLOR-ALPHA:CAPS"/>
@@ -603,6 +587,7 @@
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_TEE" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-TEE:CAPS"/>
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_XML" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-XML:CAPS"/>
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_SKIA" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-SKIA:CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_SUBSURFACE" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-SUBSURFACE:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_INVALID" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-INVALID:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_ARGB32" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-ARGB32:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_RGB24" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-RGB24:CAPS"/>

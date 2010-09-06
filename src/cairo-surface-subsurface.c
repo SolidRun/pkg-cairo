@@ -276,16 +276,36 @@ struct extra {
     void *image_extra;
 };
 
+static void
+cairo_surface_paint_to_target (cairo_surface_t            *target,
+                               cairo_surface_subsurface_t *subsurface)
+{
+    cairo_t *cr;
+    
+    cr = cairo_create (target);
+
+    cairo_set_source_surface (cr,
+                              subsurface->target,
+                              - subsurface->extents.x,
+                              - subsurface->extents.y);
+    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+    cairo_paint (cr);
+    
+    cairo_destroy (cr);
+}
+
 static cairo_status_t
 _cairo_surface_subsurface_acquire_source_image (void                    *abstract_surface,
 						cairo_image_surface_t  **image_out,
 						void                   **extra_out)
 {
+    cairo_rectangle_int_t target_extents;
     cairo_surface_subsurface_t *surface = abstract_surface;
     cairo_image_surface_t *image;
     cairo_status_t status;
     struct extra *extra;
     uint8_t *data;
+    cairo_bool_t ret;
 
     if (surface->target->type == CAIRO_SURFACE_TYPE_RECORDING) {
 	cairo_recording_surface_t *meta = (cairo_recording_surface_t *) surface->target;
@@ -309,15 +329,7 @@ _cairo_surface_subsurface_acquire_source_image (void                    *abstrac
 	    if (unlikely (image->base.status))
 		return image->base.status;
 
-	    cairo_surface_set_device_offset (&image->base,
-					     -surface->extents.x,
-					     -surface->extents.y);
-
-	    status = _cairo_recording_surface_replay (&meta->base, &image->base);
-	    if (unlikely (status)) {
-		cairo_surface_destroy (&image->base);
-		return status;
-	    }
+            cairo_surface_paint_to_target (&image->base, surface);
 
 	    _cairo_surface_attach_snapshot (&surface->base, &image->base, NULL);
 
@@ -335,8 +347,16 @@ _cairo_surface_subsurface_acquire_source_image (void                    *abstrac
     if (unlikely (status))
 	goto CLEANUP;
 
+    ret = _cairo_surface_get_extents (&extra->image->base, &target_extents);
+    assert (ret);
+
     /* only copy if we need to perform sub-byte manipulation */
-    if (PIXMAN_FORMAT_BPP (extra->image->pixman_format) >= 8) {
+    if (PIXMAN_FORMAT_BPP (extra->image->pixman_format) >= 8 &&
+	target_extents.x <= surface->extents.x &&
+	target_extents.y <= surface->extents.y &&
+	surface->extents.x + surface->extents.width <= target_extents.x + target_extents.width &&
+	surface->extents.y + surface->extents.height <= target_extents.y + target_extents.height) {
+
 	assert ((PIXMAN_FORMAT_BPP (extra->image->pixman_format) % 8) == 0);
 
 	data = extra->image->data + surface->extents.y * extra->image->stride;
@@ -350,6 +370,8 @@ _cairo_surface_subsurface_acquire_source_image (void                    *abstrac
 							    extra->image->stride);
 	if (unlikely ((status = image->base.status)))
 	    goto CLEANUP_IMAGE;
+
+        image->base.is_clear = FALSE;
     } else {
 	image = (cairo_image_surface_t *)
 	    _cairo_image_surface_create_with_pixman_format (NULL,
@@ -360,15 +382,8 @@ _cairo_surface_subsurface_acquire_source_image (void                    *abstrac
 	if (unlikely ((status = image->base.status)))
 	    goto CLEANUP_IMAGE;
 
-	pixman_image_composite32 (PIXMAN_OP_SRC,
-                                  image->pixman_image, NULL, extra->image->pixman_image,
-                                  surface->extents.x, surface->extents.y,
-                                  0, 0,
-                                  0, 0,
-                                  surface->extents.width, surface->extents.height);
+        cairo_surface_paint_to_target (&image->base, surface);
     }
-
-    image->base.is_clear = FALSE;
 
     *image_out = image;
     *extra_out = extra;
@@ -428,7 +443,7 @@ _cairo_surface_subsurface_snapshot (void *abstract_surface)
 }
 
 static const cairo_surface_backend_t _cairo_surface_subsurface_backend = {
-    CAIRO_INTERNAL_SURFACE_TYPE_SUBSURFACE,
+    CAIRO_SURFACE_TYPE_SUBSURFACE,
     _cairo_surface_subsurface_create_similar,
     _cairo_surface_subsurface_finish,
 
@@ -476,6 +491,11 @@ static const cairo_surface_backend_t _cairo_surface_subsurface_backend = {
  * directly onto the parent surface, i.e. with no further backend allocations,
  * double buffering or copies.
  *
+ * <note><para>The semantics of subsurfaces have not been finalized yet
+ * unless the rectangle is in full device units, is contained within
+ * the extents of the target surface, and the target or subsurface's
+ * device transforms are not changed.</para></note>
+ *
  * Return value: a pointer to the newly allocated surface. The caller
  * owns the surface and should call cairo_surface_destroy() when done
  * with it.
@@ -483,6 +503,8 @@ static const cairo_surface_backend_t _cairo_surface_subsurface_backend = {
  * This function always returns a valid pointer, but it will return a
  * pointer to a "nil" surface if @other is already in an error state
  * or any other error occurs.
+ *
+ * Since: 1.10
  **/
 cairo_surface_t *
 cairo_surface_create_for_rectangle (cairo_surface_t *target,
@@ -490,9 +512,6 @@ cairo_surface_create_for_rectangle (cairo_surface_t *target,
 				    double width, double height)
 {
     cairo_surface_subsurface_t *surface;
-    cairo_rectangle_int_t target_extents;
-    cairo_bool_t ret;
-    int tx, ty;
 
     if (unlikely (target->status))
 	return _cairo_surface_create_in_error (target->status);
@@ -503,11 +522,14 @@ cairo_surface_create_for_rectangle (cairo_surface_t *target,
     if (unlikely (surface == NULL))
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
+    assert (_cairo_matrix_is_translation (&target->device_transform));
+    x += target->device_transform.x0;
+    y += target->device_transform.y0;
+
     _cairo_surface_init (&surface->base,
 			 &_cairo_surface_subsurface_backend,
 			 NULL, /* device */
 			 target->content);
-    surface->base.type = target->type;
 
     /* XXX forced integer alignment */
     surface->extents.x = ceil (x);
@@ -515,20 +537,12 @@ cairo_surface_create_for_rectangle (cairo_surface_t *target,
     surface->extents.width = floor (x + width) - surface->extents.x;
     surface->extents.height = floor (y + height) - surface->extents.y;
 
-    if (_cairo_surface_get_extents (target, &target_extents))
-        ret = _cairo_rectangle_intersect (&surface->extents, &target_extents);
-
-    if (target->backend->type == CAIRO_INTERNAL_SURFACE_TYPE_SUBSURFACE) {
+    if (target->backend->type == CAIRO_SURFACE_TYPE_SUBSURFACE) {
 	/* Maintain subsurfaces as 1-depth */
 	cairo_surface_subsurface_t *sub = (cairo_surface_subsurface_t *) target;
 	surface->extents.x += sub->extents.x;
 	surface->extents.y += sub->extents.y;
 	target = sub->target;
-    } else {
-	ret = _cairo_matrix_is_integer_translation (&target->device_transform, &tx, &ty);
-	assert (ret);
-	surface->extents.x += tx;
-	surface->extents.y += ty;
     }
 
     surface->target = cairo_surface_reference (target);

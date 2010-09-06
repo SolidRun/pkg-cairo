@@ -215,8 +215,26 @@ REFERENCE_IMAGES = \
 	clip-fill.quartz.ref.png \
 	clip-fill.xlib.ref.png \
 	clip-fill.xlib-fallback.ref.png \
+	clip-fill-eo-unbounded.image16.ref.png \
+	clip-fill-eo-unbounded.argb32.ref.png \
+	clip-fill-eo-unbounded.rgb24.ref.png \
+	clip-fill-eo-unbounded.quartz.argb32.ref.png \
+	clip-fill-eo-unbounded.quartz.rgb24.ref.png \
+	clip-fill-eo-unbounded.svg12.rgb24.xfail.png \
+	clip-fill-eo-unbounded.xlib.argb32.ref.png \
+	clip-fill-eo-unbounded.xlib.rgb24.ref.png \
+	clip-fill-eo-unbounded.xlib-fallback.rgb24.ref.png \
 	clip-fill-no-op.image16.ref.png \
 	clip-fill-no-op.ref.png \
+	clip-fill-nz-unbounded.image16.ref.png \
+	clip-fill-nz-unbounded.argb32.ref.png \
+	clip-fill-nz-unbounded.rgb24.ref.png \
+	clip-fill-nz-unbounded.quartz.argb32.ref.png \
+	clip-fill-nz-unbounded.quartz.rgb24.ref.png \
+	clip-fill-nz-unbounded.svg12.rgb24.xfail.png \
+	clip-fill-nz-unbounded.xlib.argb32.ref.png \
+	clip-fill-nz-unbounded.xlib.rgb24.ref.png \
+	clip-fill-nz-unbounded.xlib-fallback.rgb24.ref.png \
 	clip-fill-rule-pixel-aligned.ref.png \
 	clip-fill-rule-pixel-aligned.rgb24.ref.png \
 	clip-fill-rule.image16.ref.png \
@@ -228,18 +246,6 @@ REFERENCE_IMAGES = \
 	clip-fill-rule.rgb24.ref.png \
 	clip-fill-rule.test-paginated.rgb24.ref.png \
 	clip-fill-rule.xlib.rgb24.ref.png \
-	clip-fill-unbounded.image16.ref.png \
-	clip-fill-unbounded.argb32.ref.png \
-	clip-fill-unbounded.rgb24.ref.png \
-	clip-fill-unbounded.pdf.argb32.ref.png \
-	clip-fill-unbounded.ps.argb32.xfail.png \
-	clip-fill-unbounded.quartz.argb32.ref.png \
-	clip-fill-unbounded.quartz.rgb24.ref.png \
-	clip-fill-unbounded.svg12.argb32.xfail.png \
-	clip-fill-unbounded.svg12.rgb24.xfail.png \
-	clip-fill-unbounded.xlib.argb32.ref.png \
-	clip-fill-unbounded.xlib.rgb24.ref.png \
-	clip-fill-unbounded.xlib-fallback.rgb24.ref.png \
 	clip-group-shapes-aligned-rectangles.ref.png \
 	clip-group-shapes-unaligned-rectangles.ref.png \
 	clip-group-shapes-unaligned-rectangles.xlib.ref.png \
@@ -304,14 +310,11 @@ REFERENCE_IMAGES = \
 	clip-stroke.xlib-fallback.ref.png \
 	clip-stroke-no-op.image16.ref.png \
 	clip-stroke-no-op.ref.png \
-	clip-stroke-unbounded.image16.ref.png \
+	clip-stroke-unbounded.image16.rgb24.ref.png \
 	clip-stroke-unbounded.argb32.ref.png \
 	clip-stroke-unbounded.rgb24.ref.png \
-	clip-stroke-unbounded.ps.argb32.ref.png \
-	clip-stroke-unbounded.pdf.argb32.xfail.png \
 	clip-stroke-unbounded.quartz.argb32.ref.png \
 	clip-stroke-unbounded.quartz.rgb24.ref.png \
-	clip-stroke-unbounded.svg12.argb32.xfail.png \
 	clip-stroke-unbounded.svg12.rgb24.xfail.png \
 	clip-stroke-unbounded.xlib.argb32.ref.png \
 	clip-stroke-unbounded.xlib.rgb24.ref.png \
@@ -776,13 +779,14 @@ REFERENCE_IMAGES = \
 	linear-gradient.quartz.ref.png \
 	linear-gradient.ref.png \
 	linear-gradient.xlib.ref.png \
+	linear-gradient-large.ref.png \
+	linear-gradient-one-stop.argb32.ref.png \
+	linear-gradient-one-stop.rgb24.ref.png \
 	linear-gradient-subset.image16.ref.png \
 	linear-gradient-subset.quartz.ref.png \
 	linear-gradient-subset.ref.png \
 	linear-gradient-subset.xlib.ref.png \
 	linear-gradient-subset.ps3.ref.png \
-	linear-gradient-one-stop.argb32.ref.png \
-	linear-gradient-one-stop.rgb24.ref.png \
 	linear-step-function.xfail.png \
 	linear-uniform.image16.ref.png \
 	linear-uniform.ref.png \
@@ -1230,6 +1234,8 @@ REFERENCE_IMAGES = \
 	subsurface-pad.quartz.xfail.png \
 	subsurface-modify-child.ref.png \
 	subsurface-modify-parent.ref.png \
+	subsurface-outside-target.argb32.ref.png \
+	subsurface-outside-target.rgb24.ref.png \
 	subsurface-similar-repeat.ref.png \
 	surface-pattern-big-scale-down.ref.png \
 	surface-pattern-big-scale-down.ps.ref.png \

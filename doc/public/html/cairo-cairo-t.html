@@ -223,7 +223,7 @@ maintain a separate reference to it.
 <td> a newly allocated <a class="link" href="cairo-cairo-t.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a> with a reference
  count of 1. The initial reference count should be released
  with <a class="link" href="cairo-cairo-t.html#cairo-destroy" title="cairo_destroy ()"><code class="function">cairo_destroy()</code></a> when you are done using the <a class="link" href="cairo-cairo-t.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a>.
- This function never returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. If memory cannot be
+ This function never returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. If memory cannot be
  allocated, a special <a class="link" href="cairo-cairo-t.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a> object will be returned on
  which <a class="link" href="cairo-cairo-t.html#cairo-status" title="cairo_status ()"><code class="function">cairo_status()</code></a> returns <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>.
  You can use this object normally, but no drawing will
@@ -420,15 +420,29 @@ under the stroke:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-cairo_push_group (cr);
-cairo_set_source (cr, fill_pattern);
-cairo_fill_preserve (cr);
-cairo_set_source (cr, stroke_pattern);
-cairo_stroke (cr);
-cairo_pop_group_to_source (cr);
-cairo_paint_with_alpha (cr, alpha);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-push-group">cairo_push_group</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-set-source">cairo_set_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> fill_pattern</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-fill-preserve">cairo_fill_preserve</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-set-source">cairo_set_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> stroke_pattern</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-stroke">cairo_stroke</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-pop-group-to-source">cairo_pop_group_to_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-paint-with-alpha">cairo_paint_with_alpha</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> alpha</span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -529,11 +543,21 @@ operations:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-<a class="link" href="cairo-cairo-pattern-t.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *group = cairo_pop_group (cr);
-cairo_set_source (cr, group);
-cairo_pattern_destroy (group);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="usertype">a</span><span class="normal"> class</span><span class="symbol">=</span><span class="string">"link"</span><span class="normal"> href</span><span class="symbol">=</span><span class="string">"cairo-cairo-pattern-t.html#cairo-pattern-t"</span><span class="normal"> title</span><span class="symbol">=</span><span class="string">"cairo_pattern_t"</span><span class="symbol">&gt;</span><span class="usertype">cairo_pattern_t&lt;/a&gt;</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">group </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-pop-group">cairo_pop_group</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-set-source">cairo_set_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> group</span><span class="symbol">);</span>
+<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-pattern-t.html#cairo-pattern-destroy">cairo_pattern_destroy</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">group</span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
@@ -1004,7 +1028,7 @@ See also <a class="link" href="cairo-cairo-t.html#cairo-set-dash" title="cairo_s
                                                          <em class="parameter"><code><span class="type">double</span> *dashes</code></em>,
                                                          <em class="parameter"><code><span class="type">double</span> *offset</code></em>);</pre>
 <p>
-Gets the current dash array.  If not <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, <em class="parameter"><code>dashes</code></em> should be big
+Gets the current dash array.  If not <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, <em class="parameter"><code>dashes</code></em> should be big
 enough to hold at least the number of values returned by
 <a class="link" href="cairo-cairo-t.html#cairo-get-dash-count" title="cairo_get_dash_count ()"><code class="function">cairo_get_dash_count()</code></a>.
 </p>
@@ -1018,12 +1042,12 @@ enough to hold at least the number of values returned by
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dashes</code></em> :</span></p></td>
-<td>return value for the dash array, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>return value for the dash array, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>offset</code></em> :</span></p></td>
-<td>return value for the current dash offset, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>return value for the current dash offset, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 </tbody>
@@ -2096,7 +2120,7 @@ be dereferenced.
 <pre class="programlisting"><a class="link" href="cairo-cairo-t.html#cairo-rectangle-list-t" title="cairo_rectangle_list_t"><span class="returnvalue">cairo_rectangle_list_t</span></a> * cairo_copy_clip_rectangle_list (<em class="parameter"><code><a class="link" href="cairo-cairo-t.html#cairo-t" title="cairo_t"><span class="type">cairo_t</span></a> *cr</code></em>);</pre>
 <p>
 Gets the current clip region as a list of rectangles in user coordinates.
-Never returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
+Never returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 </p>
 <p>
 The status in the list may be <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-CLIP-NOT-REPRESENTABLE:CAPS"><code class="literal">CAIRO_STATUS_CLIP_NOT_REPRESENTABLE</code></a> to
@@ -2633,7 +2657,7 @@ object is a nil object, 0 will be returned.
                                                          <em class="parameter"><code><a class="link" href="cairo-Types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()"><span class="type">cairo_destroy_func_t</span></a> destroy</code></em>);</pre>
 <p>
 Attach user data to <em class="parameter"><code>cr</code></em>.  To remove user data from a surface,
-call this function with the key that was used to set it and <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+call this function with the key that was used to set it and <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 for <em class="parameter"><code>data</code></em>.
 </p>
 <div class="variablelist"><table border="0">
@@ -2680,7 +2704,7 @@ slot could not be allocated for the user data.
 <p>
 Return user data previously attached to <em class="parameter"><code>cr</code></em> using the specified
 key.  If no user data has been attached with the given key this
-function returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
+function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2698,7 +2722,7 @@ attached to
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the user data previously attached or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
+<td> the user data previously attached or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 
 </td>
 </tr>
