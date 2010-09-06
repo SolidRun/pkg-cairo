@@ -18,6 +18,7 @@ Build-Depends: debhelper (>= 7),
                libxcb1-dev (>= 1.4),
                libxcb-render0-dev (>= 0.9.92),
                libxcb-shm0-dev,
+               libglib2.0-dev,
                zlib1g-dev
 Standards-Version: 3.8.4
 Vcs-Git: git://git.debian.org/git/collab-maint/cairo.git
@@ -25,12 +26,10 @@ Vcs-Browser: http://git.debian.org/?p=collab-maint/cairo.git
 Homepage: http://cairographics.org/
 
 Package: libcairo2-dev
-Provides: libcairo-dev
-Suggests: libcairo2-doc,
-          libcairo-script-interpreter2 (= ${binary:Version})
 Section: libdevel
 Architecture: any
 Depends: libcairo2 (= ${binary:Version}),
+         libcairo-gobject2 (= ${binary:Version}),
          libfontconfig1-dev (>= 2.2.95),
          libfreetype6-dev (>= 2.1.10),
          libx11-dev,
@@ -41,8 +40,12 @@ Depends: libcairo2 (= ${binary:Version}),
          libxcb1-dev (>= 1.4),
          libxcb-render0-dev (>= 0.9.92),
          libxcb-shm0-dev,
+         libglib2.0-dev,
          ${shlibs:Depends},
          ${misc:Depends}
+Provides: libcairo-dev
+Suggests: libcairo2-doc,
+          libcairo-script-interpreter2 (= ${binary:Version})
 Description: Development files for the Cairo 2D graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
@@ -82,7 +85,8 @@ Priority: extra
 Architecture: any
 Depends: libcairo2 (= ${binary:Version}),
          ${misc:Depends}
-Suggests: libcairo-script-interpreter2 (= ${binary:Version}),
+Suggests: libcairo-gobject2 (= ${binary:Version}),
+          libcairo-script-interpreter2 (= ${binary:Version}),
           cairo-perf-utils (= ${binary:Version})
 Description: The Cairo 2D vector graphics library (debugging symbols)
  Debugging symbols for the Cairo 2D vector graphics library. This is
@@ -100,29 +104,29 @@ Description: Documentation for the Cairo Multi-platform 2D graphics library
  This package contains the HTML documentation for the Cairo library
  in /usr/share/gtk-doc/html/cairo/.
 
-Package: libcairo2-udeb
-XC-Package-Type: udeb
-Section: debian-installer
-Architecture: any
-Depends: ${shlibs:Depends}
-Description: The Cairo 2D vector graphics library Xlib backend
- Cairo is a multi-platform library providing anti-aliased
- vector-based rendering for multiple target backends.
- .
- This is version of cairo with only the Xlib backend, intended
- primarily for use in the graphical Debian installer.
-
 Package: libcairo-script-interpreter2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Description: The Cairo 2D vector graphics library script interpreter
+Description: The Cairo 2D vector graphics library (script interpreter)
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
  .
  This package contains the script interpreter for executing and manipulating
  cairo execution traces.
+
+Package: libcairo-gobject2
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: The Cairo 2D vector graphics library (GObject library)
+ Cairo is a multi-platform library providing anti-aliased
+ vector-based rendering for multiple target backends.
+ .
+ This package contains the GObject library, providing wrapper GObject types
+ for all cairo types.
 
 Package: cairo-perf-utils
 Section: misc
@@ -136,4 +140,16 @@ Description: The Cairo 2D vector graphics library performance utilities
  This package contains a set of utilities for capturing and replaying cairo
  execution traces using various backends, in order to be able to measure the
  performance of cairo for real-world applications in a reproducible way.
+
+Package: libcairo2-udeb
+XC-Package-Type: udeb
+Section: debian-installer
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: The Cairo 2D vector graphics library Xlib backend
+ Cairo is a multi-platform library providing anti-aliased
+ vector-based rendering for multiple target backends.
+ .
+ This is version of cairo with only the Xlib backend, intended
+ primarily for use in the graphical Debian installer.
 
