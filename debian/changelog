@@ -1,13 +1,36 @@
 cairo (1.10.0-1) experimental; urgency=low
 
+  [ Alexandros Frantzis ]
+  * debian/control:
+    + Add libcairo-script-interpreter2 package.
+    + Add cairo-perf-utils package (Closes: #587771).
+  * debian/libcairo-script-interpreter2.install,
+    debian/cairo-perf-utils.install:
+    + Add installation file list for new binary packages.
+  * debian/libcairo-script-interpreter2.symbols:
+    + Add new symbols for libcairo-script-interpreter.so library.
+  * debian/libcairo2-dev.install:
+    + Install the libcairo-script-interpreter.so symbolic link.
+  * debian/rules:
+    + Enable building of cairo-perf-* utilities.
+    + Run dh_makeshlibs for the libcairo-script-interpreter2 package.
+  * debian/patches/01_build_perf_utils.patch,
+    debian/patches/99_autoreconf.patch:
+    + Build cairo-perf-* utils as part of the normal build process.
+
+  [ Sebastian Dröge ]
   * New upstream stable release:
     + debian/libcairo2.symbols,
+      debian/libcairo-script-interpreter2.symbols,
       debian/rules:
       - Update symbols and shlibs to the stable version.
     + debian/control:
       - Update pixman build dependency to >= 0.18.4.
+    + debian/patches/01_build_perf_utils.patch,
+      debian/patches/99_autoreconf.patch:
+      - Refreshed.
 
- -- Sebastian Dröge <slomo@debian.org>  Mon, 06 Sep 2010 20:57:04 +0200
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 06 Sep 2010 21:07:12 +0200
 
 cairo (1.9.14-1) experimental; urgency=low
 

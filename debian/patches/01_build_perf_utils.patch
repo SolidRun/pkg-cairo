@@ -1,0 +1,55 @@
+Description: Build cairo-perf-utils as part of then normal build process.
+Author: Alexandros Frantzis <alexandros.frantzis@linaro.org>
+Bug: https://bugs.freedesktop.org/show_bug.cgi?id=28865
+Last-Update: 2010-08-03
+Index: cairo/configure.ac
+===================================================================
+--- cairo.orig/configure.ac	2010-09-06 20:54:38.392406649 +0200
++++ cairo/configure.ac	2010-09-06 21:03:42.003417128 +0200
+@@ -796,6 +796,11 @@
+ PKG_CHECK_MODULES(gtk, "gtk+-2.0",have_gtk=yes, have_gtk=no)
+ AM_CONDITIONAL(HAVE_GTK, test "x$have_gtk" = "xyes")
+ 
++dnl ===========================================================================
++
++CAIRO_ENABLE(perf_utils, cairo-perf-utils, no, [use_perf_utils=yes])
++
++
+ AC_CONFIG_FILES([
+ Makefile
+ boilerplate/Makefile
+Index: cairo/perf/Makefile.am
+===================================================================
+--- cairo.orig/perf/Makefile.am	2010-09-02 13:38:55.000000000 +0200
++++ cairo/perf/Makefile.am	2010-09-06 21:03:42.003417128 +0200
+@@ -10,6 +10,18 @@
+ 
+ AM_LDFLAGS = $(CAIRO_LDFLAGS)
+ 
++if CAIRO_HAS_PERF_UTILS
++bin_PROGRAMS = cairo-perf-micro \
++	cairo-perf-trace \
++	cairo-perf-diff-files \
++	cairo-perf-print \
++	cairo-perf-chart \
++	cairo-perf-compare-backends
++if HAVE_GTK
++bin_PROGRAMS += cairo-perf-graph-files
++endif
++endif
++
+ EXTRA_PROGRAMS += cairo-perf-micro \
+ 		  cairo-perf-trace \
+ 		  cairo-perf-diff-files \
+Index: cairo/build/configure.ac.features
+===================================================================
+--- cairo.orig/build/configure.ac.features	2010-09-06 20:54:38.380406869 +0200
++++ cairo/build/configure.ac.features	2010-09-06 21:03:42.047438856 +0200
+@@ -407,6 +407,7 @@
+ 	echo "The following features and utilities:"
+ 	echo "  cairo-trace:                $use_trace"
+ 	echo "  cairo-script-interpreter:   $use_interpreter"
++	echo "  cairo-perf-utils:           $use_perf_utils"
+ 	echo ""
+ 	echo "And the following internal features:"
+ 	echo "  pthread:       $use_pthread"

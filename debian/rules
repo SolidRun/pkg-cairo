@@ -52,7 +52,7 @@ endif
 main_configure_flags += \
 $(configure_flags) \
 --enable-xlib --enable-svg \
---enable-xcb
+--enable-xcb --enable-perf-utils
 
 udeb_configure_flags += \
 $(configure_flags) \
@@ -151,6 +151,7 @@ binary-arch: build install
 	dh_compress -s
 	dh_fixperms -s
 	dh_makeshlibs -plibcairo2 --add-udeb=libcairo2-udeb -V 'libcairo2 (>= 1.10.0)' -- -c4
+	dh_makeshlibs -plibcairo-script-interpreter2 -V 'libcairo-script-interpreter2 (>= 1.10.0)' -- -c4
 	dh_installdeb -s
 	dh_shlibdeps -s
 	dh_perl -s

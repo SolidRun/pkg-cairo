@@ -26,7 +26,8 @@ Homepage: http://cairographics.org/
 
 Package: libcairo2-dev
 Provides: libcairo-dev
-Suggests: libcairo2-doc
+Suggests: libcairo2-doc,
+          libcairo-script-interpreter2 (= ${binary:Version})
 Section: libdevel
 Architecture: any
 Depends: libcairo2 (= ${binary:Version}),
@@ -81,6 +82,8 @@ Priority: extra
 Architecture: any
 Depends: libcairo2 (= ${binary:Version}),
          ${misc:Depends}
+Suggests: libcairo-script-interpreter2 (= ${binary:Version}),
+          cairo-perf-utils (= ${binary:Version})
 Description: The Cairo 2D vector graphics library (debugging symbols)
  Debugging symbols for the Cairo 2D vector graphics library. This is
  needed to debug programs linked against libcairo2.
@@ -108,4 +111,29 @@ Description: The Cairo 2D vector graphics library Xlib backend
  .
  This is version of cairo with only the Xlib backend, intended
  primarily for use in the graphical Debian installer.
+
+Package: libcairo-script-interpreter2
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: The Cairo 2D vector graphics library script interpreter
+ Cairo is a multi-platform library providing anti-aliased
+ vector-based rendering for multiple target backends.
+ .
+ This package contains the script interpreter for executing and manipulating
+ cairo execution traces.
+
+Package: cairo-perf-utils
+Section: misc
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: The Cairo 2D vector graphics library performance utilities
+ Cairo is a multi-platform library providing anti-aliased
+ vector-based rendering for multiple target backends.
+ .
+ This package contains a set of utilities for capturing and replaying cairo
+ execution traces using various backends, in order to be able to measure the
+ performance of cairo for real-world applications in a reproducible way.
 
