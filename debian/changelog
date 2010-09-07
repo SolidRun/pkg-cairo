@@ -26,8 +26,7 @@ cairo (1.10.0-1) experimental; urgency=low
       - Update symbols and shlibs to the stable version.
     + debian/control:
       - Update pixman build dependency to >= 0.18.4.
-    + debian/patches/01_build_perf_utils.patch,
-      debian/patches/99_autoreconf.patch:
+    + debian/patches/01_build_perf_utils.patch:
       - Refreshed.
     + debian/control,
       debian/libcairo-gobject2.symbols,
@@ -36,8 +35,12 @@ cairo (1.10.0-1) experimental; urgency=low
     + debian/patches/02_am-maintainer-mode.patch:
       - Add AM_MAINTAINER_MODE again to configure.ac to
         prevent build problems.
+    + debian/control,
+      debian/rules:
+      - Use dh-autoreconf instead of an autoreconf patch. cairo's
+        build system doesn't like patches...
 
- -- Sebastian Dröge <slomo@debian.org>  Mon, 06 Sep 2010 21:52:00 +0200
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 07 Sep 2010 10:09:10 +0200
 
 cairo (1.9.14-1) experimental; urgency=low
 
