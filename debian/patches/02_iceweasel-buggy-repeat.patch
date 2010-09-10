@@ -17,10 +17,10 @@ Index: cairo/src/cairo-xlib-display.c
  
 +    /* XXX workaround; see https://bugzilla.mozilla.org/show_bug.cgi?id=413583 */
 +    if (buggy_repeat_force == -1) {
-+        if (getenv("MOZ_CAIRO_NO_BUGGY_REPEAT"))
-+            buggy_repeat_force = 0;
-+        else
++        if (getenv("MOZ_CAIRO_BUGGY_REPEAT"))
 +            buggy_repeat_force = 1;
++        else
++            buggy_repeat_force = 0;
 +    }
 +
 +    if (buggy_repeat_force)

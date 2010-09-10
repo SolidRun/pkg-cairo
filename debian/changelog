@@ -1,3 +1,17 @@
+cairo (1.8.10-6) unstable; urgency=low
+
+  * debian/patches/02_iceweasel-buggy-repeat.patch:
+    + Revert logic of the patch for the infamous iceweasel rendering
+      problems. The only broken X11 driver that is left seems to be
+      fglrx and always enabling the workaround code in cairo causes
+      severe performance degradations for everybody (Closes: #594245).
+      Thanks for Josselin Mouette for the patch.
+      Everybody using the fglrx driver should set the MOZ_CAIRO_BUGGY_REPEAT
+      environment variable, everybody else should get a correctly working
+      and fast cairo again.
+
+ -- Sebastian Dröge <slomo@debian.org>  Fri, 10 Sep 2010 10:48:34 +0200
+
 cairo (1.8.10-5) unstable; urgency=low
 
   * debian/patches/02_iceweasel-buggy-repeat.patch:
