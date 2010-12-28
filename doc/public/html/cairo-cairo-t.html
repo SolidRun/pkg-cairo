@@ -420,29 +420,15 @@ under the stroke:
 </p>
 <p>
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5
-6
-7</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-push-group">cairo_push_group</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-set-source">cairo_set_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> fill_pattern</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-fill-preserve">cairo_fill_preserve</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-set-source">cairo_set_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> stroke_pattern</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-stroke">cairo_stroke</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-pop-group-to-source">cairo_pop_group_to_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-paint-with-alpha">cairo_paint_with_alpha</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> alpha</span><span class="symbol">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<div class="informalexample"><pre class="programlisting">
+cairo_push_group (cr);
+cairo_set_source (cr, fill_pattern);
+cairo_fill_preserve (cr);
+cairo_set_source (cr, stroke_pattern);
+cairo_stroke (cr);
+cairo_pop_group_to_source (cr);
+cairo_paint_with_alpha (cr, alpha);
+</pre></div>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -543,21 +529,11 @@ operations:
 </p>
 <p>
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="usertype">a</span><span class="normal"> class</span><span class="symbol">=</span><span class="string">"link"</span><span class="normal"> href</span><span class="symbol">=</span><span class="string">"cairo-cairo-pattern-t.html#cairo-pattern-t"</span><span class="normal"> title</span><span class="symbol">=</span><span class="string">"cairo_pattern_t"</span><span class="symbol">&gt;</span><span class="usertype">cairo_pattern_t&lt;/a&gt;</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">group </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-pop-group">cairo_pop_group</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-set-source">cairo_set_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> group</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-pattern-t.html#cairo-pattern-destroy">cairo_pattern_destroy</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">group</span><span class="symbol">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<div class="informalexample"><pre class="programlisting">
+<a class="link" href="cairo-cairo-pattern-t.html#cairo-pattern-t" title="cairo_pattern_t">cairo_pattern_t</a> *group = cairo_pop_group (cr);
+cairo_set_source (cr, group);
+cairo_pattern_destroy (group);
+</pre></div>
 <p>
 </p>
 <p>
@@ -769,7 +745,7 @@ and setting it as the source in <em class="parameter"><code>cr</code></em> with 
 The <em class="parameter"><code>x</code></em> and <em class="parameter"><code>y</code></em> parameters give the user-space coordinate at which
 the surface origin should appear. (The surface origin is its
 upper-left corner before any transformation has been applied.) The
-<em class="parameter"><code>x</code></em> and <em class="parameter"><code>y</code></em> patterns are negated and then set as translation values
+<em class="parameter"><code>x</code></em> and <em class="parameter"><code>y</code></em> parameters are negated and then set as translation values
 in the pattern matrix.
 </p>
 <p>

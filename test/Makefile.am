@@ -138,6 +138,7 @@ REFERENCE_IMAGES = \
 	a1-rasterisation-triangles.ref.png \
 	a1-traps-sample.ref.png \
 	a1-traps-sample.quartz.xfail.png \
+	a8-clear.ref.png \
 	a8-mask.ref.png \
 	aliasing.ref.png \
 	aliasing.image16.ref.png \
@@ -161,6 +162,11 @@ REFERENCE_IMAGES = \
 	bug-bo-rectangular.ref.png \
 	bug-bo-rectangular.image16.ref.png \
 	bug-bo-rectangular.ps.xfail.png \
+	bug-extents.image16.ref.png \
+	bug-extents.quartz.ref.png \
+	bug-extents.ps.ref.png \
+	bug-extents.ref.png \
+	bug-extents.xlib.ref.png \
 	bug-seams.ref.png \
 	bug-seams.xlib.ref.png \
 	bug-seams.xlib-fallback.ref.png \
@@ -1065,6 +1071,8 @@ REFERENCE_IMAGES = \
 	rectilinear-dash.quartz.xfail.png \
 	rectilinear-dash.ref.png \
 	rectilinear-fill.ref.png \
+	rectilinear-grid.image16.ref.png \
+	rectilinear-grid.ref.png \
 	rectilinear-miter-limit.ps2.ref.png \
 	rectilinear-miter-limit.ps3.ref.png \
 	rectilinear-miter-limit.ref.png \

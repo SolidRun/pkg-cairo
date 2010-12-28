@@ -1101,19 +1101,10 @@ creates implicitly. For example:
 </p>
 <p>
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-set-source-surface">cairo_set_source_surface</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">,</span><span class="normal"> image</span><span class="symbol">,</span><span class="normal"> x</span><span class="symbol">,</span><span class="normal"> y</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-pattern-t.html#cairo-pattern-set-filter">cairo_pattern_set_filter</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-t.html#cairo-get-source">cairo_get_source</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cr</span><span class="symbol">),</span><span class="normal"> <a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-pattern-t.html#CAIRO-FILTER-NEAREST:CAPS">CAIRO_FILTER_NEAREST</a></span><span class="symbol">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<div class="informalexample"><pre class="programlisting">
+cairo_set_source_surface (cr, image, x, y);
+cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
+</pre></div>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1184,19 +1175,10 @@ it does by default the correct code to use is:
 </p>
 <p>
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-matrix-t.html#cairo-matrix-init-scale">cairo_matrix_init_scale</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">matrix</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0.5</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0.5</span><span class="symbol">);</span>
-<span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-pattern-t.html#cairo-pattern-set-matrix">cairo_pattern_set_matrix</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">pattern</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">matrix</span><span class="symbol">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<div class="informalexample"><pre class="programlisting">
+cairo_matrix_init_scale (&amp;matrix, 0.5, 0.5);
+cairo_pattern_set_matrix (pattern, &amp;matrix);
+</pre></div>
 <p>
 </p>
 <p>

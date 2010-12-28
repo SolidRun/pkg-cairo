@@ -58,7 +58,7 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/src/cairo-uninstalled.pc.in AUTHORS COPYING \
 	ChangeLog INSTALL NEWS build/compile build/config.guess \
 	build/config.sub build/depcomp build/install-sh \
-	build/ltmain.sh build/missing
+	build/ltmain.sh build/missing depcomp missing
 EXTRA_PROGRAMS =
 TESTS =
 check_PROGRAMS =
@@ -341,6 +341,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mesa_DIR = @mesa_DIR@
 mkdir_p = @mkdir_p@
@@ -387,12 +388,12 @@ CLEANFILES = *.i *.s *.gch $(EXTRA_LTLIBRARIES) $(EXTRA_PROGRAMS) \
 	$(check_PROGRAMS)
 DISTCLEANFILES = $(BUILT_SOURCES) config.cache \
 	$(srcdir)/ChangeLog.cache-* ChangeLog.cache-*
-EXTRA_DIST = README.win32 Makefile.win32 build/Makefile.win32.common \
-	build/Makefile.win32.features build/Makefile.win32.features-h \
-	$(NULL) AUTHORS BIBLIOGRAPHY BUGS CODING_STYLE COPYING \
-	COPYING-LGPL-2.1 COPYING-MPL-1.1 HACKING INSTALL NEWS \
-	PORTING_GUIDE README RELEASING autogen.sh cairo-version.h \
-	$(NULL)
+EXTRA_DIST = KNOWN_ISSUES README.win32 Makefile.win32 \
+	build/Makefile.win32.common build/Makefile.win32.features \
+	build/Makefile.win32.features-h $(NULL) AUTHORS BIBLIOGRAPHY \
+	BUGS CODING_STYLE COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1 \
+	HACKING INSTALL NEWS PORTING_GUIDE README RELEASING autogen.sh \
+	cairo-version.h $(NULL)
 EXTRA_LTLIBRARIES = 
 MAINTAINERCLEANFILES = Makefile.in $(srcdir)/aclocal.m4 \
 	$(srcdir)/autoscan.log $(srcdir)/build/compile \
