@@ -35,7 +35,7 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/build/Makefile.am.common \
-	$(top_srcdir)/test/Makefile.sources COPYING
+	$(top_srcdir)/test/Makefile.sources COPYING TODO
 EXTRA_PROGRAMS = $(am__EXEEXT_1) imagediff$(EXEEXT) \
 	png-flatten$(EXEEXT) $(TESTS)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4) \
@@ -126,19 +126,20 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	cairo-test-runner.c buffer-diff.h cairo-test.h \
 	cairo-test-private.h a1-bug.c a1-image-sample.c a1-mask.c \
 	a1-mask-sample.c a1-traps-sample.c a1-rasterisation.c \
-	a8-mask.c aliasing.c alpha-similar.c api-special-cases.c \
-	big-line.c big-trap.c bilevel-image.c bug-bo-rectangular.c \
-	bug-seams.c caps.c caps-joins.c caps-joins-alpha.c \
-	caps-joins-curve.c caps-sub-paths.c clear.c clear-source.c \
-	clip-all.c clip-contexts.c clip-disjoint.c \
-	clip-device-offset.c clip-draw-unbounded.c clip-empty.c \
-	clip-empty-group.c clip-empty-save.c clip-fill.c \
-	clip-fill-no-op.c clip-fill-rule.c \
-	clip-fill-rule-pixel-aligned.c clip-group-shapes.c \
-	clip-image.c clip-nesting.c clip-operator.c clip-push-group.c \
-	clip-shape.c clip-stroke.c clip-stroke-no-op.c clip-text.c \
-	clip-twice.c clip-twice-rectangle.c clip-unbounded.c \
-	clip-zero.c clipped-group.c clipped-surface.c close-path.c \
+	a8-clear.c a8-mask.c aliasing.c alpha-similar.c \
+	api-special-cases.c big-line.c big-trap.c bilevel-image.c \
+	bug-bo-rectangular.c bug-extents.c bug-seams.c caps.c \
+	caps-joins.c caps-joins-alpha.c caps-joins-curve.c \
+	caps-sub-paths.c clear.c clear-source.c clip-all.c \
+	clip-contexts.c clip-disjoint.c clip-device-offset.c \
+	clip-draw-unbounded.c clip-empty.c clip-empty-group.c \
+	clip-empty-save.c clip-fill.c clip-fill-no-op.c \
+	clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
+	clip-group-shapes.c clip-image.c clip-nesting.c \
+	clip-operator.c clip-push-group.c clip-shape.c clip-stroke.c \
+	clip-stroke-no-op.c clip-text.c clip-twice.c \
+	clip-twice-rectangle.c clip-unbounded.c clip-zero.c \
+	clipped-group.c clipped-surface.c close-path.c \
 	close-path-current-point.c \
 	composite-integer-translate-source.c \
 	composite-integer-translate-over.c \
@@ -199,9 +200,10 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	random-intersections-nonzero.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c rectangle-rounding-error.c \
-	rectilinear-fill.c rectilinear-miter-limit.c \
-	rectilinear-dash.c rectilinear-stroke.c reflected-stroke.c \
-	rel-path.c rgb24-ignore-alpha.c rotate-image-surface-paint.c \
+	rectilinear-fill.c rectilinear-grid.c \
+	rectilinear-miter-limit.c rectilinear-dash.c \
+	rectilinear-stroke.c reflected-stroke.c rel-path.c \
+	rgb24-ignore-alpha.c rotate-image-surface-paint.c \
 	rotated-clip.c rounded-rectangle-fill.c \
 	rounded-rectangle-stroke.c scale-down-source-surface-paint.c \
 	scale-offset-image.c scale-offset-similar.c \
@@ -300,6 +302,7 @@ am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
 	cairo_test_suite-a1-mask-sample.$(OBJEXT) \
 	cairo_test_suite-a1-traps-sample.$(OBJEXT) \
 	cairo_test_suite-a1-rasterisation.$(OBJEXT) \
+	cairo_test_suite-a8-clear.$(OBJEXT) \
 	cairo_test_suite-a8-mask.$(OBJEXT) \
 	cairo_test_suite-aliasing.$(OBJEXT) \
 	cairo_test_suite-alpha-similar.$(OBJEXT) \
@@ -308,6 +311,7 @@ am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
 	cairo_test_suite-big-trap.$(OBJEXT) \
 	cairo_test_suite-bilevel-image.$(OBJEXT) \
 	cairo_test_suite-bug-bo-rectangular.$(OBJEXT) \
+	cairo_test_suite-bug-extents.$(OBJEXT) \
 	cairo_test_suite-bug-seams.$(OBJEXT) \
 	cairo_test_suite-caps.$(OBJEXT) \
 	cairo_test_suite-caps-joins.$(OBJEXT) \
@@ -501,6 +505,7 @@ am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
 	cairo_test_suite-random-intersections-curves-nz.$(OBJEXT) \
 	cairo_test_suite-rectangle-rounding-error.$(OBJEXT) \
 	cairo_test_suite-rectilinear-fill.$(OBJEXT) \
+	cairo_test_suite-rectilinear-grid.$(OBJEXT) \
 	cairo_test_suite-rectilinear-miter-limit.$(OBJEXT) \
 	cairo_test_suite-rectilinear-dash.$(OBJEXT) \
 	cairo_test_suite-rectilinear-stroke.$(OBJEXT) \
@@ -878,6 +883,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mesa_DIR = @mesa_DIR@
 mkdir_p = @mkdir_p@
@@ -938,20 +944,20 @@ EXTRA_LTLIBRARIES =
 MAINTAINERCLEANFILES = Makefile.in
 TESTS = cairo-test-suite$(EXEEXT)
 test_sources = a1-bug.c a1-image-sample.c a1-mask.c a1-mask-sample.c \
-	a1-traps-sample.c a1-rasterisation.c a8-mask.c aliasing.c \
-	alpha-similar.c api-special-cases.c big-line.c big-trap.c \
-	bilevel-image.c bug-bo-rectangular.c bug-seams.c caps.c \
-	caps-joins.c caps-joins-alpha.c caps-joins-curve.c \
-	caps-sub-paths.c clear.c clear-source.c clip-all.c \
-	clip-contexts.c clip-disjoint.c clip-device-offset.c \
-	clip-draw-unbounded.c clip-empty.c clip-empty-group.c \
-	clip-empty-save.c clip-fill.c clip-fill-no-op.c \
-	clip-fill-rule.c clip-fill-rule-pixel-aligned.c \
-	clip-group-shapes.c clip-image.c clip-nesting.c \
-	clip-operator.c clip-push-group.c clip-shape.c clip-stroke.c \
-	clip-stroke-no-op.c clip-text.c clip-twice.c \
-	clip-twice-rectangle.c clip-unbounded.c clip-zero.c \
-	clipped-group.c clipped-surface.c close-path.c \
+	a1-traps-sample.c a1-rasterisation.c a8-clear.c a8-mask.c \
+	aliasing.c alpha-similar.c api-special-cases.c big-line.c \
+	big-trap.c bilevel-image.c bug-bo-rectangular.c bug-extents.c \
+	bug-seams.c caps.c caps-joins.c caps-joins-alpha.c \
+	caps-joins-curve.c caps-sub-paths.c clear.c clear-source.c \
+	clip-all.c clip-contexts.c clip-disjoint.c \
+	clip-device-offset.c clip-draw-unbounded.c clip-empty.c \
+	clip-empty-group.c clip-empty-save.c clip-fill.c \
+	clip-fill-no-op.c clip-fill-rule.c \
+	clip-fill-rule-pixel-aligned.c clip-group-shapes.c \
+	clip-image.c clip-nesting.c clip-operator.c clip-push-group.c \
+	clip-shape.c clip-stroke.c clip-stroke-no-op.c clip-text.c \
+	clip-twice.c clip-twice-rectangle.c clip-unbounded.c \
+	clip-zero.c clipped-group.c clipped-surface.c close-path.c \
 	close-path-current-point.c \
 	composite-integer-translate-source.c \
 	composite-integer-translate-over.c \
@@ -1012,9 +1018,10 @@ test_sources = a1-bug.c a1-image-sample.c a1-mask.c a1-mask-sample.c \
 	random-intersections-nonzero.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c rectangle-rounding-error.c \
-	rectilinear-fill.c rectilinear-miter-limit.c \
-	rectilinear-dash.c rectilinear-stroke.c reflected-stroke.c \
-	rel-path.c rgb24-ignore-alpha.c rotate-image-surface-paint.c \
+	rectilinear-fill.c rectilinear-grid.c \
+	rectilinear-miter-limit.c rectilinear-dash.c \
+	rectilinear-stroke.c reflected-stroke.c rel-path.c \
+	rgb24-ignore-alpha.c rotate-image-surface-paint.c \
 	rotated-clip.c rounded-rectangle-fill.c \
 	rounded-rectangle-stroke.c scale-down-source-surface-paint.c \
 	scale-offset-image.c scale-offset-similar.c \
@@ -1167,6 +1174,7 @@ REFERENCE_IMAGES = \
 	a1-rasterisation-triangles.ref.png \
 	a1-traps-sample.ref.png \
 	a1-traps-sample.quartz.xfail.png \
+	a8-clear.ref.png \
 	a8-mask.ref.png \
 	aliasing.ref.png \
 	aliasing.image16.ref.png \
@@ -1190,6 +1198,11 @@ REFERENCE_IMAGES = \
 	bug-bo-rectangular.ref.png \
 	bug-bo-rectangular.image16.ref.png \
 	bug-bo-rectangular.ps.xfail.png \
+	bug-extents.image16.ref.png \
+	bug-extents.quartz.ref.png \
+	bug-extents.ps.ref.png \
+	bug-extents.ref.png \
+	bug-extents.xlib.ref.png \
 	bug-seams.ref.png \
 	bug-seams.xlib.ref.png \
 	bug-seams.xlib-fallback.ref.png \
@@ -2094,6 +2107,8 @@ REFERENCE_IMAGES = \
 	rectilinear-dash.quartz.xfail.png \
 	rectilinear-dash.ref.png \
 	rectilinear-fill.ref.png \
+	rectilinear-grid.image16.ref.png \
+	rectilinear-grid.ref.png \
 	rectilinear-miter-limit.ps2.ref.png \
 	rectilinear-miter-limit.ps3.ref.png \
 	rectilinear-miter-limit.ref.png \
@@ -2618,6 +2633,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-mask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-rasterisation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a1-traps-sample.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a8-clear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-a8-mask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-aliasing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-alpha-similar.Po@am__quote@
@@ -2628,6 +2644,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-bitmap-font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-buffer-diff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-bug-bo-rectangular.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-bug-extents.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-bug-seams.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-cairo-test-constructors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-cairo-test-runner.Po@am__quote@
@@ -2845,6 +2862,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectangle-rounding-error.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectilinear-dash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectilinear-fill.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectilinear-grid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectilinear-miter-limit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectilinear-stroke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-reflected-stroke.Po@am__quote@
@@ -3126,6 +3144,22 @@ cairo_test_suite-a1-rasterisation.obj: a1-rasterisation.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a1-rasterisation.obj `if test -f 'a1-rasterisation.c'; then $(CYGPATH_W) 'a1-rasterisation.c'; else $(CYGPATH_W) '$(srcdir)/a1-rasterisation.c'; fi`
 
+cairo_test_suite-a8-clear.o: a8-clear.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a8-clear.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-a8-clear.Tpo -c -o cairo_test_suite-a8-clear.o `test -f 'a8-clear.c' || echo '$(srcdir)/'`a8-clear.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-a8-clear.Tpo $(DEPDIR)/cairo_test_suite-a8-clear.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a8-clear.c' object='cairo_test_suite-a8-clear.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a8-clear.o `test -f 'a8-clear.c' || echo '$(srcdir)/'`a8-clear.c
+
+cairo_test_suite-a8-clear.obj: a8-clear.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a8-clear.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-a8-clear.Tpo -c -o cairo_test_suite-a8-clear.obj `if test -f 'a8-clear.c'; then $(CYGPATH_W) 'a8-clear.c'; else $(CYGPATH_W) '$(srcdir)/a8-clear.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-a8-clear.Tpo $(DEPDIR)/cairo_test_suite-a8-clear.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a8-clear.c' object='cairo_test_suite-a8-clear.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-a8-clear.obj `if test -f 'a8-clear.c'; then $(CYGPATH_W) 'a8-clear.c'; else $(CYGPATH_W) '$(srcdir)/a8-clear.c'; fi`
+
 cairo_test_suite-a8-mask.o: a8-mask.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-a8-mask.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-a8-mask.Tpo -c -o cairo_test_suite-a8-mask.o `test -f 'a8-mask.c' || echo '$(srcdir)/'`a8-mask.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-a8-mask.Tpo $(DEPDIR)/cairo_test_suite-a8-mask.Po
@@ -3253,6 +3287,22 @@ cairo_test_suite-bug-bo-rectangular.obj: bug-bo-rectangular.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bug-bo-rectangular.c' object='cairo_test_suite-bug-bo-rectangular.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-bug-bo-rectangular.obj `if test -f 'bug-bo-rectangular.c'; then $(CYGPATH_W) 'bug-bo-rectangular.c'; else $(CYGPATH_W) '$(srcdir)/bug-bo-rectangular.c'; fi`
+
+cairo_test_suite-bug-extents.o: bug-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-bug-extents.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-bug-extents.Tpo -c -o cairo_test_suite-bug-extents.o `test -f 'bug-extents.c' || echo '$(srcdir)/'`bug-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-bug-extents.Tpo $(DEPDIR)/cairo_test_suite-bug-extents.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bug-extents.c' object='cairo_test_suite-bug-extents.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-bug-extents.o `test -f 'bug-extents.c' || echo '$(srcdir)/'`bug-extents.c
+
+cairo_test_suite-bug-extents.obj: bug-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-bug-extents.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-bug-extents.Tpo -c -o cairo_test_suite-bug-extents.obj `if test -f 'bug-extents.c'; then $(CYGPATH_W) 'bug-extents.c'; else $(CYGPATH_W) '$(srcdir)/bug-extents.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-bug-extents.Tpo $(DEPDIR)/cairo_test_suite-bug-extents.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bug-extents.c' object='cairo_test_suite-bug-extents.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-bug-extents.obj `if test -f 'bug-extents.c'; then $(CYGPATH_W) 'bug-extents.c'; else $(CYGPATH_W) '$(srcdir)/bug-extents.c'; fi`
 
 cairo_test_suite-bug-seams.o: bug-seams.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-bug-seams.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-bug-seams.Tpo -c -o cairo_test_suite-bug-seams.o `test -f 'bug-seams.c' || echo '$(srcdir)/'`bug-seams.c
@@ -6341,6 +6391,22 @@ cairo_test_suite-rectilinear-fill.obj: rectilinear-fill.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rectilinear-fill.c' object='cairo_test_suite-rectilinear-fill.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rectilinear-fill.obj `if test -f 'rectilinear-fill.c'; then $(CYGPATH_W) 'rectilinear-fill.c'; else $(CYGPATH_W) '$(srcdir)/rectilinear-fill.c'; fi`
+
+cairo_test_suite-rectilinear-grid.o: rectilinear-grid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-rectilinear-grid.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-rectilinear-grid.Tpo -c -o cairo_test_suite-rectilinear-grid.o `test -f 'rectilinear-grid.c' || echo '$(srcdir)/'`rectilinear-grid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-rectilinear-grid.Tpo $(DEPDIR)/cairo_test_suite-rectilinear-grid.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rectilinear-grid.c' object='cairo_test_suite-rectilinear-grid.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rectilinear-grid.o `test -f 'rectilinear-grid.c' || echo '$(srcdir)/'`rectilinear-grid.c
+
+cairo_test_suite-rectilinear-grid.obj: rectilinear-grid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-rectilinear-grid.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-rectilinear-grid.Tpo -c -o cairo_test_suite-rectilinear-grid.obj `if test -f 'rectilinear-grid.c'; then $(CYGPATH_W) 'rectilinear-grid.c'; else $(CYGPATH_W) '$(srcdir)/rectilinear-grid.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-rectilinear-grid.Tpo $(DEPDIR)/cairo_test_suite-rectilinear-grid.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rectilinear-grid.c' object='cairo_test_suite-rectilinear-grid.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-rectilinear-grid.obj `if test -f 'rectilinear-grid.c'; then $(CYGPATH_W) 'rectilinear-grid.c'; else $(CYGPATH_W) '$(srcdir)/rectilinear-grid.c'; fi`
 
 cairo_test_suite-rectilinear-miter-limit.o: rectilinear-miter-limit.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-rectilinear-miter-limit.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-rectilinear-miter-limit.Tpo -c -o cairo_test_suite-rectilinear-miter-limit.o `test -f 'rectilinear-miter-limit.c' || echo '$(srcdir)/'`rectilinear-miter-limit.c

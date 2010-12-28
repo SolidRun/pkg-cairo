@@ -85,55 +85,28 @@ be used by applications.
 Putting this all together, a function that works with devices should
 look something like this:
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="type">void</span>
-<span class="function">my_device_modifying_function</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">cairo_device_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">device</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">cairo_status_t</span><span class="normal"> status</span><span class="symbol">;</span>
+<div class="informalexample"><pre class="programlisting">
+void
+my_device_modifying_function (cairo_device_t *device)
+{
+  cairo_status_t status;
 
-<span class="normal">  </span><span class="comment">// Ensure the device is properly reset</span>
-<span class="normal">  </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-device-t.html#cairo-device-flush">cairo_device_flush</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">device</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="comment">// Try to acquire the device</span>
-<span class="normal">  status </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-device-t.html#cairo-device-acquire">cairo_device_acquire</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">device</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">status </span><span class="symbol">!=</span><span class="normal"> <a href="/usr/share/gtk-doc/html/cairo/cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS">CAIRO_STATUS_SUCCESS</a></span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
-<span class="normal">    </span><span class="function">printf</span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Failed to acquire the device: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-Error-handling.html#cairo-status-to-string">cairo_status_to_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">status</span><span class="symbol">));</span>
-<span class="normal">    </span><span class="keyword">return</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="cbracket">}</span>
+  // Ensure the device is properly reset
+  cairo_device_flush (device);
+  // Try to acquire the device
+  status = cairo_device_acquire (device);
+  if (status != CAIRO_STATUS_SUCCESS) {
+    printf ("Failed to acquire the device: %s\n", cairo_status_to_string (status));
+    return;
+  }
 
-<span class="normal">  </span><span class="comment">// Do the custom operations on the device here.</span>
-<span class="normal">  </span><span class="comment">// But do not call any Cairo functions that might acquire devices.</span>
-<span class="normal">  </span>
-<span class="normal">  </span><span class="comment">// Release the device when done.</span>
-<span class="normal">  </span><span class="function"><a href="/usr/share/gtk-doc/html/cairo/cairo-cairo-device-t.html#cairo-device-release">cairo_device_release</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">device</span><span class="symbol">);</span>
-<span class="cbracket">}</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+  // Do the custom operations on the device here.
+  // But do not call any Cairo functions that might acquire devices.
+  
+  // Release the device when done.
+  cairo_device_release (device);
+}
+</pre></div>
 <p>
 </p>
 <p>
@@ -315,7 +288,7 @@ This function may acquire devices.
     CAIRO_DEVICE_TYPE_SCRIPT,
     CAIRO_DEVICE_TYPE_XCB,
     CAIRO_DEVICE_TYPE_XLIB,
-    CAIRO_DEVICE_TYPE_XML,
+    CAIRO_DEVICE_TYPE_XML
 } cairo_device_type_t;
 </pre>
 <p>
