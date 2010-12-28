@@ -4,8 +4,8 @@ Bug: https://bugs.freedesktop.org/show_bug.cgi?id=28865
 Last-Update: 2010-08-03
 Index: cairo/configure.ac
 ===================================================================
---- cairo.orig/configure.ac	2010-09-06 23:48:27.643436170 +0200
-+++ cairo/configure.ac	2010-09-06 23:49:18.527408723 +0200
+--- cairo.orig/configure.ac	2010-12-28 14:41:21.499228916 +0100
++++ cairo/configure.ac	2010-12-28 14:42:06.162226875 +0100
 @@ -796,6 +796,11 @@
  PKG_CHECK_MODULES(gtk, "gtk+-2.0",have_gtk=yes, have_gtk=no)
  AM_CONDITIONAL(HAVE_GTK, test "x$have_gtk" = "xyes")
@@ -20,8 +20,8 @@ Index: cairo/configure.ac
  boilerplate/Makefile
 Index: cairo/perf/Makefile.am
 ===================================================================
---- cairo.orig/perf/Makefile.am	2010-09-06 23:48:27.619417195 +0200
-+++ cairo/perf/Makefile.am	2010-09-06 23:49:18.531419987 +0200
+--- cairo.orig/perf/Makefile.am	2010-06-18 13:47:11.000000000 +0200
++++ cairo/perf/Makefile.am	2010-12-28 14:42:06.162226875 +0100
 @@ -10,6 +10,18 @@
  
  AM_LDFLAGS = $(CAIRO_LDFLAGS)
@@ -43,8 +43,8 @@ Index: cairo/perf/Makefile.am
  		  cairo-perf-diff-files \
 Index: cairo/build/configure.ac.features
 ===================================================================
---- cairo.orig/build/configure.ac.features	2010-09-06 23:48:27.603407060 +0200
-+++ cairo/build/configure.ac.features	2010-09-06 23:49:18.531419987 +0200
+--- cairo.orig/build/configure.ac.features	2010-12-28 14:41:21.487225155 +0100
++++ cairo/build/configure.ac.features	2010-12-28 14:42:06.166239606 +0100
 @@ -407,6 +407,7 @@
  	echo "The following features and utilities:"
  	echo "  cairo-trace:                $use_trace"
