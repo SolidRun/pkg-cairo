@@ -10,18 +10,6 @@ AM_CPPFLAGS =					\
 
 AM_LDFLAGS = $(CAIRO_LDFLAGS)
 
-if CAIRO_HAS_PERF_UTILS
-bin_PROGRAMS = cairo-perf-micro \
-	cairo-perf-trace \
-	cairo-perf-diff-files \
-	cairo-perf-print \
-	cairo-perf-chart \
-	cairo-perf-compare-backends
-if HAVE_GTK
-bin_PROGRAMS += cairo-perf-graph-files
-endif
-endif
-
 EXTRA_PROGRAMS += cairo-perf-micro \
 		  cairo-perf-trace \
 		  cairo-perf-diff-files \
