@@ -711,11 +711,6 @@ cairo_push_group_with_content (cairo_t *cr, cairo_content_t content)
 	_cairo_path_fixed_transform (cr->path, &matrix);
     }
 
-    /* If we have a current path, we need to adjust it to compensate for
-     * the device offset just applied. */
-    _cairo_path_fixed_transform (cr->path,
-				 &group_surface->device_transform);
-
     /* create a new gstate for the redirect */
     cairo_save (cr);
     if (unlikely (cr->status))

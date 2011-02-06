@@ -23083,6 +23083,7 @@ quartz_font_NONPKGCONFIG_LIBS=$cairo_cv_quartz_font_NONPKGCONFIG_LIBS
 quartz_font_NONPKGCONFIG_EXTRA_LIBS=$cairo_cv_quartz_font_NONPKGCONFIG_EXTRA_LIBS
 
 
+fi
 
 							 if test "x$use_quartz_font" = xyes; then
   CAIRO_HAS_QUARTZ_FONT_TRUE=
@@ -23235,10 +23236,6 @@ fi
   :
 			        	CAIRO_NO_FEATURES="${CAIRO_NO_FEATURES} "'CAIRO_HAS_QUARTZ_FONT'
 
-case `$PKG_CONFIG --version` in
-0.?|0.?.?|0.1[0-7]|0.1[0-7].?) PKGCONFIG_REQUIRES="Requires"; ;;
-*) PKGCONFIG_REQUIRES="Requires.private"; ;;
-esac
 
 
 fi
@@ -23528,7 +23525,6 @@ fi
 --- Image surface backend specific API.'
 
 
-	fi
 
 fi
 
@@ -23681,7 +23677,6 @@ fi
 ""$cr_make_tmp"
 
 
-LIBS="$LIBS $LIBM"
 
 										cr_make_tmp='all_cairo_headers += $(cairo_win32_headers)
 all_cairo_private += $(cairo_win32_private)
@@ -23740,12 +23735,6 @@ enabled_cairo_boilerplate_sources += $(cairo_boilerplate_win32_sources)'
 
 
 
-ac_fn_c_check_type "$LINENO" "uint64_t" "ac_cv_type_uint64_t" "$ac_includes_default"
-if test "x$ac_cv_type_uint64_t" = x""yes; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_UINT64_T 1
-_ACEOF
 
 					if test "x$use_win32" = xyes; then :
   :
@@ -34474,6 +34463,7 @@ fi
 												        	CAIRO_MAKEFILE___WIN32="${CAIRO_MAKEFILE___WIN32}
 ""$cr_make_tmp"
 
+
 										cr_make_tmp=''
 									        	CAIRO_MAKEFILE_cairo_AMAKE="${CAIRO_MAKEFILE_cairo_AMAKE}
 ""$cr_make_tmp"
@@ -34924,14 +34914,6 @@ LIBOBJS=$ac_libobjs
 
 LTLIBOBJS=$ac_ltlibobjs
 
-
- if test -n "$EXEEXT"; then
-  am__EXEEXT_TRUE=
-  am__EXEEXT_FALSE='#'
-else
-  am__EXEEXT_TRUE='#'
-  am__EXEEXT_FALSE=
-fi
 
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error $? "conditional \"AMDEP\" was never defined.
@@ -36833,7 +36815,7 @@ if test "x$ac_cr" = x; then
 fi
 ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
 if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
-  ac_cs_awk_cr='\r'
+  ac_cs_awk_cr='\\r'
 else
   ac_cs_awk_cr=$ac_cr
 fi
