@@ -10,6 +10,7 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_SRCDIR(src/cairo.h)
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([1.9.6 gnu -Wall no-define])
+AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_LIBTOOL_WIN32_DLL dnl Must be called before AC_PROG_LIBTOOL
 AC_PROG_LIBTOOL dnl ([1.4]) Don't remove!
@@ -795,6 +796,11 @@ dnl ===========================================================================
 # We use GTK+ for some utility/debugging tools
 PKG_CHECK_MODULES(gtk, "gtk+-2.0",have_gtk=yes, have_gtk=no)
 AM_CONDITIONAL(HAVE_GTK, test "x$have_gtk" = "xyes")
+
+dnl ===========================================================================
+
+CAIRO_ENABLE(perf_utils, cairo-perf-utils, no, [use_perf_utils=yes])
+
 
 AC_CONFIG_FILES([
 Makefile

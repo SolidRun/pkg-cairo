@@ -157,7 +157,7 @@ binary-arch: build install
 	dh_strip -plibcairo2-udeb
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -plibcairo2 --add-udeb=libcairo2-udeb -V 'libcairo2 (>= 1.10.0)' -- -c4
+	dh_makeshlibs -plibcairo2 --add-udeb=libcairo2-udeb -V 'libcairo2 (>= 1.10.2-2~)' -- -c4
 	dh_makeshlibs -plibcairo-gobject2 -V 'libcairo-gobject2 (>= 1.10.0)' -- -c4
 	dh_makeshlibs -plibcairo-script-interpreter2 -V 'libcairo-script-interpreter2 (>= 1.10.0)' -- -c4
 	dh_installdeb -s
