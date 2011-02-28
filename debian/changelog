@@ -1,3 +1,12 @@
+cairo (1.10.2-3) UNRELEASED; urgency=low
+
+  * debian/patches/04-LD_PRELOAD-is-supported-on-Hurd.patch:
+    + Patch from upstream git, let configure know that GNU/Hurd
+      supports LD_PRELOAD. This enables the build of cairo-trace.
+      Closes: #608492.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Mon, 28 Feb 2011 17:53:30 +0000
+
 cairo (1.10.2-2) unstable; urgency=low
 
   * debian/control:
