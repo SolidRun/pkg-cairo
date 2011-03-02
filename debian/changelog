@@ -1,15 +1,8 @@
 cairo (1.10.2-2) UNRELEASED; urgency=low
 
-  [ Sebastian Dröge ]
   * debian/control:
     + Let libcairo2-dev depend on libcairo-script-interpreter2 to
       prevent dangling symlinks.
-
-  [ Emilio Pozuelo Monfort ]
-  * debian/patches/03-LD_PRELOAD-is-supported-on-Hurd.patch:
-    + Patch from upstream git, let configure know that GNU/Hurd
-      supports LD_PRELOAD. This enables the build of cairo-trace.
-      Closes: #608492.
 
  -- Sebastian Dröge <slomo@debian.org>  Wed, 19 Jan 2011 12:13:26 +0100
 
