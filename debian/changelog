@@ -1,3 +1,17 @@
+cairo (1.10.2-5) UNRELEASED; urgency=low
+
+  * debian/control,
+    debian/libcairo2.symbols,
+    debian/rules:
+    + Temporarily disable the OpenGL/EGL backend, since that makes us
+      block on mesa / libdrm / linux-2.6 to migrate to testing, and
+      we're blocking the gobject-introspection transition, and we don't
+      want to tie them. It will be re-enabled soon after we migrate.
+      There shouldn't be anything depending on these symbols yet, so this
+      should be safe.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Fri, 25 Mar 2011 16:46:50 +0000
+
 cairo (1.10.2-4) unstable; urgency=low
 
   * Brown paper bug release.
