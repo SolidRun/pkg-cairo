@@ -10,6 +10,6 @@ libcairo_gobject_la_SOURCES = \
 	$(NULL)
 
 libcairo_gobject_la_CFLAGS = $(CAIRO_CFLAGS) $(GOBJECT_CFLAGS)
-libcairo_gobject_la_LDFLAGS = -version-info $(CAIRO_LIBTOOL_VERSION_INFO) -no-undefined $(export_symbols)
+libcairo_gobject_la_LDFLAGS = -version-info $(CAIRO_LIBTOOL_VERSION_INFO) -no-undefined $(export_symbols) -export-symbols-regex \^cairo_.*
 libcairo_gobject_la_LIBADD = $(top_builddir)/src/libcairo.la $(CAIRO_LIBS) $(GOBJECT_LIBS)
 
