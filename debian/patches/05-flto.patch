@@ -1,0 +1,13 @@
+Disable -flto as it is currently doesn't work with -Wl,--as-needed
+
+--- cairo-1.10.2.orig/build/configure.ac.warnings
++++ cairo-1.10.2/build/configure.ac.warnings
+@@ -27,7 +27,7 @@ MAYBE_WARN="$MAYBE_WARN -erroff=E_ENUM_T
+ 
+ dnl We also abuse the warning-flag facility to enable other compiler
+ dnl options.  Namely, the following:
+-MAYBE_WARN="$MAYBE_WARN -fno-strict-aliasing -fno-common -flto"
++MAYBE_WARN="$MAYBE_WARN -fno-strict-aliasing -fno-common"
+ 
+ dnl Also to turn various gcc/glibc-specific preprocessor checks
+ MAYBE_WARN="$MAYBE_WARN -Wp,-D_FORTIFY_SOURCE=2"
