@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Index</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="prev" href="cairo-Types.html" title="Types">
 <link rel="next" href="index-1.2.html" title="Index of new symbols in 1.2">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -19,7 +19,7 @@
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
 <td><a accesskey="n" href="index-1.2.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
-<div class="index" title="Index">
+<div class="index">
 <div class="titlepage"><div><div><h2 class="title">
 <a name="index-all"></a>Index</h2></div></div></div>
 <div class="index">
@@ -289,6 +289,8 @@
 </dt>
 <dt>CAIRO_HAS_WIN32_SURFACE, <a class="indexterm" href="cairo-Win32-Surfaces.html#CAIRO-HAS-WIN32-SURFACE:CAPS">CAIRO_HAS_WIN32_SURFACE</a>
 </dt>
+<dt>CAIRO_HAS_XCB_SURFACE, <a class="indexterm" href="cairo-XCB-Surfaces.html#CAIRO-HAS-XCB-SURFACE:CAPS">CAIRO_HAS_XCB_SURFACE</a>
+</dt>
 <dt>CAIRO_HAS_XLIB_SURFACE, <a class="indexterm" href="cairo-XLib-Surfaces.html#CAIRO-HAS-XLIB-SURFACE:CAPS">CAIRO_HAS_XLIB_SURFACE</a>
 </dt>
 <dt>cairo_hint_metrics_t, <a class="indexterm" href="cairo-cairo-font-options-t.html#cairo-hint-metrics-t">enum cairo_hint_metrics_t</a>
@@ -372,11 +374,37 @@
 </dt>
 <dt>cairo_matrix_translate, <a class="indexterm" href="cairo-cairo-matrix-t.html#cairo-matrix-translate">cairo_matrix_translate ()</a>
 </dt>
+<dt>cairo_mesh_pattern_begin_patch, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-begin-patch">cairo_mesh_pattern_begin_patch ()</a>
+</dt>
+<dt>cairo_mesh_pattern_curve_to, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-curve-to">cairo_mesh_pattern_curve_to ()</a>
+</dt>
+<dt>cairo_mesh_pattern_end_patch, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-end-patch">cairo_mesh_pattern_end_patch ()</a>
+</dt>
+<dt>cairo_mesh_pattern_get_control_point, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-control-point">cairo_mesh_pattern_get_control_point ()</a>
+</dt>
+<dt>cairo_mesh_pattern_get_corner_color_rgba, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-corner-color-rgba">cairo_mesh_pattern_get_corner_color_rgba ()</a>
+</dt>
+<dt>cairo_mesh_pattern_get_patch_count, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-patch-count">cairo_mesh_pattern_get_patch_count ()</a>
+</dt>
+<dt>cairo_mesh_pattern_get_path, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-path">cairo_mesh_pattern_get_path ()</a>
+</dt>
+<dt>cairo_mesh_pattern_line_to, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-line-to">cairo_mesh_pattern_line_to ()</a>
+</dt>
+<dt>cairo_mesh_pattern_move_to, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-move-to">cairo_mesh_pattern_move_to ()</a>
+</dt>
+<dt>cairo_mesh_pattern_set_control_point, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-set-control-point">cairo_mesh_pattern_set_control_point ()</a>
+</dt>
+<dt>cairo_mesh_pattern_set_corner_color_rgb, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-set-corner-color-rgb">cairo_mesh_pattern_set_corner_color_rgb ()</a>
+</dt>
+<dt>cairo_mesh_pattern_set_corner_color_rgba, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-set-corner-color-rgba">cairo_mesh_pattern_set_corner_color_rgba ()</a>
+</dt>
 <dt>CAIRO_MIME_TYPE_JP2, <a class="indexterm" href="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JP2:CAPS">CAIRO_MIME_TYPE_JP2</a>
 </dt>
 <dt>CAIRO_MIME_TYPE_JPEG, <a class="indexterm" href="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JPEG:CAPS">CAIRO_MIME_TYPE_JPEG</a>
 </dt>
 <dt>CAIRO_MIME_TYPE_PNG, <a class="indexterm" href="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-PNG:CAPS">CAIRO_MIME_TYPE_PNG</a>
+</dt>
+<dt>CAIRO_MIME_TYPE_UNIQUE_ID, <a class="indexterm" href="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-UNIQUE-ID:CAPS">CAIRO_MIME_TYPE_UNIQUE_ID</a>
 </dt>
 <dt>CAIRO_MIME_TYPE_URI, <a class="indexterm" href="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-URI:CAPS">CAIRO_MIME_TYPE_URI</a>
 </dt>
@@ -422,6 +450,8 @@
 <dt>cairo_pattern_create_for_surface, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-pattern-create-for-surface">cairo_pattern_create_for_surface ()</a>
 </dt>
 <dt>cairo_pattern_create_linear, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-pattern-create-linear">cairo_pattern_create_linear ()</a>
+</dt>
+<dt>cairo_pattern_create_mesh, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-pattern-create-mesh">cairo_pattern_create_mesh ()</a>
 </dt>
 <dt>cairo_pattern_create_radial, <a class="indexterm" href="cairo-cairo-pattern-t.html#cairo-pattern-create-radial">cairo_pattern_create_radial ()</a>
 </dt>
@@ -732,6 +762,8 @@
 </dt>
 <dt>cairo_surface_create_similar, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-create-similar">cairo_surface_create_similar ()</a>
 </dt>
+<dt>cairo_surface_create_similar_image, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-create-similar-image">cairo_surface_create_similar_image ()</a>
+</dt>
 <dt>cairo_surface_destroy, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-destroy">cairo_surface_destroy ()</a>
 </dt>
 <dt>cairo_surface_finish, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-finish">cairo_surface_finish ()</a>
@@ -758,6 +790,8 @@
 </dt>
 <dt>cairo_surface_has_show_text_glyphs, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-has-show-text-glyphs">cairo_surface_has_show_text_glyphs ()</a>
 </dt>
+<dt>cairo_surface_map_to_image, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-map-to-image">cairo_surface_map_to_image ()</a>
+</dt>
 <dt>cairo_surface_mark_dirty, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-mark-dirty">cairo_surface_mark_dirty ()</a>
 </dt>
 <dt>cairo_surface_mark_dirty_rectangle, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-mark-dirty-rectangle">cairo_surface_mark_dirty_rectangle ()</a>
@@ -779,6 +813,8 @@
 <dt>cairo_surface_t, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-t">cairo_surface_t</a>
 </dt>
 <dt>cairo_surface_type_t, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-type-t">enum cairo_surface_type_t</a>
+</dt>
+<dt>cairo_surface_unmap_image, <a class="indexterm" href="cairo-cairo-surface-t.html#cairo-surface-unmap-image">cairo_surface_unmap_image ()</a>
 </dt>
 <dt>cairo_surface_write_to_png, <a class="indexterm" href="cairo-PNG-Support.html#cairo-surface-write-to-png">cairo_surface_write_to_png ()</a>
 </dt>
@@ -869,29 +905,6 @@
 </dl>
 </div>
 <div class="indexdiv">
-<h3>V</h3>
-<dl>
-<dt>CAIRO_VERSION, <a class="indexterm" href="cairo-Version-Information.html#CAIRO-VERSION:CAPS">CAIRO_VERSION</a>
-</dt>
-<dt>cairo_version, <a class="indexterm" href="cairo-Version-Information.html#cairo-version">cairo_version ()</a>
-</dt>
-<dt>CAIRO_VERSION_ENCODE, <a class="indexterm" href="cairo-Version-Information.html#CAIRO-VERSION-ENCODE:CAPS">CAIRO_VERSION_ENCODE()</a>
-</dt>
-<dt>CAIRO_VERSION_MAJOR, <a class="indexterm" href="cairo-Version-Information.html#CAIRO-VERSION-MAJOR:CAPS">CAIRO_VERSION_MAJOR</a>
-</dt>
-<dt>CAIRO_VERSION_MICRO, <a class="indexterm" href="cairo-Version-Information.html#CAIRO-VERSION-MICRO:CAPS">CAIRO_VERSION_MICRO</a>
-</dt>
-<dt>CAIRO_VERSION_MINOR, <a class="indexterm" href="cairo-Version-Information.html#CAIRO-VERSION-MINOR:CAPS">CAIRO_VERSION_MINOR</a>
-</dt>
-<dt>CAIRO_VERSION_STRING, <a class="indexterm" href="cairo-Version-Information.html#CAIRO-VERSION-STRING:CAPS">CAIRO_VERSION_STRING</a>
-</dt>
-<dt>cairo_version_string, <a class="indexterm" href="cairo-Version-Information.html#cairo-version-string">cairo_version_string ()</a>
-</dt>
-<dt>CAIRO_VERSION_STRINGIZE, <a class="indexterm" href="cairo-Version-Information.html#CAIRO-VERSION-STRINGIZE:CAPS">CAIRO_VERSION_STRINGIZE()</a>
-</dt>
-</dl>
-</div>
-<div class="indexdiv">
 <h3>W</h3>
 <dl>
 <dt>cairo_win32_font_face_create_for_hfont, <a class="indexterm" href="cairo-Win32-Fonts.html#cairo-win32-font-face-create-for-hfont">cairo_win32_font_face_create_for_hfont ()</a>
@@ -929,6 +942,16 @@
 <div class="indexdiv">
 <h3>X</h3>
 <dl>
+<dt>cairo_xcb_surface_create, <a class="indexterm" href="cairo-XCB-Surfaces.html#cairo-xcb-surface-create">cairo_xcb_surface_create ()</a>
+</dt>
+<dt>cairo_xcb_surface_create_for_bitmap, <a class="indexterm" href="cairo-XCB-Surfaces.html#cairo-xcb-surface-create-for-bitmap">cairo_xcb_surface_create_for_bitmap ()</a>
+</dt>
+<dt>cairo_xcb_surface_create_with_xrender_format, <a class="indexterm" href="cairo-XCB-Surfaces.html#cairo-xcb-surface-create-with-xrender-format">cairo_xcb_surface_create_with_xrender_format ()</a>
+</dt>
+<dt>cairo_xcb_surface_set_drawable, <a class="indexterm" href="cairo-XCB-Surfaces.html#cairo-xcb-surface-set-drawable">cairo_xcb_surface_set_drawable ()</a>
+</dt>
+<dt>cairo_xcb_surface_set_size, <a class="indexterm" href="cairo-XCB-Surfaces.html#cairo-xcb-surface-set-size">cairo_xcb_surface_set_size ()</a>
+</dt>
 <dt>cairo_xlib_surface_create, <a class="indexterm" href="cairo-XLib-Surfaces.html#cairo-xlib-surface-create">cairo_xlib_surface_create ()</a>
 </dt>
 <dt>cairo_xlib_surface_create_for_bitmap, <a class="indexterm" href="cairo-XLib-Surfaces.html#cairo-xlib-surface-create-for-bitmap">cairo_xlib_surface_create_for_bitmap ()</a>
@@ -957,6 +980,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Regions</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-drawing.html" title="Drawing">
 <link rel="prev" href="cairo-cairo-pattern-t.html" title="cairo_pattern_t">
 <link rel="next" href="cairo-Transformations.html" title="Transformations">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,7 +26,7 @@
                   <a href="#cairo-Regions.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="Regions">
+<div class="refentry">
 <a name="cairo-Regions"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -35,7 +35,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="cairo-Regions.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">typedef             <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t">cairo_region_t</a>;
 <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="returnvalue">cairo_region_t</span></a> *    <a class="link" href="cairo-Regions.html#cairo-region-create" title="cairo_region_create ()">cairo_region_create</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
@@ -57,7 +57,7 @@
                                                          <em class="parameter"><code><span class="type">int</span> x</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> y</code></em>);
 enum                <a class="link" href="cairo-Regions.html#cairo-region-overlap-t" title="enum cairo_region_overlap_t">cairo_region_overlap_t</a>;
-<a class="link" href="cairo-Regions.html#cairo-region-overlap-t" title="enum cairo_region_overlap_t"><span class="returnvalue">cairo_region_overlap_t</span></a>  <a class="link" href="cairo-Regions.html#cairo-region-contains-rectangle" title="cairo_region_contains_rectangle ()">cairo_region_contains_rectangle</a> (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
+<a class="link" href="cairo-Regions.html#cairo-region-overlap-t" title="enum cairo_region_overlap_t"><span class="returnvalue">cairo_region_overlap_t</span></a> <a class="link" href="cairo-Regions.html#cairo-region-contains-rectangle" title="cairo_region_contains_rectangle ()">cairo_region_contains_rectangle</a>  (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);
 <a class="link" href="cairo-Types.html#cairo-bool-t" title="cairo_bool_t"><span class="returnvalue">cairo_bool_t</span></a>        <a class="link" href="cairo-Regions.html#cairo-region-equal" title="cairo_region_equal ()">cairo_region_equal</a>                  (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *a</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *b</code></em>);
@@ -82,7 +82,7 @@ enum                <a class="link" href="cairo-Regions.html#cairo-region-overla
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="cairo-Regions.description"></a><h2>Description</h2>
 <p>
 Regions are a simple graphical data type representing an area of 
@@ -90,9 +90,9 @@ integer-aligned rectangles. They are often used on raster surfaces
 to track areas of interest, such as change or clip areas.
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="cairo-Regions.details"></a><h2>Details</h2>
-<div class="refsect2" title="cairo_region_t">
+<div class="refsect2">
 <a name="cairo-region-t"></a><h3>cairo_region_t</h3>
 <pre class="programlisting">typedef struct _cairo_region cairo_region_t;
 </pre>
@@ -110,7 +110,7 @@ Memory management of <a class="link" href="cairo-Regions.html#cairo-region-t" ti
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_create ()">
+<div class="refsect2">
 <a name="cairo-region-create"></a><h3>cairo_region_create ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="returnvalue">cairo_region_t</span></a> *    cairo_region_create                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
@@ -120,19 +120,17 @@ Allocates a new empty region object.
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
-  <a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
-  valid pointer; if memory cannot be allocated, then a special
-  error object is returned where all operations on the object do nothing.
-  You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.
-
-</td>
+<td>A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
+<a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
+valid pointer; if memory cannot be allocated, then a special
+error object is returned where all operations on the object do nothing.
+You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.</td>
 </tr></tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_create_rectangle ()">
+<div class="refsect2">
 <a name="cairo-region-create-rectangle"></a><h3>cairo_region_create_rectangle ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="returnvalue">cairo_region_t</span></a> *    cairo_region_create_rectangle       (<em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);</pre>
 <p>
@@ -148,20 +146,18 @@ Allocates a new region object containing <em class="parameter"><code>rectangle</
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
-  <a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
-  valid pointer; if memory cannot be allocated, then a special
-  error object is returned where all operations on the object do nothing.
-  You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.
-
-</td>
+<td>A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
+<a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
+valid pointer; if memory cannot be allocated, then a special
+error object is returned where all operations on the object do nothing.
+You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_create_rectangles ()">
+<div class="refsect2">
 <a name="cairo-region-create-rectangles"></a><h3>cairo_region_create_rectangles ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="returnvalue">cairo_region_t</span></a> *    cairo_region_create_rectangles      (<em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rects</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> count</code></em>);</pre>
@@ -173,30 +169,26 @@ Allocates a new region object containing the union of all given <em class="param
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rects</code></em> :</span></p></td>
-<td>an array of <em class="parameter"><code>count</code></em> rectangles
-</td>
+<td>an array of <em class="parameter"><code>count</code></em> rectangles</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>count</code></em> :</span></p></td>
-<td>number of rectangles
-</td>
+<td>number of rectangles</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
-  <a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
-  valid pointer; if memory cannot be allocated, then a special
-  error object is returned where all operations on the object do nothing.
-  You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.
-
-</td>
+<td>A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
+<a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
+valid pointer; if memory cannot be allocated, then a special
+error object is returned where all operations on the object do nothing.
+You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_copy ()">
+<div class="refsect2">
 <a name="cairo-region-copy"></a><h3>cairo_region_copy ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="returnvalue">cairo_region_t</span></a> *    cairo_region_copy                   (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *original</code></em>);</pre>
 <p>
@@ -212,20 +204,18 @@ Allocates a new region object copying the area from <em class="parameter"><code>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
-  <a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
-  valid pointer; if memory cannot be allocated, then a special
-  error object is returned where all operations on the object do nothing.
-  You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.
-
-</td>
+<td>A newly allocated <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>. Free with
+<a class="link" href="cairo-Regions.html#cairo-region-destroy" title="cairo_region_destroy ()"><code class="function">cairo_region_destroy()</code></a>. This function always returns a
+valid pointer; if memory cannot be allocated, then a special
+error object is returned where all operations on the object do nothing.
+You can check for this with <a class="link" href="cairo-Regions.html#cairo-region-status" title="cairo_region_status ()"><code class="function">cairo_region_status()</code></a>.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_reference ()">
+<div class="refsect2">
 <a name="cairo-region-reference"></a><h3>cairo_region_reference ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="returnvalue">cairo_region_t</span></a> *    cairo_region_reference              (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>);</pre>
 <p>
@@ -243,16 +233,14 @@ Increases the reference count on <em class="parameter"><code>region</code></em> 
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the referenced <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>.
-
-</td>
+<td>the referenced <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a>.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_destroy ()">
+<div class="refsect2">
 <a name="cairo-region-destroy"></a><h3>cairo_region_destroy ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_region_destroy                (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>);</pre>
 <p>
@@ -271,11 +259,11 @@ or <a class="link" href="cairo-Regions.html#cairo-region-create-rectangle" title
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_status ()">
+<div class="refsect2">
 <a name="cairo-region-status"></a><h3>cairo_region_status ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_status                 (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>);</pre>
 <p>
-Checks whether an error has previous occured for this
+Checks whether an error has previous occurred for this
 region object.
 </p>
 <div class="variablelist"><table border="0">
@@ -288,8 +276,8 @@ region object.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -297,7 +285,7 @@ region object.
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_get_extents ()">
+<div class="refsect2">
 <a name="cairo-region-get-extents"></a><h3>cairo_region_get_extents ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_region_get_extents            (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
                                                          <em class="parameter"><code><a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *extents</code></em>);</pre>
@@ -314,15 +302,14 @@ Gets the bounding rectangle of <em class="parameter"><code>region</code></em> as
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>extents</code></em> :</span></p></td>
-<td>rectangle into which to store the extents
-</td>
+<td>rectangle into which to store the extents</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_num_rectangles ()">
+<div class="refsect2">
 <a name="cairo-region-num-rectangles"></a><h3>cairo_region_num_rectangles ()</h3>
 <pre class="programlisting"><span class="returnvalue">int</span>                 cairo_region_num_rectangles         (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>);</pre>
 <p>
@@ -338,16 +325,14 @@ Returns the number of rectangles contained in <em class="parameter"><code>region
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The number of rectangles contained in <em class="parameter"><code>region</code></em>.
-
-</td>
+<td>The number of rectangles contained in <em class="parameter"><code>region</code></em>.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_get_rectangle ()">
+<div class="refsect2">
 <a name="cairo-region-get-rectangle"></a><h3>cairo_region_get_rectangle ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_region_get_rectangle          (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> nth</code></em>,
@@ -365,8 +350,7 @@ Stores the <em class="parameter"><code>nth</code></em> rectangle from the region
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>nth</code></em> :</span></p></td>
-<td>a number indicating which rectangle should be returned
-</td>
+<td>a number indicating which rectangle should be returned</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rectangle</code></em> :</span></p></td>
@@ -378,7 +362,7 @@ Stores the <em class="parameter"><code>nth</code></em> rectangle from the region
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_is_empty ()">
+<div class="refsect2">
 <a name="cairo-region-is-empty"></a><h3>cairo_region_is_empty ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Types.html#cairo-bool-t" title="cairo_bool_t"><span class="returnvalue">cairo_bool_t</span></a>        cairo_region_is_empty               (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>);</pre>
 <p>
@@ -394,16 +378,15 @@ Checks whether <em class="parameter"><code>region</code></em> is empty.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>region</code></em> is empty, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if it isn't.
-
-</td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>region</code></em> is empty, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if it isn't.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_contains_point ()">
+<div class="refsect2">
 <a name="cairo-region-contains-point"></a><h3>cairo_region_contains_point ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Types.html#cairo-bool-t" title="cairo_bool_t"><span class="returnvalue">cairo_bool_t</span></a>        cairo_region_contains_point         (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> x</code></em>,
@@ -421,28 +404,25 @@ Checks whether (<em class="parameter"><code>x</code></em>, <em class="parameter"
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td>the x coordinate of a point
-</td>
+<td>the x coordinate of a point</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>y</code></em> :</span></p></td>
-<td>the y coordinate of a point
-</td>
+<td>the y coordinate of a point</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if (<em class="parameter"><code>x</code></em>, <em class="parameter"><code>y</code></em>) is contained in <em class="parameter"><code>region</code></em>, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if it is not.
-
-</td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if (<em class="parameter"><code>x</code></em>, <em class="parameter"><code>y</code></em>) is contained in <em class="parameter"><code>region</code></em>, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if it is not.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="enum cairo_region_overlap_t">
+<div class="refsect2">
 <a name="cairo-region-overlap-t"></a><h3>enum cairo_region_overlap_t</h3>
-<pre class="programlisting">typedef enum _cairo_region_overlap {
+<pre class="programlisting">typedef enum {
     CAIRO_REGION_OVERLAP_IN,		/* completely inside region */
     CAIRO_REGION_OVERLAP_OUT,		/* completely outside region */
     CAIRO_REGION_OVERLAP_PART		/* partly inside region */
@@ -474,9 +454,9 @@ Used as the return value for <a class="link" href="cairo-Regions.html#cairo-regi
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_contains_rectangle ()">
+<div class="refsect2">
 <a name="cairo-region-contains-rectangle"></a><h3>cairo_region_contains_rectangle ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-Regions.html#cairo-region-overlap-t" title="enum cairo_region_overlap_t"><span class="returnvalue">cairo_region_overlap_t</span></a>  cairo_region_contains_rectangle (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
+<pre class="programlisting"><a class="link" href="cairo-Regions.html#cairo-region-overlap-t" title="enum cairo_region_overlap_t"><span class="returnvalue">cairo_region_overlap_t</span></a> cairo_region_contains_rectangle  (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);</pre>
 <p>
 Checks whether <em class="parameter"><code>rectangle</code></em> is inside, outside or partially contained
@@ -498,18 +478,16 @@ in <em class="parameter"><code>region</code></em>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-  <a class="link" href="cairo-Regions.html#CAIRO-REGION-OVERLAP-IN:CAPS"><code class="literal">CAIRO_REGION_OVERLAP_IN</code></a> if <em class="parameter"><code>rectangle</code></em> is entirely inside <em class="parameter"><code>region</code></em>,
-  <a class="link" href="cairo-Regions.html#CAIRO-REGION-OVERLAP-OUT:CAPS"><code class="literal">CAIRO_REGION_OVERLAP_OUT</code></a> if <em class="parameter"><code>rectangle</code></em> is entirely outside <em class="parameter"><code>region</code></em>, or
-  <a class="link" href="cairo-Regions.html#CAIRO-REGION-OVERLAP-PART:CAPS"><code class="literal">CAIRO_REGION_OVERLAP_PART</code></a> if <em class="parameter"><code>rectangle</code></em> is partially inside and partially outside <em class="parameter"><code>region</code></em>.
-
-</td>
+<a class="link" href="cairo-Regions.html#CAIRO-REGION-OVERLAP-IN:CAPS"><code class="literal">CAIRO_REGION_OVERLAP_IN</code></a> if <em class="parameter"><code>rectangle</code></em> is entirely inside <em class="parameter"><code>region</code></em>,
+<a class="link" href="cairo-Regions.html#CAIRO-REGION-OVERLAP-OUT:CAPS"><code class="literal">CAIRO_REGION_OVERLAP_OUT</code></a> if <em class="parameter"><code>rectangle</code></em> is entirely outside <em class="parameter"><code>region</code></em>, or
+<a class="link" href="cairo-Regions.html#CAIRO-REGION-OVERLAP-PART:CAPS"><code class="literal">CAIRO_REGION_OVERLAP_PART</code></a> if <em class="parameter"><code>rectangle</code></em> is partially inside and partially outside <em class="parameter"><code>region</code></em>.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_equal ()">
+<div class="refsect2">
 <a name="cairo-region-equal"></a><h3>cairo_region_equal ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Types.html#cairo-bool-t" title="cairo_bool_t"><span class="returnvalue">cairo_bool_t</span></a>        cairo_region_equal                  (<em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *a</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *b</code></em>);</pre>
@@ -532,17 +510,16 @@ is equal to itself, but not to any non-<a href="http://library.gnome.org/devel/g
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if both regions contained the same coverage,
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if it is not or any region is in an error status.
-
-</td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if both regions contained the same coverage,
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if it is not or any region is in an error status.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_translate ()">
+<div class="refsect2">
 <a name="cairo-region-translate"></a><h3>cairo_region_translate ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_region_translate              (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *region</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> dx</code></em>,
@@ -560,20 +537,18 @@ Translates <em class="parameter"><code>region</code></em> by (<em class="paramet
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dx</code></em> :</span></p></td>
-<td>Amount to translate in the x direction
-</td>
+<td>Amount to translate in the x direction</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dy</code></em> :</span></p></td>
-<td>Amount to translate in the y direction
-</td>
+<td>Amount to translate in the y direction</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_intersect ()">
+<div class="refsect2">
 <a name="cairo-region-intersect"></a><h3>cairo_region_intersect ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_intersect              (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *other</code></em>);</pre>
@@ -595,8 +570,8 @@ Computes the intersection of <em class="parameter"><code>dst</code></em> with <e
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -604,7 +579,7 @@ Computes the intersection of <em class="parameter"><code>dst</code></em> with <e
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_intersect_rectangle ()">
+<div class="refsect2">
 <a name="cairo-region-intersect-rectangle"></a><h3>cairo_region_intersect_rectangle ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_intersect_rectangle    (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);</pre>
@@ -627,8 +602,8 @@ result in <em class="parameter"><code>dst</code></em>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -636,7 +611,7 @@ result in <em class="parameter"><code>dst</code></em>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_subtract ()">
+<div class="refsect2">
 <a name="cairo-region-subtract"></a><h3>cairo_region_subtract ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_subtract               (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *other</code></em>);</pre>
@@ -658,8 +633,8 @@ Subtracts <em class="parameter"><code>other</code></em> from <em class="paramete
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -667,7 +642,7 @@ Subtracts <em class="parameter"><code>other</code></em> from <em class="paramete
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_subtract_rectangle ()">
+<div class="refsect2">
 <a name="cairo-region-subtract-rectangle"></a><h3>cairo_region_subtract_rectangle ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_subtract_rectangle     (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);</pre>
@@ -689,8 +664,8 @@ Subtracts <em class="parameter"><code>rectangle</code></em> from <em class="para
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -698,7 +673,7 @@ Subtracts <em class="parameter"><code>rectangle</code></em> from <em class="para
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_union ()">
+<div class="refsect2">
 <a name="cairo-region-union"></a><h3>cairo_region_union ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_union                  (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *other</code></em>);</pre>
@@ -720,8 +695,8 @@ Computes the union of <em class="parameter"><code>dst</code></em> with <em class
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -729,7 +704,7 @@ Computes the union of <em class="parameter"><code>dst</code></em> with <em class
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_union_rectangle ()">
+<div class="refsect2">
 <a name="cairo-region-union-rectangle"></a><h3>cairo_region_union_rectangle ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_union_rectangle        (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);</pre>
@@ -751,8 +726,8 @@ Computes the union of <em class="parameter"><code>dst</code></em> with <em class
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -760,7 +735,7 @@ Computes the union of <em class="parameter"><code>dst</code></em> with <em class
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_xor ()">
+<div class="refsect2">
 <a name="cairo-region-xor"></a><h3>cairo_region_xor ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_xor                    (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *other</code></em>);</pre>
@@ -784,8 +759,8 @@ are either in <em class="parameter"><code>dst</code></em> or in <em class="param
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -793,7 +768,7 @@ are either in <em class="parameter"><code>dst</code></em> or in <em class="param
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_region_xor_rectangle ()">
+<div class="refsect2">
 <a name="cairo-region-xor-rectangle"></a><h3>cairo_region_xor_rectangle ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      cairo_region_xor_rectangle          (<em class="parameter"><code><a class="link" href="cairo-Regions.html#cairo-region-t" title="cairo_region_t"><span class="type">cairo_region_t</span></a> *dst</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-Types.html#cairo-rectangle-int-t" title="cairo_rectangle_int_t"><span class="type">cairo_rectangle_int_t</span></a> *rectangle</code></em>);</pre>
@@ -817,8 +792,8 @@ either in <em class="parameter"><code>dst</code></em> or in <em class="parameter
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
-
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-NO-MEMORY:CAPS"><code class="literal">CAIRO_STATUS_NO_MEMORY</code></a>
 </td>
 </tr>
 </tbody>
@@ -829,6 +804,6 @@ either in <em class="parameter"><code>dst</code></em> or in <em class="parameter
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

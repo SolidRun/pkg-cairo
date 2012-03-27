@@ -43,7 +43,8 @@ Apple OS X Quartz rendering system.
 <refsect2 id="CAIRO-HAS-QUARTZ-SURFACE:CAPS" role="macro">
 <title>CAIRO_HAS_QUARTZ_SURFACE</title>
 <indexterm zone="CAIRO-HAS-QUARTZ-SURFACE:CAPS"><primary sortas="HAS_QUARTZ_SURFACE">CAIRO_HAS_QUARTZ_SURFACE</primary></indexterm>
-<programlisting>#define             CAIRO_HAS_QUARTZ_SURFACE</programlisting>
+<programlisting>#define CAIRO_HAS_QUARTZ_SURFACE 1
+</programlisting>
 <para>
 Defined if the Quartz surface backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -61,17 +62,12 @@ All Cairo operations, including those that require software
 rendering, will succeed on this surface.
 </para><variablelist role="params">
 <varlistentry><term><parameter>format</parameter>&#160;:</term>
-<listitem><simpara>format of pixels in the surface to create
-</simpara></listitem></varlistentry>
+<listitem><simpara>format of pixels in the surface to create</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width</parameter>&#160;:</term>
-<listitem><simpara>width of the surface, in pixels
-</simpara></listitem></varlistentry>
+<listitem><simpara>width of the surface, in pixels</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>height</parameter>&#160;:</term>
-<listitem><simpara>height of the surface, in pixels
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the newly created surface.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>height of the surface, in pixels</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the newly created surface.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-quartz-surface-create-for-cg-context" role="function" condition="since:1.4">
 <title>cairo_quartz_surface_create_for_cg_context ()</title>
@@ -100,17 +96,12 @@ All Cairo operations are implemented in terms of Quartz operations,
 as long as Quartz-compatible elements are used (such as Quartz fonts).
 </para><variablelist role="params">
 <varlistentry><term><parameter>cgContext</parameter>&#160;:</term>
-<listitem><simpara>the existing CGContext for which to create the surface
-</simpara></listitem></varlistentry>
+<listitem><simpara>the existing CGContext for which to create the surface</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width</parameter>&#160;:</term>
-<listitem><simpara>width of the surface, in pixels
-</simpara></listitem></varlistentry>
+<listitem><simpara>width of the surface, in pixels</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>height</parameter>&#160;:</term>
-<listitem><simpara>height of the surface, in pixels
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the newly created Cairo surface.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>height of the surface, in pixels</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the newly created Cairo surface.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-quartz-surface-get-cg-context" role="function" condition="since:1.4">
 <title>cairo_quartz_surface_get_cg_context ()</title>
@@ -119,13 +110,18 @@ as long as Quartz-compatible elements are used (such as Quartz fonts).
 <para>
 Returns the CGContextRef that the given Quartz surface is backed
 by.
+</para>
+<para>
+A call to <link linkend="cairo-surface-flush"><function>cairo_surface_flush()</function></link> is required before using the
+CGContextRef to ensure that all pending drawing operations are
+finished and to restore any temporary modification cairo has made
+to its state. A call to <link linkend="cairo-surface-mark-dirty"><function>cairo_surface_mark_dirty()</function></link> is required
+after the state or the content of the CGContextRef has been
+modified.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>the Cairo Quartz surface
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the CGContextRef for the given surface.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>the Cairo Quartz surface</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the CGContextRef for the given surface.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.4</para></refsect2>
 
 </refsect1>

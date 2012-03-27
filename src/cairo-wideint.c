@@ -84,6 +84,38 @@ uint64_shift32 (cairo_uint64_t i)
 static const cairo_uint64_t uint64_carry32 = { 0, 1 };
 
 cairo_uint64_t
+_cairo_double_to_uint64 (double i)
+{
+    cairo_uint64_t	q;
+
+    q.hi = i * (1. / 4294967296.);
+    q.lo = i - q.hi * 4294967296.;
+    return q;
+}
+
+double
+_cairo_uint64_to_double (cairo_uint64_t i)
+{
+    return i.hi * 4294967296. + i.lo;
+}
+
+cairo_int64_t
+_cairo_double_to_int64 (double i)
+{
+    cairo_uint64_t	q;
+
+    q.hi = i * (1. / INT32_MAX);
+    q.lo = i - q.hi * (double)INT32_MAX;
+    return q;
+}
+
+double
+_cairo_int64_to_double (cairo_int64_t i)
+{
+    return i.hi * INT32_MAX + i.lo;
+}
+
+cairo_uint64_t
 _cairo_uint32_to_uint64 (uint32_t i)
 {
     cairo_uint64_t	q;

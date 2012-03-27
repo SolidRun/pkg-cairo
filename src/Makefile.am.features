@@ -49,7 +49,7 @@ if CAIRO_HAS_XLIB_XRENDER_SURFACE
 enabled_cairo_pkgconf += cairo-xlib-xrender.pc
 endif
 
-unsupported_cairo_headers += $(cairo_xcb_headers)
+supported_cairo_headers += $(cairo_xcb_headers)
 all_cairo_headers += $(cairo_xcb_headers)
 all_cairo_private += $(cairo_xcb_private)
 all_cairo_cxx_sources += $(cairo_xcb_cxx_sources)
@@ -257,22 +257,6 @@ if CAIRO_HAS_DRM_SURFACE
 enabled_cairo_pkgconf += cairo-drm.pc
 endif
 
-unsupported_cairo_headers += $(cairo_drm_xr_headers)
-all_cairo_headers += $(cairo_drm_xr_headers)
-all_cairo_private += $(cairo_drm_xr_private)
-all_cairo_cxx_sources += $(cairo_drm_xr_cxx_sources)
-all_cairo_sources += $(cairo_drm_xr_sources)
-if CAIRO_HAS_DRM_XR_FUNCTIONS
-enabled_cairo_headers += $(cairo_drm_xr_headers)
-enabled_cairo_private += $(cairo_drm_xr_private)
-enabled_cairo_cxx_sources += $(cairo_drm_xr_cxx_sources)
-enabled_cairo_sources += $(cairo_drm_xr_sources)
-endif
-all_cairo_pkgconf += cairo-drm-xr.pc
-if CAIRO_HAS_DRM_XR_FUNCTIONS
-enabled_cairo_pkgconf += cairo-drm-xr.pc
-endif
-
 unsupported_cairo_headers += $(cairo_gallium_headers)
 all_cairo_headers += $(cairo_gallium_headers)
 all_cairo_private += $(cairo_gallium_private)
@@ -287,22 +271,6 @@ endif
 all_cairo_pkgconf += cairo-gallium.pc
 if CAIRO_HAS_GALLIUM_SURFACE
 enabled_cairo_pkgconf += cairo-gallium.pc
-endif
-
-unsupported_cairo_headers += $(cairo_xcb_drm_headers)
-all_cairo_headers += $(cairo_xcb_drm_headers)
-all_cairo_private += $(cairo_xcb_drm_private)
-all_cairo_cxx_sources += $(cairo_xcb_drm_cxx_sources)
-all_cairo_sources += $(cairo_xcb_drm_sources)
-if CAIRO_HAS_XCB_DRM_FUNCTIONS
-enabled_cairo_headers += $(cairo_xcb_drm_headers)
-enabled_cairo_private += $(cairo_xcb_drm_private)
-enabled_cairo_cxx_sources += $(cairo_xcb_drm_cxx_sources)
-enabled_cairo_sources += $(cairo_xcb_drm_sources)
-endif
-all_cairo_pkgconf += cairo-xcb-drm.pc
-if CAIRO_HAS_XCB_DRM_FUNCTIONS
-enabled_cairo_pkgconf += cairo-xcb-drm.pc
 endif
 
 supported_cairo_headers += $(cairo_png_headers)
@@ -335,6 +303,38 @@ endif
 all_cairo_pkgconf += cairo-gl.pc
 if CAIRO_HAS_GL_SURFACE
 enabled_cairo_pkgconf += cairo-gl.pc
+endif
+
+unsupported_cairo_headers += $(cairo_glesv2_headers)
+all_cairo_headers += $(cairo_glesv2_headers)
+all_cairo_private += $(cairo_glesv2_private)
+all_cairo_cxx_sources += $(cairo_glesv2_cxx_sources)
+all_cairo_sources += $(cairo_glesv2_sources)
+if CAIRO_HAS_GLESV2_SURFACE
+enabled_cairo_headers += $(cairo_glesv2_headers)
+enabled_cairo_private += $(cairo_glesv2_private)
+enabled_cairo_cxx_sources += $(cairo_glesv2_cxx_sources)
+enabled_cairo_sources += $(cairo_glesv2_sources)
+endif
+all_cairo_pkgconf += cairo-glesv2.pc
+if CAIRO_HAS_GLESV2_SURFACE
+enabled_cairo_pkgconf += cairo-glesv2.pc
+endif
+
+unsupported_cairo_headers += $(cairo_cogl_headers)
+all_cairo_headers += $(cairo_cogl_headers)
+all_cairo_private += $(cairo_cogl_private)
+all_cairo_cxx_sources += $(cairo_cogl_cxx_sources)
+all_cairo_sources += $(cairo_cogl_sources)
+if CAIRO_HAS_COGL_SURFACE
+enabled_cairo_headers += $(cairo_cogl_headers)
+enabled_cairo_private += $(cairo_cogl_private)
+enabled_cairo_cxx_sources += $(cairo_cogl_cxx_sources)
+enabled_cairo_sources += $(cairo_cogl_sources)
+endif
+all_cairo_pkgconf += cairo-cogl.pc
+if CAIRO_HAS_COGL_SURFACE
+enabled_cairo_pkgconf += cairo-cogl.pc
 endif
 
 unsupported_cairo_headers += $(cairo_directfb_headers)
@@ -417,7 +417,7 @@ if CAIRO_HAS_WGL_FUNCTIONS
 enabled_cairo_pkgconf += cairo-wgl.pc
 endif
 
-unsupported_cairo_headers += $(cairo_script_headers)
+supported_cairo_headers += $(cairo_script_headers)
 all_cairo_headers += $(cairo_script_headers)
 all_cairo_private += $(cairo_script_private)
 all_cairo_cxx_sources += $(cairo_script_cxx_sources)
@@ -532,6 +532,16 @@ enabled_cairo_private += $(cairo_image_private)
 enabled_cairo_cxx_sources += $(cairo_image_cxx_sources)
 enabled_cairo_sources += $(cairo_image_sources)
 
+supported_cairo_headers += $(cairo_mime_headers)
+all_cairo_headers += $(cairo_mime_headers)
+all_cairo_private += $(cairo_mime_private)
+all_cairo_cxx_sources += $(cairo_mime_cxx_sources)
+all_cairo_sources += $(cairo_mime_sources)
+enabled_cairo_headers += $(cairo_mime_headers)
+enabled_cairo_private += $(cairo_mime_private)
+enabled_cairo_cxx_sources += $(cairo_mime_cxx_sources)
+enabled_cairo_sources += $(cairo_mime_sources)
+
 supported_cairo_headers += $(cairo_recording_headers)
 all_cairo_headers += $(cairo_recording_headers)
 all_cairo_private += $(cairo_recording_private)
@@ -541,6 +551,16 @@ enabled_cairo_headers += $(cairo_recording_headers)
 enabled_cairo_private += $(cairo_recording_private)
 enabled_cairo_cxx_sources += $(cairo_recording_cxx_sources)
 enabled_cairo_sources += $(cairo_recording_sources)
+
+supported_cairo_headers += $(cairo_observer_headers)
+all_cairo_headers += $(cairo_observer_headers)
+all_cairo_private += $(cairo_observer_private)
+all_cairo_cxx_sources += $(cairo_observer_cxx_sources)
+all_cairo_sources += $(cairo_observer_sources)
+enabled_cairo_headers += $(cairo_observer_headers)
+enabled_cairo_private += $(cairo_observer_private)
+enabled_cairo_cxx_sources += $(cairo_observer_cxx_sources)
+enabled_cairo_sources += $(cairo_observer_sources)
 
 unsupported_cairo_headers += $(cairo_tee_headers)
 all_cairo_headers += $(cairo_tee_headers)

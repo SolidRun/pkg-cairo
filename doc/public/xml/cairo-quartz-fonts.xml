@@ -40,7 +40,8 @@ implementation of the font backend methods.
 <refsect2 id="CAIRO-HAS-QUARTZ-FONT:CAPS" role="macro">
 <title>CAIRO_HAS_QUARTZ_FONT</title>
 <indexterm zone="CAIRO-HAS-QUARTZ-FONT:CAPS"><primary sortas="HAS_QUARTZ_FONT">CAIRO_HAS_QUARTZ_FONT</primary></indexterm>
-<programlisting>#define             CAIRO_HAS_QUARTZ_FONT</programlisting>
+<programlisting>#define CAIRO_HAS_QUARTZ_FONT 1
+</programlisting>
 <para>
 Defined if the Quartz font backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -56,12 +57,9 @@ Creates a new font for the Quartz font backend based on a
 <link linkend="cairo-set-font-face"><function>cairo_set_font_face()</function></link> or <link linkend="cairo-scaled-font-create"><function>cairo_scaled_font_create()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="CGFontRef"><type>CGFontRef</type></link> obtained through a method external to cairo.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
- <link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="CGFontRef"><type>CGFontRef</type></link> obtained through a method external to cairo.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-quartz-font-face-create-for-atsu-font-id" role="function" condition="since:1.6">
 <title>cairo_quartz_font_face_create_for_atsu_font_id ()</title>
@@ -74,12 +72,9 @@ Creates a new font for the Quartz font backend based on an
 <link linkend="cairo-set-font-face"><function>cairo_set_font_face()</function></link> or <link linkend="cairo-scaled-font-create"><function>cairo_scaled_font_create()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_id</parameter>&#160;:</term>
-<listitem><simpara>an ATSUFontID for the font.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
- <link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>an ATSUFontID for the font.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.6</para></refsect2>
 
 </refsect1>

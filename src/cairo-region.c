@@ -104,6 +104,8 @@ _cairo_region_create_in_error (cairo_status_t status)
     case CAIRO_STATUS_INVALID_SLANT:
     case CAIRO_STATUS_INVALID_WEIGHT:
     case CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED:
+    case CAIRO_STATUS_INVALID_MESH_CONSTRUCTION:
+    case CAIRO_STATUS_DEVICE_FINISHED:
     default:
 	_cairo_error_throw (CAIRO_STATUS_NO_MEMORY);
 	return (cairo_region_t *) &_cairo_region_nil;
@@ -132,10 +134,10 @@ _cairo_region_create_in_error (cairo_status_t status)
  **/
 static cairo_status_t
 _cairo_region_set_error (cairo_region_t *region,
-			cairo_status_t status)
+			 cairo_status_t status)
 {
-    if (! _cairo_status_is_error (status))
-	return status;
+    if (status == CAIRO_STATUS_SUCCESS)
+        return CAIRO_STATUS_SUCCESS;
 
     /* Don't overwrite an existing error. This preserves the first
      * error, which is the most significant. */
@@ -234,6 +236,17 @@ cairo_region_create_rectangles (const cairo_rectangle_int_t *rects,
     if (unlikely (region == NULL))
 	return _cairo_region_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
 
+    CAIRO_REFERENCE_COUNT_INIT (&region->ref_count, 1);
+    region->status = CAIRO_STATUS_SUCCESS;
+
+    if (count == 1) {
+	pixman_region32_init_rect (&region->rgn,
+				   rects->x, rects->y,
+				   rects->width, rects->height);
+
+	return region;
+    }
+
     if (count > ARRAY_LENGTH (stack_pboxes)) {
 	pboxes = _cairo_malloc_ab (count, sizeof (pixman_box32_t));
 	if (unlikely (pboxes == NULL)) {
@@ -259,11 +272,41 @@ cairo_region_create_rectangles (const cairo_rectangle_int_t *rects,
 	return _cairo_region_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
     }
 
-    CAIRO_REFERENCE_COUNT_INIT (&region->ref_count, 1);
-    region->status = CAIRO_STATUS_SUCCESS;
     return region;
 }
 slim_hidden_def (cairo_region_create_rectangles);
+
+cairo_region_t *
+_cairo_region_create_from_boxes (const cairo_box_t *boxes, int count)
+{
+    cairo_region_t *region;
+
+    region = _cairo_malloc (sizeof (cairo_region_t));
+    if (unlikely (region == NULL))
+	return _cairo_region_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
+
+    CAIRO_REFERENCE_COUNT_INIT (&region->ref_count, 1);
+    region->status = CAIRO_STATUS_SUCCESS;
+
+    if (! pixman_region32_init_rects (&region->rgn,
+				      (pixman_box32_t *)boxes, count)) {
+	free (region);
+	return _cairo_region_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
+    }
+
+    return region;
+}
+
+cairo_box_t *
+_cairo_region_get_boxes (const cairo_region_t *region, int *nbox)
+{
+    if (region->status) {
+	nbox = 0;
+	return NULL;
+    }
+
+    return (cairo_box_t *) pixman_region32_rectangles (CONST_CAST &region->rgn, nbox);
+}
 
 /**
  * cairo_region_create_rectangle:
@@ -473,7 +516,7 @@ slim_hidden_def (cairo_region_get_extents);
  * cairo_region_status:
  * @region: a #cairo_region_t
  *
- * Checks whether an error has previous occured for this
+ * Checks whether an error has previous occurred for this
  * region object.
  *
  * Return value: %CAIRO_STATUS_SUCCESS or %CAIRO_STATUS_NO_MEMORY

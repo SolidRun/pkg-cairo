@@ -40,6 +40,7 @@
 #include "cairoint.h"
 
 #include "cairo-error-private.h"
+#include "cairo-image-surface-private.h"
 #include "cairo-surface-snapshot-private.h"
 
 static cairo_status_t
@@ -47,6 +48,8 @@ _cairo_surface_snapshot_finish (void *abstract_surface)
 {
     cairo_surface_snapshot_t *surface = abstract_surface;
     cairo_status_t status = CAIRO_STATUS_SUCCESS;
+
+    TRACE ((stderr, "%s\n", __FUNCTION__));
 
     if (surface->clone != NULL) {
 	cairo_surface_finish (surface->clone);
@@ -56,6 +59,23 @@ _cairo_surface_snapshot_finish (void *abstract_surface)
     }
 
     return status;
+}
+
+static cairo_status_t
+_cairo_surface_snapshot_flush (void *abstract_surface)
+{
+    cairo_surface_snapshot_t *surface = abstract_surface;
+
+    cairo_surface_flush (surface->target);
+    return surface->target->status;
+}
+
+static cairo_surface_t *
+_cairo_surface_snapshot_source (void                    *abstract_surface,
+				cairo_rectangle_int_t *extents)
+{
+    cairo_surface_snapshot_t *surface = abstract_surface;
+    return _cairo_surface_get_source (surface->target, extents);
 }
 
 static cairo_status_t
@@ -89,22 +109,26 @@ _cairo_surface_snapshot_get_extents (void                  *abstract_surface,
 
 static const cairo_surface_backend_t _cairo_surface_snapshot_backend = {
     CAIRO_INTERNAL_SURFACE_TYPE_SNAPSHOT,
+    _cairo_surface_snapshot_finish,
+    NULL,
 
     NULL, /* create similar */
-    _cairo_surface_snapshot_finish,
+    NULL, /* create similar image  */
+    NULL, /* map to image */
+    NULL, /* unmap image  */
 
+    _cairo_surface_snapshot_source,
     _cairo_surface_snapshot_acquire_source_image,
     _cairo_surface_snapshot_release_source_image,
-    NULL, NULL, /* acquire, release dest */
-    NULL, /* clone similar */
-    NULL, /* composite */
-    NULL, /* fill rectangles */
-    NULL, /* composite trapezoids */
-    NULL, /* create span renderer */
-    NULL, /* check span renderer */
+    NULL, /* snapshot */
+
     NULL, /* copy_page */
     NULL, /* show_page */
+
     _cairo_surface_snapshot_get_extents,
+    NULL, /* get-font-options */
+
+    _cairo_surface_snapshot_flush,
 };
 
 static void
@@ -112,9 +136,12 @@ _cairo_surface_snapshot_copy_on_write (cairo_surface_t *surface)
 {
     cairo_surface_snapshot_t *snapshot = (cairo_surface_snapshot_t *) surface;
     cairo_image_surface_t *image;
-    cairo_image_surface_t *clone;
+    cairo_surface_t *clone;
     void *extra;
     cairo_status_t status;
+
+    TRACE ((stderr, "%s: target=%d\n",
+	    __FUNCTION__, snapshot->target->unique_id));
 
     /* We need to make an image copy of the original surface since the
      * snapshot may exceed the lifetime of the original device, i.e.
@@ -122,41 +149,31 @@ _cairo_surface_snapshot_copy_on_write (cairo_surface_t *surface)
      * been lost.
      */
 
+    if (snapshot->target->backend->snapshot != NULL) {
+	clone = snapshot->target->backend->snapshot (snapshot->target);
+	if (clone != NULL) {
+	    assert (clone->status || ! _cairo_surface_is_snapshot (clone));
+	    goto done;
+	}
+    }
+
+    /* XXX copy to a similar surface, leave acquisition till later?
+     * We should probably leave such decisions to the backend in case we
+     * rely upon devices/connections like Xlib.
+    */
     status = _cairo_surface_acquire_source_image (snapshot->target, &image, &extra);
     if (unlikely (status)) {
 	snapshot->target = _cairo_surface_create_in_error (status);
 	status = _cairo_surface_set_error (surface, status);
 	return;
     }
-
-    clone = (cairo_image_surface_t *)
-	_cairo_image_surface_create_with_pixman_format (NULL,
-							image->pixman_format,
-							image->width,
-							image->height,
-							0);
-    if (likely (clone->base.status == CAIRO_STATUS_SUCCESS)) {
-	if (clone->stride == image->stride) {
-	    memcpy (clone->data, image->data, image->stride * image->height);
-	} else {
-	    pixman_image_composite32 (PIXMAN_OP_SRC,
-				      image->pixman_image, NULL, clone->pixman_image,
-				      0, 0,
-				      0, 0,
-				      0, 0,
-				      image->width, image->height);
-	}
-	clone->base.is_clear = FALSE;
-
-	snapshot->clone = &clone->base;
-    } else {
-	snapshot->clone = &clone->base;
-	status = _cairo_surface_set_error (surface, clone->base.status);
-    }
-
+    clone = image->base.backend->snapshot (&image->base);
     _cairo_surface_release_source_image (snapshot->target, image, extra);
-    snapshot->target = snapshot->clone;
-    snapshot->base.type = snapshot->target->type;
+
+done:
+    status = _cairo_surface_set_error (surface, clone->status);
+    snapshot->target = snapshot->clone = clone;
+    snapshot->base.type = clone->type;
 }
 
 /**
@@ -184,41 +201,19 @@ _cairo_surface_snapshot (cairo_surface_t *surface)
     cairo_surface_snapshot_t *snapshot;
     cairo_status_t status;
 
+    TRACE ((stderr, "%s: target=%d\n", __FUNCTION__, surface->unique_id));
+
     if (unlikely (surface->status))
 	return _cairo_surface_create_in_error (surface->status);
 
-    if (surface->finished)
+    if (unlikely (surface->finished))
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_SURFACE_FINISHED));
 
     if (surface->snapshot_of != NULL)
 	return cairo_surface_reference (surface);
 
-    if (surface->backend->snapshot != NULL) {
-	cairo_surface_t *snap;
-
-	snap = _cairo_surface_has_snapshot (surface, surface->backend);
-	if (snap != NULL)
-	    return cairo_surface_reference (snap);
-
-	snap = surface->backend->snapshot (surface);
-	if (snap != NULL) {
-	    if (unlikely (snap->status))
-		return snap;
-
-	    status = _cairo_surface_copy_mime_data (snap, surface);
-	    if (unlikely (status)) {
-		cairo_surface_destroy (snap);
-		return _cairo_surface_create_in_error (status);
-	    }
-
-	    snap->device_transform = surface->device_transform;
-	    snap->device_transform_inverse = surface->device_transform_inverse;
-
-	    _cairo_surface_attach_snapshot (surface, snap, NULL);
-
-	    return snap;
-	}
-    }
+    if (_cairo_surface_is_snapshot (surface))
+	return cairo_surface_reference (surface);
 
     snapshot = (cairo_surface_snapshot_t *)
 	_cairo_surface_has_snapshot (surface, &_cairo_surface_snapshot_backend);

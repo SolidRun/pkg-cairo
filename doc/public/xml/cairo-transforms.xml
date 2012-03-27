@@ -75,14 +75,11 @@ call to <link linkend="cairo-translate"><function>cairo_translate()</function></
 user-space origin takes place after any existing transformation.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tx</parameter>&#160;:</term>
-<listitem><simpara>amount to translate in the X direction
-</simpara></listitem></varlistentry>
+<listitem><simpara>amount to translate in the X direction</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>ty</parameter>&#160;:</term>
-<listitem><simpara>amount to translate in the Y direction
-</simpara></listitem></varlistentry>
+<listitem><simpara>amount to translate in the Y direction</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-scale" role="function">
 <title>cairo_scale ()</title>
@@ -97,14 +94,11 @@ the axes takes place after any existing transformation of user
 space.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sx</parameter>&#160;:</term>
-<listitem><simpara>scale factor for the X dimension
-</simpara></listitem></varlistentry>
+<listitem><simpara>scale factor for the X dimension</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sy</parameter>&#160;:</term>
-<listitem><simpara>scale factor for the Y dimension
-</simpara></listitem></varlistentry>
+<listitem><simpara>scale factor for the Y dimension</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-rotate" role="function">
 <title>cairo_rotate ()</title>
@@ -119,12 +113,10 @@ rotation direction for positive angles is from the positive X axis
 toward the positive Y axis.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>angle</parameter>&#160;:</term>
 <listitem><simpara>angle (in radians) by which the user-space axes will be
-rotated
-</simpara></listitem></varlistentry>
+rotated</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-transform" role="function">
 <title>cairo_transform ()</title>
@@ -137,11 +129,9 @@ Modifies the current transformation matrix (CTM) by applying
 user space takes place after any existing transformation.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>matrix</parameter>&#160;:</term>
-<listitem><simpara>a transformation to be applied to the user-space axes
-</simpara></listitem></varlistentry>
+<listitem><simpara>a transformation to be applied to the user-space axes</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-set-matrix" role="function">
 <title>cairo_set_matrix ()</title>
@@ -153,11 +143,9 @@ Modifies the current transformation matrix (CTM) by setting it
 equal to <parameter>matrix</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>matrix</parameter>&#160;:</term>
-<listitem><simpara>a transformation matrix from user space to device space
-</simpara></listitem></varlistentry>
+<listitem><simpara>a transformation matrix from user space to device space</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-get-matrix" role="function">
 <title>cairo_get_matrix ()</title>
@@ -168,11 +156,9 @@ equal to <parameter>matrix</parameter>.
 Stores the current transformation matrix (CTM) into <parameter>matrix</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>matrix</parameter>&#160;:</term>
-<listitem><simpara>return value for the matrix
-</simpara></listitem></varlistentry>
+<listitem><simpara>return value for the matrix</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-identity-matrix" role="function">
 <title>cairo_identity_matrix ()</title>
@@ -185,8 +171,7 @@ axes will be aligned and one user-space unit will transform to one
 device-space unit.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-user-to-device" role="function">
 <title>cairo_user_to_device ()</title>
@@ -200,14 +185,11 @@ multiplying the given point by the current transformation matrix
 (CTM).
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&#160;:</term>
-<listitem><simpara>X value of coordinate (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>X value of coordinate (in/out parameter)</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>y</parameter>&#160;:</term>
-<listitem><simpara>Y value of coordinate (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>Y value of coordinate (in/out parameter)</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-user-to-device-distance" role="function">
 <title>cairo_user_to_device_distance ()</title>
@@ -222,14 +204,11 @@ translation components of the CTM will be ignored when transforming
 (<parameter>dx</parameter>,<parameter>dy</parameter>).
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dx</parameter>&#160;:</term>
-<listitem><simpara>X component of a distance vector (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>X component of a distance vector (in/out parameter)</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dy</parameter>&#160;:</term>
-<listitem><simpara>Y component of a distance vector (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>Y component of a distance vector (in/out parameter)</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-device-to-user" role="function">
 <title>cairo_device_to_user ()</title>
@@ -243,14 +222,11 @@ multiplying the given point by the inverse of the current
 transformation matrix (CTM).
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&#160;:</term>
-<listitem><simpara>X value of coordinate (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>X value of coordinate (in/out parameter)</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>y</parameter>&#160;:</term>
-<listitem><simpara>Y value of coordinate (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>Y value of coordinate (in/out parameter)</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-device-to-user-distance" role="function">
 <title>cairo_device_to_user_distance ()</title>
@@ -265,14 +241,11 @@ translation components of the inverse CTM will be ignored when
 transforming (<parameter>dx</parameter>,<parameter>dy</parameter>).
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dx</parameter>&#160;:</term>
-<listitem><simpara>X component of a distance vector (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>X component of a distance vector (in/out parameter)</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dy</parameter>&#160;:</term>
-<listitem><simpara>Y component of a distance vector (in/out parameter)
-</simpara></listitem></varlistentry>
+<listitem><simpara>Y component of a distance vector (in/out parameter)</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
