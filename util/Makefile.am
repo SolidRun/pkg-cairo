@@ -1,6 +1,6 @@
 include $(top_srcdir)/build/Makefile.am.common
 
-SUBDIRS = .
+SUBDIRS = . cairo-missing
 
 if CAIRO_HAS_GOBJECT_FUNCTIONS
 SUBDIRS += cairo-gobject
@@ -21,7 +21,9 @@ endif
 
 if BUILD_SPHINX
 if CAIRO_HAS_SCRIPT_SURFACE
+if CAIRO_HAS_TEE_SURFACE
 SUBDIRS += cairo-sphinx
+endif
 endif
 endif
 
@@ -30,7 +32,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	      -I$(top_srcdir)/util/cairo-script	\
 	      $(CAIRO_CFLAGS)
 
-EXTRA_PROGRAMS += show-traps show-edges show-events
+EXTRA_PROGRAMS += show-contour show-traps show-edges show-polygon show-events
 if CAIRO_HAS_INTERPRETER
 EXTRA_PROGRAMS += trace-to-xml xml-to-trace
 endif
@@ -44,10 +46,20 @@ show_traps_CFLAGS = $(gtk_CFLAGS)
 #show_traps_LDADD = $(top_builddir)/src/libcairo.la $(gtk_LIBS)
 show_traps_LDADD = $(gtk_LIBS)
 
+show_polygon_SOURCES = show-polygon.c
+show_polygon_CFLAGS = $(gtk_CFLAGS)
+#show_polygon_LDADD = $(top_builddir)/src/libcairo.la $(gtk_LIBS)
+show_polygon_LDADD = $(gtk_LIBS)
+
 show_edges_SOURCES = show-edges.c
 show_edges_CFLAGS = $(gtk_CFLAGS)
 #show_edges_LDADD = $(top_builddir)/src/libcairo.la $(gtk_LIBS)
 show_edges_LDADD = $(gtk_LIBS)
+
+show_contour_SOURCES = show-contour.c
+show_contour_CFLAGS = $(gtk_CFLAGS)
+#show_contour_LDADD = $(top_builddir)/src/libcairo.la $(gtk_LIBS)
+show_contour_LDADD = $(gtk_LIBS)
 
 show_events_SOURCES = show-events.c
 show_events_CFLAGS = $(gtk_CFLAGS)

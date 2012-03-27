@@ -41,7 +41,7 @@
 #include "cairoint.h"
 #include "cairo-error-private.h"
 
-COMPILE_TIME_ASSERT (CAIRO_STATUS_LAST_STATUS < CAIRO_INT_STATUS_UNSUPPORTED);
+COMPILE_TIME_ASSERT ((int)CAIRO_STATUS_LAST_STATUS < (int)CAIRO_INT_STATUS_UNSUPPORTED);
 COMPILE_TIME_ASSERT (CAIRO_INT_STATUS_LAST_STATUS <= 127);
 
 /**
@@ -150,6 +150,10 @@ cairo_status_to_string (cairo_status_t status)
 	return "the device type is not appropriate for the operation";
     case CAIRO_STATUS_DEVICE_ERROR:
 	return "an operation to the device caused an unspecified error";
+    case CAIRO_STATUS_INVALID_MESH_CONSTRUCTION:
+	return "invalid operation during mesh pattern construction";
+    case CAIRO_STATUS_DEVICE_FINISHED:
+	return "the target device has been finished";
     default:
     case CAIRO_STATUS_LAST_STATUS:
 	return "<unknown error status>";
@@ -203,8 +207,7 @@ slim_hidden_def (cairo_glyph_allocate);
 void
 cairo_glyph_free (cairo_glyph_t *glyphs)
 {
-    if (glyphs)
-	free (glyphs);
+    free (glyphs);
 }
 slim_hidden_def (cairo_glyph_free);
 
@@ -254,8 +257,7 @@ slim_hidden_def (cairo_text_cluster_allocate);
 void
 cairo_text_cluster_free (cairo_text_cluster_t *clusters)
 {
-    if (clusters)
-	free (clusters);
+    free (clusters);
 }
 slim_hidden_def (cairo_text_cluster_free);
 

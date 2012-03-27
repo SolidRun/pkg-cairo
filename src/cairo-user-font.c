@@ -158,7 +158,7 @@ _cairo_user_scaled_glyph_init (void			 *abstract_font,
 	    status = face->scaled_font_methods.render_glyph ((cairo_scaled_font_t *)scaled_font,
 							     _cairo_scaled_glyph_index(scaled_glyph),
 							     cr, &extents);
-	    if (status == CAIRO_STATUS_SUCCESS)
+	    if (status == CAIRO_INT_STATUS_SUCCESS)
 	        status = cairo_status (cr);
 
 	    cairo_destroy (cr);
@@ -229,8 +229,11 @@ _cairo_user_scaled_glyph_init (void			 *abstract_font,
 	switch (scaled_font->base.options.antialias) {
 	default:
 	case CAIRO_ANTIALIAS_DEFAULT:
+	case CAIRO_ANTIALIAS_FAST:
+	case CAIRO_ANTIALIAS_GOOD:
 	case CAIRO_ANTIALIAS_GRAY:	format = CAIRO_FORMAT_A8;	break;
 	case CAIRO_ANTIALIAS_NONE:	format = CAIRO_FORMAT_A1;	break;
+	case CAIRO_ANTIALIAS_BEST:
 	case CAIRO_ANTIALIAS_SUBPIXEL:	format = CAIRO_FORMAT_ARGB32;	break;
 	}
 	surface = cairo_image_surface_create (format, width, height);
@@ -328,11 +331,12 @@ _cairo_user_text_to_glyphs (void		      *abstract_font,
 							   glyphs, num_glyphs,
 							   clusters, num_clusters, cluster_flags);
 
-	if (status != CAIRO_STATUS_SUCCESS &&
-	    status != CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED)
+	if (status != CAIRO_INT_STATUS_SUCCESS &&
+	    status != CAIRO_INT_STATUS_USER_FONT_NOT_IMPLEMENTED)
 	    return status;
 
-	if (status == CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED || *num_glyphs < 0) {
+	if (status == CAIRO_INT_STATUS_USER_FONT_NOT_IMPLEMENTED ||
+	    *num_glyphs < 0) {
 	    if (orig_glyphs != *glyphs) {
 		cairo_glyph_free (*glyphs);
 		*glyphs = orig_glyphs;

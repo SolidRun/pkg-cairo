@@ -45,22 +45,22 @@
 <link linkend="cairo-font-face-t"><returnvalue>cairo_font_face_t</returnvalue></link> * <link linkend="cairo-user-font-face-create">cairo_user_font_face_create</link>         (<parameter><type>void</type></parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-user-font-face-set-init-func">cairo_user_font_face_set_init_func</link>  (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-init-func-t"><type>cairo_user_scaled_font_init_func_t</type></link> init_func</parameter>);
-<link linkend="cairo-user-scaled-font-init-func-t"><returnvalue>cairo_user_scaled_font_init_func_t</returnvalue></link>  <link linkend="cairo-user-font-face-get-init-func">cairo_user_font_face_get_init_func</link>
+<link linkend="cairo-user-scaled-font-init-func-t"><returnvalue>cairo_user_scaled_font_init_func_t</returnvalue></link> <link linkend="cairo-user-font-face-get-init-func">cairo_user_font_face_get_init_func</link>
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-user-font-face-set-render-glyph-func">cairo_user_font_face_set_render_glyph_func</link>
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-render-glyph-func-t"><type>cairo_user_scaled_font_render_glyph_func_t</type></link> render_glyph_func</parameter>);
-<link linkend="cairo-user-scaled-font-render-glyph-func-t"><returnvalue>cairo_user_scaled_font_render_glyph_func_t</returnvalue></link>  <link linkend="cairo-user-font-face-get-render-glyph-func">cairo_user_font_face_get_render_glyph_func</link>
+<link linkend="cairo-user-scaled-font-render-glyph-func-t"><returnvalue>cairo_user_scaled_font_render_glyph_func_t</returnvalue></link> <link linkend="cairo-user-font-face-get-render-glyph-func">cairo_user_font_face_get_render_glyph_func</link>
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-user-font-face-set-unicode-to-glyph-func">cairo_user_font_face_set_unicode_to_glyph_func</link>
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><type>cairo_user_scaled_font_unicode_to_glyph_func_t</type></link> unicode_to_glyph_func</parameter>);
-<link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><returnvalue>cairo_user_scaled_font_unicode_to_glyph_func_t</returnvalue></link>  <link linkend="cairo-user-font-face-get-unicode-to-glyph-func">cairo_user_font_face_get_unicode_to_glyph_func</link>
+<link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><returnvalue>cairo_user_scaled_font_unicode_to_glyph_func_t</returnvalue></link> <link linkend="cairo-user-font-face-get-unicode-to-glyph-func">cairo_user_font_face_get_unicode_to_glyph_func</link>
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-user-font-face-set-text-to-glyphs-func">cairo_user_font_face_set_text_to_glyphs_func</link>
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>,
                                                          <parameter><link linkend="cairo-user-scaled-font-text-to-glyphs-func-t"><type>cairo_user_scaled_font_text_to_glyphs_func_t</type></link> text_to_glyphs_func</parameter>);
-<link linkend="cairo-user-scaled-font-text-to-glyphs-func-t"><returnvalue>cairo_user_scaled_font_text_to_glyphs_func_t</returnvalue></link>  <link linkend="cairo-user-font-face-get-text-to-glyphs-func">cairo_user_font_face_get_text_to_glyphs_func</link>
+<link linkend="cairo-user-scaled-font-text-to-glyphs-func-t"><returnvalue>cairo_user_scaled_font_text_to_glyphs_func_t</returnvalue></link> <link linkend="cairo-user-font-face-get-text-to-glyphs-func">cairo_user_font_face_get_text_to_glyphs_func</link>
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
 </synopsis>
 </refsynopsisdiv>
@@ -125,17 +125,12 @@ point and trying to use it for text operations in the callback will result
 in deadlock.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>the scaled-font being created
-</simpara></listitem></varlistentry>
+<listitem><simpara>the scaled-font being created</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context, in font space
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context, in font space</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>extents</parameter>&#160;:</term>
-<listitem><simpara>font extents to fill in, in font space
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or an error status on error.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>font extents to fill in, in font space</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara><link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or an error status on error.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-scaled-font-render-glyph-func-t" role="function" condition="since:1.8">
 <title>cairo_user_scaled_font_render_glyph_func_t ()</title>
@@ -181,21 +176,15 @@ extents, it must be ink extents, and include the extents of all drawing
 done to <parameter>cr</parameter> in the callback.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>user scaled-font
-</simpara></listitem></varlistentry>
+<listitem><simpara>user scaled-font</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>glyph</parameter>&#160;:</term>
-<listitem><simpara>glyph code to render
-</simpara></listitem></varlistentry>
+<listitem><simpara>glyph code to render</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>cairo context to draw to, in font space
-</simpara></listitem></varlistentry>
+<listitem><simpara>cairo context to draw to, in font space</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>extents</parameter>&#160;:</term>
-<listitem><simpara>glyph extents to fill in, in font space
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or
-<link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>glyph extents to fill in, in font space</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara><link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success, or
+<link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-scaled-font-text-to-glyphs-func-t" role="function" condition="since:1.8">
 <title>cairo_user_scaled_font_text_to_glyphs_func_t ()</title>
@@ -228,7 +217,8 @@ the conversion (or for convenience), a new glyph array may be allocated
 using <link linkend="cairo-glyph-allocate"><function>cairo_glyph_allocate()</function></link> and placed in <parameter>glyphs</parameter>.  Upon return,
 <parameter>num_glyphs</parameter> should contain the number of generated glyphs.  If the value
 <parameter>glyphs</parameter> points at has changed after the call, the caller will free the
-allocated glyph array using <link linkend="cairo-glyph-free"><function>cairo_glyph_free()</function></link>.
+allocated glyph array using <link linkend="cairo-glyph-free"><function>cairo_glyph_free()</function></link>.  The caller will also free
+the original value of <parameter>glyphs</parameter>, so the callback shouldn't do so.
 The callback should populate the glyph indices and positions (in font space)
 assuming that the text is to be shown at the origin.
 </para>
@@ -240,8 +230,9 @@ if <parameter>clusters</parameter> initially points to a non-<link linkend="NULL
 as a cluster buffer, and <parameter>num_clusters</parameter> points to the number of cluster
 entries available there.  If the provided cluster array is too short for
 the conversion (or for convenience), a new cluster array may be allocated
-using <link linkend="cairo-text-cluster-allocate"><function>cairo_text_cluster_allocate()</function></link> and placed in <parameter>clusters</parameter>.  Upon return,
-<parameter>num_clusters</parameter> should contain the number of generated clusters.
+using <link linkend="cairo-text-cluster-allocate"><function>cairo_text_cluster_allocate()</function></link> and placed in <parameter>clusters</parameter>.  In this case,
+the original value of <parameter>clusters</parameter> will still be freed by the caller.  Upon
+return, <parameter>num_clusters</parameter> should contain the number of generated clusters.
 If the value <parameter>clusters</parameter> points at has changed after the call, the caller
 will free the allocated cluster array using <link linkend="cairo-text-cluster-free"><function>cairo_text_cluster_free()</function></link>.
 </para>
@@ -261,35 +252,25 @@ are advised to use glyph 0 for such purposes and do not use that
 glyph value for other purposes.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>the scaled-font being created
-</simpara></listitem></varlistentry>
+<listitem><simpara>the scaled-font being created</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utf8</parameter>&#160;:</term>
-<listitem><simpara>a string of text encoded in UTF-8
-</simpara></listitem></varlistentry>
+<listitem><simpara>a string of text encoded in UTF-8</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utf8_len</parameter>&#160;:</term>
-<listitem><simpara>length of <parameter>utf8</parameter> in bytes
-</simpara></listitem></varlistentry>
+<listitem><simpara>length of <parameter>utf8</parameter> in bytes</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>glyphs</parameter>&#160;:</term>
-<listitem><simpara>pointer to array of glyphs to fill, in font space
-</simpara></listitem></varlistentry>
+<listitem><simpara>pointer to array of glyphs to fill, in font space</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>num_glyphs</parameter>&#160;:</term>
-<listitem><simpara>pointer to number of glyphs
-</simpara></listitem></varlistentry>
+<listitem><simpara>pointer to number of glyphs</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>clusters</parameter>&#160;:</term>
-<listitem><simpara>pointer to array of cluster mapping information to fill, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>pointer to array of cluster mapping information to fill, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>num_clusters</parameter>&#160;:</term>
-<listitem><simpara>pointer to number of clusters
-</simpara></listitem></varlistentry>
+<listitem><simpara>pointer to number of clusters</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cluster_flags</parameter>&#160;:</term>
 <listitem><simpara>pointer to location to store cluster flags corresponding to the
-                output <parameter>clusters</parameter>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success,
+output <parameter>clusters</parameter></simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara><link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success,
 <link linkend="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED:CAPS"><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></link> if fallback options should be tried,
-or <link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
-
-</simpara></listitem></varlistentry>
+or <link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-scaled-font-unicode-to-glyph-func-t" role="function" condition="since:1.8">
 <title>cairo_user_scaled_font_unicode_to_glyph_func_t ()</title>
@@ -329,19 +310,14 @@ are advised to use glyph 0 for such purposes and do not use that
 glyph value for other purposes.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>the scaled-font being created
-</simpara></listitem></varlistentry>
+<listitem><simpara>the scaled-font being created</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>unicode</parameter>&#160;:</term>
-<listitem><simpara>input unicode character code-point
-</simpara></listitem></varlistentry>
+<listitem><simpara>input unicode character code-point</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>glyph_index</parameter>&#160;:</term>
-<listitem><simpara>output glyph index
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success,
+<listitem><simpara>output glyph index</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara><link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> upon success,
 <link linkend="CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED:CAPS"><literal>CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</literal></link> if fallback options should be tried,
-or <link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.
-
-</simpara></listitem></varlistentry>
+or <link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> or any other error status on error.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-create" role="function" condition="since:1.8">
 <title>cairo_user_font_face_create ()</title>
@@ -361,10 +337,8 @@ and access it from the user-font callbacks by using
 <link linkend="cairo-scaled-font-get-font-face"><function>cairo_scaled_font_get_font_face()</function></link> followed by
 <link linkend="cairo-font-face-get-user-data"><function>cairo_font_face_get_user_data()</function></link>.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
- <link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.
-
-</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-init-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_init_func ()</title>
@@ -382,27 +356,22 @@ error will occur.  A user font-face is immutable as soon as a scaled-font
 is created from it.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>init_func</parameter>&#160;:</term>
-<listitem><simpara>The init callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The init callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-init-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_init_func ()</title>
 <indexterm zone="cairo-user-font-face-get-init-func" role="1.8"><primary sortas="user_font_face_get_init_func">cairo_user_font_face_get_init_func</primary></indexterm>
-<programlisting><link linkend="cairo-user-scaled-font-init-func-t"><returnvalue>cairo_user_scaled_font_init_func_t</returnvalue></link>  cairo_user_font_face_get_init_func
+<programlisting><link linkend="cairo-user-scaled-font-init-func-t"><returnvalue>cairo_user_scaled_font_init_func_t</returnvalue></link> cairo_user_font_face_get_init_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
 Gets the scaled-font initialization function of a user-font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The init callback of <parameter>font_face</parameter>
-or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error has occurred.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The init callback of <parameter>font_face</parameter>
+or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error has occurred.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-render-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_render_glyph_func ()</title>
@@ -426,27 +395,22 @@ If the callback is <link linkend="NULL:CAPS"><literal>NULL</literal></link> and 
 <parameter>font_face</parameter>, a <link linkend="CAIRO-STATUS-USER-FONT-ERROR:CAPS"><literal>CAIRO_STATUS_USER_FONT_ERROR</literal></link> will occur.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>render_glyph_func</parameter>&#160;:</term>
-<listitem><simpara>The render_glyph callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The render_glyph callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-render-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_render_glyph_func ()</title>
 <indexterm zone="cairo-user-font-face-get-render-glyph-func" role="1.8"><primary sortas="user_font_face_get_render_glyph_func">cairo_user_font_face_get_render_glyph_func</primary></indexterm>
-<programlisting><link linkend="cairo-user-scaled-font-render-glyph-func-t"><returnvalue>cairo_user_scaled_font_render_glyph_func_t</returnvalue></link>  cairo_user_font_face_get_render_glyph_func
+<programlisting><link linkend="cairo-user-scaled-font-render-glyph-func-t"><returnvalue>cairo_user_scaled_font_render_glyph_func_t</returnvalue></link> cairo_user_font_face_get_render_glyph_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
 Gets the glyph rendering function of a user-font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The render_glyph callback of <parameter>font_face</parameter>
-or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error has occurred.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The render_glyph callback of <parameter>font_face</parameter>
+or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error has occurred.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-unicode-to-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_unicode_to_glyph_func ()</title>
@@ -465,27 +429,22 @@ error will occur.  A user font-face is immutable as soon as a scaled-font
 is created from it.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>unicode_to_glyph_func</parameter>&#160;:</term>
-<listitem><simpara>The unicode_to_glyph callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The unicode_to_glyph callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-unicode-to-glyph-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_unicode_to_glyph_func ()</title>
 <indexterm zone="cairo-user-font-face-get-unicode-to-glyph-func" role="1.8"><primary sortas="user_font_face_get_unicode_to_glyph_func">cairo_user_font_face_get_unicode_to_glyph_func</primary></indexterm>
-<programlisting><link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><returnvalue>cairo_user_scaled_font_unicode_to_glyph_func_t</returnvalue></link>  cairo_user_font_face_get_unicode_to_glyph_func
+<programlisting><link linkend="cairo-user-scaled-font-unicode-to-glyph-func-t"><returnvalue>cairo_user_scaled_font_unicode_to_glyph_func_t</returnvalue></link> cairo_user_font_face_get_unicode_to_glyph_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
 Gets the unicode-to-glyph conversion function of a user-font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The unicode_to_glyph callback of <parameter>font_face</parameter>
-or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error occurred.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The unicode_to_glyph callback of <parameter>font_face</parameter>
+or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error occurred.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-set-text-to-glyphs-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_set_text_to_glyphs_func ()</title>
@@ -504,27 +463,22 @@ error will occur.  A user font-face is immutable as soon as a scaled-font
 is created from it.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text_to_glyphs_func</parameter>&#160;:</term>
-<listitem><simpara>The text_to_glyphs callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The text_to_glyphs callback, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-user-font-face-get-text-to-glyphs-func" role="function" condition="since:1.8">
 <title>cairo_user_font_face_get_text_to_glyphs_func ()</title>
 <indexterm zone="cairo-user-font-face-get-text-to-glyphs-func" role="1.8"><primary sortas="user_font_face_get_text_to_glyphs_func">cairo_user_font_face_get_text_to_glyphs_func</primary></indexterm>
-<programlisting><link linkend="cairo-user-scaled-font-text-to-glyphs-func-t"><returnvalue>cairo_user_scaled_font_text_to_glyphs_func_t</returnvalue></link>  cairo_user_font_face_get_text_to_glyphs_func
+<programlisting><link linkend="cairo-user-scaled-font-text-to-glyphs-func-t"><returnvalue>cairo_user_scaled_font_text_to_glyphs_func_t</returnvalue></link> cairo_user_font_face_get_text_to_glyphs_func
                                                         (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
 Gets the text-to-glyphs conversion function of a user-font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A user font face
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The text_to_glyphs callback of <parameter>font_face</parameter>
-or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error occurred.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>A user font face</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The text_to_glyphs callback of <parameter>font_face</parameter>
+or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none set or an error occurred.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 
 </refsect1>

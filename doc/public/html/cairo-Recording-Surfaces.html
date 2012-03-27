@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Recording Surfaces</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-surfaces.html" title="Surfaces">
 <link rel="prev" href="cairo-PostScript-Surfaces.html" title="PostScript Surfaces">
 <link rel="next" href="cairo-Win32-Surfaces.html" title="Win32 Surfaces">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,7 +26,7 @@
                   <a href="#cairo-Recording-Surfaces.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="Recording Surfaces">
+<div class="refentry">
 <a name="cairo-Recording-Surfaces"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -35,7 +35,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="cairo-Recording-Surfaces.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">#define             <a class="link" href="cairo-Recording-Surfaces.html#CAIRO-HAS-RECORDING-SURFACE:CAPS" title="CAIRO_HAS_RECORDING_SURFACE">CAIRO_HAS_RECORDING_SURFACE</a>
 <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   <a class="link" href="cairo-Recording-Surfaces.html#cairo-recording-surface-create" title="cairo_recording_surface_create ()">cairo_recording_surface_create</a>      (<em class="parameter"><code><a class="link" href="cairo-cairo-surface-t.html#cairo-content-t" title="enum cairo_content_t"><span class="type">cairo_content_t</span></a> content</code></em>,
@@ -47,7 +47,7 @@
                                                          <em class="parameter"><code><span class="type">double</span> *height</code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="cairo-Recording-Surfaces.description"></a><h2>Description</h2>
 <p>
 A recording surface is a surface that records all drawing operations at
@@ -62,14 +62,27 @@ identical to the results that would have been obtained if the original
 operations applied to the recording surface had instead been applied to the
 target surface, you can use code like this:
 </p>
-<div class="informalexample"><pre class="programlisting">
-     cairo_t *cr;
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6</pre></td>
+        <td class="listing_code"><pre class="programlisting">cairo_t <span class="gtkdoc opt">*</span>cr<span class="gtkdoc opt">;</span>
 
-cr = cairo_create (target);
-cairo_set_source_surface (cr, recording_surface, 0.0, 0.0);
-cairo_paint (cr);
-cairo_destroy (cr);
-</pre></div>
+cr <span class="gtkdoc opt">=</span> <span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-create">cairo_create</a></span> <span class="gtkdoc opt">(</span>target<span class="gtkdoc opt">);</span>
+<span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-set-source-surface">cairo_set_source_surface</a></span> <span class="gtkdoc opt">(</span>cr<span class="gtkdoc opt">,</span> recording_surface<span class="gtkdoc opt">,</span> <span class="number">0.0</span><span class="gtkdoc opt">,</span> <span class="number">0.0</span><span class="gtkdoc opt">);</span>
+<span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-paint">cairo_paint</a></span> <span class="gtkdoc opt">(</span>cr<span class="gtkdoc opt">);</span>
+<span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-destroy">cairo_destroy</a></span> <span class="gtkdoc opt">(</span>cr<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
@@ -88,9 +101,9 @@ various objects. For example, it would be nice to have a
 copy-on-write implementation for _cairo_surface_snapshot.
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="cairo-Recording-Surfaces.details"></a><h2>Details</h2>
-<div class="refsect2" title="CAIRO_HAS_RECORDING_SURFACE">
+<div class="refsect2">
 <a name="CAIRO-HAS-RECORDING-SURFACE:CAPS"></a><h3>CAIRO_HAS_RECORDING_SURFACE</h3>
 <pre class="programlisting">#define CAIRO_HAS_RECORDING_SURFACE 1
 </pre>
@@ -102,7 +115,7 @@ This macro was added for completeness in cairo 1.10.
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_recording_surface_create ()">
+<div class="refsect2">
 <a name="cairo-recording-surface-create"></a><h3>cairo_recording_surface_create ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t" title="cairo_surface_t"><span class="returnvalue">cairo_surface_t</span></a> *   cairo_recording_surface_create      (<em class="parameter"><code><a class="link" href="cairo-cairo-surface-t.html#cairo-content-t" title="enum cairo_content_t"><span class="type">cairo_content_t</span></a> content</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="cairo-cairo-t.html#cairo-rectangle-t" title="cairo_rectangle_t"><span class="type">cairo_rectangle_t</span></a> *extents</code></em>);</pre>
@@ -122,29 +135,25 @@ accurate replay.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
-<td>the content of the recording surface
-</td>
+<td>the content of the recording surface</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>extents</code></em> :</span></p></td>
 <td>the extents to record in pixels, can be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to record
-          unbounded operations.
-</td>
+unbounded operations.</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a pointer to the newly created surface. The caller
+<td>a pointer to the newly created surface. The caller
 owns the surface and should call <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-destroy" title="cairo_surface_destroy ()"><code class="function">cairo_surface_destroy()</code></a> when done
-with it.
-
-</td>
+with it.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_recording_surface_ink_extents ()">
+<div class="refsect2">
 <a name="cairo-recording-surface-ink-extents"></a><h3>cairo_recording_surface_ink_extents ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_recording_surface_ink_extents (<em class="parameter"><code><a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a> *surface</code></em>,
                                                          <em class="parameter"><code><span class="type">double</span> *x0</code></em>,
@@ -166,36 +175,32 @@ equivalent) into which to replay the full sequence of drawing operations.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>x0</code></em> :</span></p></td>
-<td>the x-coordinate of the top-left of the ink bounding box
-</td>
+<td>the x-coordinate of the top-left of the ink bounding box</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>y0</code></em> :</span></p></td>
-<td>the y-coordinate of the top-left of the ink bounding box
-</td>
+<td>the y-coordinate of the top-left of the ink bounding box</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td>the width of the ink bounding box
-</td>
+<td>the width of the ink bounding box</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td>the height of the ink bounding box
-</td>
+<td>the height of the ink bounding box</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.10</p>
 </div>
 </div>
-<div class="refsect1" title="See Also">
+<div class="refsect1">
 <a name="cairo-Recording-Surfaces.see-also"></a><h2>See Also</h2>
 <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-t" title="cairo_surface_t"><span class="type">cairo_surface_t</span></a>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

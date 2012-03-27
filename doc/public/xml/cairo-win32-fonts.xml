@@ -53,7 +53,8 @@ Microsoft Windows systems.
 <refsect2 id="CAIRO-HAS-WIN32-FONT:CAPS" role="macro">
 <title>CAIRO_HAS_WIN32_FONT</title>
 <indexterm zone="CAIRO-HAS-WIN32-FONT:CAPS"><primary sortas="HAS_WIN32_FONT">CAIRO_HAS_WIN32_FONT</primary></indexterm>
-<programlisting>#define             CAIRO_HAS_WIN32_FONT</programlisting>
+<programlisting>#define CAIRO_HAS_WIN32_FONT 1
+</programlisting>
 <para>
 Defined if the Microsoft Windows font backend is available.
 This macro can be used to conditionally compile backend-specific code.
@@ -73,12 +74,10 @@ and can be used with functions such as <link linkend="cairo-win32-scaled-font-se
 </para><variablelist role="params">
 <varlistentry><term><parameter>logfont</parameter>&#160;:</term>
 <listitem><simpara>A <link linkend="LOGFONTW:CAPS"><type>LOGFONTW</type></link> structure specifying the font to use.
-  The lfHeight, lfWidth, lfOrientation and lfEscapement
-  fields of this structure are ignored.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
- <link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.
-</simpara></listitem></varlistentry>
+The lfHeight, lfWidth, lfOrientation and lfEscapement
+fields of this structure are ignored.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-win32-font-face-create-for-hfont" role="function">
 <title>cairo_win32_font_face_create_for_hfont ()</title>
@@ -94,11 +93,9 @@ returned from <link linkend="cairo-scaled-font-create"><function>cairo_scaled_fo
 and can be used with functions such as <link linkend="cairo-win32-scaled-font-select-font"><function>cairo_win32_scaled_font_select_font()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&#160;:</term>
-<listitem><simpara>An <link linkend="HFONT:CAPS"><type>HFONT</type></link> structure specifying the font to use.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
- <link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.
-</simpara></listitem></varlistentry>
+<listitem><simpara>An <link linkend="HFONT:CAPS"><type>HFONT</type></link> structure specifying the font to use.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-win32-font-face-create-for-logfontw-hfont" role="function">
 <title>cairo_win32_font_face_create_for_logfontw_hfont ()</title>
@@ -116,17 +113,14 @@ and can be used with functions such as <link linkend="cairo-win32-scaled-font-se
 </para><variablelist role="params">
 <varlistentry><term><parameter>logfont</parameter>&#160;:</term>
 <listitem><simpara>A <link linkend="LOGFONTW:CAPS"><type>LOGFONTW</type></link> structure specifying the font to use.
-  If <parameter>font</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> then the lfHeight, lfWidth, lfOrientation and lfEscapement
-  fields of this structure are ignored. Otherwise lfWidth, lfOrientation and
-  lfEscapement must be zero.
-</simpara></listitem></varlistentry>
+If <parameter>font</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> then the lfHeight, lfWidth, lfOrientation and lfEscapement
+fields of this structure are ignored. Otherwise lfWidth, lfOrientation and
+lfEscapement must be zero.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font</parameter>&#160;:</term>
 <listitem><simpara>An <link linkend="HFONT:CAPS"><type>HFONT</type></link> that can be used when the font matrix is a scale by
-  -lfHeight and the CTM is identity.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
- <link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.
-</simpara></listitem></varlistentry>
+-lfHeight and the CTM is identity.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-win32-scaled-font-select-font" role="function">
 <title>cairo_win32_scaled_font_select_font ()</title>
@@ -152,15 +146,12 @@ the use of this function to preserve the original graphics state.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
 <listitem><simpara>A <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> from the Win32 font backend. Such an
-  object can be created with <link linkend="cairo-win32-scaled-font-create-for-logfontw"><function>cairo_win32_scaled_font_create_for_logfontw()</function></link>.
-</simpara></listitem></varlistentry>
+object can be created with <link linkend="cairo-win32-font-face-create-for-logfontw"><function>cairo_win32_font_face_create_for_logfontw()</function></link>.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>hdc</parameter>&#160;:</term>
-<listitem><simpara>a device context
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> if the operation succeeded.
-  otherwise an error such as <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link> and
-  the device context is unchanged.
-</simpara></listitem></varlistentry>
+<listitem><simpara>a device context</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara><link linkend="CAIRO-STATUS-SUCCESS:CAPS"><literal>CAIRO_STATUS_SUCCESS</literal></link> if the operation succeeded.
+otherwise an error such as <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link> and
+the device context is unchanged.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-win32-scaled-font-done-font" role="function">
 <title>cairo_win32_scaled_font_done_font ()</title>
@@ -170,8 +161,7 @@ the use of this function to preserve the original graphics state.
 Releases any resources allocated by <link linkend="cairo-win32-scaled-font-select-font"><function>cairo_win32_scaled_font_select_font()</function></link>
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>A scaled font from the Win32 font backend.
-</simpara></listitem></varlistentry>
+<listitem><simpara>A scaled font from the Win32 font backend.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-win32-scaled-font-get-metrics-factor" role="function">
 <title>cairo_win32_scaled_font_get_metrics_factor ()</title>
@@ -185,11 +175,9 @@ coordinate system used by the Windows functions to return metrics) and
 font space coordinates.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>a scaled font from the Win32 font backend
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> factor to multiply logical units by to get font space
-              coordinates.
-</simpara></listitem></varlistentry>
+<listitem><simpara>a scaled font from the Win32 font backend</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>factor to multiply logical units by to get font space
+coordinates.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-win32-scaled-font-get-logical-to-device" role="function" condition="since:1.4">
 <title>cairo_win32_scaled_font_get_logical_to_device ()</title>
@@ -202,11 +190,9 @@ Gets the transformation mapping the logical space used by <parameter>scaled_font
 to device space.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>a scaled font from the Win32 font backend
-</simpara></listitem></varlistentry>
+<listitem><simpara>a scaled font from the Win32 font backend</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>logical_to_device</parameter>&#160;:</term>
-<listitem><simpara>matrix to return
-</simpara></listitem></varlistentry>
+<listitem><simpara>matrix to return</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-win32-scaled-font-get-device-to-logical" role="function" condition="since:1.4">
 <title>cairo_win32_scaled_font_get_device_to_logical ()</title>
@@ -219,11 +205,9 @@ Gets the transformation mapping device space to the logical space
 used by <parameter>scaled_font</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>a scaled font from the Win32 font backend
-</simpara></listitem></varlistentry>
+<listitem><simpara>a scaled font from the Win32 font backend</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>device_to_logical</parameter>&#160;:</term>
-<listitem><simpara>matrix to return
-</simpara></listitem></varlistentry>
+<listitem><simpara>matrix to return</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.4</para></refsect2>
 
 </refsect1>

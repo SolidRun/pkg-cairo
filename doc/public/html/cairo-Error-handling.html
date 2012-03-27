@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Error handling</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-support.html" title="Utilities">
 <link rel="prev" href="cairo-cairo-matrix-t.html" title="cairo_matrix_t">
-<link rel="next" href="cairo-Version-Information.html" title="Version Information">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<link rel="next" href="cairo-Types.html" title="Types">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -18,7 +18,7 @@
 <td><a accesskey="u" href="cairo-support.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
-<td><a accesskey="n" href="cairo-Version-Information.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="cairo-Types.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#cairo-Error-handling.synopsis" class="shortcut">Top</a>
@@ -26,7 +26,7 @@
                   <a href="#cairo-Error-handling.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="Error handling">
+<div class="refentry">
 <a name="cairo-Error-handling"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -35,14 +35,14 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="cairo-Error-handling.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">enum                <a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t">cairo_status_t</a>;
 const <span class="returnvalue">char</span> *        <a class="link" href="cairo-Error-handling.html#cairo-status-to-string" title="cairo_status_to_string ()">cairo_status_to_string</a>              (<em class="parameter"><code><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="type">cairo_status_t</span></a> status</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="cairo-Error-handling.html#cairo-debug-reset-static-data" title="cairo_debug_reset_static_data ()">cairo_debug_reset_static_data</a>       (<em class="parameter"><code><span class="type">void</span></code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="cairo-Error-handling.description"></a><h2>Description</h2>
 <p>
 Cairo uses a single status type to represent all kinds of errors.  A status
@@ -58,11 +58,11 @@ underlying object is in an error status.  This means that no error handling
 code is required before or after each individual cairo function call.
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="cairo-Error-handling.details"></a><h2>Details</h2>
-<div class="refsect2" title="enum cairo_status_t">
+<div class="refsect2">
 <a name="cairo-status-t"></a><h3>enum cairo_status_t</h3>
-<pre class="programlisting">typedef enum _cairo_status {
+<pre class="programlisting">typedef enum {
     CAIRO_STATUS_SUCCESS = 0,
 
     CAIRO_STATUS_NO_MEMORY,
@@ -100,6 +100,8 @@ code is required before or after each individual cairo function call.
     CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED,
     CAIRO_STATUS_DEVICE_TYPE_MISMATCH,
     CAIRO_STATUS_DEVICE_ERROR,
+    CAIRO_STATUS_INVALID_MESH_CONSTRUCTION,
+    CAIRO_STATUS_DEVICE_FINISHED,
 
     CAIRO_STATUS_LAST_STATUS
 } cairo_status_t;
@@ -299,6 +301,19 @@ to get a human-readable representation of an error message.
 </td>
 </tr>
 <tr>
+<td><p><a name="CAIRO-STATUS-INVALID-MESH-CONSTRUCTION:CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_INVALID_MESH_CONSTRUCTION</code></span></p></td>
+<td>a mesh pattern
+  construction operation was used outside of a
+  <a class="link" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-begin-patch" title="cairo_mesh_pattern_begin_patch ()"><code class="function">cairo_mesh_pattern_begin_patch()</code></a>/<a class="link" href="cairo-cairo-pattern-t.html#cairo-mesh-pattern-end-patch" title="cairo_mesh_pattern_end_patch ()"><code class="function">cairo_mesh_pattern_end_patch()</code></a>
+  pair (Since 1.12)
+</td>
+</tr>
+<tr>
+<td><p><a name="CAIRO-STATUS-DEVICE-FINISHED:CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_DEVICE_FINISHED</code></span></p></td>
+<td>target device has been finished (Since 1.12)
+</td>
+</tr>
+<tr>
 <td><p><a name="CAIRO-STATUS-LAST-STATUS:CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_LAST_STATUS</code></span></p></td>
 <td>this is a special value indicating the number of
   status values defined in this enumeration.  When using this value, note
@@ -310,7 +325,7 @@ to get a human-readable representation of an error message.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="cairo_status_to_string ()">
+<div class="refsect2">
 <a name="cairo-status-to-string"></a><h3>cairo_status_to_string ()</h3>
 <pre class="programlisting">const <span class="returnvalue">char</span> *        cairo_status_to_string              (<em class="parameter"><code><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="type">cairo_status_t</span></a> status</code></em>);</pre>
 <p>
@@ -321,19 +336,17 @@ Provides a human-readable description of a <a class="link" href="cairo-Error-han
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>status</code></em> :</span></p></td>
-<td>a cairo status
-</td>
+<td>a cairo status</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a string representation of the status
-</td>
+<td>a string representation of the status</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="cairo_debug_reset_static_data ()">
+<div class="refsect2">
 <a name="cairo-debug-reset-static-data"></a><h3>cairo_debug_reset_static_data ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_debug_reset_static_data       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
@@ -359,7 +372,7 @@ failure due to a hash table being destroyed when non-empty).
 </p>
 </div>
 </div>
-<div class="refsect1" title="See Also">
+<div class="refsect1">
 <a name="cairo-Error-handling.see-also"></a><h2>See Also</h2>
 cairo_status(), <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-status" title="cairo_surface_status ()"><code class="function">cairo_surface_status()</code></a>, <a class="link" href="cairo-cairo-pattern-t.html#cairo-pattern-status" title="cairo_pattern_status ()"><code class="function">cairo_pattern_status()</code></a>,
            <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-status" title="cairo_font_face_status ()"><code class="function">cairo_font_face_status()</code></a>, <a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-status" title="cairo_scaled_font_status ()"><code class="function">cairo_scaled_font_status()</code></a>, 
@@ -368,6 +381,6 @@ cairo_status(), <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-s
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

@@ -45,7 +45,7 @@ identical to the results that would have been obtained if the original
 operations applied to the recording surface had instead been applied to the
 target surface, you can use code like this:
 <informalexample><programlisting>
-     cairo_t *cr;
+cairo_t *cr;
 
 cr = cairo_create (target);
 cairo_set_source_surface (cr, recording_surface, 0.0, 0.0);
@@ -98,17 +98,13 @@ necessary objects (paths, patterns, etc.), in order to achieve
 accurate replay.
 </para><variablelist role="params">
 <varlistentry><term><parameter>content</parameter>&#160;:</term>
-<listitem><simpara>the content of the recording surface
-</simpara></listitem></varlistentry>
+<listitem><simpara>the content of the recording surface</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>extents</parameter>&#160;:</term>
 <listitem><simpara>the extents to record in pixels, can be <link linkend="NULL:CAPS"><literal>NULL</literal></link> to record
-          unbounded operations.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a pointer to the newly created surface. The caller
+unbounded operations.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a pointer to the newly created surface. The caller
 owns the surface and should call <link linkend="cairo-surface-destroy"><function>cairo_surface_destroy()</function></link> when done
-with it.
-
-</simpara></listitem></varlistentry>
+with it.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.10</para></refsect2>
 <refsect2 id="cairo-recording-surface-ink-extents" role="function" condition="since:1.10">
 <title>cairo_recording_surface_ink_extents ()</title>
@@ -124,20 +120,15 @@ This is useful to compute the required size of an image surface (or
 equivalent) into which to replay the full sequence of drawing operations.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-recording-surface-t"><type>cairo_recording_surface_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-recording-surface-t"><type>cairo_recording_surface_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x0</parameter>&#160;:</term>
-<listitem><simpara>the x-coordinate of the top-left of the ink bounding box
-</simpara></listitem></varlistentry>
+<listitem><simpara>the x-coordinate of the top-left of the ink bounding box</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>y0</parameter>&#160;:</term>
-<listitem><simpara>the y-coordinate of the top-left of the ink bounding box
-</simpara></listitem></varlistentry>
+<listitem><simpara>the y-coordinate of the top-left of the ink bounding box</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width</parameter>&#160;:</term>
-<listitem><simpara>the width of the ink bounding box
-</simpara></listitem></varlistentry>
+<listitem><simpara>the width of the ink bounding box</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>height</parameter>&#160;:</term>
-<listitem><simpara>the height of the ink bounding box
-</simpara></listitem></varlistentry>
+<listitem><simpara>the height of the ink bounding box</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.10</para></refsect2>
 
 </refsect1>

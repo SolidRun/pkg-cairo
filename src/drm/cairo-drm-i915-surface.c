@@ -103,6 +103,7 @@
 #include "cairo-boxes-private.h"
 #include "cairo-cache-private.h"
 #include "cairo-composite-rectangles-private.h"
+#include "cairo-default-context-private.h"
 #include "cairo-error-private.h"
 #include "cairo-freelist-private.h"
 #include "cairo-list-private.h"
@@ -1915,9 +1916,9 @@ i915_surface_fill_with_alpha (void			*abstract_dst,
 	return status;
     }
 
-    assert (! path->is_empty_fill);
+    assert (! _cairo_path_fixed_fill_is_empty (path));
 
-    if (_cairo_path_fixed_is_rectilinear_fill (path)) {
+    if (_cairo_path_fixed_fill_is_rectilinear (path)) {
 	cairo_boxes_t boxes;
 
 	_cairo_boxes_init (&boxes);
@@ -1938,8 +1939,7 @@ i915_surface_fill_with_alpha (void			*abstract_dst,
 	    goto CLEANUP_BOXES;
     }
 
-    _cairo_polygon_init (&info.polygon);
-    _cairo_polygon_limit (&info.polygon, clip_boxes, num_boxes);
+    _cairo_polygon_init (&info.polygon, clip_boxes, num_boxes);
 
     status = _cairo_path_fixed_fill_to_polygon (path, tolerance, &info.polygon);
     if (unlikely (status))
@@ -2259,7 +2259,7 @@ i915_surface_stroke (void			*abstract_dst,
 	return status;
     }
 
-    if (path->is_rectilinear) {
+    if (_cairo_path_fixed_stroke_is_rectilinear (path)) {
 	cairo_boxes_t boxes;
 
 	_cairo_boxes_init (&boxes);
@@ -2280,8 +2280,7 @@ i915_surface_stroke (void			*abstract_dst,
 	    goto CLEANUP_BOXES;
     }
 
-    _cairo_polygon_init (&info.polygon);
-    _cairo_polygon_limit (&info.polygon, clip_boxes, num_boxes);
+    _cairo_polygon_init (&info.polygon, clip_boxes, num_boxes);
 
     status = _cairo_path_fixed_stroke_to_polygon (path,
 						  stroke_style,
@@ -2340,9 +2339,12 @@ i915_surface_fill (void			*abstract_dst,
 
 static const cairo_surface_backend_t i915_surface_backend = {
     CAIRO_SURFACE_TYPE_DRM,
+    _cairo_default_context_create,
 
     i915_surface_create_similar,
     i915_surface_finish,
+
+    NULL,
     intel_surface_acquire_source_image,
     intel_surface_release_source_image,
 

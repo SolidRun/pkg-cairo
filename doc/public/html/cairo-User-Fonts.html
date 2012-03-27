@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>User Fonts</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-fonts.html" title="Fonts">
 <link rel="prev" href="cairo-Quartz-(CGFont)-Fonts.html" title="Quartz (CGFont) Fonts">
 <link rel="next" href="cairo-surfaces.html" title="Surfaces">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,7 +26,7 @@
                   <a href="#cairo-User-Fonts.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="User Fonts">
+<div class="refentry">
 <a name="cairo-User-Fonts"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -35,7 +35,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="cairo-User-Fonts.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">#define             <a class="link" href="cairo-User-Fonts.html#CAIRO-HAS-USER-FONT:CAPS" title="CAIRO_HAS_USER_FONT">CAIRO_HAS_USER_FONT</a>
 <a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      (<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-init-func-t" title="cairo_user_scaled_font_init_func_t ()">*cairo_user_scaled_font_init_func_t</a>)
@@ -63,26 +63,26 @@
 <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="returnvalue">cairo_font_face_t</span></a> * <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-create" title="cairo_user_font_face_create ()">cairo_user_font_face_create</a>         (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-set-init-func" title="cairo_user_font_face_set_init_func ()">cairo_user_font_face_set_init_func</a>  (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
                                                          <em class="parameter"><code><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-init-func-t" title="cairo_user_scaled_font_init_func_t ()"><span class="type">cairo_user_scaled_font_init_func_t</span></a> init_func</code></em>);
-<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-init-func-t" title="cairo_user_scaled_font_init_func_t ()"><span class="returnvalue">cairo_user_scaled_font_init_func_t</span></a>  <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-init-func" title="cairo_user_font_face_get_init_func ()">cairo_user_font_face_get_init_func</a>
+<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-init-func-t" title="cairo_user_scaled_font_init_func_t ()"><span class="returnvalue">cairo_user_scaled_font_init_func_t</span></a> <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-init-func" title="cairo_user_font_face_get_init_func ()">cairo_user_font_face_get_init_func</a>
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-set-render-glyph-func" title="cairo_user_font_face_set_render_glyph_func ()">cairo_user_font_face_set_render_glyph_func</a>
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
                                                          <em class="parameter"><code><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-render-glyph-func-t" title="cairo_user_scaled_font_render_glyph_func_t ()"><span class="type">cairo_user_scaled_font_render_glyph_func_t</span></a> render_glyph_func</code></em>);
-<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-render-glyph-func-t" title="cairo_user_scaled_font_render_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_render_glyph_func_t</span></a>  <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-render-glyph-func" title="cairo_user_font_face_get_render_glyph_func ()">cairo_user_font_face_get_render_glyph_func</a>
+<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-render-glyph-func-t" title="cairo_user_scaled_font_render_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_render_glyph_func_t</span></a> <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-render-glyph-func" title="cairo_user_font_face_get_render_glyph_func ()">cairo_user_font_face_get_render_glyph_func</a>
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-set-unicode-to-glyph-func" title="cairo_user_font_face_set_unicode_to_glyph_func ()">cairo_user_font_face_set_unicode_to_glyph_func</a>
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
                                                          <em class="parameter"><code><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-unicode-to-glyph-func-t" title="cairo_user_scaled_font_unicode_to_glyph_func_t ()"><span class="type">cairo_user_scaled_font_unicode_to_glyph_func_t</span></a> unicode_to_glyph_func</code></em>);
-<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-unicode-to-glyph-func-t" title="cairo_user_scaled_font_unicode_to_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_unicode_to_glyph_func_t</span></a>  <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-unicode-to-glyph-func" title="cairo_user_font_face_get_unicode_to_glyph_func ()">cairo_user_font_face_get_unicode_to_glyph_func</a>
+<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-unicode-to-glyph-func-t" title="cairo_user_scaled_font_unicode_to_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_unicode_to_glyph_func_t</span></a> <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-unicode-to-glyph-func" title="cairo_user_font_face_get_unicode_to_glyph_func ()">cairo_user_font_face_get_unicode_to_glyph_func</a>
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-set-text-to-glyphs-func" title="cairo_user_font_face_set_text_to_glyphs_func ()">cairo_user_font_face_set_text_to_glyphs_func</a>
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
                                                          <em class="parameter"><code><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-text-to-glyphs-func-t" title="cairo_user_scaled_font_text_to_glyphs_func_t ()"><span class="type">cairo_user_scaled_font_text_to_glyphs_func_t</span></a> text_to_glyphs_func</code></em>);
-<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-text-to-glyphs-func-t" title="cairo_user_scaled_font_text_to_glyphs_func_t ()"><span class="returnvalue">cairo_user_scaled_font_text_to_glyphs_func_t</span></a>  <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-text-to-glyphs-func" title="cairo_user_font_face_get_text_to_glyphs_func ()">cairo_user_font_face_get_text_to_glyphs_func</a>
+<a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-text-to-glyphs-func-t" title="cairo_user_scaled_font_text_to_glyphs_func_t ()"><span class="returnvalue">cairo_user_scaled_font_text_to_glyphs_func_t</span></a> <a class="link" href="cairo-User-Fonts.html#cairo-user-font-face-get-text-to-glyphs-func" title="cairo_user_font_face_get_text_to_glyphs_func ()">cairo_user_font_face_get_text_to_glyphs_func</a>
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="cairo-User-Fonts.description"></a><h2>Description</h2>
 <p>
 The user-font feature allows the cairo user to provide drawings for glyphs
@@ -91,9 +91,9 @@ formats, like SVG fonts and Flash fonts, but can also be used by games and
 other application to draw "funky" fonts.
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="cairo-User-Fonts.details"></a><h2>Details</h2>
-<div class="refsect2" title="CAIRO_HAS_USER_FONT">
+<div class="refsect2">
 <a name="CAIRO-HAS-USER-FONT:CAPS"></a><h3>CAIRO_HAS_USER_FONT</h3>
 <pre class="programlisting">#define CAIRO_HAS_USER_FONT 1
 </pre>
@@ -108,7 +108,7 @@ this feature (1.8 and later).
 </p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_scaled_font_init_func_t ()">
+<div class="refsect2">
 <a name="cairo-user-scaled-font-init-func-t"></a><h3>cairo_user_scaled_font_init_func_t ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      (*cairo_user_scaled_font_init_func_t)
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a> *scaled_font</code></em>,
@@ -146,31 +146,27 @@ in deadlock.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scaled_font</code></em> :</span></p></td>
-<td>the scaled-font being created
-</td>
+<td>the scaled-font being created</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cr</code></em> :</span></p></td>
-<td>a cairo context, in font space
-</td>
+<td>a cairo context, in font space</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>extents</code></em> :</span></p></td>
-<td>font extents to fill in, in font space
-</td>
+<td>font extents to fill in, in font space</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success, or an error status on error.
-
-</td>
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success, or an error status on error.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_scaled_font_render_glyph_func_t ()">
+<div class="refsect2">
 <a name="cairo-user-scaled-font-render-glyph-func-t"></a><h3>cairo_user_scaled_font_render_glyph_func_t ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      (*cairo_user_scaled_font_render_glyph_func_t)
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a> *scaled_font</code></em>,
@@ -217,37 +213,32 @@ done to <em class="parameter"><code>cr</code></em> in the callback.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scaled_font</code></em> :</span></p></td>
-<td>user scaled-font
-</td>
+<td>user scaled-font</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>glyph</code></em> :</span></p></td>
-<td>glyph code to render
-</td>
+<td>glyph code to render</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cr</code></em> :</span></p></td>
-<td>cairo context to draw to, in font space
-</td>
+<td>cairo context to draw to, in font space</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>extents</code></em> :</span></p></td>
-<td>glyph extents to fill in, in font space
-</td>
+<td>glyph extents to fill in, in font space</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success, or
-<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-ERROR:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_ERROR</code></a> or any other error status on error.
-
-</td>
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success, or
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-ERROR:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_ERROR</code></a> or any other error status on error.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_scaled_font_text_to_glyphs_func_t ()">
+<div class="refsect2">
 <a name="cairo-user-scaled-font-text-to-glyphs-func-t"></a><h3>cairo_user_scaled_font_text_to_glyphs_func_t ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      (*cairo_user_scaled_font_text_to_glyphs_func_t)
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a> *scaled_font</code></em>,
@@ -277,7 +268,8 @@ the conversion (or for convenience), a new glyph array may be allocated
 using <a class="link" href="cairo-text.html#cairo-glyph-allocate" title="cairo_glyph_allocate ()"><code class="function">cairo_glyph_allocate()</code></a> and placed in <em class="parameter"><code>glyphs</code></em>.  Upon return,
 <em class="parameter"><code>num_glyphs</code></em> should contain the number of generated glyphs.  If the value
 <em class="parameter"><code>glyphs</code></em> points at has changed after the call, the caller will free the
-allocated glyph array using <a class="link" href="cairo-text.html#cairo-glyph-free" title="cairo_glyph_free ()"><code class="function">cairo_glyph_free()</code></a>.
+allocated glyph array using <a class="link" href="cairo-text.html#cairo-glyph-free" title="cairo_glyph_free ()"><code class="function">cairo_glyph_free()</code></a>.  The caller will also free
+the original value of <em class="parameter"><code>glyphs</code></em>, so the callback shouldn't do so.
 The callback should populate the glyph indices and positions (in font space)
 assuming that the text is to be shown at the origin.
 </p>
@@ -289,8 +281,9 @@ if <em class="parameter"><code>clusters</code></em> initially points to a non-<a
 as a cluster buffer, and <em class="parameter"><code>num_clusters</code></em> points to the number of cluster
 entries available there.  If the provided cluster array is too short for
 the conversion (or for convenience), a new cluster array may be allocated
-using <a class="link" href="cairo-text.html#cairo-text-cluster-allocate" title="cairo_text_cluster_allocate ()"><code class="function">cairo_text_cluster_allocate()</code></a> and placed in <em class="parameter"><code>clusters</code></em>.  Upon return,
-<em class="parameter"><code>num_clusters</code></em> should contain the number of generated clusters.
+using <a class="link" href="cairo-text.html#cairo-text-cluster-allocate" title="cairo_text_cluster_allocate ()"><code class="function">cairo_text_cluster_allocate()</code></a> and placed in <em class="parameter"><code>clusters</code></em>.  In this case,
+the original value of <em class="parameter"><code>clusters</code></em> will still be freed by the caller.  Upon
+return, <em class="parameter"><code>num_clusters</code></em> should contain the number of generated clusters.
 If the value <em class="parameter"><code>clusters</code></em> points at has changed after the call, the caller
 will free the allocated cluster array using <a class="link" href="cairo-text.html#cairo-text-cluster-free" title="cairo_text_cluster_free ()"><code class="function">cairo_text_cluster_free()</code></a>.
 </p>
@@ -314,28 +307,23 @@ glyph value for other purposes.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scaled_font</code></em> :</span></p></td>
-<td>the scaled-font being created
-</td>
+<td>the scaled-font being created</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8</code></em> :</span></p></td>
-<td>a string of text encoded in UTF-8
-</td>
+<td>a string of text encoded in UTF-8</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8_len</code></em> :</span></p></td>
-<td>length of <em class="parameter"><code>utf8</code></em> in bytes
-</td>
+<td>length of <em class="parameter"><code>utf8</code></em> in bytes</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>glyphs</code></em> :</span></p></td>
-<td>pointer to array of glyphs to fill, in font space
-</td>
+<td>pointer to array of glyphs to fill, in font space</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>num_glyphs</code></em> :</span></p></td>
-<td>pointer to number of glyphs
-</td>
+<td>pointer to number of glyphs</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>clusters</code></em> :</span></p></td>
@@ -344,29 +332,27 @@ glyph value for other purposes.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>num_clusters</code></em> :</span></p></td>
-<td>pointer to number of clusters
-</td>
+<td>pointer to number of clusters</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cluster_flags</code></em> :</span></p></td>
 <td>pointer to location to store cluster flags corresponding to the
-                output <em class="parameter"><code>clusters</code></em>
+output <em class="parameter"><code>clusters</code></em>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success,
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success,
 <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</code></a> if fallback options should be tried,
-or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-ERROR:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_ERROR</code></a> or any other error status on error.
-
-</td>
+or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-ERROR:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_ERROR</code></a> or any other error status on error.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_scaled_font_unicode_to_glyph_func_t ()">
+<div class="refsect2">
 <a name="cairo-user-scaled-font-unicode-to-glyph-func-t"></a><h3>cairo_user_scaled_font_unicode_to_glyph_func_t ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-Error-handling.html#cairo-status-t" title="enum cairo_status_t"><span class="returnvalue">cairo_status_t</span></a>      (*cairo_user_scaled_font_unicode_to_glyph_func_t)
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-scaled-font-t.html#cairo-scaled-font-t" title="cairo_scaled_font_t"><span class="type">cairo_scaled_font_t</span></a> *scaled_font</code></em>,
@@ -407,33 +393,29 @@ glyph value for other purposes.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scaled_font</code></em> :</span></p></td>
-<td>the scaled-font being created
-</td>
+<td>the scaled-font being created</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>unicode</code></em> :</span></p></td>
-<td>input unicode character code-point
-</td>
+<td>input unicode character code-point</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>glyph_index</code></em> :</span></p></td>
-<td>output glyph index
-</td>
+<td>output glyph index</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success,
+<td>
+<a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-SUCCESS:CAPS"><code class="literal">CAIRO_STATUS_SUCCESS</code></a> upon success,
 <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED</code></a> if fallback options should be tried,
-or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-ERROR:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_ERROR</code></a> or any other error status on error.
-
-</td>
+or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-ERROR:CAPS"><code class="literal">CAIRO_STATUS_USER_FONT_ERROR</code></a> or any other error status on error.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_create ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-create"></a><h3>cairo_user_font_face_create ()</h3>
 <pre class="programlisting"><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="returnvalue">cairo_font_face_t</span></a> * cairo_user_font_face_create         (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
@@ -454,16 +436,14 @@ and access it from the user-font callbacks by using
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly created <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a>. Free with
- <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-destroy" title="cairo_font_face_destroy ()"><code class="function">cairo_font_face_destroy()</code></a> when you are done using it.
-
-</td>
+<td>a newly created <a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a>. Free with
+<a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-destroy" title="cairo_font_face_destroy ()"><code class="function">cairo_font_face_destroy()</code></a> when you are done using it.</td>
 </tr></tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_set_init_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-set-init-func"></a><h3>cairo_user_font_face_set_init_func ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_user_font_face_set_init_func  (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
                                                          <em class="parameter"><code><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-init-func-t" title="cairo_user_scaled_font_init_func_t ()"><span class="type">cairo_user_scaled_font_init_func_t</span></a> init_func</code></em>);</pre>
@@ -482,8 +462,7 @@ is created from it.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>init_func</code></em> :</span></p></td>
@@ -495,9 +474,9 @@ is created from it.
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_get_init_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-get-init-func"></a><h3>cairo_user_font_face_get_init_func ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-init-func-t" title="cairo_user_scaled_font_init_func_t ()"><span class="returnvalue">cairo_user_scaled_font_init_func_t</span></a>  cairo_user_font_face_get_init_func
+<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-init-func-t" title="cairo_user_scaled_font_init_func_t ()"><span class="returnvalue">cairo_user_scaled_font_init_func_t</span></a> cairo_user_font_face_get_init_func
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);</pre>
 <p>
 Gets the scaled-font initialization function of a user-font.
@@ -507,22 +486,19 @@ Gets the scaled-font initialization function of a user-font.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The init callback of <em class="parameter"><code>font_face</code></em>
-or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error has occurred.
-
-</td>
+<td>The init callback of <em class="parameter"><code>font_face</code></em>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error has occurred.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_set_render_glyph_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-set-render-glyph-func"></a><h3>cairo_user_font_face_set_render_glyph_func ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_user_font_face_set_render_glyph_func
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
@@ -547,8 +523,7 @@ If the callback is <a href="http://library.gnome.org/devel/glib/unstable/glib-St
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>render_glyph_func</code></em> :</span></p></td>
@@ -560,9 +535,9 @@ If the callback is <a href="http://library.gnome.org/devel/glib/unstable/glib-St
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_get_render_glyph_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-get-render-glyph-func"></a><h3>cairo_user_font_face_get_render_glyph_func ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-render-glyph-func-t" title="cairo_user_scaled_font_render_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_render_glyph_func_t</span></a>  cairo_user_font_face_get_render_glyph_func
+<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-render-glyph-func-t" title="cairo_user_scaled_font_render_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_render_glyph_func_t</span></a> cairo_user_font_face_get_render_glyph_func
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);</pre>
 <p>
 Gets the glyph rendering function of a user-font.
@@ -572,22 +547,19 @@ Gets the glyph rendering function of a user-font.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The render_glyph callback of <em class="parameter"><code>font_face</code></em>
-or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error has occurred.
-
-</td>
+<td>The render_glyph callback of <em class="parameter"><code>font_face</code></em>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error has occurred.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_set_unicode_to_glyph_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-set-unicode-to-glyph-func"></a><h3>cairo_user_font_face_set_unicode_to_glyph_func ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_user_font_face_set_unicode_to_glyph_func
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
@@ -607,8 +579,7 @@ is created from it.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>unicode_to_glyph_func</code></em> :</span></p></td>
@@ -620,9 +591,9 @@ is created from it.
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_get_unicode_to_glyph_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-get-unicode-to-glyph-func"></a><h3>cairo_user_font_face_get_unicode_to_glyph_func ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-unicode-to-glyph-func-t" title="cairo_user_scaled_font_unicode_to_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_unicode_to_glyph_func_t</span></a>  cairo_user_font_face_get_unicode_to_glyph_func
+<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-unicode-to-glyph-func-t" title="cairo_user_scaled_font_unicode_to_glyph_func_t ()"><span class="returnvalue">cairo_user_scaled_font_unicode_to_glyph_func_t</span></a> cairo_user_font_face_get_unicode_to_glyph_func
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);</pre>
 <p>
 Gets the unicode-to-glyph conversion function of a user-font.
@@ -632,22 +603,19 @@ Gets the unicode-to-glyph conversion function of a user-font.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The unicode_to_glyph callback of <em class="parameter"><code>font_face</code></em>
-or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error occurred.
-
-</td>
+<td>The unicode_to_glyph callback of <em class="parameter"><code>font_face</code></em>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error occurred.</td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_set_text_to_glyphs_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-set-text-to-glyphs-func"></a><h3>cairo_user_font_face_set_text_to_glyphs_func ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                cairo_user_font_face_set_text_to_glyphs_func
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>,
@@ -667,8 +635,7 @@ is created from it.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>text_to_glyphs_func</code></em> :</span></p></td>
@@ -680,9 +647,9 @@ is created from it.
 <p class="since">Since 1.8</p>
 </div>
 <hr>
-<div class="refsect2" title="cairo_user_font_face_get_text_to_glyphs_func ()">
+<div class="refsect2">
 <a name="cairo-user-font-face-get-text-to-glyphs-func"></a><h3>cairo_user_font_face_get_text_to_glyphs_func ()</h3>
-<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-text-to-glyphs-func-t" title="cairo_user_scaled_font_text_to_glyphs_func_t ()"><span class="returnvalue">cairo_user_scaled_font_text_to_glyphs_func_t</span></a>  cairo_user_font_face_get_text_to_glyphs_func
+<pre class="programlisting"><a class="link" href="cairo-User-Fonts.html#cairo-user-scaled-font-text-to-glyphs-func-t" title="cairo_user_scaled_font_text_to_glyphs_func_t ()"><span class="returnvalue">cairo_user_scaled_font_text_to_glyphs_func_t</span></a> cairo_user_font_face_get_text_to_glyphs_func
                                                         (<em class="parameter"><code><a class="link" href="cairo-cairo-font-face-t.html#cairo-font-face-t" title="cairo_font_face_t"><span class="type">cairo_font_face_t</span></a> *font_face</code></em>);</pre>
 <p>
 Gets the text-to-glyphs conversion function of a user-font.
@@ -692,15 +659,12 @@ Gets the text-to-glyphs conversion function of a user-font.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_face</code></em> :</span></p></td>
-<td>A user font face
-</td>
+<td>A user font face</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The text_to_glyphs callback of <em class="parameter"><code>font_face</code></em>
-or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error occurred.
-
-</td>
+<td>The text_to_glyphs callback of <em class="parameter"><code>font_face</code></em>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none set or an error occurred.</td>
 </tr>
 </tbody>
 </table></div>
@@ -710,6 +674,6 @@ or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.ht
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

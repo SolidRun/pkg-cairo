@@ -36,6 +36,8 @@
 
 #include "cairoint.h"
 
+#if CAIRO_HAS_XCB_SHM_FUNCTIONS
+
 #include "cairo-xcb-private.h"
 
 #include <xcb/shm.h>
@@ -43,11 +45,18 @@
 #include <sys/shm.h>
 #include <errno.h>
 
+#define CAIRO_MAX_SHM_MEMORY (16*1024*1024)
+
 /* a simple buddy allocator for memory pools
  * XXX fragmentation? use Doug Lea's malloc?
  */
 
 typedef struct _cairo_xcb_shm_mem_block cairo_xcb_shm_mem_block_t;
+
+typedef enum {
+    PENDING_WAIT,
+    PENDING_POLL
+} shm_wait_type_t;
 
 struct _cairo_xcb_shm_mem_block {
     unsigned int bits;
@@ -262,7 +271,7 @@ merge_buddies (cairo_xcb_shm_mem_pool_t *pi,
 	       cairo_xcb_shm_mem_block_t *block,
 	       unsigned int max_bits)
 {
-    size_t block_offset = block_offset = block - pi->blocks;
+    size_t block_offset = block - pi->blocks;
     unsigned int bits = block->bits;
 
     while (bits < max_bits - 1) {
@@ -412,20 +421,108 @@ _cairo_xcb_shm_mem_pool_destroy (cairo_xcb_shm_mem_pool_t *pool)
     free (pool);
 }
 
+static void
+_cairo_xcb_shm_info_finalize (cairo_xcb_shm_info_t *shm_info)
+{
+    cairo_xcb_connection_t *connection = shm_info->connection;
+
+    assert (CAIRO_MUTEX_IS_LOCKED (connection->shm_mutex));
+
+    _cairo_xcb_shm_mem_pool_free (shm_info->pool, shm_info->mem);
+    _cairo_freepool_free (&connection->shm_info_freelist, shm_info);
+
+    /* scan for old, unused pools - hold at least one in reserve */
+    if (! cairo_list_is_singular (&connection->shm_pools))
+    {
+	cairo_xcb_shm_mem_pool_t *pool, *next;
+	cairo_list_t head;
+
+	cairo_list_init (&head);
+	cairo_list_move (connection->shm_pools.next, &head);
+
+	cairo_list_foreach_entry_safe (pool, next, cairo_xcb_shm_mem_pool_t,
+				       &connection->shm_pools, link)
+	{
+	    if (pool->free_bytes == pool->max_bytes) {
+		_cairo_xcb_connection_shm_detach (connection, pool->shmseg);
+		_cairo_xcb_shm_mem_pool_destroy (pool);
+	    }
+	}
+
+	cairo_list_move (head.next, &connection->shm_pools);
+    }
+}
+
+static void
+_cairo_xcb_shm_process_pending (cairo_xcb_connection_t *connection, shm_wait_type_t wait)
+{
+    cairo_xcb_shm_info_t *info, *next;
+    xcb_get_input_focus_reply_t *reply;
+
+    assert (CAIRO_MUTEX_IS_LOCKED (connection->shm_mutex));
+    cairo_list_foreach_entry_safe (info, next, cairo_xcb_shm_info_t,
+				   &connection->shm_pending, pending)
+    {
+	switch (wait) {
+	case PENDING_WAIT:
+	     reply = xcb_wait_for_reply (connection->xcb_connection,
+					 info->sync.sequence, NULL);
+	     break;
+	case PENDING_POLL:
+	    if (! xcb_poll_for_reply (connection->xcb_connection,
+				      info->sync.sequence,
+				      (void **) &reply, NULL))
+		/* We cannot be sure the server finished with this image yet, so
+		 * try again later. All other shm info are guaranteed to have a
+		 * larger sequence number and thus don't have to be checked. */
+		return;
+	    break;
+	default:
+	    /* silence Clang static analyzer warning */
+	    ASSERT_NOT_REACHED;
+	    reply = NULL;
+	}
+
+	free (reply);
+	cairo_list_del (&info->pending);
+	_cairo_xcb_shm_info_finalize (info);
+    }
+}
+
 cairo_int_status_t
 _cairo_xcb_connection_allocate_shm_info (cairo_xcb_connection_t *connection,
 					 size_t size,
+					 cairo_bool_t might_reuse,
 					 cairo_xcb_shm_info_t **shm_info_out)
 {
     cairo_xcb_shm_info_t *shm_info;
     cairo_xcb_shm_mem_pool_t *pool, *next;
     size_t bytes, maxbits = 16, minbits = 8;
+    size_t shm_allocated = 0;
     void *mem = NULL;
     cairo_status_t status;
 
     assert (connection->flags & CAIRO_XCB_HAS_SHM);
 
     CAIRO_MUTEX_LOCK (connection->shm_mutex);
+    _cairo_xcb_shm_process_pending (connection, PENDING_POLL);
+
+    if (might_reuse) {
+	cairo_list_foreach_entry (shm_info, cairo_xcb_shm_info_t,
+		&connection->shm_pending, pending) {
+	    if (shm_info->size >= size) {
+		cairo_list_del (&shm_info->pending);
+		CAIRO_MUTEX_UNLOCK (connection->shm_mutex);
+
+		xcb_discard_reply (connection->xcb_connection, shm_info->sync.sequence);
+		shm_info->sync.sequence = XCB_NONE;
+
+		*shm_info_out = shm_info;
+		return CAIRO_STATUS_SUCCESS;
+	    }
+	}
+    }
+
     cairo_list_foreach_entry_safe (pool, next, cairo_xcb_shm_mem_pool_t,
 				   &connection->shm_pools, link)
     {
@@ -442,7 +539,14 @@ _cairo_xcb_connection_allocate_shm_info (cairo_xcb_connection_t *connection,
 	    _cairo_xcb_connection_shm_detach (connection,
 					      pool->shmseg);
 	    _cairo_xcb_shm_mem_pool_destroy (pool);
+	} else {
+	    shm_allocated += pool->max_bytes;
 	}
+    }
+
+    if (unlikely (shm_allocated >= CAIRO_MAX_SHM_MEMORY)) {
+	CAIRO_MUTEX_UNLOCK (connection->shm_mutex);
+	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
     }
 
     pool = malloc (sizeof (cairo_xcb_shm_mem_pool_t));
@@ -461,11 +565,12 @@ _cairo_xcb_connection_allocate_shm_info (cairo_xcb_connection_t *connection,
 	if (pool->shmid != -1)
 	    break;
 
-	if (errno == EINVAL && bytes > size) {
-	    bytes >>= 1;
-	    continue;
-	}
-    } while (FALSE);
+	/* If the allocation failed because we asked for too much memory, we try
+	 * again with a smaller request, as long as our allocation still fits. */
+	bytes >>= 1;
+	if (errno != EINVAL || bytes < size)
+	    break;
+    } while (TRUE);
     if (pool->shmid == -1) {
 	int err = errno;
 	if (! (err == EINVAL || err == ENOMEM))
@@ -511,8 +616,10 @@ _cairo_xcb_connection_allocate_shm_info (cairo_xcb_connection_t *connection,
     shm_info->connection = connection;
     shm_info->pool = pool;
     shm_info->shm = pool->shmseg;
+    shm_info->size = size;
     shm_info->offset = (char *) mem - (char *) pool->base;
     shm_info->mem = mem;
+    shm_info->sync.sequence = XCB_NONE;
 
     /* scan for old, unused pools */
     cairo_list_foreach_entry_safe (pool, next, cairo_xcb_shm_mem_pool_t,
@@ -535,42 +642,38 @@ _cairo_xcb_shm_info_destroy (cairo_xcb_shm_info_t *shm_info)
 {
     cairo_xcb_connection_t *connection = shm_info->connection;
 
+    /* We can only return shm_info->mem to the allocator when we can be sure
+     * that the X server no longer reads from it. Since the X server processes
+     * requests in order, we send a GetInputFocus here.
+     * _cairo_xcb_shm_process_pending () will later check if the reply for that
+     * request was received and then actually mark this memory area as free. */
+
     CAIRO_MUTEX_LOCK (connection->shm_mutex);
+    assert (shm_info->sync.sequence == XCB_NONE);
+    shm_info->sync = xcb_get_input_focus (connection->xcb_connection);
 
-    _cairo_xcb_shm_mem_pool_free (shm_info->pool, shm_info->mem);
-    _cairo_freepool_free (&connection->shm_info_freelist, shm_info);
+    cairo_list_init (&shm_info->pending);
+    cairo_list_add_tail (&shm_info->pending, &connection->shm_pending);
+    CAIRO_MUTEX_UNLOCK (connection->shm_mutex);
+}
 
-    /* scan for old, unused pools - hold at least one in reserve */
-    if (! cairo_list_is_singular (&connection->shm_pools) &&
-	_cairo_xcb_connection_take_socket (connection) == CAIRO_STATUS_SUCCESS)
-    {
-	cairo_xcb_shm_mem_pool_t *pool, *next;
-	cairo_list_t head;
-
-	cairo_list_init (&head);
-	cairo_list_move (connection->shm_pools.next, &head);
-
-	cairo_list_foreach_entry_safe (pool, next, cairo_xcb_shm_mem_pool_t,
-				       &connection->shm_pools, link)
-	{
-	    if (pool->free_bytes == pool->max_bytes) {
-		_cairo_xcb_connection_shm_detach (connection, pool->shmseg);
-		_cairo_xcb_shm_mem_pool_destroy (pool);
-	    }
-	}
-
-	cairo_list_move (head.next, &connection->shm_pools);
-    }
-
+void
+_cairo_xcb_connection_shm_mem_pools_flush (cairo_xcb_connection_t *connection)
+{
+    CAIRO_MUTEX_LOCK (connection->shm_mutex);
+    _cairo_xcb_shm_process_pending (connection, PENDING_WAIT);
     CAIRO_MUTEX_UNLOCK (connection->shm_mutex);
 }
 
 void
 _cairo_xcb_connection_shm_mem_pools_fini (cairo_xcb_connection_t *connection)
 {
+    assert (cairo_list_is_empty (&connection->shm_pending));
     while (! cairo_list_is_empty (&connection->shm_pools)) {
 	_cairo_xcb_shm_mem_pool_destroy (cairo_list_first_entry (&connection->shm_pools,
 								 cairo_xcb_shm_mem_pool_t,
 								 link));
     }
 }
+
+#endif /* CAIRO_HAS_XCB_SHM_FUNCTIONS */

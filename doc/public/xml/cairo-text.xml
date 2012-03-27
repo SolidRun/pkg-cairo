@@ -71,7 +71,7 @@ enum                <link linkend="cairo-text-cluster-flags-t">cairo_text_cluste
                                                          <parameter><link linkend="cairo-font-weight-t"><type>cairo_font_weight_t</type></link> weight</parameter>);
 const <link linkend="char"><returnvalue>char</returnvalue></link> *        <link linkend="cairo-toy-font-face-get-family">cairo_toy_font_face_get_family</link>      (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
 <link linkend="cairo-font-slant-t"><returnvalue>cairo_font_slant_t</returnvalue></link>  <link linkend="cairo-toy-font-face-get-slant">cairo_toy_font_face_get_slant</link>       (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
-<link linkend="cairo-font-weight-t"><returnvalue>cairo_font_weight_t</returnvalue></link>  <link linkend="cairo-toy-font-face-get-weight">cairo_toy_font_face_get_weight</link>     (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
+<link linkend="cairo-font-weight-t"><returnvalue>cairo_font_weight_t</returnvalue></link> <link linkend="cairo-toy-font-face-get-weight">cairo_toy_font_face_get_weight</link>      (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);
 <link linkend="cairo-glyph-t"><returnvalue>cairo_glyph_t</returnvalue></link> *     <link linkend="cairo-glyph-allocate">cairo_glyph_allocate</link>                (<parameter><link linkend="int"><type>int</type></link> num_glyphs</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-glyph-free">cairo_glyph_free</link>                    (<parameter><link linkend="cairo-glyph-t"><type>cairo_glyph_t</type></link> *glyphs</parameter>);
 <link linkend="cairo-text-cluster-t"><returnvalue>cairo_text_cluster_t</returnvalue></link> * <link linkend="cairo-text-cluster-allocate">cairo_text_cluster_allocate</link>      (<parameter><link linkend="int"><type>int</type></link> num_clusters</parameter>);
@@ -133,24 +133,21 @@ with respect to the overall origin
 </para><variablelist role="struct">
 <varlistentry><term>unsigned&#160;<link linkend="long"><type>long</type></link>&#160;<structfield id="cairo-glyph-t.index">index</structfield>;</term>
 <listitem><simpara>glyph index in the font. The exact interpretation of the
-     glyph index depends on the font technology being used.
-</simpara></listitem>
+glyph index depends on the font technology being used.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><link linkend="double"><type>double</type></link>&#160;<structfield id="cairo-glyph-t.x">x</structfield>;</term>
 <listitem><simpara>the offset in the X direction between the origin used for
-    drawing or measuring the string and the origin of this glyph.
-</simpara></listitem>
+drawing or measuring the string and the origin of this glyph.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><link linkend="double"><type>double</type></link>&#160;<structfield id="cairo-glyph-t.y">y</structfield>;</term>
 <listitem><simpara>the offset in the Y direction between the origin used for
-    drawing or measuring the string and the origin of this glyph.
-</simpara></listitem>
+drawing or measuring the string and the origin of this glyph.</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-font-slant-t" role="enum">
 <title>enum cairo_font_slant_t</title>
 <indexterm zone="cairo-font-slant-t"><primary sortas="font_slant_t">cairo_font_slant_t</primary></indexterm>
-<programlisting>typedef enum _cairo_font_slant {
+<programlisting>typedef enum {
     CAIRO_FONT_SLANT_NORMAL,
     CAIRO_FONT_SLANT_ITALIC,
     CAIRO_FONT_SLANT_OBLIQUE
@@ -178,7 +175,7 @@ Specifies variants of a font face based on their slant.
 <refsect2 id="cairo-font-weight-t" role="enum">
 <title>enum cairo_font_weight_t</title>
 <indexterm zone="cairo-font-weight-t"><primary sortas="font_weight_t">cairo_font_weight_t</primary></indexterm>
-<programlisting>typedef enum _cairo_font_weight {
+<programlisting>typedef enum {
     CAIRO_FONT_WEIGHT_NORMAL,
     CAIRO_FONT_WEIGHT_BOLD
 } cairo_font_weight_t;
@@ -222,18 +219,16 @@ See <link linkend="cairo-show-text-glyphs"><function>cairo_show_text_glyphs()</f
 text operations.
 </para><variablelist role="struct">
 <varlistentry><term><link linkend="int"><type>int</type></link>&#160;<structfield id="cairo-text-cluster-t.num-bytes">num_bytes</structfield>;</term>
-<listitem><simpara>the number of bytes of UTF-8 text covered by cluster
-</simpara></listitem>
+<listitem><simpara>the number of bytes of UTF-8 text covered by cluster</simpara></listitem>
 </varlistentry>
 <varlistentry><term><link linkend="int"><type>int</type></link>&#160;<structfield id="cairo-text-cluster-t.num-glyphs">num_glyphs</structfield>;</term>
-<listitem><simpara>the number of glyphs covered by cluster
-</simpara></listitem>
+<listitem><simpara>the number of glyphs covered by cluster</simpara></listitem>
 </varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-text-cluster-flags-t" role="enum" condition="since:1.8">
 <title>enum cairo_text_cluster_flags_t</title>
 <indexterm zone="cairo-text-cluster-flags-t" role="1.8"><primary sortas="text_cluster_flags_t">cairo_text_cluster_flags_t</primary></indexterm>
-<programlisting>typedef enum _cairo_text_cluster_flags {
+<programlisting>typedef enum {
     CAIRO_TEXT_CLUSTER_FLAG_BACKWARD = 0x00000001
 } cairo_text_cluster_flags_t;
 </programlisting>
@@ -307,17 +302,13 @@ This function is equivalent to a call to <link linkend="cairo-toy-font-face-crea
 followed by <link linkend="cairo-set-font-face"><function>cairo_set_font_face()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>family</parameter>&#160;:</term>
-<listitem><simpara>a font family name, encoded in UTF-8
-</simpara></listitem></varlistentry>
+<listitem><simpara>a font family name, encoded in UTF-8</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>slant</parameter>&#160;:</term>
-<listitem><simpara>the slant for the font
-</simpara></listitem></varlistentry>
+<listitem><simpara>the slant for the font</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>weight</parameter>&#160;:</term>
-<listitem><simpara>the weight for the font
-</simpara></listitem></varlistentry>
+<listitem><simpara>the weight for the font</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-set-font-size" role="function">
 <title>cairo_set_font_size ()</title>
@@ -337,11 +328,9 @@ If text is drawn without a call to <link linkend="cairo-set-font-size"><function
 font size is 10.0.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>size</parameter>&#160;:</term>
-<listitem><simpara>the new font size, in user space units
-</simpara></listitem></varlistentry>
+<listitem><simpara>the new font size, in user space units</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-set-font-matrix" role="function">
 <title>cairo_set_font_matrix ()</title>
@@ -357,12 +346,10 @@ complex font matrix can be used to shear the font
 or stretch it unequally along the two axes
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>matrix</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-matrix-t"><type>cairo_matrix_t</type></link> describing a transform to be applied to
-the current font.
-</simpara></listitem></varlistentry>
+the current font.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-get-font-matrix" role="function">
 <title>cairo_get_font_matrix ()</title>
@@ -374,11 +361,9 @@ Stores the current font matrix into <parameter>matrix</parameter>. See
 <link linkend="cairo-set-font-matrix"><function>cairo_set_font_matrix()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>matrix</parameter>&#160;:</term>
-<listitem><simpara>return value for the matrix
-</simpara></listitem></varlistentry>
+<listitem><simpara>return value for the matrix</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-set-font-options" role="function">
 <title>cairo_set_font_options ()</title>
@@ -393,11 +378,9 @@ has a default value (like <link linkend="CAIRO-ANTIALIAS-DEFAULT:CAPS"><literal>
 from the surface is used.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>options</parameter>&#160;:</term>
-<listitem><simpara>font options to use
-</simpara></listitem></varlistentry>
+<listitem><simpara>font options to use</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-get-font-options" role="function">
 <title>cairo_get_font_options ()</title>
@@ -411,12 +394,10 @@ from the underlying surface; they are literally the options
 passed to <link linkend="cairo-set-font-options"><function>cairo_set_font_options()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>options</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-font-options-t"><type>cairo_font_options_t</type></link> object into which to store
-  the retrieved options. All existing values are overwritten
-</simpara></listitem></varlistentry>
+the retrieved options. All existing values are overwritten</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-set-font-face" role="function">
 <title>cairo_set_font_face ()</title>
@@ -429,11 +410,9 @@ Replaces the current <link linkend="cairo-font-face-t"><type>cairo_font_face_t</
 destroyed if there are no other references to it.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to restore to the default font
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to restore to the default font</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-get-font-face" role="function">
 <title>cairo_get_font_face ()</title>
@@ -443,20 +422,17 @@ destroyed if there are no other references to it.
 Gets the current font face for a <link linkend="cairo-t"><type>cairo_t</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the current font face.  This object is owned by
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the current font face.  This object is owned by
 cairo. To keep a reference to it, you must call
 <link linkend="cairo-font-face-reference"><function>cairo_font_face_reference()</function></link>.
-
 This function never returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>. If memory cannot be allocated, a
 special "nil" <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> object will be returned on which
 <link linkend="cairo-font-face-status"><function>cairo_font_face_status()</function></link> returns <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>. Using
 this nil object will cause its error state to propagate to other
 objects it is passed to, (for example, calling
 <link linkend="cairo-set-font-face"><function>cairo_set_font_face()</function></link> with a nil font will trigger an error that
-will shutdown the <link linkend="cairo-t"><type>cairo_t</type></link> object).
-</simpara></listitem></varlistentry>
+will shutdown the <link linkend="cairo-t"><type>cairo_t</type></link> object).</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-set-scaled-font" role="function" condition="since:1.2">
 <title>cairo_set_scaled_font ()</title>
@@ -471,11 +447,9 @@ same as that of the <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_
 using <link linkend="cairo-scaled-font-get-ctm"><function>cairo_scaled_font_get_ctm()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>scaled_font</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-get-scaled-font" role="function" condition="since:1.4">
 <title>cairo_get_scaled_font ()</title>
@@ -485,21 +459,17 @@ using <link linkend="cairo-scaled-font-get-ctm"><function>cairo_scaled_font_get_
 Gets the current scaled font for a <link linkend="cairo-t"><type>cairo_t</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the current scaled font. This object is owned by
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the current scaled font. This object is owned by
 cairo. To keep a reference to it, you must call
 <link linkend="cairo-scaled-font-reference"><function>cairo_scaled_font_reference()</function></link>.
-
 This function never returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>. If memory cannot be allocated, a
 special "nil" <link linkend="cairo-scaled-font-t"><type>cairo_scaled_font_t</type></link> object will be returned on which
 <link linkend="cairo-scaled-font-status"><function>cairo_scaled_font_status()</function></link> returns <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>. Using
 this nil object will cause its error state to propagate to other
 objects it is passed to, (for example, calling
 <link linkend="cairo-set-scaled-font"><function>cairo_set_scaled_font()</function></link> with a nil font will trigger an error that
-will shutdown the <link linkend="cairo-t"><type>cairo_t</type></link> object).
-
-</simpara></listitem></varlistentry>
+will shutdown the <link linkend="cairo-t"><type>cairo_t</type></link> object).</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.4</para></refsect2>
 <refsect2 id="cairo-show-text" role="function">
 <title>cairo_show_text ()</title>
@@ -533,11 +503,9 @@ serious text-using applications. See <link linkend="cairo-show-glyphs"><function
 "real" text display API in cairo.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utf8</parameter>&#160;:</term>
-<listitem><simpara>a NUL-terminated string of text encoded in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a NUL-terminated string of text encoded in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-show-glyphs" role="function">
 <title>cairo_show_glyphs ()</title>
@@ -551,14 +519,11 @@ rendered according to the current font face, font size
 (font matrix), and font options.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>glyphs</parameter>&#160;:</term>
-<listitem><simpara>array of glyphs to show
-</simpara></listitem></varlistentry>
+<listitem><simpara>array of glyphs to show</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>num_glyphs</parameter>&#160;:</term>
-<listitem><simpara>number of glyphs to show
-</simpara></listitem></varlistentry>
+<listitem><simpara>number of glyphs to show</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-show-text-glyphs" role="function" condition="since:1.8">
 <title>cairo_show_text_glyphs ()</title>
@@ -597,29 +562,21 @@ following clusters move backward.
 See <link linkend="cairo-text-cluster-t"><type>cairo_text_cluster_t</type></link> for constraints on valid clusters.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a cairo context
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo context</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utf8</parameter>&#160;:</term>
-<listitem><simpara>a string of text encoded in UTF-8
-</simpara></listitem></varlistentry>
+<listitem><simpara>a string of text encoded in UTF-8</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utf8_len</parameter>&#160;:</term>
-<listitem><simpara>length of <parameter>utf8</parameter> in bytes, or -1 if it is NUL-terminated
-</simpara></listitem></varlistentry>
+<listitem><simpara>length of <parameter>utf8</parameter> in bytes, or -1 if it is NUL-terminated</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>glyphs</parameter>&#160;:</term>
-<listitem><simpara>array of glyphs to show
-</simpara></listitem></varlistentry>
+<listitem><simpara>array of glyphs to show</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>num_glyphs</parameter>&#160;:</term>
-<listitem><simpara>number of glyphs to show
-</simpara></listitem></varlistentry>
+<listitem><simpara>number of glyphs to show</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>clusters</parameter>&#160;:</term>
-<listitem><simpara>array of cluster mapping information
-</simpara></listitem></varlistentry>
+<listitem><simpara>array of cluster mapping information</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>num_clusters</parameter>&#160;:</term>
-<listitem><simpara>number of clusters in the mapping
-</simpara></listitem></varlistentry>
+<listitem><simpara>number of clusters in the mapping</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cluster_flags</parameter>&#160;:</term>
-<listitem><simpara>cluster mapping flags
-</simpara></listitem></varlistentry>
+<listitem><simpara>cluster mapping flags</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-font-extents" role="function">
 <title>cairo_font_extents ()</title>
@@ -630,12 +587,10 @@ See <link linkend="cairo-text-cluster-t"><type>cairo_text_cluster_t</type></link
 Gets the font extents for the currently selected font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>extents</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-font-extents-t"><type>cairo_font_extents_t</type></link> object into which the results
-will be stored.
-</simpara></listitem></varlistentry>
+will be stored.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-text-extents" role="function">
 <title>cairo_text_extents ()</title>
@@ -659,15 +614,12 @@ likely to not affect the size of the rectangle, though they will
 affect the x_advance and y_advance values.
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utf8</parameter>&#160;:</term>
-<listitem><simpara>a NUL-terminated string of text encoded in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a NUL-terminated string of text encoded in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>extents</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-text-extents-t"><type>cairo_text_extents_t</type></link> object into which the results
-will be stored
-</simpara></listitem></varlistentry>
+will be stored</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-glyph-extents" role="function">
 <title>cairo_glyph_extents ()</title>
@@ -689,18 +641,14 @@ Note that whitespace glyphs do not contribute to the size of the
 rectangle (extents.width and extents.height).
 </para><variablelist role="params">
 <varlistentry><term><parameter>cr</parameter>&#160;:</term>
-<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a <link linkend="cairo-t"><type>cairo_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>glyphs</parameter>&#160;:</term>
-<listitem><simpara>an array of <link linkend="cairo-glyph-t"><type>cairo_glyph_t</type></link> objects
-</simpara></listitem></varlistentry>
+<listitem><simpara>an array of <link linkend="cairo-glyph-t"><type>cairo_glyph_t</type></link> objects</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>num_glyphs</parameter>&#160;:</term>
-<listitem><simpara>the number of elements in <parameter>glyphs</parameter>
-</simpara></listitem></varlistentry>
+<listitem><simpara>the number of elements in <parameter>glyphs</parameter></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>extents</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-text-extents-t"><type>cairo_text_extents_t</type></link> object into which the results
-will be stored
-</simpara></listitem></varlistentry>
+will be stored</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-toy-font-face-create" role="function" condition="since:1.8">
 <title>cairo_toy_font_face_create ()</title>
@@ -723,18 +671,13 @@ The <link linkend="cairo-select-font-face"><function>cairo_select_font_face()</f
 See that function for limitations and other details of toy font faces.
 </para><variablelist role="params">
 <varlistentry><term><parameter>family</parameter>&#160;:</term>
-<listitem><simpara>a font family name, encoded in UTF-8
-</simpara></listitem></varlistentry>
+<listitem><simpara>a font family name, encoded in UTF-8</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>slant</parameter>&#160;:</term>
-<listitem><simpara>the slant for the font
-</simpara></listitem></varlistentry>
+<listitem><simpara>the slant for the font</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>weight</parameter>&#160;:</term>
-<listitem><simpara>the weight for the font
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
- <link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>the weight for the font</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a newly created <link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link>. Free with
+<link linkend="cairo-font-face-destroy"><function>cairo_font_face_destroy()</function></link> when you are done using it.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-toy-font-face-get-family" role="function" condition="since:1.8">
 <title>cairo_toy_font_face_get_family ()</title>
@@ -744,12 +687,9 @@ See that function for limitations and other details of toy font faces.
 Gets the familly name of a toy font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A toy font face
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The family name.  This string is owned by the font face
-and remains valid as long as the font face is alive (referenced).
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>A toy font face</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The family name.  This string is owned by the font face
+and remains valid as long as the font face is alive (referenced).</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-toy-font-face-get-slant" role="function" condition="since:1.8">
 <title>cairo_toy_font_face_get_slant ()</title>
@@ -759,25 +699,19 @@ and remains valid as long as the font face is alive (referenced).
 Gets the slant a toy font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A toy font face
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The slant value
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>A toy font face</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The slant value</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-toy-font-face-get-weight" role="function" condition="since:1.8">
 <title>cairo_toy_font_face_get_weight ()</title>
 <indexterm zone="cairo-toy-font-face-get-weight" role="1.8"><primary sortas="toy_font_face_get_weight">cairo_toy_font_face_get_weight</primary></indexterm>
-<programlisting><link linkend="cairo-font-weight-t"><returnvalue>cairo_font_weight_t</returnvalue></link>  cairo_toy_font_face_get_weight     (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
+<programlisting><link linkend="cairo-font-weight-t"><returnvalue>cairo_font_weight_t</returnvalue></link> cairo_toy_font_face_get_weight      (<parameter><link linkend="cairo-font-face-t"><type>cairo_font_face_t</type></link> *font_face</parameter>);</programlisting>
 <para>
 Gets the weight a toy font.
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_face</parameter>&#160;:</term>
-<listitem><simpara>A toy font face
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The weight value
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>A toy font face</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The weight value</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-glyph-allocate" role="function" condition="since:1.8">
 <title>cairo_glyph_allocate ()</title>
@@ -797,12 +731,9 @@ or if out of memory.  That means, the <link linkend="NULL:CAPS"><literal>NULL</l
 signals out-of-memory only if <parameter>num_glyphs</parameter> was positive.
 </para><variablelist role="params">
 <varlistentry><term><parameter>num_glyphs</parameter>&#160;:</term>
-<listitem><simpara>number of glyphs to allocate
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the newly allocated array of glyphs that should be
-         freed using <link linkend="cairo-glyph-free"><function>cairo_glyph_free()</function></link>
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>number of glyphs to allocate</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the newly allocated array of glyphs that should be
+freed using <link linkend="cairo-glyph-free"><function>cairo_glyph_free()</function></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-glyph-free" role="function" condition="since:1.8">
 <title>cairo_glyph_free ()</title>
@@ -817,8 +748,7 @@ For all other uses, user can use their own allocation method
 for glyphs.
 </para><variablelist role="params">
 <varlistentry><term><parameter>glyphs</parameter>&#160;:</term>
-<listitem><simpara>array of glyphs to free, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>array of glyphs to free, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-text-cluster-allocate" role="function" condition="since:1.8">
 <title>cairo_text_cluster_allocate ()</title>
@@ -838,12 +768,9 @@ or if out of memory.  That means, the <link linkend="NULL:CAPS"><literal>NULL</l
 signals out-of-memory only if <parameter>num_clusters</parameter> was positive.
 </para><variablelist role="params">
 <varlistentry><term><parameter>num_clusters</parameter>&#160;:</term>
-<listitem><simpara>number of text_clusters to allocate
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the newly allocated array of text clusters that should be
-         freed using <link linkend="cairo-text-cluster-free"><function>cairo_text_cluster_free()</function></link>
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>number of text_clusters to allocate</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the newly allocated array of text clusters that should be
+freed using <link linkend="cairo-text-cluster-free"><function>cairo_text_cluster_free()</function></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 <refsect2 id="cairo-text-cluster-free" role="function" condition="since:1.8">
 <title>cairo_text_cluster_free ()</title>
@@ -858,8 +785,7 @@ For all other uses, user can use their own allocation method
 for text clusters.
 </para><variablelist role="params">
 <varlistentry><term><parameter>clusters</parameter>&#160;:</term>
-<listitem><simpara>array of text clusters to free, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>array of text clusters to free, or <link linkend="NULL:CAPS"><literal>NULL</literal></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.8</para></refsect2>
 
 </refsect1>

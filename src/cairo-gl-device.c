@@ -3,6 +3,7 @@
  * Copyright © 2009 Eric Anholt
  * Copyright © 2009 Chris Wilson
  * Copyright © 2005,2010 Red Hat, Inc
+ * Copyright © 2010 Linaro Limited
  *
  * This library is free software; you can redistribute it and/or
  * modify it either under the terms of the GNU Lesser General Public
@@ -36,6 +37,7 @@
  *	Carl Worth <cworth@cworth.org>
  *	Chris Wilson <chris@chris-wilson.co.uk>
  *	Eric Anholt <eric@anholt.net>
+ *	Alexandros Frantzis <alexandros.frantzis@linaro.org>
  */
 
 #include "cairoint.h"
@@ -85,9 +87,7 @@ _gl_flush (void *device)
     ctx->pre_shader = NULL;
     _cairo_gl_set_shader (ctx, NULL);
 
-    glBindBufferARB (GL_ARRAY_BUFFER_ARB, 0);
-
-    glDisableClientState (GL_VERTEX_ARRAY);
+    ctx->dispatch.BindBuffer (GL_ARRAY_BUFFER, 0);
 
     glDisable (GL_SCISSOR_TEST);
     glDisable (GL_BLEND);
@@ -113,24 +113,30 @@ static void
 _gl_destroy (void *device)
 {
     cairo_gl_context_t *ctx = device;
-    cairo_scaled_font_t *scaled_font, *next_scaled_font;
     int n;
 
     ctx->acquire (ctx);
 
-    cairo_list_foreach_entry_safe (scaled_font,
-				   next_scaled_font,
-				   cairo_scaled_font_t,
-				   &ctx->fonts,
-				   link)
-    {
-	_cairo_scaled_font_revoke_ownership (scaled_font);
+    while (! cairo_list_is_empty (&ctx->fonts)) {
+	cairo_gl_font_t *font;
+
+	font = cairo_list_first_entry (&ctx->fonts,
+				       cairo_gl_font_t,
+				       link);
+
+	cairo_list_del (&font->base.link);
+	cairo_list_del (&font->link);
+	free (font);
     }
 
     for (n = 0; n < ARRAY_LENGTH (ctx->glyph_cache); n++)
 	_cairo_gl_glyph_cache_fini (ctx, &ctx->glyph_cache[n]);
 
+    _cairo_array_fini (&ctx->tristrip_indices);
+
     cairo_region_destroy (ctx->clip_region);
+
+    free (ctx->vb_mem);
 
     ctx->destroy (ctx);
 
@@ -152,52 +158,73 @@ cairo_status_t
 _cairo_gl_context_init (cairo_gl_context_t *ctx)
 {
     cairo_status_t status;
+    cairo_gl_dispatch_t *dispatch = &ctx->dispatch;
+    int gl_version = _cairo_gl_get_version ();
+    cairo_gl_flavor_t gl_flavor = _cairo_gl_get_flavor ();
+    const char *env;
     int n;
 
     _cairo_device_init (&ctx->base, &_cairo_gl_device_backend);
 
+    ctx->compositor = _cairo_gl_span_compositor_get ();
+
+    /* XXX The choice of compositor should be made automatically at runtime.
+     * However, it is useful to force one particular compositor whilst
+     * testing.
+     */
+    env = getenv ("CAIRO_GL_COMPOSITOR");
+    if (env) {
+	if (strcmp(env, "msaa") == 0)
+	    ctx->compositor = _cairo_gl_msaa_compositor_get ();
+    }
+
     memset (ctx->glyph_cache, 0, sizeof (ctx->glyph_cache));
     cairo_list_init (&ctx->fonts);
 
-    if (glewInit () != GLEW_OK)
-	return _cairo_error (CAIRO_STATUS_INVALID_FORMAT); /* XXX */
+    /* Support only GL version >= 1.3 */
+    if (gl_version < CAIRO_GL_VERSION_ENCODE (1, 3))
+	return _cairo_error (CAIRO_STATUS_DEVICE_ERROR);
 
-    if (! GLEW_EXT_framebuffer_object ||
-	! GLEW_ARB_texture_env_combine ||
-	! GLEW_EXT_bgra)
-    {
-	fprintf (stderr,
-		 "Required GL extensions not available:\n");
-	if (! GLEW_EXT_framebuffer_object)
-	    fprintf (stderr, "    GL_EXT_framebuffer_object\n");
-	if (! GLEW_ARB_texture_env_combine)
-	    fprintf (stderr, "    GL_ARB_texture_env_combine\n");
-        if (! GLEW_ARB_vertex_buffer_object)
-	    fprintf (stderr, "    GL_ARB_vertex_buffer_object\n");
-
-	/* EXT_bgra is used in two places:
-	 * - draw_image to upload common pixman formats without hand-swizzling.
-	 * - get_image to download common pixman formats without hand-swizzling.
-	 */
-	if (! GLEW_EXT_bgra)
-	    fprintf (stderr, "    GL_EXT_bgra\n");
-
-	return _cairo_error (CAIRO_STATUS_INVALID_FORMAT); /* XXX */
+    /* Check for required extensions */
+    if (gl_flavor == CAIRO_GL_FLAVOR_DESKTOP) {
+	if (_cairo_gl_has_extension ("GL_ARB_texture_non_power_of_two"))
+	    ctx->tex_target = GL_TEXTURE_2D;
+	else if (_cairo_gl_has_extension ("GL_ARB_texture_rectangle"))
+	    ctx->tex_target = GL_TEXTURE_RECTANGLE;
+	else
+	    return _cairo_error (CAIRO_STATUS_DEVICE_ERROR);
+    }
+    else {
+	if (_cairo_gl_has_extension ("GL_OES_texture_npot"))
+	    ctx->tex_target = GL_TEXTURE_2D;
+	else
+	    return _cairo_error (CAIRO_STATUS_DEVICE_ERROR);
     }
 
-    if (! GLEW_ARB_texture_non_power_of_two &&
-	! GLEW_ARB_texture_rectangle ) {
-	fprintf (stderr,
-		 "Required GL extensions not available:\n");
-	fprintf (stderr, "    GL_ARB_texture_non_power_of_two, GL_ARB_texture_rectangle\n");
-    }
+    if (gl_flavor == CAIRO_GL_FLAVOR_DESKTOP &&
+	gl_version < CAIRO_GL_VERSION_ENCODE (2, 1) &&
+	! _cairo_gl_has_extension ("GL_ARB_pixel_buffer_object"))
+	return _cairo_error (CAIRO_STATUS_DEVICE_ERROR);
 
-    if (! GLEW_ARB_texture_non_power_of_two)
-	ctx->tex_target = GL_TEXTURE_RECTANGLE_EXT;
-    else
-	ctx->tex_target = GL_TEXTURE_2D;
+    if (gl_flavor == CAIRO_GL_FLAVOR_ES &&
+	! _cairo_gl_has_extension ("GL_EXT_texture_format_BGRA8888"))
+	return _cairo_error (CAIRO_STATUS_DEVICE_ERROR);
+
+    ctx->has_map_buffer = (gl_flavor == CAIRO_GL_FLAVOR_DESKTOP ||
+			   (gl_flavor == CAIRO_GL_FLAVOR_ES &&
+			    _cairo_gl_has_extension ("GL_OES_mapbuffer")));
+
+    ctx->has_mesa_pack_invert =
+	_cairo_gl_has_extension ("GL_MESA_pack_invert");
+
+    ctx->has_packed_depth_stencil =
+	((gl_flavor == CAIRO_GL_FLAVOR_DESKTOP &&
+	 _cairo_gl_has_extension ("GL_EXT_packed_depth_stencil")) ||
+	(gl_flavor == CAIRO_GL_FLAVOR_ES &&
+	 _cairo_gl_has_extension ("GL_OES_packed_depth_stencil")));
 
     ctx->current_operator = -1;
+    ctx->gl_flavor = gl_flavor;
 
     status = _cairo_gl_context_init_shaders (ctx);
     if (unlikely (status))
@@ -211,22 +238,26 @@ _cairo_gl_context_init (cairo_gl_context_t *ctx)
     if (unlikely (status))
         return status;
 
-    /* Set up the dummy texture for tex_env_combine with constant color. */
-    glGenTextures (1, &ctx->dummy_tex);
-    glBindTexture (ctx->tex_target, ctx->dummy_tex);
-    glTexImage2D (ctx->tex_target, 0, GL_RGBA, 1, 1, 0,
-		  GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    if (! ctx->has_map_buffer) {
+	ctx->vb_mem = _cairo_malloc_ab (CAIRO_GL_VBO_SIZE, 1);
+	if (unlikely (ctx->vb_mem == NULL)) {
+	    _cairo_cache_fini (&ctx->gradients);
+	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	}
+    }
+
+    _cairo_array_init (&ctx->tristrip_indices, sizeof(int));
 
     /* PBO for any sort of texture upload */
-    glGenBuffersARB (1, &ctx->texture_load_pbo);
-    glGenBuffersARB (1, &ctx->vbo);
+    dispatch->GenBuffers (1, &ctx->texture_load_pbo);
+    dispatch->GenBuffers (1, &ctx->vbo);
 
     ctx->max_framebuffer_size = 0;
     glGetIntegerv (GL_MAX_RENDERBUFFER_SIZE, &ctx->max_framebuffer_size);
     ctx->max_texture_size = 0;
     glGetIntegerv (GL_MAX_TEXTURE_SIZE, &ctx->max_texture_size);
     ctx->max_textures = 0;
-    glGetIntegerv (GL_MAX_TEXTURE_UNITS, &ctx->max_textures);
+    glGetIntegerv (GL_MAX_TEXTURE_IMAGE_UNITS, &ctx->max_textures);
 
     for (n = 0; n < ARRAY_LENGTH (ctx->glyph_cache); n++)
 	_cairo_gl_glyph_cache_init (&ctx->glyph_cache[n]);
@@ -241,7 +272,7 @@ _cairo_gl_context_activate (cairo_gl_context_t *ctx,
     if (ctx->max_textures <= (GLint) tex_unit) {
         if (tex_unit < 2) {
             _cairo_gl_composite_flush (ctx);
-            _cairo_gl_context_destroy_operand (ctx, ctx->max_textures - 1);   
+            _cairo_gl_context_destroy_operand (ctx, ctx->max_textures - 1);
         }
         glActiveTexture (ctx->max_textures - 1);
     } else {
@@ -254,6 +285,7 @@ _cairo_gl_ensure_framebuffer (cairo_gl_context_t *ctx,
                               cairo_gl_surface_t *surface)
 {
     GLenum status;
+    cairo_gl_dispatch_t *dispatch = &ctx->dispatch;
 
     if (likely (surface->fb))
         return;
@@ -261,25 +293,29 @@ _cairo_gl_ensure_framebuffer (cairo_gl_context_t *ctx,
     /* Create a framebuffer object wrapping the texture so that we can render
      * to it.
      */
-    glGenFramebuffersEXT (1, &surface->fb);
-    glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, surface->fb);
-    glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT,
-			       GL_COLOR_ATTACHMENT0_EXT,
-			       ctx->tex_target,
-			       surface->tex,
-			       0);
+    dispatch->GenFramebuffers (1, &surface->fb);
+    dispatch->BindFramebuffer (GL_FRAMEBUFFER, surface->fb);
+    dispatch->FramebufferTexture2D (GL_FRAMEBUFFER,
+				    GL_COLOR_ATTACHMENT0,
+				    ctx->tex_target,
+				    surface->tex,
+				    0);
+#if CAIRO_HAS_GL_SURFACE
+    glDrawBuffer (GL_COLOR_ATTACHMENT0);
+    glReadBuffer (GL_COLOR_ATTACHMENT0);
+#endif
 
-    status = glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT);
-    if (status != GL_FRAMEBUFFER_COMPLETE_EXT) {
+    status = dispatch->CheckFramebufferStatus (GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
 	const char *str;
 	switch (status) {
-	//case GL_FRAMEBUFFER_UNDEFINED_EXT: str= "undefined"; break;
-	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT: str= "incomplete attachment"; break;
-	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT: str= "incomplete/missing attachment"; break;
-	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT: str= "incomplete draw buffer"; break;
-	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: str= "incomplete read buffer"; break;
-	case GL_FRAMEBUFFER_UNSUPPORTED_EXT: str= "unsupported"; break;
-	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT: str= "incomplete multiple"; break;
+	//case GL_FRAMEBUFFER_UNDEFINED: str= "undefined"; break;
+	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: str= "incomplete attachment"; break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: str= "incomplete/missing attachment"; break;
+	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: str= "incomplete draw buffer"; break;
+	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: str= "incomplete read buffer"; break;
+	case GL_FRAMEBUFFER_UNSUPPORTED: str= "unsupported"; break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE: str= "incomplete multiple"; break;
 	default: str = "unknown error"; break;
 	}
 
@@ -289,38 +325,117 @@ _cairo_gl_ensure_framebuffer (cairo_gl_context_t *ctx,
     }
 }
 
+cairo_bool_t
+_cairo_gl_ensure_stencil (cairo_gl_context_t *ctx,
+			  cairo_gl_surface_t *surface)
+{
+	cairo_gl_dispatch_t *dispatch = &ctx->dispatch;
+#if CAIRO_HAS_GL_SURFACE
+	GLenum internal_format = GL_DEPTH_STENCIL;
+#elif CAIRO_HAS_GLESV2_SURFACE
+	GLenum internal_format = GL_DEPTH24_STENCIL8_OES;
+#endif
+
+	if (! _cairo_gl_surface_is_texture (surface))
+		return TRUE; /* best guess for now, will check later */
+
+	if (surface->depth_stencil)
+		return TRUE;
+
+	if (! ctx->has_packed_depth_stencil)
+		return FALSE;
+
+	_cairo_gl_ensure_framebuffer (ctx, surface);
+
+	dispatch->GenRenderbuffers (1, &surface->depth_stencil);
+	dispatch->BindRenderbuffer (GL_RENDERBUFFER, surface->depth_stencil);
+	dispatch->RenderbufferStorage (GL_RENDERBUFFER, internal_format,
+				       surface->width, surface->height);
+
+	ctx->dispatch.FramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+					       GL_RENDERBUFFER, surface->depth_stencil);
+	ctx->dispatch.FramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+					       GL_RENDERBUFFER, surface->depth_stencil);
+	if (dispatch->CheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		ctx->dispatch.DeleteRenderbuffers (1, &surface->depth_stencil);
+		surface->depth_stencil = 0;
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/*
+ * Stores a parallel projection transformation in matrix 'm',
+ * using column-major order.
+ *
+ * This is equivalent to:
+ *
+ * glLoadIdentity()
+ * gluOrtho2D()
+ *
+ * The calculation for the ortho tranformation was taken from the
+ * mesa source code.
+ */
+static void
+_gl_identity_ortho (GLfloat *m,
+		    GLfloat left, GLfloat right,
+		    GLfloat bottom, GLfloat top)
+{
+#define M(row,col)  m[col*4+row]
+    M(0,0) = 2.f / (right - left);
+    M(0,1) = 0.f;
+    M(0,2) = 0.f;
+    M(0,3) = -(right + left) / (right - left);
+
+    M(1,0) = 0.f;
+    M(1,1) = 2.f / (top - bottom);
+    M(1,2) = 0.f;
+    M(1,3) = -(top + bottom) / (top - bottom);
+
+    M(2,0) = 0.f;
+    M(2,1) = 0.f;
+    M(2,2) = -1.f;
+    M(2,3) = 0.f;
+
+    M(3,0) = 0.f;
+    M(3,1) = 0.f;
+    M(3,2) = 0.f;
+    M(3,3) = 1.f;
+#undef M
+}
+
 void
 _cairo_gl_context_set_destination (cairo_gl_context_t *ctx,
                                    cairo_gl_surface_t *surface)
 {
-    if (ctx->current_target == surface)
+    if (ctx->current_target == surface && ! surface->needs_update)
         return;
 
     _cairo_gl_composite_flush (ctx);
 
     ctx->current_target = surface;
+    surface->needs_update = FALSE;
 
     if (_cairo_gl_surface_is_texture (surface)) {
         _cairo_gl_ensure_framebuffer (ctx, surface);
-        glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, surface->fb);
-        glDrawBuffer (GL_COLOR_ATTACHMENT0_EXT);
-        glReadBuffer (GL_COLOR_ATTACHMENT0_EXT);
+        ctx->dispatch.BindFramebuffer (GL_FRAMEBUFFER, surface->fb);
     } else {
         ctx->make_current (ctx, surface);
-        glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, 0);
+        ctx->dispatch.BindFramebuffer (GL_FRAMEBUFFER, 0);
+
+#if CAIRO_HAS_GL_SURFACE
         glDrawBuffer (GL_BACK_LEFT);
         glReadBuffer (GL_BACK_LEFT);
+#endif
     }
 
     glViewport (0, 0, surface->width, surface->height);
 
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
     if (_cairo_gl_surface_is_texture (surface))
-	glOrtho (0, surface->width, 0, surface->height, -1.0, 1.0);
+	_gl_identity_ortho (ctx->modelviewprojection_matrix,
+			    0, surface->width, 0, surface->height);
     else
-	glOrtho (0, surface->width, surface->height, 0, -1.0, 1.0);
-
-    glMatrixMode (GL_MODELVIEW);
-    glLoadIdentity ();
+	_gl_identity_ortho (ctx->modelviewprojection_matrix,
+			    0, surface->width, surface->height, 0);
 }

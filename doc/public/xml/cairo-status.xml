@@ -46,7 +46,7 @@ code is required before or after each individual cairo function call.
 <refsect2 id="cairo-status-t" role="enum">
 <title>enum cairo_status_t</title>
 <indexterm zone="cairo-status-t"><primary sortas="status_t">cairo_status_t</primary></indexterm>
-<programlisting>typedef enum _cairo_status {
+<programlisting>typedef enum {
     CAIRO_STATUS_SUCCESS = 0,
 
     CAIRO_STATUS_NO_MEMORY,
@@ -84,6 +84,8 @@ code is required before or after each individual cairo function call.
     CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED,
     CAIRO_STATUS_DEVICE_TYPE_MISMATCH,
     CAIRO_STATUS_DEVICE_ERROR,
+    CAIRO_STATUS_INVALID_MESH_CONSTRUCTION,
+    CAIRO_STATUS_DEVICE_FINISHED,
 
     CAIRO_STATUS_LAST_STATUS
 } cairo_status_t;
@@ -278,6 +280,19 @@ to get a human-readable representation of an error message.
 <listitem><simpara>an operation to the device caused an unspecified error (Since 1.10)
 </simpara></listitem>
 </varlistentry>
+<varlistentry id="CAIRO-STATUS-INVALID-MESH-CONSTRUCTION:CAPS" role="constant">
+<term><literal>CAIRO_STATUS_INVALID_MESH_CONSTRUCTION</literal></term>
+<listitem><simpara>a mesh pattern
+  construction operation was used outside of a
+  <link linkend="cairo-mesh-pattern-begin-patch"><function>cairo_mesh_pattern_begin_patch()</function></link>/<link linkend="cairo-mesh-pattern-end-patch"><function>cairo_mesh_pattern_end_patch()</function></link>
+  pair (Since 1.12)
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-STATUS-DEVICE-FINISHED:CAPS" role="constant">
+<term><literal>CAIRO_STATUS_DEVICE_FINISHED</literal></term>
+<listitem><simpara>target device has been finished (Since 1.12)
+</simpara></listitem>
+</varlistentry>
 <varlistentry id="CAIRO-STATUS-LAST-STATUS:CAPS" role="constant">
 <term><literal>CAIRO_STATUS_LAST_STATUS</literal></term>
 <listitem><simpara>this is a special value indicating the number of
@@ -295,10 +310,8 @@ to get a human-readable representation of an error message.
 Provides a human-readable description of a <link linkend="cairo-status-t"><type>cairo_status_t</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>status</parameter>&#160;:</term>
-<listitem><simpara>a cairo status
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a string representation of the status
-</simpara></listitem></varlistentry>
+<listitem><simpara>a cairo status</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a string representation of the status</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="cairo-debug-reset-static-data" role="function">
 <title>cairo_debug_reset_static_data ()</title>

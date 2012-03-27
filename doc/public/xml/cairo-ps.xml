@@ -83,25 +83,19 @@ vary. See <link linkend="cairo-ps-surface-set-size"><function>cairo_ps_surface_s
 </para><variablelist role="params">
 <varlistentry><term><parameter>filename</parameter>&#160;:</term>
 <listitem><simpara>a filename for the PS output (must be writable), <link linkend="NULL:CAPS"><literal>NULL</literal></link> may be
-           used to specify no output. This will generate a PS surface that
-           may be queried and used as a source, without generating a
-           temporary file.
-</simpara></listitem></varlistentry>
+used to specify no output. This will generate a PS surface that
+may be queried and used as a source, without generating a
+temporary file.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width_in_points</parameter>&#160;:</term>
-<listitem><simpara>width of the surface, in points (1 point == 1/72.0 inch)
-</simpara></listitem></varlistentry>
+<listitem><simpara>width of the surface, in points (1 point == 1/72.0 inch)</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>height_in_points</parameter>&#160;:</term>
-<listitem><simpara>height of the surface, in points (1 point == 1/72.0 inch)
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a pointer to the newly created surface. The caller
+<listitem><simpara>height of the surface, in points (1 point == 1/72.0 inch)</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a pointer to the newly created surface. The caller
 owns the surface and should call <link linkend="cairo-surface-destroy"><function>cairo_surface_destroy()</function></link> when done
 with it.
-
 This function always returns a valid pointer, but it will return a
 pointer to a "nil" surface if an error such as out of memory
-occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface_status()</function></link> to check for this.
-
-</simpara></listitem></varlistentry>
+occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface_status()</function></link> to check for this.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-create-for-stream" role="function" condition="since:1.2">
 <title>cairo_ps_surface_create_for_stream ()</title>
@@ -122,28 +116,21 @@ output can vary. See <link linkend="cairo-ps-surface-set-size"><function>cairo_p
 </para><variablelist role="params">
 <varlistentry><term><parameter>write_func</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-write-func-t"><type>cairo_write_func_t</type></link> to accept the output data, may be <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-             to indicate a no-op <parameter>write_func</parameter>. With a no-op <parameter>write_func</parameter>,
-             the surface may be queried or used as a source without
-             generating any temporary files.
-</simpara></listitem></varlistentry>
+to indicate a no-op <parameter>write_func</parameter>. With a no-op <parameter>write_func</parameter>,
+the surface may be queried or used as a source without
+generating any temporary files.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>closure</parameter>&#160;:</term>
-<listitem><simpara>the closure argument for <parameter>write_func</parameter>
-</simpara></listitem></varlistentry>
+<listitem><simpara>the closure argument for <parameter>write_func</parameter></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width_in_points</parameter>&#160;:</term>
-<listitem><simpara>width of the surface, in points (1 point == 1/72.0 inch)
-</simpara></listitem></varlistentry>
+<listitem><simpara>width of the surface, in points (1 point == 1/72.0 inch)</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>height_in_points</parameter>&#160;:</term>
-<listitem><simpara>height of the surface, in points (1 point == 1/72.0 inch)
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a pointer to the newly created surface. The caller
+<listitem><simpara>height of the surface, in points (1 point == 1/72.0 inch)</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>a pointer to the newly created surface. The caller
 owns the surface and should call <link linkend="cairo-surface-destroy"><function>cairo_surface_destroy()</function></link> when done
 with it.
-
 This function always returns a valid pointer, but it will return a
 pointer to a "nil" surface if an error such as out of memory
-occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface_status()</function></link> to check for this.
-
-</simpara></listitem></varlistentry>
+occurs. You can use <link linkend="cairo-surface-status"><function>cairo_surface_status()</function></link> to check for this.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-restrict-to-level" role="function" condition="since:1.6">
 <title>cairo_ps_surface_restrict_to_level ()</title>
@@ -162,16 +149,14 @@ this is to call this function immediately after creating the
 surface.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>level</parameter>&#160;:</term>
-<listitem><simpara>PostScript level
-</simpara></listitem></varlistentry>
+<listitem><simpara>PostScript level</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-level-t" role="enum">
 <title>enum cairo_ps_level_t</title>
 <indexterm zone="cairo-ps-level-t"><primary sortas="ps_level_t">cairo_ps_level_t</primary></indexterm>
-<programlisting>typedef enum _cairo_ps_level {
+<programlisting>typedef enum {
     CAIRO_PS_LEVEL_2,
     CAIRO_PS_LEVEL_3
 } cairo_ps_level_t;
@@ -202,11 +187,9 @@ Used to retrieve the list of supported levels. See
 <link linkend="cairo-ps-surface-restrict-to-level"><function>cairo_ps_surface_restrict_to_level()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>levels</parameter>&#160;:</term>
-<listitem><simpara>supported level list
-</simpara></listitem></varlistentry>
+<listitem><simpara>supported level list</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>num_levels</parameter>&#160;:</term>
-<listitem><simpara>list length
-</simpara></listitem></varlistentry>
+<listitem><simpara>list length</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-level-to-string" role="function" condition="since:1.6">
 <title>cairo_ps_level_to_string ()</title>
@@ -218,11 +201,8 @@ will return <link linkend="NULL:CAPS"><literal>NULL</literal></link> if <paramet
 for a way to get the list of valid level ids.
 </para><variablelist role="params">
 <varlistentry><term><parameter>level</parameter>&#160;:</term>
-<listitem><simpara>a level id
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the string associated to given level.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>a level id</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>the string associated to given level.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-surface-set-eps" role="function" condition="since:1.6">
 <title>cairo_ps_surface_set_eps ()</title>
@@ -241,11 +221,9 @@ surface. An Encapsulated PostScript file should never contain more
 than one page.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>eps</parameter>&#160;:</term>
-<listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> to output EPS format PostScript
-</simpara></listitem></varlistentry>
+<listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> to output EPS format PostScript</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-surface-get-eps" role="function" condition="since:1.6">
 <title>cairo_ps_surface_get_eps ()</title>
@@ -255,11 +233,8 @@ than one page.
 Check whether the PostScript surface will output Encapsulated PostScript.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the surface will output Encapsulated PostScript.
-
-</simpara></listitem></varlistentry>
+<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the surface will output Encapsulated PostScript.</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.6</para></refsect2>
 <refsect2 id="cairo-ps-surface-set-size" role="function" condition="since:1.2">
 <title>cairo_ps_surface_set_size ()</title>
@@ -279,14 +254,11 @@ surface or immediately after completing a page with either
 <link linkend="cairo-show-page"><function>cairo_show_page()</function></link> or <link linkend="cairo-copy-page"><function>cairo_copy_page()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width_in_points</parameter>&#160;:</term>
-<listitem><simpara>new surface width, in points (1 point == 1/72.0 inch)
-</simpara></listitem></varlistentry>
+<listitem><simpara>new surface width, in points (1 point == 1/72.0 inch)</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>height_in_points</parameter>&#160;:</term>
-<listitem><simpara>new surface height, in points (1 point == 1/72.0 inch)
-</simpara></listitem></varlistentry>
+<listitem><simpara>new surface height, in points (1 point == 1/72.0 inch)</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-dsc-begin-setup" role="function" condition="since:1.2">
 <title>cairo_ps_surface_dsc_begin_setup ()</title>
@@ -306,8 +278,7 @@ and before any drawing is performed to the surface.
 See <link linkend="cairo-ps-surface-dsc-comment"><function>cairo_ps_surface_dsc_comment()</function></link> for more details.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-dsc-begin-page-setup" role="function" condition="since:1.2">
 <title>cairo_ps_surface_dsc_begin_page_setup ()</title>
@@ -329,8 +300,7 @@ performed to the surface.
 See <link linkend="cairo-ps-surface-dsc-comment"><function>cairo_ps_surface_dsc_comment()</function></link> for more details.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 <refsect2 id="cairo-ps-surface-dsc-comment" role="function" condition="since:1.2">
 <title>cairo_ps_surface_dsc_comment ()</title>
@@ -344,7 +314,7 @@ Emit a comment into the PostScript output for the given surface.
 The comment is expected to conform to the PostScript Language
 Document Structuring Conventions (DSC). Please see that manual for
 details on the available comments and their meanings. In
-particular, the %<link linkend="IncludeFeature"><literal>IncludeFeature</literal></link> comment allows a
+particular, the %%IncludeFeature comment allows a
 device-independent means of controlling printer device features. So
 the PostScript Printer Description Files Specification will also be
 a useful reference.
@@ -371,24 +341,26 @@ section apply only to a single page.
 <para>
 For comments to appear in the header section, this function should
 be called after the surface is created, but before a call to
-<link linkend="cairo-ps-surface-begin-setup"><function>cairo_ps_surface_begin_setup()</function></link>.
+<link linkend="cairo-ps-surface-dsc-begin-setup"><function>cairo_ps_surface_dsc_begin_setup()</function></link>.
 </para>
 <para>
 For comments to appear in the Setup section, this function should
-be called after a call to <link linkend="cairo-ps-surface-begin-setup"><function>cairo_ps_surface_begin_setup()</function></link> but before
-a call to <link linkend="cairo-ps-surface-begin-page-setup"><function>cairo_ps_surface_begin_page_setup()</function></link>.
+be called after a call to <link linkend="cairo-ps-surface-dsc-begin-setup"><function>cairo_ps_surface_dsc_begin_setup()</function></link> but
+before a call to <link linkend="cairo-ps-surface-dsc-begin-page-setup"><function>cairo_ps_surface_dsc_begin_page_setup()</function></link>.
 </para>
 <para>
 For comments to appear in the PageSetup section, this function
-should be called after a call to <link linkend="cairo-ps-surface-begin-page-setup"><function>cairo_ps_surface_begin_page_setup()</function></link>.
+should be called after a call to
+<link linkend="cairo-ps-surface-dsc-begin-page-setup"><function>cairo_ps_surface_dsc_begin_page_setup()</function></link>.
 </para>
 <para>
-Note that it is only necessary to call <link linkend="cairo-ps-surface-begin-page-setup"><function>cairo_ps_surface_begin_page_setup()</function></link>
-for the first page of any surface. After a call to
-<link linkend="cairo-show-page"><function>cairo_show_page()</function></link> or <link linkend="cairo-copy-page"><function>cairo_copy_page()</function></link> comments are unambiguously
-directed to the PageSetup section of the current page. But it
-doesn't hurt to call this function at the beginning of every page
-as that consistency may make the calling code simpler.
+Note that it is only necessary to call
+<link linkend="cairo-ps-surface-dsc-begin-page-setup"><function>cairo_ps_surface_dsc_begin_page_setup()</function></link> for the first page of any
+surface. After a call to <link linkend="cairo-show-page"><function>cairo_show_page()</function></link> or <link linkend="cairo-copy-page"><function>cairo_copy_page()</function></link>
+comments are unambiguously directed to the PageSetup section of the
+current page. But it doesn't hurt to call this function at the
+beginning of every page as that consistency may make the calling
+code simpler.
 </para>
 <para>
 As a final note, cairo automatically generates several comments on
@@ -396,25 +368,24 @@ its own. As such, applications must not manually generate any of
 the following comments:
 </para>
 <para>
-Header section: %!PS-Adobe-3.0, %<link linkend="Creator"><literal>Creator</literal></link>, %<link linkend="CreationDate"><literal>CreationDate</literal></link>, %<link linkend="Pages"><literal>Pages</literal></link>,
-%<link linkend="BoundingBox"><literal>BoundingBox</literal></link>, %<link linkend="DocumentData"><literal>DocumentData</literal></link>, %<link linkend="LanguageLevel"><literal>LanguageLevel</literal></link>, %<link linkend="EndComments"><literal>EndComments</literal></link>.
+Header section: %!PS-Adobe-3.0, %%Creator, %%CreationDate, %%Pages,
+%%BoundingBox, %%DocumentData, %%LanguageLevel, %%EndComments.
 </para>
 <para>
-Setup section: %<link linkend="BeginSetup"><literal>BeginSetup</literal></link>, %<link linkend="EndSetup"><literal>EndSetup</literal></link>
+Setup section: %%BeginSetup, %%EndSetup
 </para>
 <para>
-PageSetup section: %<link linkend="BeginPageSetup"><literal>BeginPageSetup</literal></link>, %<link linkend="PageBoundingBox"><literal>PageBoundingBox</literal></link>,
-%<link linkend="EndPageSetup"><literal>EndPageSetup</literal></link>.
+PageSetup section: %%BeginPageSetup, %%PageBoundingBox, %%EndPageSetup.
 </para>
 <para>
-Other sections: %<link linkend="BeginProlog"><literal>BeginProlog</literal></link>, %<link linkend="EndProlog"><literal>EndProlog</literal></link>, %<link linkend="Page"><literal>Page</literal></link>, %<link linkend="Trailer"><literal>Trailer</literal></link>, %<link linkend="EOF:CAPS"><literal>EOF</literal></link>
+Other sections: %%BeginProlog, %%EndProlog, %%Page, %%Trailer, %%EOF
 </para>
 <para>
 Here is an example sequence showing how this function might be used:
 </para>
 <para>
 <informalexample><programlisting>
-<link linkend="cairo-surface-t">cairo_surface_t</link> *surface = cairo_ps_surface_create (filename, width, height);
+cairo_surface_t *surface = cairo_ps_surface_create (filename, width, height);
 ...
 cairo_ps_surface_dsc_comment (surface, "%%Title: My excellent document");
 cairo_ps_surface_dsc_comment (surface, "%%Copyright: Copyright (C) 2006 Cairo Lover")
@@ -435,11 +406,9 @@ cairo_ps_surface_dsc_comment (surface, "%%IncludeFeature: *PageSize A5");
 </programlisting></informalexample>
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
-<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>a PostScript <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>comment</parameter>&#160;:</term>
-<listitem><simpara>a comment string to be emitted into the PostScript output
-</simpara></listitem></varlistentry>
+<listitem><simpara>a comment string to be emitted into the PostScript output</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
 
 </refsect1>

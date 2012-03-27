@@ -30,12 +30,12 @@
       <sub name="Win32 Surfaces" link="cairo-Win32-Surfaces.html"/>
       <sub name="SVG Surfaces" link="cairo-SVG-Surfaces.html"/>
       <sub name="Quartz Surfaces" link="cairo-Quartz-Surfaces.html"/>
+      <sub name="XCB Surfaces" link="cairo-XCB-Surfaces.html"/>
       <sub name="XLib Surfaces" link="cairo-XLib-Surfaces.html"/>
     </sub>
     <sub name="Utilities" link="cairo-support.html">
       <sub name="cairo_matrix_t" link="cairo-cairo-matrix-t.html"/>
       <sub name="Error handling" link="cairo-Error-handling.html"/>
-      <sub name="Version Information" link="cairo-Version-Information.html"/>
       <sub name="Types" link="cairo-Types.html"/>
     </sub>
     <sub name="Index" link="index-all.html"/>
@@ -44,6 +44,7 @@
     <sub name="Index of new symbols in 1.6" link="index-1.6.html"/>
     <sub name="Index of new symbols in 1.8" link="index-1.8.html"/>
     <sub name="Index of new symbols in 1.10" link="index-1.10.html"/>
+    <sub name="Index of new symbols in 1.12" link="index-1.12.html"/>
     <sub name="Creating a language binding for cairo" link="language-bindings.html">
       <sub name="General considerations" link="language-bindings.html#bindings-general"/>
       <sub name="Memory management" link="bindings-memory.html"/>
@@ -164,6 +165,19 @@
     <keyword type="function" name="cairo_pattern_get_linear_points ()" link="cairo-cairo-pattern-t.html#cairo-pattern-get-linear-points" since="1.4"/>
     <keyword type="function" name="cairo_pattern_create_radial ()" link="cairo-cairo-pattern-t.html#cairo-pattern-create-radial"/>
     <keyword type="function" name="cairo_pattern_get_radial_circles ()" link="cairo-cairo-pattern-t.html#cairo-pattern-get-radial-circles" since="1.4"/>
+    <keyword type="function" name="cairo_pattern_create_mesh ()" link="cairo-cairo-pattern-t.html#cairo-pattern-create-mesh" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_begin_patch ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-begin-patch" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_end_patch ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-end-patch" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_move_to ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-move-to" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_line_to ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-line-to" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_curve_to ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-curve-to" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_set_control_point ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-set-control-point" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_set_corner_color_rgb ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-set-corner-color-rgb" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_set_corner_color_rgba ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-set-corner-color-rgba" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_get_patch_count ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-patch-count" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_get_path ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-path" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_get_control_point ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-control-point" since="1.12"/>
+    <keyword type="function" name="cairo_mesh_pattern_get_corner_color_rgba ()" link="cairo-cairo-pattern-t.html#cairo-mesh-pattern-get-corner-color-rgba" since="1.12"/>
     <keyword type="function" name="cairo_pattern_reference ()" link="cairo-cairo-pattern-t.html#cairo-pattern-reference"/>
     <keyword type="function" name="cairo_pattern_destroy ()" link="cairo-cairo-pattern-t.html#cairo-pattern-destroy"/>
     <keyword type="function" name="cairo_pattern_status ()" link="cairo-cairo-pattern-t.html#cairo-pattern-status"/>
@@ -343,9 +357,11 @@
     <keyword type="macro" name="CAIRO_MIME_TYPE_JPEG" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JPEG:CAPS"/>
     <keyword type="macro" name="CAIRO_MIME_TYPE_PNG" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-PNG:CAPS"/>
     <keyword type="macro" name="CAIRO_MIME_TYPE_URI" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-URI:CAPS"/>
+    <keyword type="macro" name="CAIRO_MIME_TYPE_UNIQUE_ID" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-UNIQUE-ID:CAPS"/>
     <keyword type="typedef" name="cairo_surface_t" link="cairo-cairo-surface-t.html#cairo-surface-t"/>
     <keyword type="enum" name="enum cairo_content_t" link="cairo-cairo-surface-t.html#cairo-content-t"/>
     <keyword type="function" name="cairo_surface_create_similar ()" link="cairo-cairo-surface-t.html#cairo-surface-create-similar"/>
+    <keyword type="function" name="cairo_surface_create_similar_image ()" link="cairo-cairo-surface-t.html#cairo-surface-create-similar-image" since="1.12"/>
     <keyword type="function" name="cairo_surface_create_for_rectangle ()" link="cairo-cairo-surface-t.html#cairo-surface-create-for-rectangle" since="1.10"/>
     <keyword type="function" name="cairo_surface_reference ()" link="cairo-cairo-surface-t.html#cairo-surface-reference"/>
     <keyword type="function" name="cairo_surface_destroy ()" link="cairo-cairo-surface-t.html#cairo-surface-destroy"/>
@@ -371,6 +387,8 @@
     <keyword type="function" name="cairo_surface_has_show_text_glyphs ()" link="cairo-cairo-surface-t.html#cairo-surface-has-show-text-glyphs" since="1.8"/>
     <keyword type="function" name="cairo_surface_set_mime_data ()" link="cairo-cairo-surface-t.html#cairo-surface-set-mime-data" since="1.10"/>
     <keyword type="function" name="cairo_surface_get_mime_data ()" link="cairo-cairo-surface-t.html#cairo-surface-get-mime-data" since="1.10"/>
+    <keyword type="function" name="cairo_surface_map_to_image ()" link="cairo-cairo-surface-t.html#cairo-surface-map-to-image" since="1.12"/>
+    <keyword type="function" name="cairo_surface_unmap_image ()" link="cairo-cairo-surface-t.html#cairo-surface-unmap-image" since="1.12"/>
     <keyword type="macro" name="CAIRO_HAS_IMAGE_SURFACE" link="cairo-Image-Surfaces.html#CAIRO-HAS-IMAGE-SURFACE:CAPS"/>
     <keyword type="enum" name="enum cairo_format_t" link="cairo-Image-Surfaces.html#cairo-format-t"/>
     <keyword type="function" name="cairo_format_stride_for_width ()" link="cairo-Image-Surfaces.html#cairo-format-stride-for-width" since="1.6"/>
@@ -430,6 +448,12 @@
     <keyword type="function" name="cairo_quartz_surface_create ()" link="cairo-Quartz-Surfaces.html#cairo-quartz-surface-create" since="1.4"/>
     <keyword type="function" name="cairo_quartz_surface_create_for_cg_context ()" link="cairo-Quartz-Surfaces.html#cairo-quartz-surface-create-for-cg-context" since="1.4"/>
     <keyword type="function" name="cairo_quartz_surface_get_cg_context ()" link="cairo-Quartz-Surfaces.html#cairo-quartz-surface-get-cg-context" since="1.4"/>
+    <keyword type="macro" name="CAIRO_HAS_XCB_SURFACE" link="cairo-XCB-Surfaces.html#CAIRO-HAS-XCB-SURFACE:CAPS"/>
+    <keyword type="function" name="cairo_xcb_surface_create ()" link="cairo-XCB-Surfaces.html#cairo-xcb-surface-create"/>
+    <keyword type="function" name="cairo_xcb_surface_create_for_bitmap ()" link="cairo-XCB-Surfaces.html#cairo-xcb-surface-create-for-bitmap"/>
+    <keyword type="function" name="cairo_xcb_surface_create_with_xrender_format ()" link="cairo-XCB-Surfaces.html#cairo-xcb-surface-create-with-xrender-format"/>
+    <keyword type="function" name="cairo_xcb_surface_set_size ()" link="cairo-XCB-Surfaces.html#cairo-xcb-surface-set-size"/>
+    <keyword type="function" name="cairo_xcb_surface_set_drawable ()" link="cairo-XCB-Surfaces.html#cairo-xcb-surface-set-drawable"/>
     <keyword type="macro" name="CAIRO_HAS_XLIB_SURFACE" link="cairo-XLib-Surfaces.html#CAIRO-HAS-XLIB-SURFACE:CAPS"/>
     <keyword type="function" name="cairo_xlib_surface_create ()" link="cairo-XLib-Surfaces.html#cairo-xlib-surface-create"/>
     <keyword type="function" name="cairo_xlib_surface_create_for_bitmap ()" link="cairo-XLib-Surfaces.html#cairo-xlib-surface-create-for-bitmap"/>
@@ -458,17 +482,6 @@
     <keyword type="enum" name="enum cairo_status_t" link="cairo-Error-handling.html#cairo-status-t"/>
     <keyword type="function" name="cairo_status_to_string ()" link="cairo-Error-handling.html#cairo-status-to-string"/>
     <keyword type="function" name="cairo_debug_reset_static_data ()" link="cairo-Error-handling.html#cairo-debug-reset-static-data"/>
-    <keyword type="" name="Compatibility" link="cairo-Version-Information.html#id2765635"/>
-    <keyword type="" name="Examining the version" link="cairo-Version-Information.html#id2765673"/>
-    <keyword type="macro" name="CAIRO_VERSION" link="cairo-Version-Information.html#CAIRO-VERSION:CAPS"/>
-    <keyword type="macro" name="CAIRO_VERSION_MAJOR" link="cairo-Version-Information.html#CAIRO-VERSION-MAJOR:CAPS"/>
-    <keyword type="macro" name="CAIRO_VERSION_MINOR" link="cairo-Version-Information.html#CAIRO-VERSION-MINOR:CAPS"/>
-    <keyword type="macro" name="CAIRO_VERSION_MICRO" link="cairo-Version-Information.html#CAIRO-VERSION-MICRO:CAPS"/>
-    <keyword type="macro" name="CAIRO_VERSION_STRING" link="cairo-Version-Information.html#CAIRO-VERSION-STRING:CAPS"/>
-    <keyword type="macro" name="CAIRO_VERSION_ENCODE()" link="cairo-Version-Information.html#CAIRO-VERSION-ENCODE:CAPS"/>
-    <keyword type="macro" name="CAIRO_VERSION_STRINGIZE()" link="cairo-Version-Information.html#CAIRO-VERSION-STRINGIZE:CAPS"/>
-    <keyword type="function" name="cairo_version ()" link="cairo-Version-Information.html#cairo-version"/>
-    <keyword type="function" name="cairo_version_string ()" link="cairo-Version-Information.html#cairo-version-string"/>
     <keyword type="typedef" name="cairo_bool_t" link="cairo-Types.html#cairo-bool-t"/>
     <keyword type="struct" name="cairo_user_data_key_t" link="cairo-Types.html#cairo-user-data-key-t"/>
     <keyword type="function" name="cairo_destroy_func_t ()" link="cairo-Types.html#cairo-destroy-func-t"/>
@@ -477,6 +490,9 @@
     <keyword type="constant" name="CAIRO_ANTIALIAS_NONE" link="cairo-cairo-t.html#CAIRO-ANTIALIAS-NONE:CAPS"/>
     <keyword type="constant" name="CAIRO_ANTIALIAS_GRAY" link="cairo-cairo-t.html#CAIRO-ANTIALIAS-GRAY:CAPS"/>
     <keyword type="constant" name="CAIRO_ANTIALIAS_SUBPIXEL" link="cairo-cairo-t.html#CAIRO-ANTIALIAS-SUBPIXEL:CAPS"/>
+    <keyword type="constant" name="CAIRO_ANTIALIAS_FAST" link="cairo-cairo-t.html#CAIRO-ANTIALIAS-FAST:CAPS"/>
+    <keyword type="constant" name="CAIRO_ANTIALIAS_GOOD" link="cairo-cairo-t.html#CAIRO-ANTIALIAS-GOOD:CAPS"/>
+    <keyword type="constant" name="CAIRO_ANTIALIAS_BEST" link="cairo-cairo-t.html#CAIRO-ANTIALIAS-BEST:CAPS"/>
     <keyword type="constant" name="CAIRO_FILL_RULE_WINDING" link="cairo-cairo-t.html#CAIRO-FILL-RULE-WINDING:CAPS"/>
     <keyword type="constant" name="CAIRO_FILL_RULE_EVEN_ODD" link="cairo-cairo-t.html#CAIRO-FILL-RULE-EVEN-ODD:CAPS"/>
     <keyword type="constant" name="CAIRO_LINE_CAP_BUTT" link="cairo-cairo-t.html#CAIRO-LINE-CAP-BUTT:CAPS"/>
@@ -532,6 +548,8 @@
     <keyword type="constant" name="CAIRO_PATTERN_TYPE_SURFACE" link="cairo-cairo-pattern-t.html#CAIRO-PATTERN-TYPE-SURFACE:CAPS"/>
     <keyword type="constant" name="CAIRO_PATTERN_TYPE_LINEAR" link="cairo-cairo-pattern-t.html#CAIRO-PATTERN-TYPE-LINEAR:CAPS"/>
     <keyword type="constant" name="CAIRO_PATTERN_TYPE_RADIAL" link="cairo-cairo-pattern-t.html#CAIRO-PATTERN-TYPE-RADIAL:CAPS"/>
+    <keyword type="constant" name="CAIRO_PATTERN_TYPE_MESH" link="cairo-cairo-pattern-t.html#CAIRO-PATTERN-TYPE-MESH:CAPS"/>
+    <keyword type="constant" name="CAIRO_PATTERN_TYPE_RASTER_SOURCE" link="cairo-cairo-pattern-t.html#CAIRO-PATTERN-TYPE-RASTER-SOURCE:CAPS"/>
     <keyword type="constant" name="CAIRO_REGION_OVERLAP_IN" link="cairo-Regions.html#CAIRO-REGION-OVERLAP-IN:CAPS"/>
     <keyword type="constant" name="CAIRO_REGION_OVERLAP_OUT" link="cairo-Regions.html#CAIRO-REGION-OVERLAP-OUT:CAPS"/>
     <keyword type="constant" name="CAIRO_REGION_OVERLAP_PART" link="cairo-Regions.html#CAIRO-REGION-OVERLAP-PART:CAPS"/>
@@ -565,6 +583,9 @@
     <keyword type="constant" name="CAIRO_DEVICE_TYPE_XCB" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XCB:CAPS"/>
     <keyword type="constant" name="CAIRO_DEVICE_TYPE_XLIB" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XLIB:CAPS"/>
     <keyword type="constant" name="CAIRO_DEVICE_TYPE_XML" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-XML:CAPS"/>
+    <keyword type="constant" name="CAIRO_DEVICE_TYPE_COGL" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-COGL:CAPS"/>
+    <keyword type="constant" name="CAIRO_DEVICE_TYPE_WIN32" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-WIN32:CAPS"/>
+    <keyword type="constant" name="CAIRO_DEVICE_TYPE_INVALID" link="cairo-cairo-device-t.html#CAIRO-DEVICE-TYPE-INVALID:CAPS"/>
     <keyword type="constant" name="CAIRO_CONTENT_COLOR" link="cairo-cairo-surface-t.html#CAIRO-CONTENT-COLOR:CAPS"/>
     <keyword type="constant" name="CAIRO_CONTENT_ALPHA" link="cairo-cairo-surface-t.html#CAIRO-CONTENT-ALPHA:CAPS"/>
     <keyword type="constant" name="CAIRO_CONTENT_COLOR_ALPHA" link="cairo-cairo-surface-t.html#CAIRO-CONTENT-COLOR-ALPHA:CAPS"/>
@@ -592,12 +613,14 @@
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_XML" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-XML:CAPS"/>
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_SKIA" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-SKIA:CAPS"/>
     <keyword type="constant" name="CAIRO_SURFACE_TYPE_SUBSURFACE" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-SUBSURFACE:CAPS"/>
+    <keyword type="constant" name="CAIRO_SURFACE_TYPE_COGL" link="cairo-cairo-surface-t.html#CAIRO-SURFACE-TYPE-COGL:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_INVALID" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-INVALID:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_ARGB32" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-ARGB32:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_RGB24" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-RGB24:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_A8" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-A8:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_A1" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-A1:CAPS"/>
     <keyword type="constant" name="CAIRO_FORMAT_RGB16_565" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-RGB16-565:CAPS"/>
+    <keyword type="constant" name="CAIRO_FORMAT_RGB30" link="cairo-Image-Surfaces.html#CAIRO-FORMAT-RGB30:CAPS"/>
     <keyword type="constant" name="CAIRO_PDF_VERSION_1_4" link="cairo-PDF-Surfaces.html#CAIRO-PDF-VERSION-1-4:CAPS"/>
     <keyword type="constant" name="CAIRO_PDF_VERSION_1_5" link="cairo-PDF-Surfaces.html#CAIRO-PDF-VERSION-1-5:CAPS"/>
     <keyword type="constant" name="CAIRO_PS_LEVEL_2" link="cairo-PostScript-Surfaces.html#CAIRO-PS-LEVEL-2:CAPS"/>
@@ -640,6 +663,8 @@
     <keyword type="constant" name="CAIRO_STATUS_USER_FONT_NOT_IMPLEMENTED" link="cairo-Error-handling.html#CAIRO-STATUS-USER-FONT-NOT-IMPLEMENTED:CAPS"/>
     <keyword type="constant" name="CAIRO_STATUS_DEVICE_TYPE_MISMATCH" link="cairo-Error-handling.html#CAIRO-STATUS-DEVICE-TYPE-MISMATCH:CAPS"/>
     <keyword type="constant" name="CAIRO_STATUS_DEVICE_ERROR" link="cairo-Error-handling.html#CAIRO-STATUS-DEVICE-ERROR:CAPS"/>
+    <keyword type="constant" name="CAIRO_STATUS_INVALID_MESH_CONSTRUCTION" link="cairo-Error-handling.html#CAIRO-STATUS-INVALID-MESH-CONSTRUCTION:CAPS"/>
+    <keyword type="constant" name="CAIRO_STATUS_DEVICE_FINISHED" link="cairo-Error-handling.html#CAIRO-STATUS-DEVICE-FINISHED:CAPS"/>
     <keyword type="constant" name="CAIRO_STATUS_LAST_STATUS" link="cairo-Error-handling.html#CAIRO-STATUS-LAST-STATUS:CAPS"/>
   </functions>
 </book>
