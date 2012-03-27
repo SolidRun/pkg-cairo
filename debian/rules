@@ -32,6 +32,7 @@ flavor_get = $(or $($(current_flavor)_$(1)),$($(1)))
 # Features:
 # --enable-png  PNG (default enabled)
 
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
@@ -42,6 +43,7 @@ configure_flags += \
 --enable-pdf --enable-ps \
 --enable-xlib \
 --enable-png \
+--enable-tee \
 --disable-silent-rules \
 --disable-maintainer-mode \
 --build=$(DEB_BUILD_GNU_TYPE)
@@ -52,8 +54,9 @@ endif
 
 main_configure_flags += \
 $(configure_flags) \
+--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH) \
 --enable-xlib --enable-svg \
---enable-xcb --enable-perf-utils
+--enable-xcb --enable-perf-utils # --enable-gl
 
 udeb_configure_flags += \
 $(configure_flags) \
@@ -117,12 +120,21 @@ clean:
 
 install-%: build-stamp-%
 	$(MAKE) -C $(builddir) install DESTDIR=$(installdir)
-	sed -i "/dependency_libs/ s/'.*'/''/" $(installdir)/usr/lib/*.la
+	for file in $$(find $(installdir)/usr/lib -name '*.la'); do \
+		sed -i "/dependency_libs/ s/'.*'/''/" $$file; \
+	done
 
 install:
 	dh_testdir
 	dh_testroot
 	dh_prep
+	for file in libcairo2-dev.install libcairo-gobject2.install \
+	            libcairo-script-interpreter2.install libcairo2.install \
+	            cairo-perf-utils.install; \
+	do \
+		sed -e"s,\$${DEB_HOST_MULTIARCH},${DEB_HOST_MULTIARCH},g" \
+			debian/$${file}.in > debian/$$file; \
+	done
 	dh_installdirs
 	for f in $(FLAVORS); do \
 	    debian/rules install-$$f; \
@@ -155,7 +167,7 @@ binary-arch: build install
 	dh_strip -plibcairo2-udeb
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -plibcairo2 --add-udeb=libcairo2-udeb -V 'libcairo2 (>= 1.10.0)' -- -c4
+	dh_makeshlibs -plibcairo2 --add-udeb=libcairo2-udeb -V 'libcairo2 (>= 1.10.2-2~)' -- -c4
 	dh_makeshlibs -plibcairo-gobject2 -V 'libcairo-gobject2 (>= 1.10.0)' -- -c4
 	dh_makeshlibs -plibcairo-script-interpreter2 -V 'libcairo-script-interpreter2 (>= 1.10.0)' -- -c4
 	dh_installdeb -s

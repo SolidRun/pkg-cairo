@@ -1,0 +1,29 @@
+From 0e199ccc574d77041e19b29cb9a228e2588d5dca Mon Sep 17 00:00:00 2001
+From: Pino Toscano <toscano.pino@tiscali.it>
+Date: Tue, 25 Jan 2011 14:33:11 +0100
+Subject: [PATCH] LD_PRELOAD is supported on Hurd
+
+LD_PRELOAD is supported on Hurd. Adding Hurd to the list of supported
+systems makes cairo-trace available on them as well.
+
+See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=608492
+---
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index f92e84a..48449d2 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -687,7 +687,7 @@ dnl The tracing utility requires LD_PRELOAD, so only build it for systems
+ dnl that are known to work.
+ 
+ case $host in
+-*-linux*|*-*bsd*|*-solaris*|*-*-darwin*|*-dragonfly*)
++*-linux*|*-*bsd*|*-solaris*|*-*-darwin*|*-dragonfly*|*-*-gnu*)
+ 	have_ld_preload="yes"
+ 	;;
+ *)
+-- 
+1.7.4.1
+

@@ -18,7 +18,7 @@ libcairo_script_interpreter_la_SOURCES = \
 	cairo-script-stack.c \
 	$(NULL)
 libcairo_script_interpreter_la_CFLAGS = $(CAIRO_CFLAGS)
-libcairo_script_interpreter_la_LDFLAGS = -version-info $(CAIRO_LIBTOOL_VERSION_INFO) -no-undefined $(export_symbols)
+libcairo_script_interpreter_la_LDFLAGS = -version-info $(CAIRO_LIBTOOL_VERSION_INFO) -no-undefined $(export_symbols) -export-symbols-regex \^cairo_.*
 libcairo_script_interpreter_la_LIBADD = $(top_builddir)/src/libcairo.la $(CAIRO_LIBS) -lz
 
 csi_replay_SOURCES = csi-replay.c

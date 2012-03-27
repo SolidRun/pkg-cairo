@@ -1,10 +1,106 @@
-cairo (1.10.2-2) UNRELEASED; urgency=low
+cairo (1.10.2-7) unstable; urgency=low
+
+  * debian/cairo-perf-utils.install.in,
+    debian/clean,
+    debian/libcairo-gobject2.install.in,
+    debian/libcairo-script-interpreter2.install.in,
+    debian/libcairo2-dev.install.in,
+    debian/libcairo2.install.in,
+    debian/control,
+    debian/rules:
+    + Update package for multi-arch. Thanks to Steve Langasek and
+      Gregory Hainaut for the patches (Closes: #631873).
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 06 Mar 2012 08:32:57 +0100
+
+cairo (1.10.2-6.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Refresh the ltmain-as-needed patch (closes: #648141). Thanks to Nobuhiro
+    Iwamatsu for the bug report and the initial patch.
+
+ -- Jakub Wilk <jwilk@debian.org>  Tue, 13 Dec 2011 19:06:10 +0100
+
+cairo (1.10.2-6.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Disable -flto support as it currently doesn't work with -Wl,--as-needed.
+    Closes: #625159.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Fri, 29 Jul 2011 19:00:54 +0200
+
+cairo (1.10.2-6) unstable; urgency=low
+
+  * debian/patches/03_export-symbols.patch:
+    + Only export ^cairo_* symbols for libcairo-gobject and
+      libcairo-script-interpreter (in addition to libcairo).
+      Fixes a FTBFS in the architectures that are still using
+      gcc-4.4, as one symbol isn't being exported there (since
+      that gcc doesn't support -flto).
+  * debian/libcairo-gobject2.symbols
+    debian/libcairo-script-interpreter2.symbols
+    + Remove the __gnu_lto_v1 symbol accordingly.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 26 Mar 2011 10:11:21 +0000
+
+cairo (1.10.2-5) unstable; urgency=low
+
+  * debian/control,
+    debian/libcairo2.symbols,
+    debian/rules:
+    + Temporarily disable the OpenGL/EGL backend, since that makes us
+      block on mesa / libdrm / linux-2.6 to migrate to testing, and
+      we're blocking the gobject-introspection transition, and we don't
+      want to tie them. It will be re-enabled soon after we migrate.
+      There shouldn't be anything depending on these symbols yet, so this
+      should be safe.
+  * debian/libcairo-gobject2.symbols,
+    debian/libcairo-script-interpreter2.symbols:
+    + Updated.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Fri, 25 Mar 2011 22:10:28 +0000
+
+cairo (1.10.2-4) unstable; urgency=low
+
+  * Brown paper bug release.
+  * Apply 04-LD_PRELOAD-is-supported-on-Hurd.patch to the git tree,
+    otherwise dpkg-source will create a debian-changes-* patch reverting
+    it, for some reason that I ignore.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 02 Mar 2011 18:37:59 +0000
+
+cairo (1.10.2-3) unstable; urgency=low
+
+  * debian/patches/04-LD_PRELOAD-is-supported-on-Hurd.patch:
+    + Patch from upstream git, let configure know that GNU/Hurd
+      supports LD_PRELOAD. This enables the build of cairo-trace.
+      Closes: #608492.
+  * debian/control:
+    + Don't build depend on egl packages on GNU/Hurd for now.
+    + Add myself to Uploaders.
+  * debian/libcairo2.symbols:
+    + Mark a couple of egl-related symbols as not available on Hurd.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 02 Mar 2011 10:49:23 +0000
+
+cairo (1.10.2-2) unstable; urgency=low
 
   * debian/control:
     + Let libcairo2-dev depend on libcairo-script-interpreter2 to
       prevent dangling symlinks.
+  * Upload to unstable.
+  * debian/rules:
+    + Enable tee surface (Closes: #609978).
+  * debian/control,
+    debian/rules:
+    + Enable the OpenGL/EGL backend (Closes: #611692).
+  * debian/libcairo2.symbols,
+    debian/rules:
+    + Update shlibs and symbols files.
+  * debian/patches/03_export-symbols.patch:
+    + Only export public cairo symbols.
 
- -- Sebastian Dröge <slomo@debian.org>  Wed, 19 Jan 2011 12:13:26 +0100
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 08 Feb 2011 09:54:30 +0100
 
 cairo (1.10.2-1) experimental; urgency=low
 

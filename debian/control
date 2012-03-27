@@ -2,8 +2,9 @@ Source: cairo
 Section: libs
 Priority: optional
 Maintainer: Dave Beckett <dajobe@debian.org>
-Uploaders: Sebastian Dröge <slomo@debian.org>
-Build-Depends: debhelper (>= 7),
+Uploaders: Sebastian Dröge <slomo@debian.org>,
+           Emilio Pozuelo Monfort <pochu@debian.org>
+Build-Depends: debhelper (>= 8.1.3),
                dpkg-dev (>= 1.14.13),
                dh-autoreconf,
                pkg-config (>= 0.19),
@@ -19,6 +20,8 @@ Build-Depends: debhelper (>= 7),
                libxcb1-dev (>= 1.4),
                libxcb-render0-dev (>= 0.9.92),
                libxcb-shm0-dev,
+#               libgl1-mesa-dev,
+#               libegl1-mesa-dev [!hurd-any],
                libglib2.0-dev,
                zlib1g-dev
 Standards-Version: 3.8.4
@@ -42,6 +45,8 @@ Depends: libcairo2 (= ${binary:Version}),
          libxcb1-dev (>= 1.4),
          libxcb-render0-dev (>= 0.9.92),
          libxcb-shm0-dev,
+#         libgl1-mesa-dev,
+#         libegl1-mesa-dev [!hurd-any],
          libglib2.0-dev,
          ${shlibs:Depends},
          ${misc:Depends}
@@ -63,6 +68,8 @@ Breaks: xulrunner-1.9.1 (<= 1.9.1.8-3),
         xulrunner-1.9,
         iceape-browser (<= 2.0.3-3),
         libgtk-directfb-2.0-0
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
 Description: The Cairo 2D vector graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends. Paths consist
@@ -89,6 +96,7 @@ Depends: libcairo2 (= ${binary:Version}),
 Suggests: libcairo-gobject2 (= ${binary:Version}),
           libcairo-script-interpreter2 (= ${binary:Version}),
           cairo-perf-utils (= ${binary:Version})
+Multi-Arch: same
 Description: The Cairo 2D vector graphics library (debugging symbols)
  Debugging symbols for the Cairo 2D vector graphics library. This is
  needed to debug programs linked against libcairo2.
@@ -110,6 +118,8 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
 Description: The Cairo 2D vector graphics library (script interpreter)
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
@@ -122,6 +132,8 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
 Description: The Cairo 2D vector graphics library (GObject library)
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends.
