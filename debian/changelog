@@ -3,8 +3,10 @@ cairo (1.12.0-2) unstable; urgency=low
   * debian/rules:
     + Enable hardened build flags (Closes: #655128).
   * Upload to unstable.
+  * debian/patches/06_hurd-map-noreserve.patch:
+    + Hurd has no MAP_NORESERVE so don't use it there.
 
- -- Sebastian Dröge <slomo@debian.org>  Fri, 30 Mar 2012 09:36:31 +0200
+ -- Sebastian Dröge <slomo@debian.org>  Fri, 30 Mar 2012 09:49:05 +0200
 
 cairo (1.12.0-1) experimental; urgency=low
 
