@@ -70,13 +70,15 @@ installdir = $(installbasedir)/$(current_flavor)
 installbasedir = $(CURDIR)/debian/install
 
 # default CFLAGS; these can be expanded with $(call flavor_get, )
-CFLAGS += -Wall -g
+CFLAGS = `dpkg-buildflags --get CFLAGS`
+CFLAGS += -Wall
+LDFLAGS = `dpkg-buildflags --get LDFLAGS`
+CPPFLAGS = `dpkg-buildflags --get CPPFLAGS`
 
+CFLAGS_main += $(CFLAGS)
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-CFLAGS_main += $(CFLAGS) -O0
-CFLAGS_udeb += $(CFLAGS) -O0
+CFLAGS_udeb += $(CFLAGS)
 else
-CFLAGS_main += $(CFLAGS) -O2
 CFLAGS_udeb += $(CFLAGS) -Os
 endif
 
@@ -98,6 +100,7 @@ configure-stamp-%: configure-common-stamp
 	$(CURDIR)/configure \
 		CFLAGS="$(call flavor_get,CFLAGS)" \
 		LDFLAGS="$(LDFLAGS)" \
+		CPPFLAGS="$(CPPFLAGS)" \
 		$(call flavor_get,configure_flags)
 	touch $@
 
