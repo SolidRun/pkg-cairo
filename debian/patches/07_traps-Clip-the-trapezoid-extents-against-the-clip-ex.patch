@@ -1,0 +1,42 @@
+From 113ec6bf0c8ed1ff12293d1ed2a2de9bd5b9904b Mon Sep 17 00:00:00 2001
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Date: Sun, 8 Apr 2012 17:58:13 +0100
+Subject: [PATCH] traps: Clip the trapezoid extents against the clip extents
+
+Just in case the clip polygon turns out to be much larger than the
+operation extents (silly us for not reducing it correctly) and lead to
+catastrophe, such as:
+
+Program received signal SIGSEGV, Segmentation fault.
+pixman_fill_sse2 (bits=<optimized out>, stride=4, bpp=8, x=0, y=0,
+width=3, height=-34811, data=0) at pixman-sse2.c:3369
+3369		    *(uint16_t *)d = data;
+
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+---
+ src/cairo-traps-compositor.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/src/cairo-traps-compositor.c b/src/cairo-traps-compositor.c
+index 284a0be..c49e208 100644
+--- a/src/cairo-traps-compositor.c
++++ b/src/cairo-traps-compositor.c
+@@ -218,8 +218,13 @@ combine_clip_as_traps (const cairo_traps_compositor_t *compositor,
+     _cairo_traps_fini (&traps);
+     cairo_surface_destroy (src);
+ 
+-    if (status == CAIRO_INT_STATUS_SUCCESS &&
+-	(fixup.width < extents->width || fixup.height < extents->height)) {
++    if (unlikely (status))
++	return status;
++
++    if (! _cairo_rectangle_intersect (&fixup, extents))
++	return CAIRO_STATUS_SUCCESS;
++
++    if (fixup.width < extents->width || fixup.height < extents->height) {
+ 	cairo_boxes_t clear;
+ 
+ 	_cairo_boxes_init (&clear);
+-- 
+1.7.10
+
