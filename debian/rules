@@ -116,7 +116,7 @@ clean:
 	dh_testroot
 	[ ! -r src/cairo-features.h.orig ] || mv -f src/cairo-features.h.orig src/cairo-features.h
 	[ ! -r configure-common-stamp ] || patch -NRp1 < debian/ltmain_as-needed.patch
-	rm -f *-stamp
+	rm -f *-stamp*
 	rm -rf $(buildbasedir) $(installbasedir)
 	dh_autoreconf_clean
 	dh_clean
