@@ -113,7 +113,6 @@ build-stamp-%: configure-stamp-%
 
 clean:
 	dh_testdir
-	dh_testroot
 	[ ! -r src/cairo-features.h.orig ] || mv -f src/cairo-features.h.orig src/cairo-features.h
 	[ ! -r configure-common-stamp ] || patch -NRp1 < debian/ltmain_as-needed.patch
 	rm -f *-stamp*
