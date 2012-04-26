@@ -166,8 +166,8 @@ binary-arch: build install
 	dh_installman -s
 	dh_installexamples -s
 	dh_link -s
-	dh_strip -s --dbg-package=libcairo2-dbg -Nlibcairo2-udeb
-	dh_strip -plibcairo2-udeb
+	dh_strip -s --dbg-package=libcairo2-dbg -Nlibcairo2-udeb -Ncairo-perf-utils
+	dh_strip -plibcairo2-udeb -pcairo-perf-utils
 	dh_compress -s
 	dh_fixperms -s
 	dh_makeshlibs -plibcairo2 --add-udeb=libcairo2-udeb -V 'libcairo2 (>= 1.12.0)' -- -c4
