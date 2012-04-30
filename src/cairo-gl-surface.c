@@ -579,6 +579,8 @@ slim_hidden_def (cairo_gl_surface_create);
  * This function always returns a valid pointer, but it will return a
  * pointer to a "nil" surface if an error such as out of memory
  * occurs. You can use cairo_surface_status() to check for this.
+ *
+ * Since: TBD
  **/
 cairo_surface_t *
 cairo_gl_surface_create_for_texture (cairo_device_t	*abstract_device,
@@ -983,6 +985,7 @@ _cairo_gl_surface_map_to_image (void      *abstract_surface,
     unsigned int cpp;
     cairo_bool_t invert;
     cairo_status_t status;
+    int y;
 
     /* Want to use a switch statement here but the compiler gets whiny. */
     if (surface->base.content == CAIRO_CONTENT_COLOR_ALPHA) {
@@ -1063,7 +1066,12 @@ _cairo_gl_surface_map_to_image (void      *abstract_surface,
 	glPixelStorei (GL_PACK_ROW_LENGTH, image->stride / cpp);
     if (invert)
 	glPixelStorei (GL_PACK_INVERT_MESA, 1);
-    glReadPixels (extents->x, extents->y,
+
+    y = extents->y;
+    if (! _cairo_gl_surface_is_texture (surface))
+	y = surface->height - extents->y - extents->height;
+
+    glReadPixels (extents->x, y,
 		  extents->width, extents->height,
 		  format, type, image->data);
     if (invert)
@@ -1110,9 +1118,11 @@ _cairo_gl_surface_source (void		       *abstract_surface,
 {
     cairo_gl_surface_t *surface = abstract_surface;
 
-    extents->x = extents->y = 0;
-    extents->width  = surface->width;
-    extents->height = surface->height;
+    if (extents) {
+	extents->x = extents->y = 0;
+	extents->width  = surface->width;
+	extents->height = surface->height;
+    }
 
     return &surface->base;
 }

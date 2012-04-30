@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-drawing.html" title="Drawing">
 <link rel="prev" href="cairo-Transformations.html" title="Transformations">
-<link rel="next" href="cairo-fonts.html" title="Fonts">
+<link rel="next" href="cairo-Raster-Sources.html" title="Raster Sources">
 <meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
@@ -18,7 +18,7 @@
 <td><a accesskey="u" href="cairo-drawing.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
-<td><a accesskey="n" href="cairo-fonts.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="cairo-Raster-Sources.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#cairo-text.synopsis" class="shortcut">Top</a>
@@ -166,6 +166,7 @@ drawing or measuring the string and the origin of this glyph.</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -184,21 +185,22 @@ Specifies variants of a font face based on their slant.
 <tbody>
 <tr>
 <td><p><a name="CAIRO-FONT-SLANT-NORMAL:CAPS"></a><span class="term"><code class="literal">CAIRO_FONT_SLANT_NORMAL</code></span></p></td>
-<td>Upright font style
+<td>Upright font style, since 1.0
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FONT-SLANT-ITALIC:CAPS"></a><span class="term"><code class="literal">CAIRO_FONT_SLANT_ITALIC</code></span></p></td>
-<td>Italic font style
+<td>Italic font style, since 1.0
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FONT-SLANT-OBLIQUE:CAPS"></a><span class="term"><code class="literal">CAIRO_FONT_SLANT_OBLIQUE</code></span></p></td>
-<td>Oblique font style
+<td>Oblique font style, since 1.0
 </td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -216,16 +218,17 @@ Specifies variants of a font face based on their weight.
 <tbody>
 <tr>
 <td><p><a name="CAIRO-FONT-WEIGHT-NORMAL:CAPS"></a><span class="term"><code class="literal">CAIRO_FONT_WEIGHT_NORMAL</code></span></p></td>
-<td>Normal font weight
+<td>Normal font weight, since 1.0
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FONT-WEIGHT-BOLD:CAPS"></a><span class="term"><code class="literal">CAIRO_FONT_WEIGHT_BOLD</code></span></p></td>
-<td>Bold font weight
+<td>Bold font weight, since 1.0
 </td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -281,7 +284,7 @@ Specifies properties of a text cluster mapping.
 <tbody><tr>
 <td><p><a name="CAIRO-TEXT-CLUSTER-FLAG-BACKWARD:CAPS"></a><span class="term"><code class="literal">CAIRO_TEXT_CLUSTER_FLAG_BACKWARD</code></span></p></td>
 <td>The clusters in the cluster array
-map to glyphs in the glyph array from end to start.
+map to glyphs in the glyph array from end to start. (Since 1.8)
 </td>
 </tr></tbody>
 </table></div>
@@ -368,6 +371,7 @@ followed by <a class="link" href="cairo-text.html#cairo-set-font-face" title="ca
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -400,6 +404,7 @@ font size is 10.0.
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -429,6 +434,7 @@ the current font.</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -453,6 +459,7 @@ Stores the current font matrix into <em class="parameter"><code>matrix</code></e
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -480,6 +487,7 @@ from the surface is used.
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -507,6 +515,7 @@ the retrieved options. All existing values are overwritten</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -532,6 +541,7 @@ destroyed if there are no other references to it.
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -563,6 +573,7 @@ will shutdown the <a class="link" href="cairo-cairo-t.html#cairo-t" title="cairo
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -670,6 +681,7 @@ serious text-using applications. See <a class="link" href="cairo-text.html#cairo
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -699,6 +711,7 @@ rendered according to the current font face, font size
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -798,6 +811,7 @@ will be stored.</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -840,6 +854,7 @@ will be stored</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -884,6 +899,7 @@ will be stored</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">

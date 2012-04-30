@@ -1,3 +1,4 @@
+/* -*- Mode: c; c-basic-offset: 4; indent-tabs-mode: t; tab-width: 8; -*- */
 /* cairo - a vector graphics library with display and print output
  *
  * Copyright © 2006 Red Hat, Inc
@@ -380,6 +381,7 @@ cairo_type1_font_subset_get_fontname (cairo_type1_font_subset_t *font)
 {
     const char *start, *end, *segment_end;
     char *s;
+    int i;
 
     segment_end = font->header_segment + font->header_segment_size;
     start = find_token (font->header_segment, segment_end, "/FontName");
@@ -403,6 +405,16 @@ cairo_type1_font_subset_get_fontname (cairo_type1_font_subset_t *font)
     if (!start++ || !start) {
 	free (s);
 	return CAIRO_INT_STATUS_UNSUPPORTED;
+    }
+
+    /* If font name is prefixed with a subset tag, strip it off. */
+    if (strlen(start) > 7 && start[6] == '+') {
+	for (i = 0; i < 6; i++) {
+	    if (start[i] < 'A' || start[i] > 'Z')
+		break;
+	}
+	if (i == 6)
+	    start += 7;
     }
 
     font->base.base_font = strdup (start);
@@ -750,80 +762,79 @@ cairo_type1_font_subset_parse_charstring (cairo_type1_font_subset_t *font,
         if (*p < 32) {
 	    command = *p++;
 	    switch (command) {
-		case TYPE1_CHARSTRING_COMMAND_HSBW:
-		    font->glyphs[glyph].width = font->build_stack.stack[1]/font->base.units_per_em;
+	    case TYPE1_CHARSTRING_COMMAND_HSBW:
+		if (! last_op_was_integer)
+		    return CAIRO_INT_STATUS_UNSUPPORTED;
+
+		font->glyphs[glyph].width = font->build_stack.stack[1]/font->base.units_per_em;
+		font->build_stack.sp = 0;
+		last_op_was_integer = FALSE;
+		break;
+
+	    case TYPE1_CHARSTRING_COMMAND_CALLSUBR:
+		if (font->subset_subrs  &&
+		    last_op_was_integer &&
+		    font->build_stack.top_value >= 0    &&
+		    font->build_stack.top_value < font->num_subrs)
+		{
+		    subr_num = font->build_stack.top_value;
+		    font->subrs[subr_num].used = TRUE;
+		    last_op_was_integer = FALSE;
+		    status = cairo_type1_font_subset_parse_charstring (font,
+								       glyph,
+								       font->subrs[subr_num].subr_string,
+								       font->subrs[subr_num].subr_length);
+		} else {
+		    font->subset_subrs = FALSE;
+		}
+		break;
+
+	    case TYPE1_CHARSTRING_COMMAND_ESCAPE:
+		command = command << 8 | *p++;
+		switch (command) {
+		case TYPE1_CHARSTRING_COMMAND_SEAC:
+		    /* The seac command takes five integer arguments.  The
+		     * last two are glyph indices into the PS standard
+		     * encoding give the names of the glyphs that this
+		     * glyph is composed from.  All we need to do is to
+		     * make sure those glyphs are present in the subset
+		     * under their standard names. */
+		    status = use_standard_encoding_glyph (font, font->build_stack.stack[3]);
+		    if (unlikely (status))
+			return status;
+
+		    status = use_standard_encoding_glyph (font, font->build_stack.stack[4]);
+		    if (unlikely (status))
+			return status;
+
 		    font->build_stack.sp = 0;
 		    last_op_was_integer = FALSE;
 		    break;
 
-		case TYPE1_CHARSTRING_COMMAND_CALLSUBR:
-		    if (font->subset_subrs  &&
-			last_op_was_integer &&
-			font->build_stack.top_value >= 0    &&
-			font->build_stack.top_value < font->num_subrs)
-		    {
-			subr_num = font->build_stack.top_value;
-			font->subrs[subr_num].used = TRUE;
-			last_op_was_integer = FALSE;
-			status = cairo_type1_font_subset_parse_charstring (font,
-									   glyph,
-									   font->subrs[subr_num].subr_string,
-									   font->subrs[subr_num].subr_length);
-		    } else {
-			font->subset_subrs = FALSE;
-		    }
+		case TYPE1_CHARSTRING_COMMAND_SBW:
+		    if (! last_op_was_integer)
+			return CAIRO_INT_STATUS_UNSUPPORTED;
+
+		    font->glyphs[glyph].width = font->build_stack.stack[2]/font->base.units_per_em;
+		    font->build_stack.sp = 0;
+		    last_op_was_integer = FALSE;
 		    break;
 
-		case TYPE1_CHARSTRING_COMMAND_ESCAPE:
-		    command = command << 8 | *p++;
-		    switch (command) {
-			case TYPE1_CHARSTRING_COMMAND_SEAC:
-			    /* The seac command takes five integer arguments.  The
-			     * last two are glyph indices into the PS standard
-			     * encoding give the names of the glyphs that this
-			     * glyph is composed from.  All we need to do is to
-			     * make sure those glyphs are present in the subset
-			     * under their standard names. */
-			    status = use_standard_encoding_glyph (font, font->build_stack.stack[3]);
-			    if (unlikely (status))
-				return status;
+		case TYPE1_CHARSTRING_COMMAND_CALLOTHERSUBR:
+		    for (i = 0; i < font->build_stack.sp; i++)
+			font->ps_stack.other_subr_args[i] = font->build_stack.stack[i];
+		    font->ps_stack.num_other_subr_args = font->build_stack.sp;
+		    font->ps_stack.cur_other_subr_arg = 0;
+		    font->build_stack.sp = 0;
+		    last_op_was_integer = FALSE;
+		    break;
 
-			    status = use_standard_encoding_glyph (font, font->build_stack.stack[4]);
-			    if (unlikely (status))
-				return status;
-
-			    font->build_stack.sp = 0;
-			    last_op_was_integer = FALSE;
-			    break;
-
-			case TYPE1_CHARSTRING_COMMAND_SBW:
-			    font->glyphs[glyph].width = font->build_stack.stack[2]/font->base.units_per_em;
-			    font->build_stack.sp = 0;
-			    last_op_was_integer = FALSE;
-			    break;
-
-			case TYPE1_CHARSTRING_COMMAND_CALLOTHERSUBR:
-			    for (i = 0; i < font->build_stack.sp; i++)
-				font->ps_stack.other_subr_args[i] = font->build_stack.stack[i];
-			    font->ps_stack.num_other_subr_args = font->build_stack.sp;
-			    font->ps_stack.cur_other_subr_arg = 0;
-			    font->build_stack.sp = 0;
-			    last_op_was_integer = FALSE;
-			    break;
-
-			case TYPE1_CHARSTRING_COMMAND_POP:
-			    if (font->ps_stack.num_other_subr_args > font->ps_stack.cur_other_subr_arg) {
-				font->build_stack.top_value = font->ps_stack.other_subr_args[font->ps_stack.cur_other_subr_arg++];
-				last_op_was_integer = TRUE;
-			    } else {
-				font->subset_subrs = FALSE;
-			    }
-			    break;
-
-			default:
-			    font->build_stack.sp = 0;
-			    last_op_was_integer = FALSE;
-			    break;
+		case TYPE1_CHARSTRING_COMMAND_POP:
+		    if (font->ps_stack.num_other_subr_args > font->ps_stack.cur_other_subr_arg) {
+			font->build_stack.top_value = font->ps_stack.other_subr_args[font->ps_stack.cur_other_subr_arg++];
+			last_op_was_integer = TRUE;
+		    } else {
+			font->subset_subrs = FALSE;
 		    }
 		    break;
 
@@ -831,6 +842,13 @@ cairo_type1_font_subset_parse_charstring (cairo_type1_font_subset_t *font,
 		    font->build_stack.sp = 0;
 		    last_op_was_integer = FALSE;
 		    break;
+		}
+		break;
+
+	    default:
+		font->build_stack.sp = 0;
+		last_op_was_integer = FALSE;
+		break;
 	    }
         } else {
             /* integer argument */

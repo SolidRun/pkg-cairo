@@ -57,6 +57,7 @@
 #include "cairo-default-context-private.h"
 #include "cairo-error-private.h"
 #include "cairo-image-surface-private.h"
+#include "cairo-list-inline.h"
 #include "cairo-pattern-private.h"
 #include "cairo-region-private.h"
 #include "cairo-scaled-font-private.h"
@@ -125,18 +126,20 @@ _x_bread_crumb (Display *dpy,
  *
  * Note that the XLib surface automatically takes advantage of X render extension
  * if it is available.
- */
+ **/
 
 /**
  * CAIRO_HAS_XLIB_SURFACE:
  *
  * Defined if the Xlib surface backend is available.
  * This macro can be used to conditionally compile backend-specific code.
- */
+ *
+ * Since: 1.0
+ **/
 
 /**
  * SECTION:cairo-xlib-xrender
- * @Title: XLib/XRender Backend
+ * @Title: XLib-XRender Backend
  * @Short_Description: X Window System rendering using XLib and the X Render extension
  * @See_Also: #cairo_surface_t
  *
@@ -145,14 +148,16 @@ _x_bread_crumb (Display *dpy,
  *
  * Note that the XLib surface automatically takes advantage of X Render extension
  * if it is available.
- */
+ **/
 
 /**
  * CAIRO_HAS_XLIB_XRENDER_SURFACE:
  *
  * Defined if the XLib/XRender surface functions are available.
  * This macro can be used to conditionally compile backend-specific code.
- */
+ *
+ * Since: 1.6
+ **/
 
 /* Xlib doesn't define a typedef, so define one ourselves */
 typedef int (*cairo_xlib_error_func_t) (Display     *display,
@@ -1042,8 +1047,7 @@ _cairo_xlib_surface_draw_image (cairo_xlib_surface_t   *surface,
 	ret = XInitImage (&ximage);
 	assert (ret != 0);
     }
-    else if (!is_rgb_image ||
-	     (surface->visual == NULL || surface->visual->class == TrueColor))
+    else if (surface->visual == NULL || surface->visual->class == TrueColor)
     {
         pixman_format_code_t intermediate_format;
         int ret;
@@ -1226,9 +1230,11 @@ _cairo_xlib_surface_source(void                    *abstract_surface,
 {
     cairo_xlib_surface_t *surface = abstract_surface;
 
-    extents->x = extents->y = 0;
-    extents->width  = surface->width;
-    extents->height = surface->height;
+    if (extents) {
+	extents->x = extents->y = 0;
+	extents->width  = surface->width;
+	extents->height = surface->height;
+    }
 
     return &surface->base;
 }
@@ -1608,7 +1614,14 @@ _cairo_xlib_screen_from_visual (Display *dpy, Visual *visual)
 
 static cairo_bool_t valid_size (int width, int height)
 {
-    return width > 0 && width <= XLIB_COORD_MAX && height > 0 && height <= XLIB_COORD_MAX;
+    /* Note: the minimum surface size allowed in the X protocol is 1x1.
+     * However, as we historically did not check the minimum size we
+     * allowed applications to lie and set the correct size later (one hopes).
+     * To preserve compatability we must allow applications to use
+     * 0x0 surfaces.
+     */
+    return (width  >= 0 && width  <= XLIB_COORD_MAX &&
+	    height >= 0 && height <= XLIB_COORD_MAX);
 }
 
 /**
@@ -1635,6 +1648,8 @@ static cairo_bool_t valid_size (int width, int height)
  * children will be included.
  *
  * Return value: the newly created surface
+ *
+ * Since: 1.0
  **/
 cairo_surface_t *
 cairo_xlib_surface_create (Display     *dpy,
@@ -1679,6 +1694,8 @@ cairo_xlib_surface_create (Display     *dpy,
  * This will be drawn to as a %CAIRO_FORMAT_A1 object.
  *
  * Return value: the newly created surface
+ *
+ * Since: 1.0
  **/
 cairo_surface_t *
 cairo_xlib_surface_create_for_bitmap (Display  *dpy,
@@ -1724,6 +1741,8 @@ cairo_xlib_surface_create_for_bitmap (Display  *dpy,
  * window changes.
  *
  * Return value: the newly created surface
+ *
+ * Since: 1.0
  **/
 cairo_surface_t *
 cairo_xlib_surface_create_with_xrender_format (Display		    *dpy,
@@ -1795,6 +1814,8 @@ cairo_xlib_surface_get_xrender_format (cairo_surface_t *surface)
  *
  * A Pixmap can never change size, so it is never necessary to call
  * this function on a surface created for a Pixmap.
+ *
+ * Since: 1.0
  **/
 void
 cairo_xlib_surface_set_size (cairo_surface_t *abstract_surface,
@@ -1839,6 +1860,8 @@ cairo_xlib_surface_set_size (cairo_surface_t *abstract_surface,
  * will get X protocol errors and will probably terminate.
  * No checks are done by this function to ensure this
  * compatibility.
+ *
+ * Since: 1.0
  **/
 void
 cairo_xlib_surface_set_drawable (cairo_surface_t   *abstract_surface,

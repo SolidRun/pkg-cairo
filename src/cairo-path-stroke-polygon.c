@@ -40,8 +40,9 @@
 #define _BSD_SOURCE /* for hypot() */
 #include "cairoint.h"
 
-#include "cairo-box-private.h"
+#include "cairo-box-inline.h"
 #include "cairo-boxes-private.h"
+#include "cairo-contour-inline.h"
 #include "cairo-contour-private.h"
 #include "cairo-error-private.h"
 #include "cairo-path-fixed-private.h"

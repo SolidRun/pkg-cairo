@@ -36,16 +36,18 @@
 #include "cairoint.h"
 
 #include "cairo-surface-observer-private.h"
+#include "cairo-surface-observer-inline.h"
 
 #include "cairo-array-private.h"
-#include "cairo-combsort-private.h"
+#include "cairo-combsort-inline.h"
 #include "cairo-composite-rectangles-private.h"
 #include "cairo-error-private.h"
 #include "cairo-image-surface-private.h"
+#include "cairo-list-inline.h"
 #include "cairo-pattern-private.h"
 #include "cairo-output-stream-private.h"
 #include "cairo-recording-surface-private.h"
-#include "cairo-surface-subsurface-private.h"
+#include "cairo-surface-subsurface-inline.h"
 #include "cairo-reference-count-private.h"
 
 #if CAIRO_HAS_SCRIPT_SURFACE

@@ -1,19 +1,25 @@
-AC_PREREQ(2.59)
+AC_PREREQ([2.63])
 CAIRO_PARSE_VERSION
 AC_INIT([cairo],
 	[cairo_version_major.cairo_version_minor.cairo_version_micro],
-	[http://bugs.freedesktop.org/enter_bug.cgi?product=cairo])
+	[http://bugs.freedesktop.org/enter_bug.cgi?product=cairo],
+	[cairo],
+	[http://cairographics.org/])
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_MACRO_DIR(build)
-AC_GNU_SOURCE
 AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_SRCDIR(src/cairo.h)
 AC_CONFIG_HEADERS(config.h)
-AM_INIT_AUTOMAKE([1.9.6 gnu -Wall no-define])
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-AC_LIBTOOL_WIN32_DLL dnl Must be called before AC_PROG_LIBTOOL
-AC_PROG_LIBTOOL dnl ([1.4]) Don't remove!
-GTK_DOC_CHECK([1.6])
+
+AM_INIT_AUTOMAKE([1.11 -Wall no-define no-dist-gzip dist-xz])
+AM_SILENT_RULES([yes])
+
+# Initialize libtool
+LT_PREREQ([2.2])
+LT_INIT([win32-dll])
+
+# Api documentation
+GTK_DOC_CHECK([1.15],[--flavour no-tmpl])
 
 AC_SYS_LARGEFILE
 
@@ -52,6 +58,7 @@ AM_CONDITIONAL(CAIRO_HAS_DL, test "x$have_dl" = "xyes")
 if test "x$have_dlsym" = "xyes"; then
   AC_DEFINE([CAIRO_HAS_DLSYM], 1, [Define to 1 if dlsym is available])
 fi
+AM_CONDITIONAL(CAIRO_HAS_DLSYM, test "x$have_dlsym" = "xyes")
 
 dnl ===========================================================================
 

@@ -74,14 +74,16 @@
  *
  * The Quartz surface is used to render cairo graphics targeting the
  * Apple OS X Quartz rendering system.
- */
+ **/
 
 /**
  * CAIRO_HAS_QUARTZ_SURFACE:
  *
  * Defined if the Quartz surface backend is available.
  * This macro can be used to conditionally compile backend-specific code.
- */
+ *
+ * Since: 1.6
+ **/
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 /* This method is private, but it exists.  Its params are are exposed
@@ -2289,7 +2291,7 @@ _cairo_quartz_surface_create_internal (CGContextRef cgContext,
 }
 
 /**
- * cairo_quartz_surface_create_for_cg_context
+ * cairo_quartz_surface_create_for_cg_context:
  * @cgContext: the existing CGContext for which to create the surface
  * @width: width of the surface, in pixels
  * @height: height of the surface, in pixels
@@ -2312,7 +2314,7 @@ _cairo_quartz_surface_create_internal (CGContextRef cgContext,
  *
  * Return value: the newly created Cairo surface.
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 
 cairo_surface_t *
@@ -2331,7 +2333,7 @@ cairo_quartz_surface_create_for_cg_context (CGContextRef cgContext,
 }
 
 /**
- * cairo_quartz_surface_create
+ * cairo_quartz_surface_create:
  * @format: format of pixels in the surface to create
  * @width: width of the surface, in pixels
  * @height: height of the surface, in pixels
@@ -2343,7 +2345,7 @@ cairo_quartz_surface_create_for_cg_context (CGContextRef cgContext,
  *
  * Return value: the newly created surface.
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 cairo_surface_t *
 cairo_quartz_surface_create (cairo_format_t format,
@@ -2441,7 +2443,7 @@ cairo_quartz_surface_create (cairo_format_t format,
 }
 
 /**
- * cairo_quartz_surface_get_cg_context
+ * cairo_quartz_surface_get_cg_context:
  * @surface: the Cairo Quartz surface
  *
  * Returns the CGContextRef that the given Quartz surface is backed
@@ -2456,7 +2458,7 @@ cairo_quartz_surface_create (cairo_format_t format,
  *
  * Return value: the CGContextRef for the given surface.
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 CGContextRef
 cairo_quartz_surface_get_cg_context (cairo_surface_t *surface)

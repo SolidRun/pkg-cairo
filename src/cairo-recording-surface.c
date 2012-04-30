@@ -74,19 +74,19 @@
  * improved by improving the implementation of snapshot for the
  * various objects. For example, it would be nice to have a
  * copy-on-write implementation for _cairo_surface_snapshot.
- */
+ **/
 
 #include "cairoint.h"
 
 #include "cairo-array-private.h"
 #include "cairo-analysis-surface-private.h"
 #include "cairo-clip-private.h"
-#include "cairo-combsort-private.h"
+#include "cairo-combsort-inline.h"
 #include "cairo-composite-rectangles-private.h"
 #include "cairo-default-context-private.h"
 #include "cairo-error-private.h"
 #include "cairo-image-surface-private.h"
-#include "cairo-recording-surface-private.h"
+#include "cairo-recording-surface-inline.h"
 #include "cairo-surface-wrapper-private.h"
 #include "cairo-traps-private.h"
 
@@ -105,7 +105,7 @@ static const cairo_surface_backend_t cairo_recording_surface_backend;
  * This macro was added for completeness in cairo 1.10.
  *
  * Since: 1.10
- */
+ **/
 
 /* Currently all recording surfaces do have a size which should be passed
  * in as the maximum size of any target surface against which the
@@ -1089,7 +1089,7 @@ CLEANUP_COMPOSITE:
 }
 
 /**
- * _cairo_recording_surface_snapshot
+ * _cairo_recording_surface_snapshot:
  * @surface: a #cairo_surface_t which must be a recording surface
  *
  * Make an immutable copy of @surface. It is an error to call a

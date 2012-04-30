@@ -50,7 +50,7 @@
 #include "cairo-error-private.h"
 #include "cairo-image-info-private.h"
 #include "cairo-image-surface-private.h"
-#include "cairo-recording-surface-private.h"
+#include "cairo-recording-surface-inline.h"
 #include "cairo-output-stream-private.h"
 #include "cairo-path-fixed-private.h"
 #include "cairo-paginated-private.h"
@@ -66,14 +66,16 @@
  *
  * The SVG surface is used to render cairo graphics to
  * SVG files and is a multi-page vector surface backend.
- */
+ **/
 
 /**
  * CAIRO_HAS_SVG_SURFACE:
  *
  * Defined if the SVG surface backend is available.
  * This macro can be used to conditionally compile backend-specific code.
- */
+ *
+ * Since: 1.2
+ **/
 
 typedef struct cairo_svg_page cairo_svg_page_t;
 
@@ -205,7 +207,7 @@ static const cairo_paginated_surface_backend_t cairo_svg_surface_paginated_backe
  * occurs. You can use cairo_surface_status() to check for this.
  *
  * Since: 1.2
- */
+ **/
 cairo_surface_t *
 cairo_svg_surface_create_for_stream (cairo_write_func_t		 write_func,
 				     void			*closure,

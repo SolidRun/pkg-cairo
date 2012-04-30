@@ -41,6 +41,7 @@
 #include "cairo-xlib-xrender-private.h"
 #include "cairo-freelist-private.h"
 #include "cairo-error-private.h"
+#include "cairo-list-inline.h"
 
 #include <X11/Xlibint.h>	/* For XESetCloseDisplay */
 
@@ -158,7 +159,7 @@ static void _cairo_xlib_display_select_compositor (cairo_xlib_display_t *display
 }
 
 /**
- * cairo_xlib_device_create:
+ * _cairo_xlib_device_create:
  * @dpy: the display to create the device for
  *
  * Gets the device belonging to @dpy, or creates it if it doesn't exist yet.
@@ -570,6 +571,8 @@ _cairo_xlib_display_has_gradients (cairo_device_t *device)
  * the RENDER extension.
  *
  * Use the special values -1 and -1 for disabling the RENDER extension.
+ *
+ * Since: 1.12
  **/
 void
 cairo_xlib_device_debug_cap_xrender_version (cairo_device_t *device,

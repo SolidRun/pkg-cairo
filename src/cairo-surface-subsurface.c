@@ -35,6 +35,7 @@
 
 #include "cairoint.h"
 
+#include "cairo-clip-inline.h"
 #include "cairo-error-private.h"
 #include "cairo-image-surface-private.h"
 #include "cairo-recording-surface-private.h"
@@ -301,7 +302,8 @@ _cairo_surface_subsurface_source (void *abstract_surface,
     cairo_surface_t *source;
 
     source = _cairo_surface_get_source (surface->target, extents);
-    *extents = surface->extents;
+    if (extents)
+	*extents = surface->extents;
 
     return source;
 }

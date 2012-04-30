@@ -59,7 +59,7 @@
 #include "cairo-paginated-private.h"
 #include "cairo-scaled-font-subsets-private.h"
 #include "cairo-surface-clipper-private.h"
-#include "cairo-surface-snapshot-private.h"
+#include "cairo-surface-snapshot-inline.h"
 #include "cairo-surface-subsurface-private.h"
 #include "cairo-type3-glyph-surface-private.h"
 
@@ -130,7 +130,7 @@
  *
  * The PDF surface is used to render cairo graphics to Adobe
  * PDF files and is a multi-page vector surface backend.
- */
+ **/
 
 static cairo_bool_t
 _cairo_pdf_surface_get_extents (void		        *abstract_surface,
@@ -141,7 +141,9 @@ _cairo_pdf_surface_get_extents (void		        *abstract_surface,
  *
  * Defined if the PDF surface backend is available.
  * This macro can be used to conditionally compile backend-specific code.
- */
+ *
+ * Since: 1.2
+ **/
 
 static const cairo_pdf_version_t _cairo_pdf_versions[] =
 {
@@ -461,7 +463,7 @@ BAIL0:
  * occurs. You can use cairo_surface_status() to check for this.
  *
  * Since: 1.2
- */
+ **/
 cairo_surface_t *
 cairo_pdf_surface_create_for_stream (cairo_write_func_t		 write_func,
 				     void			*closure,
@@ -1219,23 +1221,28 @@ _get_source_surface_size (cairo_surface_t         *source,
 	     *width  = extents->width;
 	     *height = extents->height;
 	} else {
+	    cairo_surface_t *free_me = NULL;
 	    cairo_rectangle_int_t surf_extents;
 	    cairo_box_t box;
 	    cairo_bool_t bounded;
 
 	    if (_cairo_surface_is_snapshot (source))
-		source = _cairo_surface_snapshot_get_target (source);
+		free_me = source = _cairo_surface_snapshot_get_target (source);
 
 	    status = _cairo_recording_surface_get_ink_bbox ((cairo_recording_surface_t *)source,
 							    &box, NULL);
-	    if (unlikely (status))
+	    if (unlikely (status)) {
+		cairo_surface_destroy (free_me);
 		return status;
-
-	    _cairo_box_round_to_rectangle (&box, extents);
+	    }
 
 	    bounded = _cairo_surface_get_extents (source, &surf_extents);
+	    cairo_surface_destroy (free_me);
+
 	    *width = surf_extents.width;
 	    *height = surf_extents.height;
+
+	    _cairo_box_round_to_rectangle (&box, extents);
 	}
 
 	return CAIRO_STATUS_SUCCESS;
@@ -1295,7 +1302,7 @@ _get_source_surface_size (cairo_surface_t         *source,
  *
  * Only one of @source_pattern or @source_surface is to be
  * specified. Set the other to NULL.
- */
+ **/
 static cairo_status_t
 _cairo_pdf_surface_add_source_surface (cairo_pdf_surface_t	    *surface,
 				       cairo_surface_t	            *source_surface,
@@ -1379,7 +1386,7 @@ _cairo_pdf_surface_add_source_surface (cairo_pdf_surface_t	    *surface,
 	    goto release_source;
 
 	if (surface_key.unique_id && surface_key.unique_id_length > 0) {
-	    unique_id = malloc (unique_id_length);
+	    unique_id = _cairo_malloc (surface_key.unique_id_length);
 	    if (unique_id == NULL) {
 		status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 		goto release_source;
@@ -2321,7 +2328,7 @@ _cairo_pdf_surface_emit_smask (cairo_pdf_surface_t	*surface,
  * can be used to reference the data in image_ret. */
 static cairo_status_t
 _cairo_pdf_surface_emit_image (cairo_pdf_surface_t     *surface,
-                               cairo_image_surface_t   *image,
+                               cairo_image_surface_t   *image_surf,
                                cairo_pdf_resource_t    *image_res,
 			       cairo_filter_t           filter,
 			       cairo_bool_t             stencil_mask)
@@ -2335,16 +2342,34 @@ _cairo_pdf_surface_emit_image (cairo_pdf_surface_t     *surface,
     cairo_bool_t need_smask;
     const char *interpolate = "true";
     cairo_image_color_t color;
+    cairo_image_surface_t *image;
 
-    /* These are the only image formats we currently support, (which
-     * makes things a lot simpler here). This is enforced through
-     * _cairo_pdf_surface_analyze_operation which only accept source surfaces of
-     * CONTENT_COLOR or CONTENT_COLOR_ALPHA.
-     */
-    assert (image->format == CAIRO_FORMAT_RGB24 ||
-	    image->format == CAIRO_FORMAT_ARGB32 ||
-	    image->format == CAIRO_FORMAT_A8 ||
-	    image->format == CAIRO_FORMAT_A1);
+    image  = image_surf;
+    if (image->format != CAIRO_FORMAT_RGB24 &&
+	image->format != CAIRO_FORMAT_ARGB32 &&
+	image->format != CAIRO_FORMAT_A8 &&
+	image->format != CAIRO_FORMAT_A1)
+    {
+	cairo_surface_t *surf;
+	cairo_surface_pattern_t pattern;
+
+	surf = _cairo_image_surface_create_with_content (cairo_surface_get_content (&image_surf->base),
+							 image_surf->width,
+							 image_surf->height);
+	image = (cairo_image_surface_t *) surf;
+	if (surf->status) {
+	    status = surf->status;
+	    goto CLEANUP;
+	}
+
+	_cairo_pattern_init_for_surface (&pattern, &image_surf->base);
+	status = _cairo_surface_paint (surf,
+				       CAIRO_OPERATOR_SOURCE, &pattern.base,
+				       NULL);
+        _cairo_pattern_fini (&pattern.base);
+        if (unlikely (status))
+            goto CLEANUP;
+    }
 
     switch (filter) {
     case CAIRO_FILTER_GOOD:
@@ -2495,6 +2520,9 @@ _cairo_pdf_surface_emit_image (cairo_pdf_surface_t     *surface,
 CLEANUP_RGB:
     free (data);
 CLEANUP:
+    if (image != image_surf)
+	cairo_surface_destroy (&image->base);
+
     return status;
 }
 
@@ -2651,12 +2679,13 @@ _cairo_pdf_surface_emit_recording_surface (cairo_pdf_surface_t        *surface,
     cairo_box_double_t bbox;
     cairo_int_status_t status;
     int alpha = 0;
+    cairo_surface_t *free_me = NULL;
     cairo_surface_t *source;
 
     assert (pdf_source->type == CAIRO_PATTERN_TYPE_SURFACE);
     source = pdf_source->surface;
     if (_cairo_surface_is_snapshot (source))
-	source = _cairo_surface_snapshot_get_target (source);
+	free_me = source = _cairo_surface_snapshot_get_target (source);
 
     old_width = surface->width;
     old_height = surface->height;
@@ -2677,12 +2706,12 @@ _cairo_pdf_surface_emit_recording_surface (cairo_pdf_surface_t        *surface,
     _get_bbox_from_extents (pdf_source->hash_entry->height, &pdf_source->hash_entry->extents, &bbox);
     status = _cairo_pdf_surface_open_content_stream (surface, &bbox, &pdf_source->hash_entry->surface_res, TRUE);
     if (unlikely (status))
-	return status;
+	goto err;
 
     if (cairo_surface_get_content (source) == CAIRO_CONTENT_COLOR) {
 	status = _cairo_pdf_surface_add_alpha (surface, 1.0, &alpha);
 	if (unlikely (status))
-	    return status;
+	    goto err;
 
 	_cairo_output_stream_printf (surface->output,
 				     "q /a%d gs 0 0 0 rg 0 0 %f %f re f Q\n",
@@ -2697,7 +2726,7 @@ _cairo_pdf_surface_emit_recording_surface (cairo_pdf_surface_t        *surface,
 						     CAIRO_RECORDING_REGION_NATIVE);
     assert (status != CAIRO_INT_STATUS_UNSUPPORTED);
     if (unlikely (status))
-	return status;
+	goto err;
 
     status = _cairo_pdf_surface_close_content_stream (surface);
 
@@ -2708,6 +2737,8 @@ _cairo_pdf_surface_emit_recording_surface (cairo_pdf_surface_t        *surface,
 					  old_height);
     surface->paginated_mode = old_paginated_mode;
 
+err:
+    cairo_surface_destroy (free_me);
     return status;
 }
 
@@ -5701,56 +5732,68 @@ _cairo_pdf_surface_write_mask_group (cairo_pdf_surface_t	*surface,
     if (unlikely (status))
 	return status;
 
-    pattern_res.id = 0;
-    gstate_res.id = 0;
-    status = _cairo_pdf_surface_add_pdf_pattern (surface, group->mask, NULL,
-						 &pattern_res, &gstate_res);
-    if (unlikely (status))
-	return status;
-
-    if (gstate_res.id != 0) {
-	smask_group = _cairo_pdf_surface_create_smask_group (surface, &group->extents);
-	if (unlikely (smask_group == NULL))
-	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
-
-	smask_group->width = group->width;
-	smask_group->height = group->height;
-	smask_group->operation = PDF_PAINT;
-	smask_group->source = cairo_pattern_reference (group->mask);
-	smask_group->source_res = pattern_res;
-	status = _cairo_pdf_surface_add_smask_group (surface, smask_group);
-	if (unlikely (status)) {
-	    _cairo_pdf_smask_group_destroy (smask_group);
-	    return status;
-	}
-
-	status = _cairo_pdf_surface_add_smask (surface, gstate_res);
+    if (_can_paint_pattern (group->mask)) {
+	_cairo_output_stream_printf (surface->output, "q\n");
+	status = _cairo_pdf_surface_paint_pattern (surface,
+						   group->mask,
+						   &group->extents,
+						   FALSE);
 	if (unlikely (status))
 	    return status;
 
-	status = _cairo_pdf_surface_add_xobject (surface, smask_group->group_res);
-	if (unlikely (status))
-	    return status;
-
-	_cairo_output_stream_printf (surface->output,
-				     "q /s%d gs /x%d Do Q\n",
-				     gstate_res.id,
-				     smask_group->group_res.id);
+	_cairo_output_stream_printf (surface->output, "Q\n");
     } else {
-	status = _cairo_pdf_surface_select_pattern (surface, group->mask, pattern_res, FALSE);
+	pattern_res.id = 0;
+	gstate_res.id = 0;
+	status = _cairo_pdf_surface_add_pdf_pattern (surface, group->mask, NULL,
+						     &pattern_res, &gstate_res);
 	if (unlikely (status))
 	    return status;
 
-	_cairo_output_stream_printf (surface->output,
-				     "%f %f %f %f re f\n",
-				     bbox.p1.x,
-				     bbox.p1.y,
-				     bbox.p2.x - bbox.p1.x,
-				     bbox.p2.y - bbox.p1.y);
+	if (gstate_res.id != 0) {
+	    smask_group = _cairo_pdf_surface_create_smask_group (surface, &group->extents);
+	    if (unlikely (smask_group == NULL))
+		return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
-	status = _cairo_pdf_surface_unselect_pattern (surface);
-	if (unlikely (status))
-	    return status;
+	    smask_group->width = group->width;
+	    smask_group->height = group->height;
+	    smask_group->operation = PDF_PAINT;
+	    smask_group->source = cairo_pattern_reference (group->mask);
+	    smask_group->source_res = pattern_res;
+	    status = _cairo_pdf_surface_add_smask_group (surface, smask_group);
+	    if (unlikely (status)) {
+		_cairo_pdf_smask_group_destroy (smask_group);
+		return status;
+	    }
+
+	    status = _cairo_pdf_surface_add_smask (surface, gstate_res);
+	    if (unlikely (status))
+		return status;
+
+	    status = _cairo_pdf_surface_add_xobject (surface, smask_group->group_res);
+	    if (unlikely (status))
+		return status;
+
+	    _cairo_output_stream_printf (surface->output,
+					 "q /s%d gs /x%d Do Q\n",
+					 gstate_res.id,
+					 smask_group->group_res.id);
+	} else {
+	    status = _cairo_pdf_surface_select_pattern (surface, group->mask, pattern_res, FALSE);
+	    if (unlikely (status))
+		return status;
+
+	    _cairo_output_stream_printf (surface->output,
+					 "%f %f %f %f re f\n",
+					 bbox.p1.x,
+					 bbox.p1.y,
+					 bbox.p2.x - bbox.p1.x,
+					 bbox.p2.y - bbox.p1.y);
+
+	    status = _cairo_pdf_surface_unselect_pattern (surface);
+	    if (unlikely (status))
+		return status;
+	}
     }
 
     status = _cairo_pdf_surface_close_group (surface, &mask_group);
@@ -5762,54 +5805,66 @@ _cairo_pdf_surface_write_mask_group (cairo_pdf_surface_t	*surface,
     if (unlikely (status))
 	return status;
 
-    pattern_res.id = 0;
-    gstate_res.id = 0;
-    status = _cairo_pdf_surface_add_pdf_pattern (surface, group->source, NULL,
-						 &pattern_res, &gstate_res);
-    if (unlikely (status))
-	return status;
-
-    if (gstate_res.id != 0) {
-	smask_group = _cairo_pdf_surface_create_smask_group (surface, &group->extents);
-	if (unlikely (smask_group == NULL))
-	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
-
-	smask_group->operation = PDF_PAINT;
-	smask_group->source = cairo_pattern_reference (group->source);
-	smask_group->source_res = pattern_res;
-	status = _cairo_pdf_surface_add_smask_group (surface, smask_group);
-	if (unlikely (status)) {
-	    _cairo_pdf_smask_group_destroy (smask_group);
-	    return status;
-	}
-
-	status = _cairo_pdf_surface_add_smask (surface, gstate_res);
+    if (_can_paint_pattern (group->source)) {
+	_cairo_output_stream_printf (surface->output, "q\n");
+	status = _cairo_pdf_surface_paint_pattern (surface,
+						   group->source,
+						   &group->extents,
+						   FALSE);
 	if (unlikely (status))
 	    return status;
 
-	status = _cairo_pdf_surface_add_xobject (surface, smask_group->group_res);
-	if (unlikely (status))
-	    return status;
-
-	_cairo_output_stream_printf (surface->output,
-				     "q /s%d gs /x%d Do Q\n",
-				     gstate_res.id,
-				     smask_group->group_res.id);
+	_cairo_output_stream_printf (surface->output, "Q\n");
     } else {
-	status = _cairo_pdf_surface_select_pattern (surface, group->source, pattern_res, FALSE);
+	pattern_res.id = 0;
+	gstate_res.id = 0;
+	status = _cairo_pdf_surface_add_pdf_pattern (surface, group->source, NULL,
+						     &pattern_res, &gstate_res);
 	if (unlikely (status))
 	    return status;
 
-	_cairo_output_stream_printf (surface->output,
-				     "%f %f %f %f re f\n",
-				     bbox.p1.x,
-				     bbox.p1.y,
-				     bbox.p2.x - bbox.p1.x,
-				     bbox.p2.y - bbox.p1.y);
+	if (gstate_res.id != 0) {
+	    smask_group = _cairo_pdf_surface_create_smask_group (surface, &group->extents);
+	    if (unlikely (smask_group == NULL))
+		return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
-	status = _cairo_pdf_surface_unselect_pattern (surface);
-	if (unlikely (status))
-	    return status;
+	    smask_group->operation = PDF_PAINT;
+	    smask_group->source = cairo_pattern_reference (group->source);
+	    smask_group->source_res = pattern_res;
+	    status = _cairo_pdf_surface_add_smask_group (surface, smask_group);
+	    if (unlikely (status)) {
+		_cairo_pdf_smask_group_destroy (smask_group);
+		return status;
+	    }
+
+	    status = _cairo_pdf_surface_add_smask (surface, gstate_res);
+	    if (unlikely (status))
+		return status;
+
+	    status = _cairo_pdf_surface_add_xobject (surface, smask_group->group_res);
+	    if (unlikely (status))
+		return status;
+
+	    _cairo_output_stream_printf (surface->output,
+					 "q /s%d gs /x%d Do Q\n",
+					 gstate_res.id,
+					 smask_group->group_res.id);
+	} else {
+	    status = _cairo_pdf_surface_select_pattern (surface, group->source, pattern_res, FALSE);
+	    if (unlikely (status))
+		return status;
+
+	    _cairo_output_stream_printf (surface->output,
+					 "%f %f %f %f re f\n",
+					 bbox.p1.x,
+					 bbox.p1.y,
+					 bbox.p2.x - bbox.p1.x,
+					 bbox.p2.y - bbox.p1.y);
+
+	    status = _cairo_pdf_surface_unselect_pattern (surface);
+	    if (unlikely (status))
+		return status;
+	}
     }
 
     status = _cairo_pdf_surface_close_group (surface, NULL);
