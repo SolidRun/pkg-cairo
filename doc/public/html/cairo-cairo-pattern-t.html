@@ -217,6 +217,7 @@ The type of a pattern can be queried with <a class="link" href="cairo-cairo-patt
 Memory management of <a class="link" href="cairo-cairo-pattern-t.html#cairo-pattern-t" title="cairo_pattern_t"><span class="type">cairo_pattern_t</span></a> is done with
 <a class="link" href="cairo-cairo-pattern-t.html#cairo-pattern-reference" title="cairo_pattern_reference ()"><code class="function">cairo_pattern_reference()</code></a> and <a class="link" href="cairo-cairo-pattern-t.html#cairo-pattern-destroy" title="cairo_pattern_destroy ()"><code class="function">cairo_pattern_destroy()</code></a>.
 </p>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -274,6 +275,7 @@ with a status of <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-PA
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -336,6 +338,7 @@ with a status of <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-PA
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -473,6 +476,7 @@ the status of a pattern use <a class="link" href="cairo-cairo-pattern-t.html#cai
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -518,6 +522,7 @@ the status of a pattern use <a class="link" href="cairo-cairo-pattern-t.html#cai
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -595,6 +600,7 @@ the status of a pattern use <a class="link" href="cairo-cairo-pattern-t.html#cai
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -680,6 +686,7 @@ the status of a pattern use <a class="link" href="cairo-cairo-pattern-t.html#cai
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -791,6 +798,7 @@ the status of a pattern use <a class="link" href="cairo-cairo-pattern-t.html#cai
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1674,6 +1682,7 @@ The number of references to a <a class="link" href="cairo-cairo-pattern-t.html#c
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1692,6 +1701,7 @@ zero, then <em class="parameter"><code>pattern</code></em> and all associated re
 </td>
 </tr></tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1718,6 +1728,7 @@ or <a class="link" href="cairo-Error-handling.html#CAIRO-STATUS-INVALID-MESH-CON
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1751,18 +1762,18 @@ New entries may be added in future versions.
 <tr>
 <td><p><a name="CAIRO-EXTEND-NONE:CAPS"></a><span class="term"><code class="literal">CAIRO_EXTEND_NONE</code></span></p></td>
 <td>pixels outside of the source pattern
-  are fully transparent
+  are fully transparent (Since 1.0)
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-EXTEND-REPEAT:CAPS"></a><span class="term"><code class="literal">CAIRO_EXTEND_REPEAT</code></span></p></td>
-<td>the pattern is tiled by repeating
+<td>the pattern is tiled by repeating (Since 1.0)
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-EXTEND-REFLECT:CAPS"></a><span class="term"><code class="literal">CAIRO_EXTEND_REFLECT</code></span></p></td>
 <td>the pattern is tiled by reflecting
-  at the edges (Implemented for surface patterns since 1.6)
+  at the edges (Since 1.0; but only implemented for surface patterns since 1.6)
 </td>
 </tr>
 <tr>
@@ -1774,6 +1785,7 @@ New entries may be added in future versions.
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1804,6 +1816,7 @@ pattern will be drawn</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1828,6 +1841,7 @@ pattern.</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1853,39 +1867,40 @@ used with a particular pattern.
 <tr>
 <td><p><a name="CAIRO-FILTER-FAST:CAPS"></a><span class="term"><code class="literal">CAIRO_FILTER_FAST</code></span></p></td>
 <td>A high-performance filter, with quality similar
-    to <a class="link" href="cairo-cairo-pattern-t.html#CAIRO-FILTER-NEAREST:CAPS"><code class="literal">CAIRO_FILTER_NEAREST</code></a>
+    to <a class="link" href="cairo-cairo-pattern-t.html#CAIRO-FILTER-NEAREST:CAPS"><code class="literal">CAIRO_FILTER_NEAREST</code></a> (Since 1.0)
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FILTER-GOOD:CAPS"></a><span class="term"><code class="literal">CAIRO_FILTER_GOOD</code></span></p></td>
 <td>A reasonable-performance filter, with quality
-    similar to <a class="link" href="cairo-cairo-pattern-t.html#CAIRO-FILTER-BILINEAR:CAPS"><code class="literal">CAIRO_FILTER_BILINEAR</code></a>
+    similar to <a class="link" href="cairo-cairo-pattern-t.html#CAIRO-FILTER-BILINEAR:CAPS"><code class="literal">CAIRO_FILTER_BILINEAR</code></a> (Since 1.0)
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FILTER-BEST:CAPS"></a><span class="term"><code class="literal">CAIRO_FILTER_BEST</code></span></p></td>
 <td>The highest-quality available, performance may
-    not be suitable for interactive use.
+    not be suitable for interactive use. (Since 1.0)
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FILTER-NEAREST:CAPS"></a><span class="term"><code class="literal">CAIRO_FILTER_NEAREST</code></span></p></td>
-<td>Nearest-neighbor filtering
+<td>Nearest-neighbor filtering (Since 1.0)
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FILTER-BILINEAR:CAPS"></a><span class="term"><code class="literal">CAIRO_FILTER_BILINEAR</code></span></p></td>
-<td>Linear interpolation in two dimensions
+<td>Linear interpolation in two dimensions (Since 1.0)
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-FILTER-GAUSSIAN:CAPS"></a><span class="term"><code class="literal">CAIRO_FILTER_GAUSSIAN</code></span></p></td>
 <td>This filter value is currently
-    unimplemented, and should not be used in current code.
+    unimplemented, and should not be used in current code. (Since 1.0)
 </td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1935,6 +1950,7 @@ the pattern</td>
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1958,6 +1974,7 @@ for details on each filter.
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2024,6 +2041,7 @@ semantics of <a class="link" href="cairo-cairo-t.html#cairo-set-source" title="c
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2047,6 +2065,7 @@ Stores the pattern's transformation matrix into <em class="parameter"><code>matr
 </tr>
 </tbody>
 </table></div>
+<p class="since">Since 1.0</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2091,27 +2110,27 @@ New entries may be added in future versions.
 <tr>
 <td><p><a name="CAIRO-PATTERN-TYPE-SOLID:CAPS"></a><span class="term"><code class="literal">CAIRO_PATTERN_TYPE_SOLID</code></span></p></td>
 <td>The pattern is a solid (uniform)
-color. It may be opaque or translucent.
+color. It may be opaque or translucent, since 1.2.
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-PATTERN-TYPE-SURFACE:CAPS"></a><span class="term"><code class="literal">CAIRO_PATTERN_TYPE_SURFACE</code></span></p></td>
-<td>The pattern is a based on a surface (an image).
+<td>The pattern is a based on a surface (an image), since 1.2.
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-PATTERN-TYPE-LINEAR:CAPS"></a><span class="term"><code class="literal">CAIRO_PATTERN_TYPE_LINEAR</code></span></p></td>
-<td>The pattern is a linear gradient.
+<td>The pattern is a linear gradient, since 1.2.
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-PATTERN-TYPE-RADIAL:CAPS"></a><span class="term"><code class="literal">CAIRO_PATTERN_TYPE_RADIAL</code></span></p></td>
-<td>The pattern is a radial gradient.
+<td>The pattern is a radial gradient, since 1.2.
 </td>
 </tr>
 <tr>
 <td><p><a name="CAIRO-PATTERN-TYPE-MESH:CAPS"></a><span class="term"><code class="literal">CAIRO_PATTERN_TYPE_MESH</code></span></p></td>
-<td>The pattern is a mesh.
+<td>The pattern is a mesh, since 1.12.
 </td>
 </tr>
 <tr>

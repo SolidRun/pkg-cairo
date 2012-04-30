@@ -39,7 +39,7 @@
 #define _BSD_SOURCE /* for hypot() */
 #include "cairoint.h"
 
-#include "cairo-box-private.h"
+#include "cairo-box-inline.h"
 #include "cairo-boxes-private.h"
 #include "cairo-error-private.h"
 #include "cairo-path-fixed-private.h"
@@ -180,11 +180,11 @@ _cairo_stroker_join_is_clockwise (const cairo_stroke_face_t *in,
 }
 
 /**
- * _cairo_slope_compare_sgn
+ * _cairo_slope_compare_sgn:
  *
  * Return -1, 0 or 1 depending on the relative slopes of
  * two lines.
- */
+ **/
 static int
 _cairo_slope_compare_sgn (double dx1, double dy1, double dx2, double dy2)
 {

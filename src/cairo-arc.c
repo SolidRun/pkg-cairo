@@ -133,13 +133,13 @@ _arc_segments_needed (double	      angle,
 
    for some value of h.
 
-   "Approximation of circular arcs by cubic poynomials", Michael
+   "Approximation of circular arcs by cubic polynomials", Michael
    Goldapp, Computer Aided Geometric Design 8 (1991) 227-238, provides
    various values of h along with error analysis for each.
 
    From that paper, a very practical value of h is:
 
-	h = 4/3 * tan(angle/4)
+	h = 4/3 * R * tan(angle/4)
 
    This value does not give the spline with minimal error, but it does
    provide a very good approximation, (6th-order convergence), and the
@@ -246,7 +246,7 @@ _cairo_arc_in_direction (cairo_t	  *cr,
 }
 
 /**
- * _cairo_arc_path
+ * _cairo_arc_path:
  * @cr: a cairo context
  * @xc: X position of the center of the arc
  * @yc: Y position of the center of the arc

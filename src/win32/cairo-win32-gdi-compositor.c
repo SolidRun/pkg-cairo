@@ -47,10 +47,12 @@
 #include "cairo-win32-private.h"
 
 #include "cairo-boxes-private.h"
+#include "cairo-clip-inline.h"
 #include "cairo-compositor-private.h"
 #include "cairo-image-surface-private.h"
 #include "cairo-pattern-private.h"
 #include "cairo-region-private.h"
+#include "cairo-surface-inline.h"
 #include "cairo-surface-offset-private.h"
 
 #if !defined(AC_SRC_OVER)
