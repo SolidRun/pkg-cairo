@@ -63,6 +63,8 @@ _cairo_xlib_display_finish (void *abstract_display)
     cairo_xlib_display_t *display = abstract_display;
     Display *dpy = display->display;
 
+    _cairo_xlib_display_fini_shm (display);
+
     if (! cairo_device_acquire (&display->base)) {
 	cairo_xlib_error_func_t old_handler;
 
@@ -147,15 +149,18 @@ static const cairo_device_backend_t _cairo_xlib_device_backend = {
     _cairo_xlib_display_destroy,
 };
 
-
 static void _cairo_xlib_display_select_compositor (cairo_xlib_display_t *display)
 {
+#if 1
     if (display->render_major > 0 || display->render_minor >= 4)
 	display->compositor = _cairo_xlib_traps_compositor_get ();
     else if (display->render_major > 0 || display->render_minor >= 0)
 	display->compositor = _cairo_xlib_mask_compositor_get ();
     else
 	display->compositor = _cairo_xlib_core_compositor_get ();
+#else
+    display->compositor = _cairo_xlib_fallback_compositor_get ();
+#endif
 }
 
 /**
@@ -263,6 +268,8 @@ _cairo_xlib_device_create (Display *dpy)
 
     display->force_precision = -1;
 
+    _cairo_xlib_display_init_shm (display);
+
     /* Prior to Render 0.10, there is no protocol support for gradients and
      * we call function stubs instead, which would silently consume the drawing.
      */
@@ -365,7 +372,7 @@ _cairo_xlib_display_acquire (cairo_device_t *device, cairo_xlib_display_t **disp
         return status;
 
     *display = (cairo_xlib_display_t *) device;
-    return status;
+    return CAIRO_STATUS_SUCCESS;
 }
 
 XRenderPictFormat *
@@ -492,7 +499,7 @@ _cairo_xlib_display_get_xrender_format (cairo_xlib_display_t	*display,
 
     xrender_format = display->cached_xrender_formats[format];
     if (xrender_format == NULL) {
-	int pict_format;
+	int pict_format = PictStandardNUM;
 
 	switch (format) {
 	case CAIRO_FORMAT_A1:
@@ -515,9 +522,9 @@ _cairo_xlib_display_get_xrender_format (cairo_xlib_display_t	*display,
 	case CAIRO_FORMAT_ARGB32:
 	    pict_format = PictStandardARGB32; break;
 	}
-	if (!xrender_format)
-	    xrender_format = XRenderFindStandardFormat (display->display,
-		                                        pict_format);
+	if (pict_format != PictStandardNUM)
+	    xrender_format =
+		XRenderFindStandardFormat (display->display, pict_format);
 	display->cached_xrender_formats[format] = xrender_format;
     }
 

@@ -11,7 +11,7 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_SRCDIR(src/cairo.h)
 AC_CONFIG_HEADERS(config.h)
 
-AM_INIT_AUTOMAKE([1.11 -Wall no-define no-dist-gzip dist-xz])
+AM_INIT_AUTOMAKE([1.11 foreign -Wall no-define no-dist-gzip dist-xz])
 AM_SILENT_RULES([yes])
 
 # Initialize libtool
@@ -63,7 +63,7 @@ AM_CONDITIONAL(CAIRO_HAS_DLSYM, test "x$have_dlsym" = "xyes")
 dnl ===========================================================================
 
 CAIRO_ENABLE_SURFACE_BACKEND(xlib, Xlib, auto, [
-  xlib_REQUIRES="x11"
+  xlib_REQUIRES="x11 xext"
   PKG_CHECK_MODULES(xlib, $xlib_REQUIRES, ,
 		    [AC_MSG_RESULT(no)
 		     xlib_REQUIRES=""
@@ -71,7 +71,7 @@ CAIRO_ENABLE_SURFACE_BACKEND(xlib, Xlib, auto, [
 		     if test "x$no_x" = xyes; then
 		       use_xlib="no (requires X development libraries)"
 		     else
-		       xlib_NONPKGCONFIG_LIBS="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
+		       xlib_NONPKGCONFIG_LIBS="$X_PRE_LIBS $X_LIBS -lX11 -lXext $X_EXTRA_LIBS"
 		       xlib_NONPKGCONFIG_CFLAGS=$X_CFLAGS
 		     fi])
 ])
@@ -626,6 +626,11 @@ CAIRO_ENABLE_SURFACE_BACKEND(image, image, always, [
   image_CFLAGS=$pixman_CFLAGS
   image_LIBS=$pixman_LIBS
 ])
+
+if pkg-config --exists 'pixman-1 >= 0.27.1'; then
+    AC_DEFINE([HAS_PIXMAN_GLYPHS], 1, [Enable pixman glyph cache])
+fi
+
 
 dnl ===========================================================================
 
