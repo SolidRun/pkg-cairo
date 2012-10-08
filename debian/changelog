@@ -1,3 +1,17 @@
+cairo (1.12.4-1) experimental; urgency=low
+
+  * New upstream bugfix release:
+    + debian/control:
+      - Build-depend on libxext-dev.
+  * debian/control:
+    + Build-depend on libpng-dev instead of libpng12-dev (Closes: #662279, #642264, #673642).
+  * debian/control,
+    debian/rules,
+    debian/libcairo2.symbols:
+    + Re-enable OpenGL/EGL backend (Closes: #684302).
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 08 Oct 2012 10:05:46 +0200
+
 cairo (1.12.2-2) unstable; urgency=low
 
   * debian/libcairo2-udeb.install:
