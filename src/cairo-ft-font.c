@@ -64,6 +64,12 @@
 #include FT_LCD_FILTER_H
 #endif
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#else
+#define access(p, m) 0
+#endif
+
 /* Fontconfig version older than 2.6 didn't have these options */
 #ifndef FC_LCD_FILTER
 #define FC_LCD_FILTER	"lcdfilter"
@@ -551,12 +557,15 @@ _cairo_ft_unscaled_font_create_for_pattern (FcPattern *pattern,
     if (ret == FcResultOutOfMemory)
 	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
     if (ret == FcResultMatch) {
-	/* If FC_INDEX is not set, we just use 0 */
-	ret = FcPatternGetInteger (pattern, FC_INDEX, 0, &id);
-	if (ret == FcResultOutOfMemory)
-	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	if (access (filename, R_OK) == 0) {
+	    /* If FC_INDEX is not set, we just use 0 */
+	    ret = FcPatternGetInteger (pattern, FC_INDEX, 0, &id);
+	    if (ret == FcResultOutOfMemory)
+		return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
-	goto DONE;
+	    goto DONE;
+	} else
+	    return _cairo_error (CAIRO_STATUS_FILE_NOT_FOUND);
     }
 
     /* The pattern contains neither a face nor a filename, resolve it later. */
@@ -1158,8 +1167,8 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
 
 #ifndef WORDS_BIGENDIAN
 	{
-	    uint8_t   *d = data;
-	    int		count = stride * height;
+	    uint8_t *d = data;
+	    int count = stride * height;
 
 	    while (count--) {
 		*d = CAIRO_BITSWAP8 (*d);
@@ -1173,7 +1182,7 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
     case FT_PIXEL_MODE_LCD:
     case FT_PIXEL_MODE_LCD_V:
     case FT_PIXEL_MODE_GRAY:
-        if (font_options->antialias != CAIRO_ANTIALIAS_SUBPIXEL) {
+	if (font_options->antialias != CAIRO_ANTIALIAS_SUBPIXEL) {
 	    stride = bitmap->pitch;
 	    if (own_buffer) {
 		data = bitmap->buffer;
@@ -1185,7 +1194,7 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
 		memcpy (data, bitmap->buffer, stride * height);
 	    }
 
-	format = CAIRO_FORMAT_A8;
+	    format = CAIRO_FORMAT_A8;
 	} else {
 	    /* if we get there, the  data from the source bitmap
 	     * really comes from _fill_xrender_bitmap, and is
@@ -1193,9 +1202,9 @@ _get_bitmap_surface (FT_Bitmap		     *bitmap,
 	    assert (own_buffer != 0);
 	    assert (bitmap->pixel_mode != FT_PIXEL_MODE_GRAY);
 
-		data = bitmap->buffer;
-		stride = bitmap->pitch;
-		format = CAIRO_FORMAT_ARGB32;
+	    data = bitmap->buffer;
+	    stride = bitmap->pitch;
+	    format = CAIRO_FORMAT_ARGB32;
 	}
 	break;
     case FT_PIXEL_MODE_GRAY2:
