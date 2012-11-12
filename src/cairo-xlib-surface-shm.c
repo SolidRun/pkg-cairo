@@ -449,6 +449,9 @@ _cairo_xlib_shm_pool_create(cairo_xlib_display_t *display,
 
     pool->attached = NextRequest (dpy);
     success = XShmAttach (dpy, &pool->shm);
+#if !IPC_RMID_DEFERRED_RELEASE
+    XSync (dpy, FALSE);
+#endif
     shmctl (pool->shm.shmid, IPC_RMID, NULL);
 
     if (! success)
@@ -1121,6 +1124,27 @@ _cairo_xlib_shm_surface_is_idle (cairo_surface_t *surface)
     return shm->idle > 0;
 }
 
+#define XORG_VERSION_ENCODE(major,minor,patch,snap) \
+    (((major) * 10000000) + ((minor) * 100000) + ((patch) * 1000) + snap)
+
+static cairo_bool_t
+xorg_has_buggy_send_shm_completion_event(Display *dpy)
+{
+    /* As libXext sets the SEND_EVENT bit in the ShmCompletionEvent,
+     * the Xserver may crash if it does not take care when processing
+     * the event type. For instance versions of Xorg prior to 1.11.1
+     * exhibited this bug, and was fixed by:
+     *
+     * commit 2d2dce558d24eeea0eb011ec9ebaa6c5c2273c39
+     * Author: Sam Spilsbury <sam.spilsbury@canonical.com>
+     * Date:   Wed Sep 14 09:58:34 2011 +0800
+     *
+     * Remove the SendEvent bit (0x80) before doing range checks on event type.
+     */
+    return (strstr (ServerVendor (dpy), "X.Org") != NULL &&
+	    VendorRelease (dpy) < XORG_VERSION_ENCODE(1,11,0,1));
+}
+
 void
 _cairo_xlib_display_init_shm (cairo_xlib_display_t *display)
 {
@@ -1152,6 +1176,9 @@ _cairo_xlib_display_init_shm (cairo_xlib_display_t *display)
 				 InputOutput,
 				 DefaultVisual (display->display, scr),
 				 CWOverrideRedirect, &attr);
+
+    if (xorg_has_buggy_send_shm_completion_event(display->display))
+	has_pixmap = 0;
 
     shm->has_pixmaps = has_pixmap ? MIN_PIXMAP_SIZE : 0;
     cairo_list_init (&shm->pool);
