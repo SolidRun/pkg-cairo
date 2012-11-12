@@ -53,6 +53,7 @@
 #include "cairo-output-stream-private.h"
 
 #include <ctype.h>
+#include <locale.h>
 
 #define TYPE1_STACKSIZE 24 /* Defined in Type 1 Font Format */
 
@@ -113,6 +114,8 @@ typedef struct _cairo_type1_font_subset {
     cairo_array_t contents;
 
     const char *rd, *nd, *np;
+
+    int lenIV;
 
     char *type1_data;
     unsigned int type1_length;
@@ -302,8 +305,17 @@ cairo_type1_font_subset_get_matrix (cairo_type1_font_subset_t *font,
 				    double                    *d)
 {
     const char *start, *end, *segment_end;
-    int ret;
+    int ret, s_max, i, j;
     char *s;
+    struct lconv *locale_data;
+    const char *decimal_point;
+    int decimal_point_len;
+
+    locale_data = localeconv ();
+    decimal_point = locale_data->decimal_point;
+    decimal_point_len = strlen (decimal_point);
+
+    assert (decimal_point_len != 0);
 
     segment_end = font->header_segment + font->header_segment_size;
     start = find_token (font->header_segment, segment_end, name);
@@ -314,12 +326,23 @@ cairo_type1_font_subset_get_matrix (cairo_type1_font_subset_t *font,
     if (end == NULL)
 	return CAIRO_INT_STATUS_UNSUPPORTED;
 
-    s = malloc (end - start + 1);
+    s_max = end - start + 5*decimal_point_len + 1;
+    s = malloc (s_max);
     if (unlikely (s == NULL))
 	return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
-    strncpy (s, start, end - start);
-    s[end - start] = 0;
+    i = 0;
+    j = 0;
+    while (i < end - start && j < s_max - decimal_point_len) {
+	if (start[i] == '.') {
+	    strncpy(s + j, decimal_point, decimal_point_len);
+	    i++;
+	    j += decimal_point_len;
+	} else {
+	    s[j++] = start[i++];
+	}
+    }
+    s[j] = 0;
 
     start = strpbrk (s, "{[");
     if (!start) {
@@ -754,7 +777,7 @@ cairo_type1_font_subset_parse_charstring (cairo_type1_font_subset_t *font,
 						charstring);
     end = charstring + encrypted_charstring_length;
 
-    p = charstring + 4;
+    p = charstring + font->lenIV;
 
     last_op_was_integer = FALSE;
 
@@ -778,6 +801,7 @@ cairo_type1_font_subset_parse_charstring (cairo_type1_font_subset_t *font,
 		    font->build_stack.top_value < font->num_subrs)
 		{
 		    subr_num = font->build_stack.top_value;
+		    font->build_stack.sp--;
 		    font->subrs[subr_num].used = TRUE;
 		    last_op_was_integer = FALSE;
 		    status = cairo_type1_font_subset_parse_charstring (font,
@@ -1137,9 +1161,9 @@ cairo_type1_font_subset_write_private_dict (cairo_type1_font_subset_t *font,
 {
     cairo_status_t status;
     const char *p, *subrs, *charstrings, *array_start, *array_end, *dict_start, *dict_end;
-    const char *closefile_token;
-    char buffer[32], *subr_count_end, *glyph_count_end;
-    int length;
+    const char *lenIV_start, *lenIV_end, *closefile_token;
+    char buffer[32], *lenIV_str, *subr_count_end, *glyph_count_end;
+    int ret, lenIV, length;
     const cairo_scaled_font_backend_t *backend;
     unsigned int i;
     int glyph, j;
@@ -1160,6 +1184,38 @@ cairo_type1_font_subset_write_private_dict (cairo_type1_font_subset_t *font,
      * Finally the private dict is copied to the subset font minus the
      * subroutines and charstrings not required.
      */
+
+    /* Determine lenIV, the number of random characters at the start of
+       each encrypted charstring. The defaults is 4, but this can be
+       overridden in the private dict. */
+    font->lenIV = 4;
+    if ((lenIV_start = find_token (font->cleartext, font->cleartext_end, "/lenIV")) != NULL) {
+        lenIV_start += 6;
+        lenIV_end = find_token (lenIV_start, font->cleartext_end, "def");
+        if (lenIV_end == NULL)
+	    return CAIRO_INT_STATUS_UNSUPPORTED;
+
+        lenIV_str = malloc (lenIV_end - lenIV_start + 1);
+        if (unlikely (lenIV_str == NULL))
+	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+
+        strncpy (lenIV_str, lenIV_start, lenIV_end - lenIV_start);
+        lenIV_str[lenIV_end - lenIV_start] = 0;
+
+        ret = sscanf(lenIV_str, "%d", &lenIV);
+        free(lenIV_str);
+
+        if (unlikely (ret <= 0))
+	    return CAIRO_INT_STATUS_UNSUPPORTED;
+
+        /* Apparently some fonts signal unencrypted charstrings with a negative lenIV,
+           though this is not part of the Type 1 Font Format specification.  See, e.g.
+           http://lists.gnu.org/archive/html/freetype-devel/2000-06/msg00064.html. */
+        if (unlikely (lenIV < 0))
+	    return CAIRO_INT_STATUS_UNSUPPORTED;
+
+        font->lenIV = lenIV;
+    }
 
     /* Find start of Subrs */
     subrs = find_token (font->cleartext, font->cleartext_end, "/Subrs");
@@ -1272,6 +1328,12 @@ skip_subrs:
 							   font->glyphs[glyph].encrypted_charstring_length);
 	if (unlikely (status))
 	    return status;
+    }
+
+    /* Always include the first four subroutines in case the Flex/hint mechanism is
+     * being used. */
+    for (j = 0; j < MIN(font->num_subrs, 4); j++) {
+	font->subrs[j].used = TRUE;
     }
 
     closefile_token = find_token (dict_end, font->cleartext_end, "closefile");
