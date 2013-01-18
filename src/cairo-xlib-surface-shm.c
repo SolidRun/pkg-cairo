@@ -41,17 +41,114 @@
 
 #include "cairo-xlib-private.h"
 #include "cairo-xlib-surface-private.h"
-#include "cairo-image-surface-private.h"
-#include "cairo-mempool-private.h"
+
+#if !HAVE_X11_EXTENSIONS_XSHM_H || !(HAVE_X11_EXTENSIONS_SHMPROTO_H || HAVE_X11_EXTENSIONS_SHMSTR_H)
+void _cairo_xlib_display_init_shm (cairo_xlib_display_t *display) {}
+
+cairo_surface_t *
+_cairo_xlib_surface_get_shm (cairo_xlib_surface_t *surface,
+			     cairo_bool_t overwrite)
+{
+    return NULL;
+}
+
+cairo_int_status_t
+_cairo_xlib_surface_put_shm (cairo_xlib_surface_t *surface)
+{
+    assert (!surface->fallback);
+    return CAIRO_INT_STATUS_SUCCESS;
+}
+
+cairo_surface_t *
+_cairo_xlib_surface_create_shm (cairo_xlib_surface_t *other,
+				pixman_format_code_t format,
+				int width, int height)
+{
+    return NULL;
+}
+
+cairo_surface_t *
+_cairo_xlib_surface_create_shm__image (cairo_xlib_surface_t *surface,
+				       pixman_format_code_t format,
+				       int width, int height)
+{
+    return NULL;
+}
+
+cairo_surface_t *
+_cairo_xlib_surface_create_similar_shm (void *other,
+					cairo_format_t format,
+					int width, int height)
+{
+    return cairo_image_surface_create (format, width, height);
+}
+
+void
+_cairo_xlib_shm_surface_mark_active (cairo_surface_t *_shm)
+{
+    ASSERT_NOT_REACHED;
+}
+
+void
+_cairo_xlib_shm_surface_get_ximage (cairo_surface_t *surface,
+				    XImage *ximage)
+{
+    ASSERT_NOT_REACHED;
+}
+
+void *
+_cairo_xlib_shm_surface_get_obdata (cairo_surface_t *surface)
+{
+    ASSERT_NOT_REACHED;
+    return NULL;
+}
+
+Pixmap
+_cairo_xlib_shm_surface_get_pixmap (cairo_surface_t *surface)
+{
+    ASSERT_NOT_REACHED;
+    return 0;
+}
+
+XRenderPictFormat *
+_cairo_xlib_shm_surface_get_xrender_format (cairo_surface_t *surface)
+{
+    ASSERT_NOT_REACHED;
+    return NULL;
+}
+
+cairo_bool_t
+_cairo_xlib_shm_surface_is_active (cairo_surface_t *surface)
+{
+    ASSERT_NOT_REACHED;
+    return FALSE;
+}
+
+cairo_bool_t
+_cairo_xlib_shm_surface_is_idle (cairo_surface_t *surface)
+{
+    ASSERT_NOT_REACHED;
+    return TRUE;
+}
+
+void _cairo_xlib_display_fini_shm (cairo_xlib_display_t *display) {}
+
+#else
 
 #include "cairo-damage-private.h"
 #include "cairo-default-context-private.h"
+#include "cairo-image-surface-private.h"
 #include "cairo-list-inline.h"
+#include "cairo-mempool-private.h"
 
 #include <X11/Xlibint.h>
 #include <X11/Xproto.h>
 #include <X11/extensions/XShm.h>
+#if HAVE_X11_EXTENSIONS_SHMPROTO_H
 #include <X11/extensions/shmproto.h>
+#elif HAVE_X11_EXTENSIONS_SHMSTR_H
+#include <X11/extensions/shmstr.h>
+#endif
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
@@ -109,6 +206,8 @@ struct _cairo_xlib_shm_display {
     int event;
 
     Window window;
+    unsigned long last_request;
+    unsigned long last_event;
 
     cairo_list_t surfaces;
 
@@ -119,7 +218,7 @@ struct _cairo_xlib_shm_display {
 static inline cairo_bool_t
 seqno_passed (unsigned long a, unsigned long b)
 {
-    return (long)(b - a) > 0;
+    return (long)(b - a) >= 0;
 }
 
 static inline cairo_status_t
@@ -324,6 +423,43 @@ _cairo_xlib_display_shm_pool_destroy (cairo_xlib_display_t *display,
     free (pool);
 }
 
+static void send_event(cairo_xlib_display_t *display,
+		       cairo_xlib_shm_info_t *info,
+		       unsigned long seqno)
+{
+    XShmCompletionEvent ev;
+
+    if (seqno_passed (seqno, display->shm->last_event))
+	return;
+
+    ev.type = display->shm->event;
+    ev.send_event = 1; /* XXX or lie? */
+    ev.serial = NextRequest (display->display);
+    ev.drawable = display->shm->window;
+    ev.major_code = display->shm->opcode;
+    ev.minor_code = X_ShmPutImage;
+    ev.shmseg = info->pool->shm.shmid;
+    ev.offset = (char *)info->mem - (char *)info->pool->shm.shmaddr;
+
+    XSendEvent (display->display, ev.drawable, False, 0, (XEvent *)&ev);
+
+    display->shm->last_event = ev.serial;
+}
+
+static void sync (cairo_xlib_display_t *display)
+{
+    cairo_xlib_shm_info_t *info;
+    struct pqueue *pq = &display->shm->info;
+
+    XSync (display->display, False);
+
+    while ((info = PQ_TOP(pq))) {
+	_cairo_mempool_free (&info->pool->mem, info->mem);
+	_pqueue_pop (&display->shm->info);
+	free (info);
+    }
+}
+
 static void
 _cairo_xlib_shm_info_cleanup (cairo_xlib_display_t *display)
 {
@@ -340,8 +476,10 @@ _cairo_xlib_shm_info_cleanup (cairo_xlib_display_t *display)
 
     info = PQ_TOP(pq);
     do {
-	if (! seqno_passed (info->last_request, processed))
-	    break;
+	if (! seqno_passed (info->last_request, processed)) {
+	    send_event (display, info, display->shm->last_request);
+	    return;
+	}
 
 	_cairo_mempool_free (&info->pool->mem, info->mem);
 	_pqueue_pop (&display->shm->info);
@@ -349,9 +487,9 @@ _cairo_xlib_shm_info_cleanup (cairo_xlib_display_t *display)
     } while ((info = PQ_TOP(pq)));
 }
 
-static cairo_xlib_shm_info_t *
-_cairo_xlib_shm_info_find (cairo_xlib_display_t *display,
-			   size_t size, unsigned long *last_request)
+static cairo_xlib_shm_t *
+_cairo_xlib_shm_info_find (cairo_xlib_display_t *display, size_t size,
+			   void **ptr, unsigned long *last_request)
 {
     cairo_xlib_shm_info_t *info;
     struct pqueue *pq = &display->shm->info;
@@ -361,14 +499,21 @@ _cairo_xlib_shm_info_find (cairo_xlib_display_t *display,
 
     info = PQ_TOP(pq);
     do {
-	_pqueue_pop (&display->shm->info);
-
-	if (info->size >= size && size <= 2*info->size)
-	    return info;
+	cairo_xlib_shm_t *pool = info->pool;
 
 	*last_request = info->last_request;
+
+	_pqueue_pop (&display->shm->info);
 	_cairo_mempool_free (&info->pool->mem, info->mem);
 	free (info);
+
+	if (pool->mem.free_bytes >= size) {
+	    void *mem = _cairo_mempool_alloc (&pool->mem, size);
+	    if (mem != NULL) {
+		*ptr = mem;
+		return pool;
+	    }
+	}
     } while ((info = PQ_TOP(pq)));
 
     return NULL;
@@ -485,15 +630,12 @@ _cairo_xlib_shm_info_create (cairo_xlib_display_t *display,
     unsigned long last_request = 0;
     void *mem = NULL;
 
-    if (will_sync) {
-	info = _cairo_xlib_shm_info_find (display, size, &last_request);
-	if (info)
-	    return info;
-    }
-
     _cairo_xlib_shm_info_cleanup (display);
     pool = _cairo_xlib_shm_pool_find (display, size, &mem);
     _cairo_xlib_shm_pool_cleanup (display);
+
+    if (pool == NULL && will_sync)
+	pool = _cairo_xlib_shm_info_find (display, size, &mem, &last_request);
     if (pool == NULL)
 	pool = _cairo_xlib_shm_pool_create (display, size, &mem);
     if (pool == NULL)
@@ -520,6 +662,7 @@ _cairo_xlib_shm_surface_flush (void *abstract_surface, unsigned flags)
 {
     cairo_xlib_shm_surface_t *shm = abstract_surface;
     cairo_xlib_display_t *display;
+    Display *dpy;
     cairo_status_t status;
 
     if (shm->active == 0)
@@ -537,10 +680,15 @@ _cairo_xlib_shm_surface_flush (void *abstract_surface, unsigned flags)
     if (unlikely (status))
 	return status;
 
-    XEventsQueued (display->display, QueuedAfterReading);
-    if (!seqno_passed (shm->active,
-		       LastKnownRequestProcessed (display->display)))
-	XSync (display->display, False);
+    send_event (display, shm->info, shm->active);
+
+    dpy = display->display;
+    XEventsQueued (dpy, QueuedAfterReading);
+    while (! seqno_passed (shm->active, LastKnownRequestProcessed (dpy))) {
+	LockDisplay(dpy);
+	_XReadEvents(dpy);
+	UnlockDisplay(dpy);
+    }
 
     cairo_device_release (&display->base);
     shm->active = 0;
@@ -552,7 +700,7 @@ static inline cairo_bool_t
 active (cairo_xlib_shm_surface_t *shm, Display *dpy)
 {
     return (shm->active &&
-	    !seqno_passed (shm->active, LastKnownRequestProcessed (dpy)));
+	    ! seqno_passed (shm->active, LastKnownRequestProcessed (dpy)));
 }
 
 static cairo_status_t
@@ -561,6 +709,11 @@ _cairo_xlib_shm_surface_finish (void *abstract_surface)
     cairo_xlib_shm_surface_t *shm = abstract_surface;
     cairo_xlib_display_t *display;
     cairo_status_t status;
+
+    if (shm->image.base.damage) {
+	_cairo_damage_destroy (shm->image.base.damage);
+	shm->image.base.damage = _cairo_damage_create_in_error (CAIRO_STATUS_SURFACE_FINISHED);
+    }
 
     status = _cairo_xlib_display_acquire (shm->image.base.device, &display);
     if (unlikely (status))
@@ -572,6 +725,8 @@ _cairo_xlib_shm_surface_finish (void *abstract_surface)
     if (active (shm, display->display)) {
 	shm->info->last_request = shm->active;
 	_pqueue_push (&display->shm->info, shm->info);
+	if (! seqno_passed (display->shm->last_request, shm->active))
+	    display->shm->last_request = shm->active;
     } else {
 	_cairo_mempool_free (&shm->info->pool->mem, shm->info->mem);
 	free (shm->info);
@@ -582,7 +737,7 @@ _cairo_xlib_shm_surface_finish (void *abstract_surface)
     cairo_list_del (&shm->link);
 
     cairo_device_release (&display->base);
-    return CAIRO_STATUS_SUCCESS;
+    return _cairo_image_surface_finish (abstract_surface);
 }
 
 static const cairo_surface_backend_t cairo_xlib_shm_surface_backend = {
@@ -723,6 +878,13 @@ _cairo_xlib_surface_update_shm (cairo_xlib_surface_t *surface)
     if (_cairo_xlib_surface_get_gc (display, surface, &gc))
 	goto cleanup_display;
 
+    if (! surface->owns_pixmap) {
+	XGCValues gcv;
+
+	gcv.subwindow_mode = IncludeInferiors;
+	XChangeGC (display->display, gc, GCSubwindowMode, &gcv);
+    }
+
     if (damage->region) {
 	XRectangle stack_rects[CAIRO_STACK_ARRAY_LENGTH (sizeof (XRectangle))];
 	XRectangle *rects = stack_rects;
@@ -773,7 +935,14 @@ _cairo_xlib_surface_update_shm (cairo_xlib_surface_t *surface)
 		   0, 0);
     }
 
-    XSync (display->display, False);
+    if (! surface->owns_pixmap) {
+	XGCValues gcv;
+
+	gcv.subwindow_mode = ClipByChildren;
+	XChangeGC (display->display, gc, GCSubwindowMode, &gcv);
+    }
+
+    sync (display);
     shm->active = 0;
     shm->idle--;
 
@@ -902,10 +1071,6 @@ _cairo_xlib_surface_put_shm (cairo_xlib_surface_t *surface)
 	damage = _cairo_damage_reduce (shm->image.base.damage);
 	shm->image.base.damage = _cairo_damage_create ();
 
-	status = _cairo_xlib_surface_get_gc (display, surface, &gc);
-	if (unlikely (status))
-	    goto out;
-
 	TRACE ((stderr, "%s: flushing damage x %d\n", __FUNCTION__,
 		damage->region ? cairo_region_num_rectangles (damage->region) : 0));
 	if (damage->status == CAIRO_STATUS_SUCCESS && damage->region) {
@@ -915,9 +1080,16 @@ _cairo_xlib_surface_put_shm (cairo_xlib_surface_t *surface)
 	    int n_rects, i;
 
 	    n_rects = cairo_region_num_rectangles (damage->region);
-	    if (n_rects == 0) {
-	    } else if (n_rects == 1) {
+	    if (n_rects == 0)
+		goto out;
+
+	    status = _cairo_xlib_surface_get_gc (display, surface, &gc);
+	    if (unlikely (status))
+		goto out;
+
+	    if (n_rects == 1) {
 		cairo_region_get_rectangle (damage->region, 0, &r);
+		_cairo_xlib_shm_surface_mark_active (surface->shm);
 		XCopyArea (display->display,
 			   shm->pixmap, surface->drawable, gc,
 			   r.x, r.y,
@@ -928,6 +1100,7 @@ _cairo_xlib_surface_put_shm (cairo_xlib_surface_t *surface)
 		    rects = _cairo_malloc_ab (n_rects, sizeof (XRectangle));
 		    if (unlikely (rects == NULL)) {
 			status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
+			_cairo_xlib_surface_put_gc (display, surface, gc);
 			goto out;
 		    }
 		}
@@ -941,6 +1114,7 @@ _cairo_xlib_surface_put_shm (cairo_xlib_surface_t *surface)
 		}
 		XSetClipRectangles (display->display, gc, 0, 0, rects, i, YXBanded);
 
+		_cairo_xlib_shm_surface_mark_active (surface->shm);
 		XCopyArea (display->display,
 			   shm->pixmap, surface->drawable, gc,
 			   0, 0,
@@ -950,12 +1124,12 @@ _cairo_xlib_surface_put_shm (cairo_xlib_surface_t *surface)
 		if (damage->status == CAIRO_STATUS_SUCCESS && damage->region)
 		    XSetClipMask (display->display, gc, None);
 	    }
-	}
-	_cairo_damage_destroy (damage);
 
-	_cairo_xlib_shm_surface_mark_active (surface->shm);
-	_cairo_xlib_surface_put_gc (display, surface, gc);
+	    _cairo_xlib_surface_put_gc (display, surface, gc);
+	}
+
 out:
+	_cairo_damage_destroy (damage);
 	cairo_device_release (&display->base);
     }
 
@@ -971,9 +1145,8 @@ _cairo_xlib_surface_create_shm (cairo_xlib_surface_t *other,
 
     surface = NULL;
     if (has_shm (other))
-	surface = &_cairo_xlib_shm_surface_create (other, format,
-						   width, height, FALSE,
-						   has_shm_pixmaps (other))->image.base;
+	surface = &_cairo_xlib_shm_surface_create (other, format, width, height,
+						   FALSE, has_shm_pixmaps (other))->image.base;
 
     return surface;
 }
@@ -986,8 +1159,7 @@ _cairo_xlib_surface_create_shm__image (cairo_xlib_surface_t *surface,
     if (! has_shm(surface))
 	return NULL;
 
-    return &_cairo_xlib_shm_surface_create (surface, format,
-					    surface->width, surface->height,
+    return &_cairo_xlib_shm_surface_create (surface, format, width, height,
 					    TRUE, 0)->image.base;
 }
 
@@ -1019,17 +1191,8 @@ _cairo_xlib_shm_surface_mark_active (cairo_surface_t *_shm)
 {
     cairo_xlib_shm_surface_t *shm = (cairo_xlib_shm_surface_t *) _shm;
     cairo_xlib_display_t *display = (cairo_xlib_display_t *) _shm->device;
-    XShmCompletionEvent ev;
-
-    ev.type = display->shm->event;
-    ev.drawable = display->shm->window;
-    ev.major_code = display->shm->opcode;
-    ev.minor_code = X_ShmPutImage;
-    ev.shmseg = shm->info->pool->shm.shmid;
-    ev.offset = (char *)shm->info->mem - (char *)shm->info->pool->shm.shmaddr;
 
     shm->active = NextRequest (display->display);
-    XSendEvent (display->display, ev.drawable, False, 0, (XEvent *)&ev);
 }
 
 void
@@ -1128,8 +1291,62 @@ _cairo_xlib_shm_surface_is_idle (cairo_surface_t *surface)
     (((major) * 10000000) + ((minor) * 100000) + ((patch) * 1000) + snap)
 
 static cairo_bool_t
-xorg_has_buggy_send_shm_completion_event(Display *dpy)
+has_broken_send_shm_event (cairo_xlib_display_t *display,
+			   cairo_xlib_shm_display_t *shm)
 {
+    Display *dpy = display->display;
+    int (*old_handler) (Display *display, XErrorEvent *event);
+    XShmCompletionEvent ev;
+    XShmSegmentInfo info;
+
+    info.shmid = shmget (IPC_PRIVATE, 0x1000, IPC_CREAT | 0600);
+    if (info.shmid == -1)
+	return TRUE;
+
+    info.readOnly = FALSE;
+    info.shmaddr = shmat (info.shmid, NULL, 0);
+    if (info.shmaddr == (char *) -1) {
+	shmctl (info.shmid, IPC_RMID, NULL);
+	return TRUE;
+    }
+
+    ev.type = shm->event;
+    ev.send_event = 1;
+    ev.serial = 1;
+    ev.drawable = shm->window;
+    ev.major_code = shm->opcode;
+    ev.minor_code = X_ShmPutImage;
+
+    ev.shmseg = info.shmid;
+    ev.offset = 0;
+
+    assert (CAIRO_MUTEX_IS_LOCKED (_cairo_xlib_display_mutex));
+    _x_error_occurred = FALSE;
+
+    XLockDisplay (dpy);
+    XSync (dpy, False);
+    old_handler = XSetErrorHandler (_check_error_handler);
+
+    XShmAttach (dpy, &info);
+    XSendEvent (dpy, ev.drawable, False, 0, (XEvent *)&ev);
+    XShmDetach (dpy, &info);
+
+    XSync (dpy, False);
+    XSetErrorHandler (old_handler);
+    XUnlockDisplay (dpy);
+
+    shmctl (info.shmid, IPC_RMID, NULL);
+    shmdt (info.shmaddr);
+
+    return _x_error_occurred;
+}
+
+static cairo_bool_t
+xorg_has_buggy_send_shm_completion_event(cairo_xlib_display_t *display,
+					 cairo_xlib_shm_display_t *shm)
+{
+    Display *dpy = display->display;
+
     /* As libXext sets the SEND_EVENT bit in the ShmCompletionEvent,
      * the Xserver may crash if it does not take care when processing
      * the event type. For instance versions of Xorg prior to 1.11.1
@@ -1141,8 +1358,12 @@ xorg_has_buggy_send_shm_completion_event(Display *dpy)
      *
      * Remove the SendEvent bit (0x80) before doing range checks on event type.
      */
-    return (strstr (ServerVendor (dpy), "X.Org") != NULL &&
-	    VendorRelease (dpy) < XORG_VERSION_ENCODE(1,11,0,1));
+    if (_cairo_xlib_vendor_is_xorg (dpy) &&
+	VendorRelease (dpy) < XORG_VERSION_ENCODE(1,11,0,1))
+	return TRUE;
+
+    /* For everyone else check that no error is generated */
+    return has_broken_send_shm_event (display, shm);
 }
 
 void
@@ -1162,6 +1383,15 @@ _cairo_xlib_display_init_shm (cairo_xlib_display_t *display)
     if (unlikely (shm == NULL))
 	return;
 
+    codes = XInitExtension (display->display, SHMNAME);
+    if (codes == NULL) {
+	free (shm);
+	return;
+    }
+
+    shm->opcode = codes ->major_opcode;
+    shm->event = codes->first_event;
+
     if (unlikely (_pqueue_init (&shm->info))) {
 	free (shm);
 	return;
@@ -1176,16 +1406,14 @@ _cairo_xlib_display_init_shm (cairo_xlib_display_t *display)
 				 InputOutput,
 				 DefaultVisual (display->display, scr),
 				 CWOverrideRedirect, &attr);
+    shm->last_event = 0;
+    shm->last_request = 0;
 
-    if (xorg_has_buggy_send_shm_completion_event(display->display))
+    if (xorg_has_buggy_send_shm_completion_event(display, shm))
 	has_pixmap = 0;
 
     shm->has_pixmaps = has_pixmap ? MIN_PIXMAP_SIZE : 0;
     cairo_list_init (&shm->pool);
-
-    codes = XInitExtension (display->display, SHMNAME);
-    shm->opcode = codes ->major_opcode;
-    shm->event = codes->first_event;
 
     cairo_list_init (&shm->surfaces);
 
@@ -1220,5 +1448,5 @@ _cairo_xlib_display_fini_shm (cairo_xlib_display_t *display)
     free (shm);
     display->shm = NULL;
 }
-
+#endif
 #endif
