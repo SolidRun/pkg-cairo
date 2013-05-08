@@ -343,7 +343,8 @@ _cairo_gl_msaa_compositor_mask_source_operator (const cairo_compositor_t *compos
     status = _cairo_gl_composite_set_source (&setup,
 					     &composite->mask_pattern.base,
 					     &composite->mask_sample_area,
-					     &composite->bounded);
+					     &composite->bounded,
+					     FALSE);
     if (unlikely (status))
 	goto finish;
     _cairo_gl_composite_set_multisample (&setup);
@@ -364,13 +365,15 @@ _cairo_gl_msaa_compositor_mask_source_operator (const cairo_compositor_t *compos
     status = _cairo_gl_composite_set_source (&setup,
 					     &composite->source_pattern.base,
 					     &composite->source_sample_area,
-					     &composite->bounded);
+					     &composite->bounded,
+					     FALSE);
     if (unlikely (status))
 	goto finish;
     status = _cairo_gl_composite_set_mask (&setup,
 				           &composite->mask_pattern.base,
 					   &composite->source_sample_area,
-					   &composite->bounded);
+					   &composite->bounded,
+					   FALSE);
     if (unlikely (status))
 	goto finish;
     status = _cairo_gl_set_operands_and_operator (&setup, ctx);
@@ -404,6 +407,10 @@ _cairo_gl_msaa_compositor_mask (const cairo_compositor_t	*compositor,
     cairo_clip_t *clip = composite->clip;
 
     if (! can_use_msaa_compositor (dst, CAIRO_ANTIALIAS_DEFAULT))
+	return CAIRO_INT_STATUS_UNSUPPORTED;
+
+    if (composite->op == CAIRO_OPERATOR_CLEAR &&
+	composite->original_mask_pattern != NULL)
 	return CAIRO_INT_STATUS_UNSUPPORTED;
 
     /* GL compositing operators cannot properly represent a mask operation
@@ -462,7 +469,8 @@ _cairo_gl_msaa_compositor_mask (const cairo_compositor_t	*compositor,
     status = _cairo_gl_composite_set_source (&setup,
 					     &composite->source_pattern.base,
 					     &composite->source_sample_area,
-					     &composite->bounded);
+					     &composite->bounded,
+					     FALSE);
     if (unlikely (status))
 	goto finish;
 
@@ -470,7 +478,8 @@ _cairo_gl_msaa_compositor_mask (const cairo_compositor_t	*compositor,
 	status = _cairo_gl_composite_set_mask (&setup,
 					       &composite->mask_pattern.base,
 					       &composite->mask_sample_area,
-					       &composite->bounded);
+					       &composite->bounded,
+					       FALSE);
     }
     if (unlikely (status))
 	goto finish;
@@ -674,7 +683,8 @@ _cairo_gl_msaa_compositor_stroke (const cairo_compositor_t	*compositor,
     status = _cairo_gl_composite_set_source (&info.setup,
 					     &composite->source_pattern.base,
 					     &composite->source_sample_area,
-					     &composite->bounded);
+					     &composite->bounded,
+					     FALSE);
     if (unlikely (status))
 	goto finish;
 
@@ -793,7 +803,8 @@ _cairo_gl_msaa_compositor_fill (const cairo_compositor_t	*compositor,
     status = _cairo_gl_composite_set_source (&setup,
 					     &composite->source_pattern.base,
 					     &composite->source_sample_area,
-					     &composite->bounded);
+					     &composite->bounded,
+					     FALSE);
     if (unlikely (status))
 	goto cleanup_setup;
 
@@ -842,6 +853,9 @@ _cairo_gl_msaa_compositor_glyphs (const cairo_compositor_t	*compositor,
 
     query_surface_capabilities (dst);
     if (! dst->supports_stencil)
+	return CAIRO_INT_STATUS_UNSUPPORTED;
+
+    if (composite->op == CAIRO_OPERATOR_CLEAR)
 	return CAIRO_INT_STATUS_UNSUPPORTED;
 
     if (composite->is_bounded == FALSE) {
