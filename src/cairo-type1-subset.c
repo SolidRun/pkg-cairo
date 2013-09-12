@@ -1130,6 +1130,7 @@ write_used_glyphs (cairo_type1_font_subset_t *font,
     int length;
     int subset_id;
     int ch;
+    const char *wa_name;
 
     if (font->glyphs[glyph_number].subset_index < 0)
 	return CAIRO_STATUS_SUCCESS;
@@ -1143,8 +1144,15 @@ write_used_glyphs (cairo_type1_font_subset_t *font,
 	subset_id = font->glyphs[glyph_number].subset_index;
 	if (subset_id > 0) {
 	    ch = font->scaled_font_subset->to_latin_char[subset_id];
-	    name = _cairo_winansi_to_glyphname (ch);
-	    name_length = strlen(name);
+	    wa_name = _cairo_winansi_to_glyphname (ch);
+	    /* If this subset contains any seac glyphs, additional non
+	     * winansi glyphs (wa_name = NULL) may be included in the
+	     * subset. In this case the original name is used.
+	     */
+	    if (wa_name) {
+		name = wa_name;
+		name_length = strlen(name);
+	    }
 	}
     }
 
@@ -1256,21 +1264,21 @@ cairo_type1_font_subset_write_private_dict (cairo_type1_font_subset_t *font,
      * the actual glyph definitions (charstrings).
      *
      * What we do here is scan directly to the /Subrs token, which
-     * marks the beginning of the subroutines. We then read in all the
-     * subroutines then move on to the /CharString token, which marks
-     * the beginning of the glyph definitions, and read in the chastrings.
+     * marks the beginning of the subroutines. We read in all the
+     * subroutines, then move on to the /CharString token, which marks
+     * the beginning of the glyph definitions, and read in the charstrings.
      *
-     * The charstrings are parsed to extracts glyph widths, work out
-     * which subroutines are called, and too see if any extra glyphs
+     * The charstrings are parsed to extract glyph widths, work out
+     * which subroutines are called, and to see if any extra glyphs
      * need to be included due to the use of the seac glyph combining
      * operator.
      *
-     * Finally the private dict is copied to the subset font minus the
+     * Finally, the private dict is copied to the subset font minus the
      * subroutines and charstrings not required.
      */
 
     /* Determine lenIV, the number of random characters at the start of
-       each encrypted charstring. The defaults is 4, but this can be
+       each encrypted charstring. The default is 4, but this can be
        overridden in the private dict. */
     font->lenIV = 4;
     if ((lenIV_start = find_token (font->cleartext, font->cleartext_end, "/lenIV")) != NULL) {
@@ -1306,6 +1314,7 @@ cairo_type1_font_subset_write_private_dict (cairo_type1_font_subset_t *font,
     if (subrs == NULL) {
 	font->subset_subrs = FALSE;
 	p = font->cleartext;
+	array_start = NULL;
 	goto skip_subrs;
     }
 

@@ -136,7 +136,7 @@ functions. If you do this, keep in mind that it is mandatory that you call
 you must use <a class="link" href="cairo-cairo-surface-t.html#cairo-surface-mark-dirty" title="cairo_surface_mark_dirty ()"><code class="function">cairo_surface_mark_dirty()</code></a> after modifying it.
 </p>
 <div class="example">
-<a name="idp18359440"></a><p class="title"><b>Example 1. Directly modifying an image surface</b></p>
+<a name="idp17937024"></a><p class="title"><b>Example 1. Directly modifying an image surface</b></p>
 <div class="example-contents">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -640,7 +640,7 @@ See <a class="link" href="cairo-cairo-device-t.html#cairo-device-t" title="cairo
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>The device for <em class="parameter"><code>surface</code></em> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the surface does
+<td>The device for <em class="parameter"><code>surface</code></em> or <code class="literal">NULL</code> if the surface does
 not have an associated device.</td>
 </tr>
 </tbody>
@@ -1175,7 +1175,7 @@ object is a nil object, 0 will be returned.</td>
                                                          <em class="parameter"><code><a class="link" href="cairo-Types.html#cairo-destroy-func-t" title="cairo_destroy_func_t ()"><span class="type">cairo_destroy_func_t</span></a> destroy</code></em>);</pre>
 <p>
 Attach user data to <em class="parameter"><code>surface</code></em>.  To remove user data from a surface,
-call this function with the key that was used to set it and <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+call this function with the key that was used to set it and <code class="literal">NULL</code>
 for <em class="parameter"><code>data</code></em>.
 </p>
 <div class="variablelist"><table border="0">
@@ -1218,7 +1218,7 @@ slot could not be allocated for the user data.</td>
 <p>
 Return user data previously attached to <em class="parameter"><code>surface</code></em> using the specified
 key.  If no user data has been attached with the given key this
-function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
+function returns <code class="literal">NULL</code>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1235,7 +1235,7 @@ attached to</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the user data previously attached or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</td>
+<td>the user data previously attached or <code class="literal">NULL</code>.</td>
 </tr>
 </tbody>
 </table></div>
@@ -1298,7 +1298,7 @@ whether it actually uses the provided text and cluster data
 to a <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a> call.
 </p>
 <p>
-Note: Even if this function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, a
+Note: Even if this function returns <code class="literal">FALSE</code>, a
 <a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a> operation targeted at <em class="parameter"><code>surface</code></em> will
 still succeed.  It just will
 act like a <a class="link" href="cairo-text.html#cairo-show-glyphs" title="cairo_show_glyphs ()"><code class="function">cairo_show_glyphs()</code></a> operation.  Users can use this
@@ -1316,8 +1316,8 @@ target surface does not use it.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>surface</code></em> supports
-<a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a>, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise</td>
+<code class="literal">TRUE</code> if <em class="parameter"><code>surface</code></em> supports
+<a class="link" href="cairo-text.html#cairo-show-text-glyphs" title="cairo_show_text_glyphs ()"><code class="function">cairo_show_text_glyphs()</code></a>, <code class="literal">FALSE</code> otherwise</td>
 </tr>
 </tbody>
 </table></div>
@@ -1335,7 +1335,7 @@ target surface does not use it.
 <p>
 Attach an image in the format <em class="parameter"><code>mime_type</code></em> to <em class="parameter"><code>surface</code></em>. To remove
 the data from a surface, call this function with same mime type
-and <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for <em class="parameter"><code>data</code></em>.
+and <code class="literal">NULL</code> for <em class="parameter"><code>data</code></em>.
 </p>
 <p>
 The attached image (or filename) data can later be used by backends
@@ -1405,7 +1405,7 @@ slot could not be allocated for the user data.</td>
 <p>
 Return mime data previously attached to <em class="parameter"><code>surface</code></em> using the
 specified mime type.  If no data has been attached with the given
-mime type, <em class="parameter"><code>data</code></em> is set <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
+mime type, <em class="parameter"><code>data</code></em> is set <code class="literal">NULL</code>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1454,8 +1454,8 @@ Return whether <em class="parameter"><code>surface</code></em> supports <em clas
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>surface</code></em> supports
-<em class="parameter"><code>mime_type</code></em>, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise</td>
+<code class="literal">TRUE</code> if <em class="parameter"><code>surface</code></em> supports
+<em class="parameter"><code>mime_type</code></em>, <code class="literal">FALSE</code> otherwise</td>
 </tr>
 </tbody>
 </table></div>
@@ -1469,7 +1469,7 @@ Return whether <em class="parameter"><code>surface</code></em> supports <em clas
 <p>
 Returns an image surface that is the most efficient mechanism for
 modifying the backing store of the target surface. The region retrieved
-may be limited to the <em class="parameter"><code>extents</code></em> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for the whole surface
+may be limited to the <em class="parameter"><code>extents</code></em> or <code class="literal">NULL</code> for the whole surface
 </p>
 <p>
 Note, the use of the original surface as a target or source whilst

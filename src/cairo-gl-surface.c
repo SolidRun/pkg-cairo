@@ -395,6 +395,23 @@ _cairo_gl_surface_init (cairo_device_t *device,
     _cairo_gl_surface_embedded_operand_init (surface);
 }
 
+static cairo_bool_t
+_cairo_gl_surface_size_valid_for_context (cairo_gl_context_t *ctx,
+					  int width, int height)
+{
+    return width > 0 && height > 0 &&
+	width <= ctx->max_framebuffer_size &&
+	height <= ctx->max_framebuffer_size;
+}
+
+static cairo_bool_t
+_cairo_gl_surface_size_valid (cairo_gl_surface_t *surface,
+			      int width, int height)
+{
+    cairo_gl_context_t *ctx = (cairo_gl_context_t *)surface->base.device;
+    return _cairo_gl_surface_size_valid_for_context (ctx, width, height);
+}
+
 static cairo_surface_t *
 _cairo_gl_surface_create_scratch_for_texture (cairo_gl_context_t   *ctx,
 					      cairo_content_t	    content,
@@ -404,7 +421,6 @@ _cairo_gl_surface_create_scratch_for_texture (cairo_gl_context_t   *ctx,
 {
     cairo_gl_surface_t *surface;
 
-    assert (width <= ctx->max_framebuffer_size && height <= ctx->max_framebuffer_size);
     surface = calloc (1, sizeof (cairo_gl_surface_t));
     if (unlikely (surface == NULL))
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
@@ -588,6 +604,11 @@ cairo_gl_surface_create (cairo_device_t		*abstract_device,
     if (unlikely (status))
 	return _cairo_surface_create_in_error (status);
 
+    if (! _cairo_gl_surface_size_valid_for_context (ctx, width, height)) {
+	status = _cairo_gl_context_release (ctx, status);
+	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_INVALID_SIZE));
+    }
+
     surface = (cairo_gl_surface_t *)
 	_cairo_gl_surface_create_and_clear_scratch (ctx, content, width, height);
     if (unlikely (surface->base.status)) {
@@ -759,16 +780,6 @@ cairo_gl_surface_swapbuffers (cairo_surface_t *abstract_surface)
         if (status)
             status = _cairo_surface_set_error (abstract_surface, status);
     }
-}
-
-static cairo_bool_t
-_cairo_gl_surface_size_valid (cairo_gl_surface_t *surface,
-			      int width, int height)
-{
-    cairo_gl_context_t *ctx = (cairo_gl_context_t *)surface->base.device;
-    return width > 0 && height > 0 &&
-	width <= ctx->max_framebuffer_size &&
-	height <= ctx->max_framebuffer_size;
 }
 
 static cairo_surface_t *
@@ -1024,14 +1035,17 @@ _cairo_gl_surface_finish (void *abstract_surface)
     if (surface->owns_tex)
 	glDeleteTextures (1, &surface->tex);
 
-#if CAIRO_HAS_GL_SURFACE
     if (surface->msaa_depth_stencil)
 	ctx->dispatch.DeleteRenderbuffers (1, &surface->msaa_depth_stencil);
+
+#if CAIRO_HAS_GL_SURFACE
     if (surface->msaa_fb)
 	ctx->dispatch.DeleteFramebuffers (1, &surface->msaa_fb);
     if (surface->msaa_rb)
 	ctx->dispatch.DeleteRenderbuffers (1, &surface->msaa_rb);
 #endif
+
+    _cairo_clip_destroy (surface->clip_on_stencil_buffer);
 
     return _cairo_gl_context_release (ctx, status);
 }
@@ -1278,7 +1292,42 @@ _cairo_gl_surface_flush (void *abstract_surface, unsigned flags)
         (ctx->current_target == surface))
       _cairo_gl_composite_flush (ctx);
 
+    status = _cairo_gl_surface_resolve_multisampling (surface);
+
     return _cairo_gl_context_release (ctx, status);
+}
+
+cairo_int_status_t
+_cairo_gl_surface_resolve_multisampling (cairo_gl_surface_t *surface)
+{
+    cairo_gl_context_t *ctx;
+    cairo_int_status_t status;
+
+    if (! surface->msaa_active)
+	return CAIRO_INT_STATUS_SUCCESS;
+
+    if (surface->base.device == NULL)
+	return CAIRO_INT_STATUS_SUCCESS;
+
+    /* GLES surfaces do not need explicit resolution. */
+    if (((cairo_gl_context_t *) surface->base.device)->gl_flavor == CAIRO_GL_FLAVOR_ES)
+	return CAIRO_INT_STATUS_SUCCESS;
+
+    if (! _cairo_gl_surface_is_texture (surface))
+	return CAIRO_INT_STATUS_SUCCESS;
+
+    status = _cairo_gl_context_acquire (surface->base.device, &ctx);
+    if (unlikely (status))
+	return status;
+
+    ctx->current_target = surface;
+
+#if CAIRO_HAS_GL_SURFACE
+    _cairo_gl_context_bind_framebuffer (ctx, surface, FALSE);
+#endif
+
+    status = _cairo_gl_context_release (ctx, status);
+    return status;
 }
 
 static const cairo_compositor_t *
