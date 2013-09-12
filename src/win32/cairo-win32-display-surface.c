@@ -415,7 +415,8 @@ _cairo_win32_display_surface_finish (void *abstract_surface)
 {
     cairo_win32_display_surface_t *surface = abstract_surface;
 
-    if (surface->image) {
+    if (surface->image && to_image_surface(surface->image)->parent) {
+	assert (to_image_surface(surface->image)->parent == &surface->win32.base);
 	/* Unhook ourselves first to avoid the double-unref from the image */
 	to_image_surface(surface->image)->parent = NULL;
 	cairo_surface_finish (surface->image);
@@ -428,6 +429,8 @@ _cairo_win32_display_surface_finish (void *abstract_surface)
 	DeleteObject (surface->bitmap);
 	DeleteDC (surface->win32.dc);
     }
+
+    _cairo_win32_display_surface_discard_fallback (surface);
 
     if (surface->initial_clip_rgn)
 	DeleteObject (surface->initial_clip_rgn);
@@ -758,6 +761,7 @@ _cairo_win32_display_surface_discard_fallback (cairo_win32_display_surface_t *su
 	TRACE ((stderr, "%s (surface=%d)\n",
 		__FUNCTION__, surface->win32.base.unique_id));
 
+	cairo_surface_finish (surface->fallback);
 	cairo_surface_destroy (surface->fallback);
 	surface->fallback = NULL;
     }

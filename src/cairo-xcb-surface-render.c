@@ -1101,10 +1101,11 @@ record_to_picture (cairo_surface_t *target,
 	return _cairo_xcb_transparent_picture ((cairo_xcb_surface_t *) target);
 
     /* Now draw the recording surface to an xcb surface */
-    tmp = _cairo_surface_create_similar_scratch (target,
-						 source->content,
-						 limit.width,
-						 limit.height);
+    tmp = _cairo_surface_create_similar_solid (target,
+					       source->content,
+					       limit.width,
+					       limit.height,
+					       CAIRO_COLOR_TRANSPARENT);
     if (tmp->status != CAIRO_STATUS_SUCCESS) {
 	return (cairo_xcb_picture_t *) tmp;
     }
@@ -1951,7 +1952,7 @@ _clip_and_composite_combine (cairo_clip_t		*clip,
 {
     cairo_xcb_surface_t *tmp;
     cairo_xcb_surface_t *clip_surface;
-    int clip_x, clip_y;
+    int clip_x = 0, clip_y = 0;
     xcb_render_picture_t clip_picture;
     cairo_status_t status;
 
@@ -2247,7 +2248,7 @@ _cairo_xcb_surface_fixup_unbounded_with_mask (cairo_xcb_surface_t *dst,
 					      cairo_clip_t *clip)
 {
     cairo_xcb_surface_t *mask;
-    int mask_x, mask_y;
+    int mask_x = 0, mask_y = 0;
 
     mask = get_clip_surface (clip, dst, &mask_x, &mask_y);
     if (unlikely (mask->base.status))
@@ -2650,7 +2651,7 @@ _composite_boxes (cairo_xcb_surface_t *dst,
 
 	if (need_clip_mask) {
 	    cairo_xcb_surface_t *clip_surface;
-	    int clip_x, clip_y;
+	    int clip_x = 0, clip_y = 0;
 
 	    clip_surface = get_clip_surface (extents->clip, dst,
 					     &clip_x, &clip_y);

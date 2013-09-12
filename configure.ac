@@ -11,6 +11,8 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_SRCDIR(src/cairo.h)
 AC_CONFIG_HEADERS(config.h)
 
+AC_CHECK_HEADERS([unistd.h sys/ioctl.h])
+
 AM_INIT_AUTOMAKE([1.11 foreign -Wall no-define no-dist-gzip dist-xz])
 AM_SILENT_RULES([yes])
 
@@ -654,7 +656,7 @@ CAIRO_ENABLE(test_surfaces, test surfaces, no)
 dnl ===========================================================================
 
 CAIRO_ENABLE_SURFACE_BACKEND(image, image, always, [
-  pixman_REQUIRES="pixman-1 >= 0.22.0"
+  pixman_REQUIRES="pixman-1 >= 0.16.0"
   PKG_CHECK_MODULES(pixman, $pixman_REQUIRES, ,
     [use_image="no (requires $pixman_REQUIRES http://cairographics.org/releases/)"])
   image_REQUIRES=$pixman_REQUIRES
