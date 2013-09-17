@@ -7,6 +7,10 @@ cairo (1.12.16-2) UNRELEASED; urgency=low
 
   [ Michael Biebl ]
   * Add myself to uploaders.
+  * The libcairo2-udeb package already ships the libcairo-gobject2 library, so
+    instead of splitting libcairo-gobject2 into its separate udeb, just fix
+    the shlibs information for libcairo-gobject2 to point to libcairo2-udeb.
+    Closes: #648533
 
  -- Cyril Brulebois <kibi@debian.org>  Wed, 15 May 2013 22:51:40 +0200
 
