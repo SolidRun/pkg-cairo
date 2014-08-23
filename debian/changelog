@@ -1,3 +1,25 @@
+cairo (1.12.16-3) UNRELEASED; urgency=medium
+
+  * Cherry-pick patches from upstream for device scale (HiDPI) support
+    - image-Use-convolution-filters-for-sample-reconstruct.patch
+    - gstate-Respect-device-transform-in-stroke.patch
+    - default-context-Inherit-device-scale-in-push_group-s.patch
+    - subsurface-Handle-device-scales.patch
+    - gstate-Move-device-scale-font-scaling-to-gstate.patch
+    - gstate-Handle-device-scale-on-surface-as-source.patch
+    - spans-traps-Undo-device-transform-from-source-matrix.patch
+    - surface-expose-the-device-scale.patch
+    - surface-Opencode-create_similar.patch
+    - surface-Merge-scratch-construction-into-_cairo_surfa.patch
+    - surface-Inherit-device-scale-in-cairo_surface_create.patch
+    - trace-Record-set-device-scale.patch
+    - script-Add-support-for-replaying-device-scale.patch
+    - Downscaling-requires-pixman-0.30.patch
+  * Update debian/libcairo2.symbols with added cairo_surface_get_device_scale
+  * Bump pixman build-dependency to >= 0.30.0
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 21 Aug 2014 23:48:43 +0200
+
 cairo (1.12.16-2) unstable; urgency=low
 
   [ Cyril Brulebois ]

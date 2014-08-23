@@ -1,0 +1,25 @@
+From: Alexander Larsson <alexl@redhat.com>
+Date: Thu, 30 May 2013 19:48:33 +0200
+Subject: default-context: Inherit device scale in push_group surface
+
+Without this we will only render to part of the newly created
+surface and then copy+scale that part back, which causes fuzziness.
+---
+ src/cairo-default-context.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/cairo-default-context.c b/src/cairo-default-context.c
+index aec5b10..77b6eef 100644
+--- a/src/cairo-default-context.c
++++ b/src/cairo-default-context.c
+@@ -189,6 +189,10 @@ _cairo_default_context_push_group (void *abstract_cr, cairo_content_t content)
+ 					 parent_surface->device_transform.x0 - extents.x,
+ 					 parent_surface->device_transform.y0 - extents.y);
+ 
++	_cairo_surface_set_device_scale (group_surface,
++					 parent_surface->device_transform.xx,
++					 parent_surface->device_transform.yy);
++
+ 	/* If we have a current path, we need to adjust it to compensate for
+ 	 * the device offset just applied. */
+ 	_cairo_path_fixed_translate (cr->path,

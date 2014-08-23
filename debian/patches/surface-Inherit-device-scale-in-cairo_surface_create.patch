@@ -1,0 +1,36 @@
+From: Alexander Larsson <alexl@redhat.com>
+Date: Tue, 27 Aug 2013 15:10:38 +0200
+Subject: surface: Inherit device scale in cairo_surface_create_similar()
+
+Without this most code that uses similar surfaces for offscreen
+rendering will render in a pixelized fashion if the final
+target uses a device scale.
+---
+ src/cairo-surface.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/cairo-surface.c b/src/cairo-surface.c
+index cdd75b8..f2f2ef6 100644
+--- a/src/cairo-surface.c
++++ b/src/cairo-surface.c
+@@ -507,6 +507,10 @@ cairo_surface_create_similar (cairo_surface_t  *other,
+         if (unlikely (other->status))
+ 	return _cairo_surface_create_in_error (other->status);
+ 
++    /* We inherit the device scale, so create a larger surface */
++    width = width * other->device_transform.xx;
++    height = height * other->device_transform.yy;
++
+     surface = NULL;
+     if (other->backend->create_similar)
+ 	surface = other->backend->create_similar (other, content, width, height);
+@@ -519,6 +523,9 @@ cairo_surface_create_similar (cairo_surface_t  *other,
+ 	return surface;
+ 
+     _cairo_surface_copy_similar_properties (surface, other);
++    cairo_surface_set_device_scale (surface,
++				    other->device_transform.xx,
++				    other->device_transform.yy);
+ 
+     if (unlikely (surface->status))
+ 	return surface;

@@ -1,0 +1,566 @@
+From: Alexander Larsson <alexl@redhat.com>
+Date: Tue, 27 Aug 2013 14:46:16 +0200
+Subject: surface: Merge scratch construction into
+ _cairo_surface_create_scratch
+
+We merge _cairo_surface_create_similar_scratch and
+_cairo_surface_create_similar_solid into a single function named
+_cairo_surface_create_scratch, to avoid confusion with
+cairo_surface_create_similar which now will have a different
+behaviour wrt the sizes and the device-scale.
+
+_create_scratch assumes the width and height are in backend
+coordinates, while create_similar does not.
+---
+ src/cairo-clip-surface.c          | 20 +++++------
+ src/cairo-default-context.c       | 10 +++---
+ src/cairo-gl-traps-compositor.c   | 18 +++++-----
+ src/cairo-mask-compositor.c       | 14 ++++----
+ src/cairo-shape-mask-compositor.c | 27 +++++++-------
+ src/cairo-spans-compositor.c      | 10 +++---
+ src/cairo-surface-subsurface.c    |  9 ++---
+ src/cairo-surface-wrapper.c       |  4 +--
+ src/cairo-surface.c               | 75 +++++++++++++++++----------------------
+ src/cairo-traps-compositor.c      | 33 +++++++++--------
+ src/cairo-xcb-surface-render.c    | 20 +++++------
+ src/cairo-xlib-source.c           | 36 ++++++++++---------
+ src/cairoint.h                    | 16 +++------
+ 13 files changed, 145 insertions(+), 147 deletions(-)
+
+diff --git a/src/cairo-clip-surface.c b/src/cairo-clip-surface.c
+index fff9724..85feaa6 100644
+--- a/src/cairo-clip-surface.c
++++ b/src/cairo-clip-surface.c
+@@ -132,11 +132,11 @@ _cairo_clip_get_surface (const cairo_clip_t *clip,
+ 	cairo_path_fixed_t path;
+ 	int i;
+ 
+-	surface = _cairo_surface_create_similar_solid (target,
+-						       CAIRO_CONTENT_ALPHA,
+-						       clip->extents.width,
+-						       clip->extents.height,
+-						       CAIRO_COLOR_TRANSPARENT);
++	surface = _cairo_surface_create_scratch (target,
++						 CAIRO_CONTENT_ALPHA,
++						 clip->extents.width,
++						 clip->extents.height,
++						 CAIRO_COLOR_TRANSPARENT);
+ 	if (unlikely (surface->status))
+ 	    return surface;
+ 
+@@ -162,11 +162,11 @@ _cairo_clip_get_surface (const cairo_clip_t *clip,
+ 	    return _cairo_surface_create_in_error (status);
+ 	}
+     } else {
+-	surface = _cairo_surface_create_similar_solid (target,
+-						       CAIRO_CONTENT_ALPHA,
+-						       clip->extents.width,
+-						       clip->extents.height,
+-						       CAIRO_COLOR_WHITE);
++	surface = _cairo_surface_create_scratch (target,
++						 CAIRO_CONTENT_ALPHA,
++						 clip->extents.width,
++						 clip->extents.height,
++						 CAIRO_COLOR_WHITE);
+ 	if (unlikely (surface->status))
+ 	    return surface;
+     }
+diff --git a/src/cairo-default-context.c b/src/cairo-default-context.c
+index 8964244..1e5067b 100644
+--- a/src/cairo-default-context.c
++++ b/src/cairo-default-context.c
+@@ -170,11 +170,11 @@ _cairo_default_context_push_group (void *abstract_cr, cairo_content_t content)
+ 	    group_surface = cairo_recording_surface_create (content, NULL);
+ 	    extents.x = extents.y = 0;
+ 	} else {
+-	    group_surface = _cairo_surface_create_similar_solid (parent_surface,
+-								 content,
+-								 extents.width,
+-								 extents.height,
+-								 CAIRO_COLOR_TRANSPARENT);
++	    group_surface = _cairo_surface_create_scratch (parent_surface,
++							   content,
++							   extents.width,
++							   extents.height,
++							   CAIRO_COLOR_TRANSPARENT);
+ 	}
+ 	status = group_surface->status;
+ 	if (unlikely (status))
+diff --git a/src/cairo-gl-traps-compositor.c b/src/cairo-gl-traps-compositor.c
+index ec478ee..125ed4e 100644
+--- a/src/cairo-gl-traps-compositor.c
++++ b/src/cairo-gl-traps-compositor.c
+@@ -333,10 +333,11 @@ traps_to_operand (void *_dst,
+ 	}
+     }
+ 
+-    mask = _cairo_surface_create_similar_scratch (_dst,
+-						  CAIRO_CONTENT_COLOR_ALPHA,
+-						  extents->width,
+-						  extents->height);
++    mask = _cairo_surface_create_scratch (_dst,
++					  CAIRO_CONTENT_COLOR_ALPHA,
++					  extents->width,
++					  extents->height,
++					  NULL);
+     if (unlikely (mask->status)) {
+ 	cairo_surface_destroy (image);
+ 	return mask->status;
+@@ -445,10 +446,11 @@ tristrip_to_surface (void *_dst,
+ 	return (cairo_gl_surface_t *)image;
+     }
+ 
+-    mask = _cairo_surface_create_similar_scratch (_dst,
+-						  CAIRO_CONTENT_COLOR_ALPHA,
+-						  extents->width,
+-						  extents->height);
++    mask = _cairo_surface_create_scratch (_dst,
++					  CAIRO_CONTENT_COLOR_ALPHA,
++					  extents->width,
++					  extents->height,
++					  NULL);
+     if (unlikely (mask->status)) {
+ 	cairo_surface_destroy (image);
+ 	return (cairo_gl_surface_t *)mask;
+diff --git a/src/cairo-mask-compositor.c b/src/cairo-mask-compositor.c
+index d0be144..4d6b118 100644
+--- a/src/cairo-mask-compositor.c
++++ b/src/cairo-mask-compositor.c
+@@ -163,9 +163,10 @@ create_composite_mask (const cairo_mask_compositor_t *compositor,
+     struct blt_in info;
+     int i;
+ 
+-    surface = _cairo_surface_create_similar_scratch (dst, CAIRO_CONTENT_ALPHA,
+-						     extents->bounded.width,
+-						     extents->bounded.height);
++    surface = _cairo_surface_create_scratch (dst, CAIRO_CONTENT_ALPHA,
++					     extents->bounded.width,
++					     extents->bounded.height,
++					     NULL);
+     if (unlikely (surface->status))
+ 	return surface;
+ 
+@@ -346,9 +347,10 @@ clip_and_composite_combine (const cairo_mask_compositor_t *compositor,
+     cairo_status_t status;
+     int clip_x, clip_y;
+ 
+-    tmp = _cairo_surface_create_similar_scratch (dst, dst->content,
+-						 extents->bounded.width,
+-						 extents->bounded.height);
++    tmp = _cairo_surface_create_scratch (dst, dst->content,
++					 extents->bounded.width,
++					 extents->bounded.height,
++					 NULL);
+     if (unlikely (tmp->status))
+ 	return tmp->status;
+ 
+diff --git a/src/cairo-shape-mask-compositor.c b/src/cairo-shape-mask-compositor.c
+index c2425b0..3117267 100644
+--- a/src/cairo-shape-mask-compositor.c
++++ b/src/cairo-shape-mask-compositor.c
+@@ -62,10 +62,11 @@ _cairo_shape_mask_compositor_stroke (const cairo_compositor_t *_compositor,
+ 	return CAIRO_INT_STATUS_UNSUPPORTED;
+ 
+     TRACE ((stderr, "%s\n", __FUNCTION__));
+-    mask = _cairo_surface_create_similar_scratch (extents->surface,
+-						  CAIRO_CONTENT_ALPHA,
+-						  extents->bounded.width,
+-						  extents->bounded.height);
++    mask = _cairo_surface_create_scratch (extents->surface,
++					  CAIRO_CONTENT_ALPHA,
++					  extents->bounded.width,
++					  extents->bounded.height,
++					  NULL);
+     if (unlikely (mask->status))
+ 	return mask->status;
+ 
+@@ -156,10 +157,11 @@ _cairo_shape_mask_compositor_fill (const cairo_compositor_t *_compositor,
+     if (! extents->is_bounded)
+ 	return CAIRO_INT_STATUS_UNSUPPORTED;
+ 
+-    mask = _cairo_surface_create_similar_scratch (extents->surface,
+-						  CAIRO_CONTENT_ALPHA,
+-						  extents->bounded.width,
+-						  extents->bounded.height);
++    mask = _cairo_surface_create_scratch (extents->surface,
++					  CAIRO_CONTENT_ALPHA,
++					  extents->bounded.width,
++					  extents->bounded.height,
++					  NULL);
+     if (unlikely (mask->status))
+ 	return mask->status;
+ 
+@@ -248,10 +250,11 @@ _cairo_shape_mask_compositor_glyphs (const cairo_compositor_t *_compositor,
+ 	return CAIRO_INT_STATUS_UNSUPPORTED;
+ 
+     TRACE ((stderr, "%s\n", __FUNCTION__));
+-    mask = _cairo_surface_create_similar_scratch (extents->surface,
+-						  CAIRO_CONTENT_ALPHA,
+-						  extents->bounded.width,
+-						  extents->bounded.height);
++    mask = _cairo_surface_create_scratch (extents->surface,
++					  CAIRO_CONTENT_ALPHA,
++					  extents->bounded.width,
++					  extents->bounded.height,
++					  NULL);
+     if (unlikely (mask->status))
+ 	return mask->status;
+ 
+diff --git a/src/cairo-spans-compositor.c b/src/cairo-spans-compositor.c
+index 1a46ea3..efbae25 100644
+--- a/src/cairo-spans-compositor.c
++++ b/src/cairo-spans-compositor.c
+@@ -95,11 +95,11 @@ get_clip_surface (const cairo_spans_compositor_t *compositor,
+ 
+     assert (clip->path);
+ 
+-    surface = _cairo_surface_create_similar_solid (dst,
+-						   CAIRO_CONTENT_ALPHA,
+-						   extents->width,
+-						   extents->height,
+-						   CAIRO_COLOR_TRANSPARENT);
++    surface = _cairo_surface_create_scratch (dst,
++					     CAIRO_CONTENT_ALPHA,
++					     extents->width,
++					     extents->height,
++					     CAIRO_COLOR_TRANSPARENT);
+ 
+     _cairo_box_from_rectangle (&box, extents);
+     _cairo_polygon_init (&polygon, &box, 1);
+diff --git a/src/cairo-surface-subsurface.c b/src/cairo-surface-subsurface.c
+index 0efb963..b7dfd9d 100644
+--- a/src/cairo-surface-subsurface.c
++++ b/src/cairo-surface-subsurface.c
+@@ -351,10 +351,11 @@ _cairo_surface_subsurface_snapshot (void *abstract_surface)
+ 
+     TRACE ((stderr, "%s: target=%d\n", __FUNCTION__, surface->target->unique_id));
+ 
+-    clone = _cairo_surface_create_similar_scratch (surface->target,
+-						   surface->target->content,
+-						   surface->extents.width,
+-						   surface->extents.height);
++    clone = _cairo_surface_create_scratch (surface->target,
++					   surface->target->content,
++					   surface->extents.width,
++					   surface->extents.height,
++					   NULL);
+     if (unlikely (clone->status))
+ 	return clone;
+ 
+diff --git a/src/cairo-surface-wrapper.c b/src/cairo-surface-wrapper.c
+index 030de67..9236c8b 100644
+--- a/src/cairo-surface-wrapper.c
++++ b/src/cairo-surface-wrapper.c
+@@ -513,8 +513,8 @@ _cairo_surface_wrapper_create_similar (cairo_surface_wrapper_t *wrapper,
+ 				       int		width,
+ 				       int		height)
+ {
+-    return _cairo_surface_create_similar_scratch (wrapper->target,
+-						  content, width, height);
++    return _cairo_surface_create_scratch (wrapper->target,
++					  content, width, height, NULL);
+ }
+ 
+ cairo_bool_t
+diff --git a/src/cairo-surface.c b/src/cairo-surface.c
+index 9caacbb..cdd75b8 100644
+--- a/src/cairo-surface.c
++++ b/src/cairo-surface.c
+@@ -454,33 +454,6 @@ _cairo_surface_copy_similar_properties (cairo_surface_t *surface,
+ 					   other->y_fallback_resolution);
+ }
+ 
+-cairo_surface_t *
+-_cairo_surface_create_similar_scratch (cairo_surface_t *other,
+-				       cairo_content_t	content,
+-				       int		width,
+-				       int		height)
+-{
+-    cairo_surface_t *surface;
+-
+-    if (unlikely (other->status))
+-	return _cairo_surface_create_in_error (other->status);
+-
+-    surface = NULL;
+-    if (other->backend->create_similar)
+-	surface = other->backend->create_similar (other, content, width, height);
+-    if (surface == NULL)
+-	surface = cairo_surface_create_similar_image (other,
+-						      _cairo_format_from_content (content),
+-						      width, height);
+-
+-    if (unlikely (surface->status))
+-	return surface;
+-
+-    _cairo_surface_copy_similar_properties (surface, other);
+-
+-    return surface;
+-}
+-
+ /**
+  * cairo_surface_create_similar:
+  * @other: an existing surface used to select the backend of the new surface
+@@ -879,29 +852,45 @@ error:
+ }
+ 
+ cairo_surface_t *
+-_cairo_surface_create_similar_solid (cairo_surface_t	 *other,
+-				     cairo_content_t	  content,
+-				     int		  width,
+-				     int		  height,
+-				     const cairo_color_t *color)
++_cairo_surface_create_scratch (cairo_surface_t	 *other,
++			       cairo_content_t	  content,
++			       int		  width,
++			       int		  height,
++			       const cairo_color_t *color)
+ {
+-    cairo_status_t status;
+     cairo_surface_t *surface;
++    cairo_status_t status;
+     cairo_solid_pattern_t pattern;
+ 
+-    surface = _cairo_surface_create_similar_scratch (other, content,
+-						     width, height);
++    if (unlikely (other->status))
++	return _cairo_surface_create_in_error (other->status);
++
++    surface = NULL;
++    if (other->backend->create_similar)
++	surface = other->backend->create_similar (other, content, width, height);
++    if (surface == NULL)
++	surface = cairo_surface_create_similar_image (other,
++						      _cairo_format_from_content (content),
++						      width, height);
++
+     if (unlikely (surface->status))
+ 	return surface;
+ 
+-    _cairo_pattern_init_solid (&pattern, color);
+-    status = _cairo_surface_paint (surface,
+-				   color == CAIRO_COLOR_TRANSPARENT ?
+-				   CAIRO_OPERATOR_CLEAR : CAIRO_OPERATOR_SOURCE,
+-				   &pattern.base, NULL);
+-    if (unlikely (status)) {
+-	cairo_surface_destroy (surface);
+-	surface = _cairo_surface_create_in_error (status);
++    _cairo_surface_copy_similar_properties (surface, other);
++
++    if (unlikely (surface->status))
++	return surface;
++
++    if (color) {
++	_cairo_pattern_init_solid (&pattern, color);
++	status = _cairo_surface_paint (surface,
++				       color == CAIRO_COLOR_TRANSPARENT ?
++				       CAIRO_OPERATOR_CLEAR : CAIRO_OPERATOR_SOURCE,
++				       &pattern.base, NULL);
++	if (unlikely (status)) {
++	    cairo_surface_destroy (surface);
++	    surface = _cairo_surface_create_in_error (status);
++	}
+     }
+ 
+     return surface;
+diff --git a/src/cairo-traps-compositor.c b/src/cairo-traps-compositor.c
+index 631e172..8d67965 100644
+--- a/src/cairo-traps-compositor.c
++++ b/src/cairo-traps-compositor.c
+@@ -307,10 +307,11 @@ __clip_to_surface (const cairo_traps_compositor_t *compositor,
+     if (unlikely (status))
+ 	return status;
+ 
+-    mask = _cairo_surface_create_similar_scratch (composite->surface,
+-						  CAIRO_CONTENT_ALPHA,
+-						  extents->width,
+-						  extents->height);
++    mask = _cairo_surface_create_scratch (composite->surface,
++					  CAIRO_CONTENT_ALPHA,
++					  extents->width,
++					  extents->height,
++					  NULL);
+     if (unlikely (mask->status)) {
+ 	_cairo_traps_fini (&traps);
+ 	return status;
+@@ -371,11 +372,11 @@ traps_get_clip_surface (const cairo_traps_compositor_t *compositor,
+ 
+     status = __clip_to_surface (compositor, composite, extents, &surface);
+     if (status == CAIRO_INT_STATUS_UNSUPPORTED) {
+-	surface = _cairo_surface_create_similar_solid (composite->surface,
+-						       CAIRO_CONTENT_ALPHA,
+-						       extents->width,
+-						       extents->height,
+-						       CAIRO_COLOR_WHITE);
++	surface = _cairo_surface_create_scratch (composite->surface,
++						 CAIRO_CONTENT_ALPHA,
++						 extents->width,
++						 extents->height,
++						 CAIRO_COLOR_WHITE);
+ 	if (unlikely (surface->status))
+ 	    return surface;
+ 
+@@ -430,9 +431,10 @@ create_composite_mask (const cairo_traps_compositor_t *compositor,
+ 
+     TRACE ((stderr, "%s\n", __FUNCTION__));
+ 
+-    surface = _cairo_surface_create_similar_scratch (dst, CAIRO_CONTENT_ALPHA,
+-						     extents->bounded.width,
+-						     extents->bounded.height);
++    surface = _cairo_surface_create_scratch (dst, CAIRO_CONTENT_ALPHA,
++					     extents->bounded.width,
++					     extents->bounded.height,
++					     NULL);
+     if (unlikely (surface->status))
+ 	return surface;
+ 
+@@ -590,9 +592,10 @@ clip_and_composite_combine (const cairo_traps_compositor_t *compositor,
+ 
+     TRACE ((stderr, "%s\n", __FUNCTION__));
+ 
+-    tmp = _cairo_surface_create_similar_scratch (dst, dst->content,
+-						 extents->bounded.width,
+-						 extents->bounded.height);
++    tmp = _cairo_surface_create_scratch (dst, dst->content,
++					 extents->bounded.width,
++					 extents->bounded.height,
++					 NULL);
+     if (unlikely (tmp->status))
+ 	return tmp->status;
+ 
+diff --git a/src/cairo-xcb-surface-render.c b/src/cairo-xcb-surface-render.c
+index 2d52be9..99efe87 100644
+--- a/src/cairo-xcb-surface-render.c
++++ b/src/cairo-xcb-surface-render.c
+@@ -1101,11 +1101,11 @@ record_to_picture (cairo_surface_t *target,
+ 	return _cairo_xcb_transparent_picture ((cairo_xcb_surface_t *) target);
+ 
+     /* Now draw the recording surface to an xcb surface */
+-    tmp = _cairo_surface_create_similar_solid (target,
+-					       source->content,
+-					       limit.width,
+-					       limit.height,
+-					       CAIRO_COLOR_TRANSPARENT);
++    tmp = _cairo_surface_create_scratch (target,
++                                         source->content,
++                                         limit.width,
++                                         limit.height,
++                                         CAIRO_COLOR_TRANSPARENT);
+     if (tmp->status != CAIRO_STATUS_SUCCESS) {
+ 	return (cairo_xcb_picture_t *) tmp;
+     }
+@@ -1693,11 +1693,11 @@ get_clip_surface (const cairo_clip_t *clip,
+     cairo_surface_t *surface;
+     cairo_status_t status;
+ 
+-    surface = _cairo_surface_create_similar_solid (&target->base,
+-						   CAIRO_CONTENT_ALPHA,
+-						   clip->extents.width,
+-						   clip->extents.height,
+-						   CAIRO_COLOR_WHITE);
++    surface = _cairo_surface_create_scratch (&target->base,
++					    CAIRO_CONTENT_ALPHA,
++					    clip->extents.width,
++					    clip->extents.height,
++					    CAIRO_COLOR_WHITE);
+     if (unlikely (surface->status))
+ 	return (cairo_xcb_surface_t *) surface;
+ 
+diff --git a/src/cairo-xlib-source.c b/src/cairo-xlib-source.c
+index 746001e..8275da3 100644
+--- a/src/cairo-xlib-source.c
++++ b/src/cairo-xlib-source.c
+@@ -288,10 +288,11 @@ render_pattern (cairo_xlib_surface_t *dst,
+     cairo_rectangle_int_t map_extents;
+ 
+     src = (cairo_xlib_surface_t *)
+-	_cairo_surface_create_similar_scratch (&dst->base,
+-					       is_mask ? CAIRO_CONTENT_ALPHA : CAIRO_CONTENT_COLOR_ALPHA,
+-					       extents->width,
+-					       extents->height);
++	_cairo_surface_create_scratch (&dst->base,
++				       is_mask ? CAIRO_CONTENT_ALPHA : CAIRO_CONTENT_COLOR_ALPHA,
++				       extents->width,
++				       extents->height,
++				       NULL);
+     if (src->base.type != CAIRO_SURFACE_TYPE_XLIB) {
+ 	cairo_surface_destroy (&src->base);
+ 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
+@@ -750,10 +751,11 @@ subsurface_source (cairo_xlib_surface_t *dst,
+ 	source = &src->embedded_source;
+     } else {
+ 	src = (cairo_xlib_surface_t *)
+-	    _cairo_surface_create_similar_scratch (&dst->base,
+-						   sub->base.content,
+-						   sub->extents.width,
+-						   sub->extents.height);
++	    _cairo_surface_create_scratch (&dst->base,
++					   sub->base.content,
++					   sub->extents.width,
++					   sub->extents.height,
++					   NULL);
+ 	if (src->base.type != CAIRO_SURFACE_TYPE_XLIB) {
+ 	    cairo_surface_destroy (&src->base);
+ 	    return _cairo_surface_create_in_error (CAIRO_STATUS_NO_MEMORY);
+@@ -898,10 +900,11 @@ record_source (cairo_xlib_surface_t *dst,
+     }
+ 
+     src = (cairo_xlib_surface_t *)
+-	_cairo_surface_create_similar_scratch (&dst->base,
+-					       pattern->surface->content,
+-					       upload.width,
+-					       upload.height);
++	_cairo_surface_create_scratch (&dst->base,
++				       pattern->surface->content,
++				       upload.width,
++				       upload.height,
++				       NULL);
+     if (src->base.type != CAIRO_SURFACE_TYPE_XLIB) {
+ 	cairo_surface_destroy (&src->base);
+ 	return _cairo_surface_create_in_error (CAIRO_STATUS_NO_MEMORY);
+@@ -1001,10 +1004,11 @@ surface_source (cairo_xlib_surface_t *dst,
+     }
+ 
+     xsrc = (cairo_xlib_surface_t *)
+-	    _cairo_surface_create_similar_scratch (&dst->base,
+-						   src->content,
+-						   upload.width,
+-						   upload.height);
++	    _cairo_surface_create_scratch (&dst->base,
++					   src->content,
++					   upload.width,
++					   upload.height,
++					   NULL);
+     if (xsrc->base.type != CAIRO_SURFACE_TYPE_XLIB) {
+ 	cairo_surface_destroy (src);
+ 	cairo_surface_destroy (&xsrc->base);
+diff --git a/src/cairoint.h b/src/cairoint.h
+index 84e6026..d31e07b 100644
+--- a/src/cairoint.h
++++ b/src/cairoint.h
+@@ -1288,21 +1288,15 @@ _cairo_surface_set_resolution (cairo_surface_t *surface,
+                                double y_res);
+ 
+ cairo_private cairo_surface_t *
+-_cairo_surface_create_similar_scratch (cairo_surface_t *other,
+-				       cairo_content_t	content,
+-				       int		width,
+-				       int		height);
+-
+-cairo_private cairo_surface_t *
+ _cairo_surface_create_for_rectangle_int (cairo_surface_t *target,
+ 					 const cairo_rectangle_int_t *extents);
+ 
+ cairo_private cairo_surface_t *
+-_cairo_surface_create_similar_solid (cairo_surface_t	    *other,
+-				     cairo_content_t	     content,
+-				     int		     width,
+-				     int		     height,
+-				     const cairo_color_t    *color);
++_cairo_surface_create_scratch (cairo_surface_t	    *other,
++			       cairo_content_t	     content,
++			       int		     width,
++			       int		     height,
++			       const cairo_color_t  *color);
+ 
+ cairo_private void
+ _cairo_surface_init (cairo_surface_t			*surface,

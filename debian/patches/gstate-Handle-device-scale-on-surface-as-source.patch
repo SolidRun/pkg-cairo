@@ -1,0 +1,125 @@
+From: Alexander Larsson <alexl@redhat.com>
+Date: Fri, 31 May 2013 16:44:29 +0200
+Subject: gstate: Handle device scale on surface as source
+
+When creating a transformed pattern we must apply the device
+transform *before* the transform set on the pattern itself, otherwise
+e.g. its translation will not be affected by the device scale.
+
+We also fix up the device_transform related handling in
+_cairo_default_context_pop_group().  With a device scale we can
+no longer just use the device_transform_inverse to unset the
+device offset for the extents, so we make that a simple translate
+instead.
+
+We also remove some weird code that tries to handle the device
+transform but seems unnecessary (maybe a workaround for applying
+the device transform in the wrong order?). With that code removed
+things work fine, but with it things get translated wrongly when
+there is a scale.
+---
+ src/cairo-default-context.c | 23 ++++++++---------------
+ src/cairo-gstate.c          |  2 +-
+ src/cairo-pattern-private.h |  4 ++++
+ src/cairo-pattern.c         | 10 ++++++++++
+ 4 files changed, 23 insertions(+), 16 deletions(-)
+
+diff --git a/src/cairo-default-context.c b/src/cairo-default-context.c
+index 77b6eef..078135b 100644
+--- a/src/cairo-default-context.c
++++ b/src/cairo-default-context.c
+@@ -218,7 +218,8 @@ _cairo_default_context_pop_group (void *abstract_cr)
+     cairo_default_context_t *cr = abstract_cr;
+     cairo_surface_t *group_surface;
+     cairo_pattern_t *group_pattern;
+-    cairo_matrix_t group_matrix, device_transform_matrix;
++    cairo_surface_t *parent_surface;
++    cairo_matrix_t group_matrix;
+     cairo_status_t status;
+ 
+     /* Verify that we are at the right nesting level */
+@@ -232,29 +233,21 @@ _cairo_default_context_pop_group (void *abstract_cr)
+     status = _cairo_gstate_restore (&cr->gstate, &cr->gstate_freelist);
+     assert (status == CAIRO_STATUS_SUCCESS);
+ 
++    parent_surface = _cairo_gstate_get_target (cr->gstate);
++
+     group_pattern = cairo_pattern_create_for_surface (group_surface);
+     status = group_pattern->status;
+     if (unlikely (status))
+         goto done;
+ 
+     _cairo_gstate_get_matrix (cr->gstate, &group_matrix);
+-    /* Transform by group_matrix centered around device_transform so that when
+-     * we call _cairo_gstate_copy_transformed_pattern the result is a pattern
+-     * with a matrix equivalent to the device_transform of group_surface. */
+-    if (_cairo_surface_has_device_transform (group_surface)) {
+-	cairo_pattern_set_matrix (group_pattern, &group_surface->device_transform);
+-	_cairo_pattern_transform (group_pattern, &group_matrix);
+-	_cairo_pattern_transform (group_pattern, &group_surface->device_transform_inverse);
+-    } else {
+-	cairo_pattern_set_matrix (group_pattern, &group_matrix);
+-    }
++    cairo_pattern_set_matrix (group_pattern, &group_matrix);
+ 
+     /* If we have a current path, we need to adjust it to compensate for
+      * the device offset just removed. */
+-    cairo_matrix_multiply (&device_transform_matrix,
+-                           &_cairo_gstate_get_target (cr->gstate)->device_transform,
+-			   &group_surface->device_transform_inverse);
+-    _cairo_path_fixed_transform (cr->path, &device_transform_matrix);
++    _cairo_path_fixed_translate (cr->path,
++				 _cairo_fixed_from_int (parent_surface->device_transform.x0 - group_surface->device_transform.x0),
++				 _cairo_fixed_from_int (parent_surface->device_transform.y0 - group_surface->device_transform.y0));
+ 
+ done:
+     cairo_surface_destroy (group_surface);
+diff --git a/src/cairo-gstate.c b/src/cairo-gstate.c
+index 8ddb3af..b4e988e 100644
+--- a/src/cairo-gstate.c
++++ b/src/cairo-gstate.c
+@@ -954,7 +954,7 @@ _cairo_gstate_copy_transformed_pattern (cairo_gstate_t  *gstate,
+         surface = surface_pattern->surface;
+ 
+ 	if (_cairo_surface_has_device_transform (surface))
+-	    _cairo_pattern_transform (pattern, &surface->device_transform);
++	    _cairo_pattern_pretransform (pattern, &surface->device_transform);
+     }
+ 
+     if (! _cairo_matrix_is_identity (ctm_inverse))
+diff --git a/src/cairo-pattern-private.h b/src/cairo-pattern-private.h
+index dfd843f..bbcfadd 100644
+--- a/src/cairo-pattern-private.h
++++ b/src/cairo-pattern-private.h
+@@ -237,6 +237,10 @@ cairo_private void
+ _cairo_pattern_transform (cairo_pattern_t      *pattern,
+ 			  const cairo_matrix_t *ctm_inverse);
+ 
++cairo_private void
++_cairo_pattern_pretransform (cairo_pattern_t      *pattern,
++                             const cairo_matrix_t *ctm);
++
+ cairo_private cairo_bool_t
+ _cairo_pattern_is_opaque_solid (const cairo_pattern_t *pattern);
+ 
+diff --git a/src/cairo-pattern.c b/src/cairo-pattern.c
+index 940227d..57b930b 100644
+--- a/src/cairo-pattern.c
++++ b/src/cairo-pattern.c
+@@ -2128,6 +2128,16 @@ cairo_pattern_get_extend (cairo_pattern_t *pattern)
+ slim_hidden_def (cairo_pattern_get_extend);
+ 
+ void
++_cairo_pattern_pretransform (cairo_pattern_t	*pattern,
++			     const cairo_matrix_t  *ctm)
++{
++    if (pattern->status)
++	return;
++
++    cairo_matrix_multiply (&pattern->matrix, &pattern->matrix, ctm);
++}
++
++void
+ _cairo_pattern_transform (cairo_pattern_t	*pattern,
+ 			  const cairo_matrix_t  *ctm_inverse)
+ {
