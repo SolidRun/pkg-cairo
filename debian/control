@@ -22,8 +22,6 @@ Build-Depends: debhelper (>= 9),
                libxcb1-dev (>= 1.6),
                libxcb-render0-dev (>= 1.6),
                libxcb-shm0-dev,
-               libgl1-mesa-dev,
-               libegl1-mesa-dev [!hurd-any],
                libglib2.0-dev,
                zlib1g-dev,
                liblzo2-dev
@@ -49,8 +47,6 @@ Depends: libcairo2 (= ${binary:Version}),
          libxcb1-dev (>= 1.6),
          libxcb-render0-dev (>= 1.6),
          libxcb-shm0-dev,
-         libgl1-mesa-dev,
-         libegl1-mesa-dev [!hurd-any],
          libglib2.0-dev,
          ${shlibs:Depends},
          ${misc:Depends}
@@ -71,6 +67,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
 Multi-Arch: same
+Breaks: weston (<< 1.5.0-3~)
 Description: The Cairo 2D vector graphics library
  Cairo is a multi-platform library providing anti-aliased
  vector-based rendering for multiple target backends. Paths consist
