@@ -1,12 +1,12 @@
 Index: cairo/configure.ac
 ===================================================================
---- cairo.orig/configure.ac	2013-09-13 02:10:54.350064808 +0200
-+++ cairo/configure.ac	2013-09-13 02:10:54.342064702 +0200
+--- cairo.orig/configure.ac	2014-10-21 22:34:11.207571294 +0200
++++ cairo/configure.ac	2014-10-21 22:34:11.203571237 +0200
 @@ -14,6 +14,7 @@
  AC_CHECK_HEADERS([unistd.h sys/ioctl.h])
  
  AM_INIT_AUTOMAKE([1.11 foreign -Wall no-define no-dist-gzip dist-xz])
 +AM_MAINTAINER_MODE
  AM_SILENT_RULES([yes])
+ m4_ifdef([AM_PROG_AR], [AM_PROG_AR]) dnl Workaround for Automake 1.12
  
- # Initialize libtool
