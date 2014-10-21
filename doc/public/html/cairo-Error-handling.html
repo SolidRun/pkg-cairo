@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Cairo: A Vector Graphics Library">
 <link rel="up" href="cairo-support.html" title="Utilities">
 <link rel="prev" href="cairo-cairo-matrix-t.html" title="cairo_matrix_t">
-<link rel="next" href="cairo-Types.html" title="Types">
+<link rel="next" href="cairo-Version-Information.html" title="Version Information">
 <meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
@@ -18,7 +18,7 @@
 <td><a accesskey="u" href="cairo-support.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Cairo: A Vector Graphics Library</th>
-<td><a accesskey="n" href="cairo-Types.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="cairo-Version-Information.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#cairo-Error-handling.synopsis" class="shortcut">Top</a>
@@ -102,6 +102,7 @@ code is required before or after each individual cairo function call.
     CAIRO_STATUS_DEVICE_ERROR,
     CAIRO_STATUS_INVALID_MESH_CONSTRUCTION,
     CAIRO_STATUS_DEVICE_FINISHED,
+    CAIRO_STATUS_JBIG2_GLOBAL_MISSING,
 
     CAIRO_STATUS_LAST_STATUS
 } cairo_status_t;
@@ -157,7 +158,7 @@ to get a human-readable representation of an error message.
 <tr>
 <td><p><a name="CAIRO-STATUS-NULL-POINTER:CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_NULL_POINTER</code></span></p></td>
 <td>
-<code class="literal">NULL</code> pointer (Since 1.0)
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> pointer (Since 1.0)
 </td>
 </tr>
 <tr>
@@ -311,6 +312,13 @@ to get a human-readable representation of an error message.
 <tr>
 <td><p><a name="CAIRO-STATUS-DEVICE-FINISHED:CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_DEVICE_FINISHED</code></span></p></td>
 <td>target device has been finished (Since 1.12)
+</td>
+</tr>
+<tr>
+<td><p><a name="CAIRO-STATUS-JBIG2-GLOBAL-MISSING:CAPS"></a><span class="term"><code class="literal">CAIRO_STATUS_JBIG2_GLOBAL_MISSING</code></span></p></td>
+<td>
+<a class="link" href="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS" title="CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID"><code class="literal">CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</code></a> has been used on at least one image
+  but no image provided <a class="link" href="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS" title="CAIRO_MIME_TYPE_JBIG2_GLOBAL"><code class="literal">CAIRO_MIME_TYPE_JBIG2_GLOBAL</code></a> (Since 1.14)
 </td>
 </tr>
 <tr>

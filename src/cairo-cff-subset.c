@@ -295,7 +295,6 @@ decode_nibble (int n, char *buf)
 static unsigned char *
 decode_real (unsigned char *p, double *real)
 {
-    struct lconv *locale_data;
     const char *decimal_point;
     int decimal_point_len;
     int n;
@@ -305,8 +304,7 @@ decode_real (unsigned char *p, double *real)
     char *buf = buffer;
     char *buf_end = buffer + sizeof (buffer);
 
-    locale_data = localeconv ();
-    decimal_point = locale_data->decimal_point;
+    decimal_point = cairo_get_locale_decimal_point ();
     decimal_point_len = strlen (decimal_point);
 
     assert (decimal_point_len != 0);
@@ -899,6 +897,8 @@ cairo_cff_font_read_name (cairo_cff_font_t *font)
 
         memcpy (font->ps_name, p, len);
         font->ps_name[len] = 0;
+
+        status = _cairo_escape_ps_name (&font->ps_name);
     }
     cff_index_fini (&index);
 
@@ -1849,8 +1849,10 @@ cairo_cff_font_subset_fontdict (cairo_cff_font_t  *font)
     for (i = 0; i < font->scaled_font_subset->num_glyphs; i++) {
 	cid = font->scaled_font_subset->glyphs[i];
 	status = cairo_cff_font_get_gid_for_cid (font, cid, &gid);
-	if (unlikely (status))
+	if (unlikely (status)) {
+	    free (reverse_map);
 	    return status;
+	}
 
         fd = font->fdselect[gid];
         if (reverse_map[fd] < 0) {

@@ -160,8 +160,8 @@ unsigned <link linkend="int"><returnvalue>int</returnvalue></link>        <link 
 <title role="desc.title">Description</title>
 <para>
 <link linkend="cairo-pattern-t"><type>cairo_pattern_t</type></link> is the paint with which cairo draws.
-The primary use of patterns is as the source for all cairo drawing 
-operations, although they can also be used as masks, that is, as the 
+The primary use of patterns is as the source for all cairo drawing
+operations, although they can also be used as masks, that is, as the
 brush too.
 </para>
 <para>
@@ -315,8 +315,9 @@ pattern.</simpara></listitem></varlistentry>
                                                          <parameter><link linkend="double"><type>double</type></link> *alpha</parameter>);</programlisting>
 <para>
 Gets the color and offset information at the given <parameter>index</parameter> for a
-gradient pattern.  Values of <parameter>index</parameter> are 0 to 1 less than the number
-returned by <link linkend="cairo-pattern-get-color-stop-count"><function>cairo_pattern_get_color_stop_count()</function></link>.
+gradient pattern.  Values of <parameter>index</parameter> range from 0 to n-1
+where n is the number returned
+by <link linkend="cairo-pattern-get-color-stop-count"><function>cairo_pattern_get_color_stop_count()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pattern</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-pattern-t"><type>cairo_pattern_t</type></link></simpara></listitem></varlistentry>
@@ -1051,7 +1052,7 @@ Gets path defining the patch <parameter>patch_num</parameter> for a mesh
 pattern.
 </para>
 <para>
-<parameter>patch_num</parameter> can range 0 to 1 less than the number returned by
+<parameter>patch_num</parameter> can range from 0 to n-1 where n is the number returned by
 <link linkend="cairo-mesh-pattern-get-patch-count"><function>cairo_mesh_pattern_get_patch_count()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pattern</parameter>&#160;:</term>
@@ -1077,7 +1078,7 @@ Gets the control point <parameter>point_num</parameter> of patch <parameter>patc
 pattern.
 </para>
 <para>
-<parameter>patch_num</parameter> can range 0 to 1 less than the number returned by
+<parameter>patch_num</parameter> can range from 0 to n-1 where n is the number returned by
 <link linkend="cairo-mesh-pattern-get-patch-count"><function>cairo_mesh_pattern_get_patch_count()</function></link>.
 </para>
 <para>
@@ -1115,7 +1116,7 @@ Gets the color information in corner <parameter>corner_num</parameter> of patch
 <parameter>patch_num</parameter> for a mesh pattern.
 </para>
 <para>
-<parameter>patch_num</parameter> can range 0 to 1 less than the number returned by
+<parameter>patch_num</parameter> can range from 0 to n-1 where n is the number returned by
 <link linkend="cairo-mesh-pattern-get-patch-count"><function>cairo_mesh_pattern_get_patch_count()</function></link>.
 </para>
 <para>

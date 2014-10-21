@@ -20,6 +20,9 @@
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>#define             <link linkend="CAIRO-HAS-MIME-SURFACE:CAPS">CAIRO_HAS_MIME_SURFACE</link>
+#define             <link linkend="CAIRO-MIME-TYPE-JBIG2:CAPS">CAIRO_MIME_TYPE_JBIG2</link>
+#define             <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS">CAIRO_MIME_TYPE_JBIG2_GLOBAL</link>
+#define             <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS">CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</link>
 #define             <link linkend="CAIRO-MIME-TYPE-JP2:CAPS">CAIRO_MIME_TYPE_JP2</link>
 #define             <link linkend="CAIRO-MIME-TYPE-JPEG:CAPS">CAIRO_MIME_TYPE_JPEG</link>
 #define             <link linkend="CAIRO-MIME-TYPE-PNG:CAPS">CAIRO_MIME_TYPE_PNG</link>
@@ -61,6 +64,12 @@ enum                <link linkend="cairo-content-t">cairo_content_t</link>;
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-surface-get-device-offset">cairo_surface_get_device_offset</link>     (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> *x_offset</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> *y_offset</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-surface-get-device-scale">cairo_surface_get_device_scale</link>      (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> *x_scale</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> *y_scale</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-surface-set-device-scale">cairo_surface_set_device_scale</link>      (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> x_scale</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> y_scale</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="cairo-surface-set-fallback-resolution">cairo_surface_set_fallback_resolution</link>
                                                         (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
                                                          <parameter><link linkend="double"><type>double</type></link> x_pixels_per_inch</parameter>,
@@ -152,6 +161,27 @@ devices.
 <title>CAIRO_HAS_MIME_SURFACE</title>
 <indexterm zone="CAIRO-HAS-MIME-SURFACE:CAPS"><primary sortas="HAS_MIME_SURFACE">CAIRO_HAS_MIME_SURFACE</primary></indexterm>
 <programlisting>#define CAIRO_HAS_MIME_SURFACE 1
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="CAIRO-MIME-TYPE-JBIG2:CAPS" role="macro">
+<title>CAIRO_MIME_TYPE_JBIG2</title>
+<indexterm zone="CAIRO-MIME-TYPE-JBIG2:CAPS"><primary sortas="MIME_TYPE_JBIG2">CAIRO_MIME_TYPE_JBIG2</primary></indexterm>
+<programlisting>#define CAIRO_MIME_TYPE_JBIG2 "application/x-cairo.jbig2"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS" role="macro">
+<title>CAIRO_MIME_TYPE_JBIG2_GLOBAL</title>
+<indexterm zone="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><primary sortas="MIME_TYPE_JBIG2_GLOBAL">CAIRO_MIME_TYPE_JBIG2_GLOBAL</primary></indexterm>
+<programlisting>#define CAIRO_MIME_TYPE_JBIG2_GLOBAL "application/x-cairo.jbig2-global"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS" role="macro">
+<title>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</title>
+<indexterm zone="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><primary sortas="MIME_TYPE_JBIG2_GLOBAL_ID">CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</primary></indexterm>
+<programlisting>#define CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID "application/x-cairo.jbig2-global-id"
 </programlisting>
 <para>
 </para></refsect2>
@@ -585,6 +615,49 @@ This function returns the previous device offset set by
 <varlistentry><term><parameter>y_offset</parameter>&#160;:</term>
 <listitem><simpara>the offset in the Y direction, in device units</simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 1.2</para></refsect2>
+<refsect2 id="cairo-surface-get-device-scale" role="function" condition="since:1.14">
+<title>cairo_surface_get_device_scale ()</title>
+<indexterm zone="cairo-surface-get-device-scale" role="1.14"><primary sortas="surface_get_device_scale">cairo_surface_get_device_scale</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_surface_get_device_scale      (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> *x_scale</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> *y_scale</parameter>);</programlisting>
+<para>
+This function returns the previous device offset set by
+<link linkend="cairo-surface-set-device-scale"><function>cairo_surface_set_device_scale()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&#160;:</term>
+<listitem><simpara>a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x_scale</parameter>&#160;:</term>
+<listitem><simpara>the scale in the X direction, in device units</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y_scale</parameter>&#160;:</term>
+<listitem><simpara>the scale in the Y direction, in device units</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 1.14</para></refsect2>
+<refsect2 id="cairo-surface-set-device-scale" role="function" condition="since:1.14">
+<title>cairo_surface_set_device_scale ()</title>
+<indexterm zone="cairo-surface-set-device-scale" role="1.14"><primary sortas="surface_set_device_scale">cairo_surface_set_device_scale</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                cairo_surface_set_device_scale      (<parameter><link linkend="cairo-surface-t"><type>cairo_surface_t</type></link> *surface</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> x_scale</parameter>,
+                                                         <parameter><link linkend="double"><type>double</type></link> y_scale</parameter>);</programlisting>
+<para>
+Sets a scale that is multiplied to the device coordinates determined
+by the CTM when drawing to <parameter>surface</parameter>. One common use for this is to
+render to very high resolution display devices at a scale factor, so
+that code that assumes 1 pixel will be a certain size will still work.
+Setting a transformation via <link linkend="cairo-translate"><function>cairo_translate()</function></link> isn't
+sufficient to do this, since functions like
+<link linkend="cairo-device-to-user"><function>cairo_device_to_user()</function></link> will expose the hidden scale.
+</para>
+<para>
+Note that the scale affects drawing to the surface as well as
+using the surface in a source pattern.
+</para><variablelist role="params">
+<varlistentry><term><parameter>surface</parameter>&#160;:</term>
+<listitem><simpara>a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x_scale</parameter>&#160;:</term>
+<listitem><simpara>a scale factor in the X direction</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y_scale</parameter>&#160;:</term>
+<listitem><simpara>a scale factor in the Y direction</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 1.14</para></refsect2>
 <refsect2 id="cairo-surface-set-fallback-resolution" role="function" condition="since:1.2">
 <title>cairo_surface_set_fallback_resolution ()</title>
 <indexterm zone="cairo-surface-set-fallback-resolution" role="1.2"><primary sortas="surface_set_fallback_resolution">cairo_surface_set_fallback_resolution</primary></indexterm>
@@ -980,13 +1053,25 @@ memory and disk space.
 <para>
 The recognized MIME types are the following: <link linkend="CAIRO-MIME-TYPE-JPEG:CAPS"><literal>CAIRO_MIME_TYPE_JPEG</literal></link>,
 <link linkend="CAIRO-MIME-TYPE-PNG:CAPS"><literal>CAIRO_MIME_TYPE_PNG</literal></link>, <link linkend="CAIRO-MIME-TYPE-JP2:CAPS"><literal>CAIRO_MIME_TYPE_JP2</literal></link>, <link linkend="CAIRO-MIME-TYPE-URI:CAPS"><literal>CAIRO_MIME_TYPE_URI</literal></link>,
-<link linkend="CAIRO-MIME-TYPE-UNIQUE-ID:CAPS"><literal>CAIRO_MIME_TYPE_UNIQUE_ID</literal></link>.
+<link linkend="CAIRO-MIME-TYPE-UNIQUE-ID:CAPS"><literal>CAIRO_MIME_TYPE_UNIQUE_ID</literal></link>, <link linkend="CAIRO-MIME-TYPE-JBIG2:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2</literal></link>,
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link>, <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link>.
 </para>
 <para>
 See corresponding backend surface docs for details about which MIME
 types it can handle. Caution: the associated MIME data will be
 discarded if you draw on the surface afterwards. Use this function
 with care.
+</para>
+<para>
+Even if a backend supports a MIME type, that does not mean cairo
+will always be able to use the attached MIME data. For example, if
+the backend does not natively support the compositing operation used
+to apply the MIME data to the backend. In that case, the MIME data
+will be ignored. Therefore, to apply an image in all cases, it is best
+to create an image surface which contains the decoded image data and
+then attach the MIME data to that. This ensures the image will always
+be used while still allowing the MIME data to be used whenever
+possible.
 </para><variablelist role="params">
 <varlistentry><term><parameter>surface</parameter>&#160;:</term>
 <listitem><simpara>a <link linkend="cairo-surface-t"><type>cairo_surface_t</type></link></simpara></listitem></varlistentry>

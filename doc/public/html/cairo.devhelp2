@@ -39,6 +39,7 @@
     <sub name="Utilities" link="cairo-support.html">
       <sub name="cairo_matrix_t" link="cairo-cairo-matrix-t.html"/>
       <sub name="Error handling" link="cairo-Error-handling.html"/>
+      <sub name="Version Information" link="cairo-Version-Information.html"/>
       <sub name="Types" link="cairo-Types.html"/>
     </sub>
     <sub name="Index" link="index-all.html"/>
@@ -376,7 +377,17 @@
     <keyword type="function" name="cairo_device_get_user_data ()" link="cairo-cairo-device-t.html#cairo-device-get-user-data" since="1.10"/>
     <keyword type="function" name="cairo_device_acquire ()" link="cairo-cairo-device-t.html#cairo-device-acquire" since="1.10"/>
     <keyword type="function" name="cairo_device_release ()" link="cairo-cairo-device-t.html#cairo-device-release" since="1.10"/>
+    <keyword type="function" name="cairo_device_observer_elapsed ()" link="cairo-cairo-device-t.html#cairo-device-observer-elapsed"/>
+    <keyword type="function" name="cairo_device_observer_fill_elapsed ()" link="cairo-cairo-device-t.html#cairo-device-observer-fill-elapsed"/>
+    <keyword type="function" name="cairo_device_observer_glyphs_elapsed ()" link="cairo-cairo-device-t.html#cairo-device-observer-glyphs-elapsed"/>
+    <keyword type="function" name="cairo_device_observer_mask_elapsed ()" link="cairo-cairo-device-t.html#cairo-device-observer-mask-elapsed"/>
+    <keyword type="function" name="cairo_device_observer_paint_elapsed ()" link="cairo-cairo-device-t.html#cairo-device-observer-paint-elapsed"/>
+    <keyword type="function" name="cairo_device_observer_print ()" link="cairo-cairo-device-t.html#cairo-device-observer-print"/>
+    <keyword type="function" name="cairo_device_observer_stroke_elapsed ()" link="cairo-cairo-device-t.html#cairo-device-observer-stroke-elapsed"/>
     <keyword type="macro" name="CAIRO_HAS_MIME_SURFACE" link="cairo-cairo-surface-t.html#CAIRO-HAS-MIME-SURFACE:CAPS"/>
+    <keyword type="macro" name="CAIRO_MIME_TYPE_JBIG2" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JBIG2:CAPS"/>
+    <keyword type="macro" name="CAIRO_MIME_TYPE_JBIG2_GLOBAL" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"/>
+    <keyword type="macro" name="CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"/>
     <keyword type="macro" name="CAIRO_MIME_TYPE_JP2" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JP2:CAPS" since="1.10"/>
     <keyword type="macro" name="CAIRO_MIME_TYPE_JPEG" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-JPEG:CAPS" since="1.10"/>
     <keyword type="macro" name="CAIRO_MIME_TYPE_PNG" link="cairo-cairo-surface-t.html#CAIRO-MIME-TYPE-PNG:CAPS" since="1.10"/>
@@ -399,6 +410,8 @@
     <keyword type="function" name="cairo_surface_mark_dirty_rectangle ()" link="cairo-cairo-surface-t.html#cairo-surface-mark-dirty-rectangle" since="1.0"/>
     <keyword type="function" name="cairo_surface_set_device_offset ()" link="cairo-cairo-surface-t.html#cairo-surface-set-device-offset" since="1.0"/>
     <keyword type="function" name="cairo_surface_get_device_offset ()" link="cairo-cairo-surface-t.html#cairo-surface-get-device-offset" since="1.2"/>
+    <keyword type="function" name="cairo_surface_get_device_scale ()" link="cairo-cairo-surface-t.html#cairo-surface-get-device-scale" since="1.14"/>
+    <keyword type="function" name="cairo_surface_set_device_scale ()" link="cairo-cairo-surface-t.html#cairo-surface-set-device-scale" since="1.14"/>
     <keyword type="function" name="cairo_surface_set_fallback_resolution ()" link="cairo-cairo-surface-t.html#cairo-surface-set-fallback-resolution" since="1.2"/>
     <keyword type="function" name="cairo_surface_get_fallback_resolution ()" link="cairo-cairo-surface-t.html#cairo-surface-get-fallback-resolution" since="1.8"/>
     <keyword type="enum" name="enum cairo_surface_type_t" link="cairo-cairo-surface-t.html#cairo-surface-type-t" since="1.2"/>
@@ -530,6 +543,17 @@
     <keyword type="enum" name="enum cairo_status_t" link="cairo-Error-handling.html#cairo-status-t" since="1.0"/>
     <keyword type="function" name="cairo_status_to_string ()" link="cairo-Error-handling.html#cairo-status-to-string" since="1.0"/>
     <keyword type="function" name="cairo_debug_reset_static_data ()" link="cairo-Error-handling.html#cairo-debug-reset-static-data" since="1.0"/>
+    <keyword type="" name="Compatibility" link="cairo-Version-Information.html#idp20538704"/>
+    <keyword type="" name="Examining the version" link="cairo-Version-Information.html#idp20542336"/>
+    <keyword type="macro" name="CAIRO_VERSION" link="cairo-Version-Information.html#CAIRO-VERSION:CAPS" since="1.0"/>
+    <keyword type="macro" name="CAIRO_VERSION_MAJOR" link="cairo-Version-Information.html#CAIRO-VERSION-MAJOR:CAPS" since="1.0"/>
+    <keyword type="macro" name="CAIRO_VERSION_MINOR" link="cairo-Version-Information.html#CAIRO-VERSION-MINOR:CAPS" since="1.0"/>
+    <keyword type="macro" name="CAIRO_VERSION_MICRO" link="cairo-Version-Information.html#CAIRO-VERSION-MICRO:CAPS" since="1.0"/>
+    <keyword type="macro" name="CAIRO_VERSION_STRING" link="cairo-Version-Information.html#CAIRO-VERSION-STRING:CAPS" since="1.8"/>
+    <keyword type="macro" name="CAIRO_VERSION_ENCODE()" link="cairo-Version-Information.html#CAIRO-VERSION-ENCODE:CAPS" since="1.0"/>
+    <keyword type="macro" name="CAIRO_VERSION_STRINGIZE()" link="cairo-Version-Information.html#CAIRO-VERSION-STRINGIZE:CAPS" since="1.8"/>
+    <keyword type="function" name="cairo_version ()" link="cairo-Version-Information.html#cairo-version" since="1.0"/>
+    <keyword type="function" name="cairo_version_string ()" link="cairo-Version-Information.html#cairo-version-string" since="1.0"/>
     <keyword type="typedef" name="cairo_bool_t" link="cairo-Types.html#cairo-bool-t" since="1.0"/>
     <keyword type="struct" name="cairo_user_data_key_t" link="cairo-Types.html#cairo-user-data-key-t" since="1.0"/>
     <keyword type="function" name="cairo_destroy_func_t ()" link="cairo-Types.html#cairo-destroy-func-t" since="1.0"/>
@@ -717,6 +741,7 @@
     <keyword type="constant" name="CAIRO_STATUS_DEVICE_ERROR" link="cairo-Error-handling.html#CAIRO-STATUS-DEVICE-ERROR:CAPS"/>
     <keyword type="constant" name="CAIRO_STATUS_INVALID_MESH_CONSTRUCTION" link="cairo-Error-handling.html#CAIRO-STATUS-INVALID-MESH-CONSTRUCTION:CAPS"/>
     <keyword type="constant" name="CAIRO_STATUS_DEVICE_FINISHED" link="cairo-Error-handling.html#CAIRO-STATUS-DEVICE-FINISHED:CAPS"/>
+    <keyword type="constant" name="CAIRO_STATUS_JBIG2_GLOBAL_MISSING" link="cairo-Error-handling.html#CAIRO-STATUS-JBIG2-GLOBAL-MISSING:CAPS"/>
     <keyword type="constant" name="CAIRO_STATUS_LAST_STATUS" link="cairo-Error-handling.html#CAIRO-STATUS-LAST-STATUS:CAPS"/>
   </functions>
 </book>

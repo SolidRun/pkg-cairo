@@ -424,7 +424,7 @@ _cairo_cogl_context_reset_static_data (void);
 /* the font backend interface */
 
 struct _cairo_unscaled_font_backend {
-    void (*destroy)     	    (void		             *unscaled_font);
+    cairo_bool_t (*destroy) (void	*unscaled_font);
 };
 
 /* #cairo_toy_font_face_t - simple family/slant/weight font faces used for
@@ -583,7 +583,7 @@ struct _cairo_font_face_backend {
     /* The destroy() function is allowed to resurrect the font face
      * by re-referencing. This is needed for the FreeType backend.
      */
-    void
+    cairo_bool_t
     (*destroy)     (void			*font_face);
 
     cairo_warn cairo_status_t
@@ -793,6 +793,9 @@ cairo_private void
 _cairo_font_face_init (cairo_font_face_t               *font_face,
 		       const cairo_font_face_backend_t *backend);
 
+cairo_private cairo_bool_t
+_cairo_font_face_destroy (void *abstract_face);
+
 cairo_private cairo_status_t
 _cairo_font_face_set_error (cairo_font_face_t *font_face,
 	                    cairo_status_t     status);
@@ -867,6 +870,9 @@ _cairo_intern_string (const char **str_inout, int len);
 
 cairo_private void
 _cairo_intern_string_reset_static_data (void);
+
+cairo_private const char *
+cairo_get_locale_decimal_point (void);
 
 /* cairo-path-fixed.c */
 cairo_private cairo_path_fixed_t *
@@ -1288,21 +1294,15 @@ _cairo_surface_set_resolution (cairo_surface_t *surface,
                                double y_res);
 
 cairo_private cairo_surface_t *
-_cairo_surface_create_similar_scratch (cairo_surface_t *other,
-				       cairo_content_t	content,
-				       int		width,
-				       int		height);
-
-cairo_private cairo_surface_t *
 _cairo_surface_create_for_rectangle_int (cairo_surface_t *target,
 					 const cairo_rectangle_int_t *extents);
 
 cairo_private cairo_surface_t *
-_cairo_surface_create_similar_solid (cairo_surface_t	    *other,
-				     cairo_content_t	     content,
-				     int		     width,
-				     int		     height,
-				     const cairo_color_t    *color);
+_cairo_surface_create_scratch (cairo_surface_t	    *other,
+			       cairo_content_t	     content,
+			       int		     width,
+			       int		     height,
+			       const cairo_color_t  *color);
 
 cairo_private void
 _cairo_surface_init (cairo_surface_t			*surface,
@@ -1324,7 +1324,7 @@ cairo_private cairo_image_surface_t *
 _cairo_surface_map_to_image (cairo_surface_t  *surface,
 			     const cairo_rectangle_int_t *extents);
 
-cairo_private cairo_int_status_t
+cairo_private_no_warn cairo_int_status_t
 _cairo_surface_unmap_image (cairo_surface_t       *surface,
 			    cairo_image_surface_t *image);
 
@@ -1419,11 +1419,6 @@ _cairo_surface_begin_modification (cairo_surface_t *surface);
 cairo_private_no_warn cairo_bool_t
 _cairo_surface_get_extents (cairo_surface_t         *surface,
 			    cairo_rectangle_int_t   *extents);
-
-cairo_private void
-_cairo_surface_set_device_scale (cairo_surface_t *surface,
-				 double		  sx,
-				 double		  sy);
 
 cairo_private cairo_bool_t
 _cairo_surface_has_device_transform (cairo_surface_t *surface) cairo_pure;
@@ -1617,18 +1612,18 @@ _cairo_polygon_limit_to_clip (cairo_polygon_t *polygon,
 cairo_private void
 _cairo_polygon_fini (cairo_polygon_t *polygon);
 
-cairo_private cairo_status_t
+cairo_private_no_warn cairo_status_t
 _cairo_polygon_add_line (cairo_polygon_t *polygon,
 			 const cairo_line_t *line,
 			 int top, int bottom,
 			 int dir);
 
-cairo_private cairo_status_t
+cairo_private_no_warn cairo_status_t
 _cairo_polygon_add_external_edge (void *polygon,
 				  const cairo_point_t *p1,
 				  const cairo_point_t *p2);
 
-cairo_private cairo_status_t
+cairo_private_no_warn cairo_status_t
 _cairo_polygon_add_contour (cairo_polygon_t *polygon,
 			    const cairo_contour_t *contour);
 
@@ -1955,6 +1950,7 @@ slim_hidden_proto (cairo_surface_destroy);
 slim_hidden_proto (cairo_surface_finish);
 slim_hidden_proto (cairo_surface_flush);
 slim_hidden_proto (cairo_surface_get_device_offset);
+slim_hidden_proto (cairo_surface_get_device_scale);
 slim_hidden_proto (cairo_surface_get_font_options);
 slim_hidden_proto (cairo_surface_get_mime_data);
 slim_hidden_proto (cairo_surface_has_show_text_glyphs);
@@ -1962,6 +1958,7 @@ slim_hidden_proto (cairo_surface_mark_dirty);
 slim_hidden_proto (cairo_surface_mark_dirty_rectangle);
 slim_hidden_proto_no_warn (cairo_surface_reference);
 slim_hidden_proto (cairo_surface_set_device_offset);
+slim_hidden_proto (cairo_surface_set_device_scale);
 slim_hidden_proto (cairo_surface_set_fallback_resolution);
 slim_hidden_proto (cairo_surface_set_mime_data);
 slim_hidden_proto (cairo_surface_show_page);
@@ -2011,10 +2008,6 @@ slim_hidden_proto (cairo_region_xor_rectangle);
 slim_hidden_proto (cairo_surface_write_to_png_stream);
 
 #endif
-
-cairo_private_no_warn cairo_filter_t
-_cairo_pattern_analyze_filter (const cairo_pattern_t	*pattern,
-			       double			*pad_out);
 
 CAIRO_END_DECLS
 
