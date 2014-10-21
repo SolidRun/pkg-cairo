@@ -50,7 +50,7 @@ override_dh_auto_install:
 
 override_dh_install:
 	dh_install -plibcairo2-udeb --sourcedir=debian/install/udeb
-	dh_install -Nlibcairo2-udeb --sourcedir=debian/install/deb
+	dh_install -Nlibcairo2-udeb --sourcedir=debian/install/deb --list-missing
 
 override_dh_installdocs:
 	dh_installdocs -A NEWS README AUTHORS
