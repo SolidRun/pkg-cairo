@@ -46,6 +46,25 @@ const <link linkend="char"><returnvalue>char</returnvalue></link> *        <link
 The PDF surface is used to render cairo graphics to Adobe
 PDF files and is a multi-page vector surface backend.
 </para>
+<para>
+The following mime types are supported: <link linkend="CAIRO-MIME-TYPE-JPEG:CAPS"><literal>CAIRO_MIME_TYPE_JPEG</literal></link>,
+<link linkend="CAIRO-MIME-TYPE-JP2:CAPS"><literal>CAIRO_MIME_TYPE_JP2</literal></link>, <link linkend="CAIRO-MIME-TYPE-UNIQUE-ID:CAPS"><literal>CAIRO_MIME_TYPE_UNIQUE_ID</literal></link>,
+<link linkend="CAIRO-MIME-TYPE-JBIG2:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2</literal></link>, <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link>,
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link>.
+</para>
+<para>
+JBIG2 data in PDF must be in the embedded format as descibed in
+ISO/IEC 11544. Image specific JBIG2 data must be in
+<link linkend="CAIRO-MIME-TYPE-JBIG2:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2</literal></link>.  Any global segments in the JBIG2 data
+(segments with page association field set to 0) must be in
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link>. The global data may be shared by
+multiple images. All images sharing the same global data must set
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link> to a unique identifer. At least
+one of the images must provide the global data using
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link>. The global data will only be
+embedded once but shared by all JBIG2 images with the same
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link>.
+</para>
 </refsect1>
 <refsect1 id="cairo-PDF-Surfaces.details" role="details">
 <title role="details.title">Details</title>

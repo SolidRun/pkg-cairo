@@ -64,27 +64,14 @@ identical to the results that would have been obtained if the original
 operations applied to the recording surface had instead been applied to the
 target surface, you can use code like this:
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5
-6</pre></td>
-        <td class="listing_code"><pre class="programlisting">cairo_t <span class="gtkdoc opt">*</span>cr<span class="gtkdoc opt">;</span>
+<div class="informalexample"><pre class="programlisting">
+cairo_t *cr;
 
-cr <span class="gtkdoc opt">=</span> <span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-create">cairo_create</a></span> <span class="gtkdoc opt">(</span>target<span class="gtkdoc opt">);</span>
-<span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-set-source-surface">cairo_set_source_surface</a></span> <span class="gtkdoc opt">(</span>cr<span class="gtkdoc opt">,</span> recording_surface<span class="gtkdoc opt">,</span> <span class="number">0.0</span><span class="gtkdoc opt">,</span> <span class="number">0.0</span><span class="gtkdoc opt">);</span>
-<span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-paint">cairo_paint</a></span> <span class="gtkdoc opt">(</span>cr<span class="gtkdoc opt">);</span>
-<span class="function"><a href="../cairo/cairo-cairo-t.html#cairo-destroy">cairo_destroy</a></span> <span class="gtkdoc opt">(</span>cr<span class="gtkdoc opt">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+cr = cairo_create (target);
+cairo_set_source_surface (cr, recording_surface, 0.0, 0.0);
+cairo_paint (cr);
+cairo_destroy (cr);
+</pre></div>
 <p>
 </p>
 <p>
@@ -141,7 +128,7 @@ accurate replay.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>extents</code></em> :</span></p></td>
-<td>the extents to record in pixels, can be <code class="literal">NULL</code> to record
+<td>the extents to record in pixels, can be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to record
 unbounded operations.</td>
 </tr>
 <tr>
@@ -218,8 +205,8 @@ Get the extents of the recording-surface.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<code class="literal">TRUE</code> if the surface is bounded, of recording type, and
-not in an error state, otherwise <code class="literal">FALSE</code>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the surface is bounded, of recording type, and
+not in an error state, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
 </td>
 </tr>
 </tbody>

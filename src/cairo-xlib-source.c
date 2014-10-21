@@ -288,10 +288,11 @@ render_pattern (cairo_xlib_surface_t *dst,
     cairo_rectangle_int_t map_extents;
 
     src = (cairo_xlib_surface_t *)
-	_cairo_surface_create_similar_scratch (&dst->base,
-					       is_mask ? CAIRO_CONTENT_ALPHA : CAIRO_CONTENT_COLOR_ALPHA,
-					       extents->width,
-					       extents->height);
+	_cairo_surface_create_scratch (&dst->base,
+				       is_mask ? CAIRO_CONTENT_ALPHA : CAIRO_CONTENT_COLOR_ALPHA,
+				       extents->width,
+				       extents->height,
+				       NULL);
     if (src->base.type != CAIRO_SURFACE_TYPE_XLIB) {
 	cairo_surface_destroy (&src->base);
 	return _cairo_surface_create_in_error (_cairo_error (CAIRO_STATUS_NO_MEMORY));
@@ -750,10 +751,11 @@ subsurface_source (cairo_xlib_surface_t *dst,
 	source = &src->embedded_source;
     } else {
 	src = (cairo_xlib_surface_t *)
-	    _cairo_surface_create_similar_scratch (&dst->base,
-						   sub->base.content,
-						   sub->extents.width,
-						   sub->extents.height);
+	    _cairo_surface_create_scratch (&dst->base,
+					   sub->base.content,
+					   sub->extents.width,
+					   sub->extents.height,
+					   NULL);
 	if (src->base.type != CAIRO_SURFACE_TYPE_XLIB) {
 	    cairo_surface_destroy (&src->base);
 	    return _cairo_surface_create_in_error (CAIRO_STATUS_NO_MEMORY);
@@ -898,10 +900,11 @@ record_source (cairo_xlib_surface_t *dst,
     }
 
     src = (cairo_xlib_surface_t *)
-	_cairo_surface_create_similar_scratch (&dst->base,
-					       pattern->surface->content,
-					       upload.width,
-					       upload.height);
+	_cairo_surface_create_scratch (&dst->base,
+				       pattern->surface->content,
+				       upload.width,
+				       upload.height,
+				       NULL);
     if (src->base.type != CAIRO_SURFACE_TYPE_XLIB) {
 	cairo_surface_destroy (&src->base);
 	return _cairo_surface_create_in_error (CAIRO_STATUS_NO_MEMORY);
@@ -1001,10 +1004,11 @@ surface_source (cairo_xlib_surface_t *dst,
     }
 
     xsrc = (cairo_xlib_surface_t *)
-	    _cairo_surface_create_similar_scratch (&dst->base,
-						   src->content,
-						   upload.width,
-						   upload.height);
+	    _cairo_surface_create_scratch (&dst->base,
+					   src->content,
+					   upload.width,
+					   upload.height,
+					   NULL);
     if (xsrc->base.type != CAIRO_SURFACE_TYPE_XLIB) {
 	cairo_surface_destroy (src);
 	cairo_surface_destroy (&xsrc->base);
@@ -1089,17 +1093,22 @@ pattern_is_supported (cairo_xlib_display_t *display,
 	    return FALSE;
     }
 
-    if (! CAIRO_RENDER_HAS_PICTURE_TRANSFORM (display)) {
-	if (!_cairo_matrix_is_integer_translation (&pattern->matrix, NULL, NULL))
-	    return FALSE;
+    switch (pattern->filter) {
+    case CAIRO_FILTER_FAST:
+    case CAIRO_FILTER_NEAREST:
+	return CAIRO_RENDER_HAS_PICTURE_TRANSFORM (display) ||
+	    _cairo_matrix_is_integer_translation (&pattern->matrix, NULL, NULL);
+    case CAIRO_FILTER_GOOD:
+	return CAIRO_RENDER_HAS_FILTER_GOOD (display);
+    case CAIRO_FILTER_BEST:
+	return CAIRO_RENDER_HAS_FILTER_BEST (display);
+    case CAIRO_FILTER_BILINEAR:
+    case CAIRO_FILTER_GAUSSIAN:
+    default:
+	return CAIRO_RENDER_HAS_FILTERS (display);
     }
-
-    if (! CAIRO_RENDER_HAS_FILTERS (display)) {
-	    /* No filters implies no transforms, so we optimise away BILINEAR */
-    }
-
-    return TRUE;
 }
+
 cairo_surface_t *
 _cairo_xlib_source_create_for_pattern (cairo_surface_t *_dst,
 				       const cairo_pattern_t *pattern,

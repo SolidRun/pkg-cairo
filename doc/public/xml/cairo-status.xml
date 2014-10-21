@@ -86,6 +86,7 @@ code is required before or after each individual cairo function call.
     CAIRO_STATUS_DEVICE_ERROR,
     CAIRO_STATUS_INVALID_MESH_CONSTRUCTION,
     CAIRO_STATUS_DEVICE_FINISHED,
+    CAIRO_STATUS_JBIG2_GLOBAL_MISSING,
 
     CAIRO_STATUS_LAST_STATUS
 } cairo_status_t;
@@ -291,6 +292,12 @@ to get a human-readable representation of an error message.
 <varlistentry id="CAIRO-STATUS-DEVICE-FINISHED:CAPS" role="constant">
 <term><literal>CAIRO_STATUS_DEVICE_FINISHED</literal></term>
 <listitem><simpara>target device has been finished (Since 1.12)
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="CAIRO-STATUS-JBIG2-GLOBAL-MISSING:CAPS" role="constant">
+<term><literal>CAIRO_STATUS_JBIG2_GLOBAL_MISSING</literal></term>
+<listitem><simpara><link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link> has been used on at least one image
+  but no image provided <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link> (Since 1.14)
 </simpara></listitem>
 </varlistentry>
 <varlistentry id="CAIRO-STATUS-LAST-STATUS:CAPS" role="constant">
