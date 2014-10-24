@@ -1,3 +1,15 @@
+cairo (1.14.0-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * debian/patches - picked two post-release patches resolving Debian-reported
+    issues:
+    - 0005-CFF-Fix-unaligned-access.patch
+      fixes unaligned access reported on sparc (Closes: #712836)
+    - 0008-tor-scan-converter-can-t-do_fullrow-when-intersectio.patch
+      resolves segfault while rendering some graphs (Closes: #766479)
+
+ -- Yaroslav Halchenko <debian@onerussian.com>  Fri, 24 Oct 2014 15:36:28 -0400
+
 cairo (1.14.0-2) unstable; urgency=medium
 
   * Modernise debian/rules using minimised dh.
