@@ -1,8 +1,14 @@
-cairo (1.14.0-3) UNRELEASED; urgency=medium
+cairo (1.14.2-1) UNRELEASED; urgency=medium
 
   * Update gbp.conf for experimental
+  * New upstream version 1.14.2
+    - pdf-operators: Only wrap text strings for PS output: should fix
+      formatting of some PDFs (LP: #657094)
+  * Drop patches applied upstream in this release
+    - 0005-CFF-Fix-unaligned-access.patch
+    - 0008-tor-scan-converter-can-t-do_fullrow-when-intersectio.patch
 
- -- Iain Lane <laney@debian.org>  Wed, 08 Apr 2015 11:56:32 +0100
+ -- Iain Lane <laney@debian.org>  Wed, 08 Apr 2015 11:58:33 +0100
 
 cairo (1.14.0-2.1) unstable; urgency=medium
 
