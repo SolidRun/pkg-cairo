@@ -63,7 +63,7 @@ override_dh_auto_clean:
 
 override_dh_strip:
 	dh_strip -plibcairo2-udeb -pcairo-perf-utils
-	dh_strip --remaining-packages --dbg-package=libcairo2-dbg
+	dh_strip --remaining-packages --dbgsym-migration="libcairo2-dbg (<< 1.14.8-1~)"
 
 override_dh_makeshlibs:
 	dh_makeshlibs -plibcairo2 --add-udeb=libcairo2-udeb -V 'libcairo2 (>= 1.14.0)' -- -c4

@@ -88,20 +88,6 @@ Description: Cairo 2D vector graphics library
  .
  This package contains the shared libraries.
 
-Package: libcairo2-dbg
-Section: debug
-Priority: extra
-Architecture: any
-Depends: libcairo2 (= ${binary:Version}),
-         ${misc:Depends}
-Suggests: libcairo-gobject2 (= ${binary:Version}),
-          libcairo-script-interpreter2 (= ${binary:Version}),
-          cairo-perf-utils (= ${binary:Version})
-Multi-Arch: same
-Description: Cairo 2D vector graphics library (debugging symbols)
- Debugging symbols for the Cairo 2D vector graphics library. This is
- needed to debug programs linked against libcairo2.
-
 Package: libcairo2-doc
 Section: doc
 Architecture: all
