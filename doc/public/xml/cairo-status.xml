@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?> 
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+		"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
 <refentry id="cairo-Error-handling">
@@ -323,6 +323,26 @@ to get a human-readable representation of an error message.</para>
 </entry>
 <entry role="enum_member_annotations"></entry>
 </row>
+<row role="constant"><entry role="enum_member_name"><para id="CAIRO-STATUS-PNG-ERROR:CAPS">CAIRO_STATUS_PNG_ERROR</para></entry>
+<entry role="enum_member_description"><para>error occurred in libpng while reading from or writing to a PNG file (Since 1.16)</para>
+</entry>
+<entry role="enum_member_annotations"></entry>
+</row>
+<row role="constant"><entry role="enum_member_name"><para id="CAIRO-STATUS-FREETYPE-ERROR:CAPS">CAIRO_STATUS_FREETYPE_ERROR</para></entry>
+<entry role="enum_member_description"><para>error occurred in libfreetype (Since 1.16)</para>
+</entry>
+<entry role="enum_member_annotations"></entry>
+</row>
+<row role="constant"><entry role="enum_member_name"><para id="CAIRO-STATUS-WIN32-GDI-ERROR:CAPS">CAIRO_STATUS_WIN32_GDI_ERROR</para></entry>
+<entry role="enum_member_description"><para>error occurred in the Windows Graphics Device Interface (Since 1.16)</para>
+</entry>
+<entry role="enum_member_annotations"></entry>
+</row>
+<row role="constant"><entry role="enum_member_name"><para id="CAIRO-STATUS-TAG-ERROR:CAPS">CAIRO_STATUS_TAG_ERROR</para></entry>
+<entry role="enum_member_description"><para>invalid tag name, attributes, or nesting (Since 1.16)</para>
+</entry>
+<entry role="enum_member_annotations"></entry>
+</row>
 <row role="constant"><entry role="enum_member_name"><para id="CAIRO-STATUS-LAST-STATUS:CAPS">CAIRO_STATUS_LAST_STATUS</para></entry>
 <entry role="enum_member_description"><para>this is a special value indicating the number of
   status values defined in this enumeration.  When using this value, note
@@ -338,7 +358,7 @@ to get a human-readable representation of an error message.</para>
 <refsect1 id="cairo-Error-handling.see-also">
 <title>See Also</title>
 <para>cairo_status(), <link linkend="cairo-surface-status"><function>cairo_surface_status()</function></link>, <link linkend="cairo-pattern-status"><function>cairo_pattern_status()</function></link>,
-           <link linkend="cairo-font-face-status"><function>cairo_font_face_status()</function></link>, <link linkend="cairo-scaled-font-status"><function>cairo_scaled_font_status()</function></link>, 
+           <link linkend="cairo-font-face-status"><function>cairo_font_face_status()</function></link>, <link linkend="cairo-scaled-font-status"><function>cairo_scaled_font_status()</function></link>,
            <link linkend="cairo-region-status"><function>cairo_region_status()</function></link></para>
 
 </refsect1>

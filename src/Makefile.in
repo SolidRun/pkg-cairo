@@ -467,8 +467,7 @@ am__libcairo_la_SOURCES_DIST = cairo.h cairo-deprecated.h cairo-xlib.h \
 	cairo-xlib-xrender-private.h cairo-xcb-private.h \
 	cairo-quartz-private.h win32/cairo-win32-private.h \
 	skia/cairo-skia-private.h cairo-os2-private.h \
-	drm/cairo-drm-private.h drm/cairo-drm-ioctl-private.h \
-	drm/cairo-drm-intel-private.h \
+	drm/cairo-drm-private.h drm/cairo-drm-intel-private.h \
 	drm/cairo-drm-intel-brw-defines.h \
 	drm/cairo-drm-intel-brw-structs.h drm/cairo-drm-intel-brw-eu.h \
 	drm/cairo-drm-intel-command-private.h \
@@ -480,7 +479,8 @@ am__libcairo_la_SOURCES_DIST = cairo.h cairo-deprecated.h cairo-xlib.h \
 	cairo-cogl-gradient-private.h cairo-cogl-context-private.h \
 	cairo-cogl-utils-private.h cairo-script-private.h \
 	cairo-ft-private.h cairo-ps-surface-private.h \
-	cairo-pdf-surface-private.h cairo-svg-surface-private.h \
+	cairo-pdf-surface-private.h cairo-tag-stack-private.h \
+	cairo-tag-attributes-private.h cairo-svg-surface-private.h \
 	test-compositor-surface.h test-compositor-surface-private.h \
 	test-null-compositor-surface.h test-paginated-surface.h \
 	cairo-tee-surface-private.h cairo-analysis-surface.c \
@@ -566,7 +566,8 @@ am__libcairo_la_SOURCES_DIST = cairo.h cairo-deprecated.h cairo-xlib.h \
 	cairo-directfb-surface.c cairo-vg-surface.c \
 	cairo-egl-context.c cairo-glx-context.c cairo-wgl-context.c \
 	cairo-script-surface.c cairo-ft-font.c cairo-ps-surface.c \
-	cairo-pdf-surface.c cairo-svg-surface.c \
+	cairo-pdf-surface.c cairo-pdf-interchange.c cairo-tag-stack.c \
+	cairo-tag-attributes.c cairo-svg-surface.c \
 	test-compositor-surface.c test-null-compositor-surface.c \
 	test-base-compositor-surface.c test-paginated-surface.c \
 	cairo-tee-surface.c cairo-xml-surface.c cairo-version.h
@@ -744,7 +745,8 @@ am__objects_74 = cairo-ft-font.lo
 @CAIRO_HAS_FT_FONT_TRUE@am__objects_75 = $(am__objects_74)
 am__objects_76 = cairo-ps-surface.lo
 @CAIRO_HAS_PS_SURFACE_TRUE@am__objects_77 = $(am__objects_76)
-am__objects_78 = cairo-pdf-surface.lo
+am__objects_78 = cairo-pdf-surface.lo cairo-pdf-interchange.lo \
+	cairo-tag-stack.lo cairo-tag-attributes.lo
 @CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_79 = $(am__objects_78)
 am__objects_80 = cairo-svg-surface.lo
 @CAIRO_HAS_SVG_SURFACE_TRUE@am__objects_81 = $(am__objects_80)
@@ -842,8 +844,7 @@ am__libcairo_cxx_la_SOURCES_DIST = cairo.h cairo-deprecated.h \
 	cairo-xlib-xrender-private.h cairo-xcb-private.h \
 	cairo-quartz-private.h win32/cairo-win32-private.h \
 	skia/cairo-skia-private.h cairo-os2-private.h \
-	drm/cairo-drm-private.h drm/cairo-drm-ioctl-private.h \
-	drm/cairo-drm-intel-private.h \
+	drm/cairo-drm-private.h drm/cairo-drm-intel-private.h \
 	drm/cairo-drm-intel-brw-defines.h \
 	drm/cairo-drm-intel-brw-structs.h drm/cairo-drm-intel-brw-eu.h \
 	drm/cairo-drm-intel-command-private.h \
@@ -855,7 +856,8 @@ am__libcairo_cxx_la_SOURCES_DIST = cairo.h cairo-deprecated.h \
 	cairo-cogl-gradient-private.h cairo-cogl-context-private.h \
 	cairo-cogl-utils-private.h cairo-script-private.h \
 	cairo-ft-private.h cairo-ps-surface-private.h \
-	cairo-pdf-surface-private.h cairo-svg-surface-private.h \
+	cairo-pdf-surface-private.h cairo-tag-stack-private.h \
+	cairo-tag-attributes-private.h cairo-svg-surface-private.h \
 	test-compositor-surface.h test-compositor-surface-private.h \
 	test-null-compositor-surface.h test-paginated-surface.h \
 	cairo-tee-surface-private.h cairo-qt-surface.cpp \
@@ -1508,8 +1510,8 @@ cairo_ps_private = cairo-ps-surface-private.h
 cairo_ps_sources = cairo-ps-surface.c
 _cairo_deflate_stream_sources = cairo-deflate-stream.c
 cairo_pdf_headers = cairo-pdf.h
-cairo_pdf_private = cairo-pdf-surface-private.h
-cairo_pdf_sources = cairo-pdf-surface.c
+cairo_pdf_private = cairo-pdf-surface-private.h cairo-tag-stack-private.h cairo-tag-attributes-private.h
+cairo_pdf_sources = cairo-pdf-surface.c cairo-pdf-interchange.c cairo-tag-stack.c cairo-tag-attributes.c
 cairo_svg_headers = cairo-svg.h
 cairo_svg_private = cairo-svg-surface-private.h
 cairo_svg_sources = cairo-svg-surface.c
@@ -1634,7 +1636,6 @@ cairo_directfb_headers = cairo-directfb.h
 cairo_directfb_sources = cairo-directfb-surface.c
 cairo_drm_headers = cairo-drm.h
 cairo_drm_private = drm/cairo-drm-private.h \
-		    drm/cairo-drm-ioctl-private.h \
 		    drm/cairo-drm-intel-private.h \
 		    drm/cairo-drm-intel-brw-defines.h \
 		    drm/cairo-drm-intel-brw-structs.h \
@@ -2232,6 +2233,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-path-stroke.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-path.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pattern.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pdf-interchange.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pdf-operators.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pdf-shading.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-pdf-surface.Plo@am__quote@
@@ -2272,6 +2274,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-surface-wrapper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-svg-surface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-tag-attributes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-tag-stack.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-tee-surface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-time.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo-tor-scan-converter.Plo@am__quote@

@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?> 
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+		"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
 <refentry id="cairo-Win32-Surfaces">
@@ -76,6 +76,7 @@ queried for its initial clip extents, and this will be used as the
 size of the cairo surface.  The resulting surface will always be of
 format <link linkend="CAIRO-FORMAT-RGB24:CAPS"><literal>CAIRO_FORMAT_RGB24</literal></link>; should you need another surface format,
 you will need to create one through
+<link linkend="cairo-win32-surface-create-with-format"><function>cairo_win32_surface_create_with_format()</function></link> or
 <link linkend="cairo-win32-surface-create-with-dib"><function>cairo_win32_surface_create_with_dib()</function></link>.</para>
 <refsect3 id="cairo-win32-surface-create.parameters" role="parameters">
 <title>Parameters</title>
@@ -91,7 +92,7 @@ you will need to create one through
 </tbody></tgroup></informaltable>
 </refsect3><refsect3 id="cairo-win32-surface-create.returns" role="returns">
 <title>Returns</title>
-<para> the newly created surface</para>
+<para> the newly created surface, NULL on failure</para>
 </refsect3><para role="since">Since: <link linkend="api-index-1.0">1.0</link></para></refsect2>
 <refsect2 id="cairo-win32-surface-create-with-dib" role="function" condition="since:1.2">
 <title>cairo_win32_surface_create_with_dib&#160;()</title>
