@@ -267,14 +267,15 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c raster-source.c record.c \
 	record1414x.c record2x.c record90.c recordflip.c \
-	record-extend.c record-mesh.c recording-surface-pattern.c \
-	recording-surface-extend.c rectangle-rounding-error.c \
-	rectilinear-fill.c rectilinear-grid.c \
-	rectilinear-miter-limit.c rectilinear-dash.c \
-	rectilinear-dash-scale.c rectilinear-stroke.c \
-	reflected-stroke.c rel-path.c rgb24-ignore-alpha.c \
-	rotate-image-surface-paint.c rotate-stroke-box.c \
-	rotated-clip.c rounded-rectangle-fill.c \
+	record-extend.c record-neg-extents.c record-mesh.c \
+	record-replay-extend.c recording-ink-extents.c \
+	recording-surface-pattern.c recording-surface-extend.c \
+	rectangle-rounding-error.c rectilinear-fill.c \
+	rectilinear-grid.c rectilinear-miter-limit.c \
+	rectilinear-dash.c rectilinear-dash-scale.c \
+	rectilinear-stroke.c reflected-stroke.c rel-path.c \
+	rgb24-ignore-alpha.c rotate-image-surface-paint.c \
+	rotate-stroke-box.c rotated-clip.c rounded-rectangle-fill.c \
 	rounded-rectangle-stroke.c sample.c \
 	scale-down-source-surface-paint.c scale-offset-image.c \
 	scale-offset-similar.c scale-source-surface-paint.c \
@@ -286,10 +287,10 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	shape-general-convex.c shape-sierpinski.c simple.c \
 	skew-extreme.c smask.c smask-fill.c smask-image-mask.c \
 	smask-mask.c smask-paint.c smask-stroke.c smask-text.c \
-	solid-pattern-cache-stress.c source-clip.c source-clip-scale.c \
-	source-surface-scale-paint.c spline-decomposition.c \
-	stride-12-image.c stroke-pattern.c subsurface.c \
-	subsurface-image-repeat.c subsurface-repeat.c \
+	smp-glyph.c solid-pattern-cache-stress.c source-clip.c \
+	source-clip-scale.c source-surface-scale-paint.c \
+	spline-decomposition.c stride-12-image.c stroke-pattern.c \
+	subsurface.c subsurface-image-repeat.c subsurface-repeat.c \
 	subsurface-reflect.c subsurface-pad.c \
 	subsurface-modify-child.c subsurface-modify-parent.c \
 	subsurface-outside-target.c subsurface-scale.c \
@@ -299,26 +300,26 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	surface-pattern-scale-down-extend.c surface-pattern-scale-up.c \
 	text-antialias.c text-antialias-subpixel.c text-cache-crash.c \
 	text-glyph-range.c text-pattern.c text-rotate.c \
-	text-transform.c text-zero-len.c tighten-bounds.c tiger.c \
-	toy-font-face.c transforms.c translate-show-surface.c \
-	trap-clip.c twin.c twin-antialias-gray.c \
-	twin-antialias-mixed.c twin-antialias-none.c \
-	twin-antialias-subpixel.c unaligned-box.c \
-	unantialiased-shapes.c unbounded-operator.c unclosed-strokes.c \
-	user-data.c user-font.c user-font-mask.c user-font-proxy.c \
-	user-font-rescale.c world-map.c white-in-noop.c \
-	xcb-huge-image-shm.c xcb-huge-subimage.c xcb-stress-cache.c \
-	xcb-snapshot-assert.c xcomposite-projection.c \
-	xlib-expose-event.c zero-alpha.c zero-mask.c \
-	pthread-same-source.c pthread-show-text.c pthread-similar.c \
-	bitmap-font.c ft-font-create-for-ft-face.c \
+	text-transform.c text-unhinted-metrics.c text-zero-len.c \
+	thin-lines.c tighten-bounds.c tiger.c toy-font-face.c \
+	transforms.c translate-show-surface.c trap-clip.c twin.c \
+	twin-antialias-gray.c twin-antialias-mixed.c \
+	twin-antialias-none.c twin-antialias-subpixel.c \
+	unaligned-box.c unantialiased-shapes.c unbounded-operator.c \
+	unclosed-strokes.c user-data.c user-font.c user-font-mask.c \
+	user-font-proxy.c user-font-rescale.c world-map.c \
+	white-in-noop.c xcb-huge-image-shm.c xcb-huge-subimage.c \
+	xcb-stress-cache.c xcb-snapshot-assert.c \
+	xcomposite-projection.c xlib-expose-event.c zero-alpha.c \
+	zero-mask.c pthread-same-source.c pthread-show-text.c \
+	pthread-similar.c bitmap-font.c ft-font-create-for-ft-face.c \
 	ft-show-glyphs-positioning.c ft-show-glyphs-table.c \
 	ft-text-vertical-layout-type1.c \
 	ft-text-vertical-layout-type3.c ft-text-antialias-none.c \
 	gl-device-release.c gl-oversized-surface.c gl-surface-source.c \
 	egl-oversized-surface.c egl-surface-source.c \
 	quartz-surface-source.c pdf-features.c pdf-mime-data.c \
-	pdf-surface-source.c ps-eps.c ps-features.c \
+	pdf-surface-source.c pdf-tagged-text.c ps-eps.c ps-features.c \
 	ps-surface-source.c svg-surface.c svg-clip.c \
 	svg-surface-source.c xcb-surface-source.c xlib-surface.c \
 	xlib-surface-source.c get-xrender-format.c multi-page.c \
@@ -350,7 +351,8 @@ am__objects_11 = cairo_test_suite-quartz-surface-source.$(OBJEXT)
 @CAIRO_HAS_QUARTZ_SURFACE_TRUE@am__objects_12 = $(am__objects_11)
 am__objects_13 = cairo_test_suite-pdf-features.$(OBJEXT) \
 	cairo_test_suite-pdf-mime-data.$(OBJEXT) \
-	cairo_test_suite-pdf-surface-source.$(OBJEXT)
+	cairo_test_suite-pdf-surface-source.$(OBJEXT) \
+	cairo_test_suite-pdf-tagged-text.$(OBJEXT)
 @CAIRO_HAS_PDF_SURFACE_TRUE@am__objects_14 = $(am__objects_13)
 am__objects_15 = cairo_test_suite-ps-eps.$(OBJEXT) \
 	cairo_test_suite-ps-features.$(OBJEXT) \
@@ -648,7 +650,10 @@ am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
 	cairo_test_suite-record90.$(OBJEXT) \
 	cairo_test_suite-recordflip.$(OBJEXT) \
 	cairo_test_suite-record-extend.$(OBJEXT) \
+	cairo_test_suite-record-neg-extents.$(OBJEXT) \
 	cairo_test_suite-record-mesh.$(OBJEXT) \
+	cairo_test_suite-record-replay-extend.$(OBJEXT) \
+	cairo_test_suite-recording-ink-extents.$(OBJEXT) \
 	cairo_test_suite-recording-surface-pattern.$(OBJEXT) \
 	cairo_test_suite-recording-surface-extend.$(OBJEXT) \
 	cairo_test_suite-rectangle-rounding-error.$(OBJEXT) \
@@ -696,6 +701,7 @@ am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
 	cairo_test_suite-smask-paint.$(OBJEXT) \
 	cairo_test_suite-smask-stroke.$(OBJEXT) \
 	cairo_test_suite-smask-text.$(OBJEXT) \
+	cairo_test_suite-smp-glyph.$(OBJEXT) \
 	cairo_test_suite-solid-pattern-cache-stress.$(OBJEXT) \
 	cairo_test_suite-source-clip.$(OBJEXT) \
 	cairo_test_suite-source-clip-scale.$(OBJEXT) \
@@ -727,7 +733,9 @@ am__objects_29 = cairo_test_suite-a1-bug.$(OBJEXT) \
 	cairo_test_suite-text-pattern.$(OBJEXT) \
 	cairo_test_suite-text-rotate.$(OBJEXT) \
 	cairo_test_suite-text-transform.$(OBJEXT) \
+	cairo_test_suite-text-unhinted-metrics.$(OBJEXT) \
 	cairo_test_suite-text-zero-len.$(OBJEXT) \
+	cairo_test_suite-thin-lines.$(OBJEXT) \
 	cairo_test_suite-tighten-bounds.$(OBJEXT) \
 	cairo_test_suite-tiger.$(OBJEXT) \
 	cairo_test_suite-toy-font-face.$(OBJEXT) \
@@ -1345,8 +1353,8 @@ CLEANFILES = *.i *.s *.gch $(EXTRA_LTLIBRARIES) $(EXTRA_PROGRAMS) \
 	create-for-stream.ps create-for-stream.svg \
 	svg-surface-source.out.svg pdf-surface-source.out.pdf \
 	ps-surface-source.out.ps pdf-features.pdf pdf-mime-data.out* \
-	ps-features.ps svg-clip.svg svg-surface.svg multi-page.pdf \
-	multi-page.ps $(NULL)
+	pdf-tagged-text.out* ps-features.ps svg-clip.svg \
+	svg-surface.svg multi-page.pdf multi-page.ps $(NULL)
 DISTCLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = $(BUILT_SOURCES) $(noinst_SCRIPTS) COPYING \
 	make-cairo-test-constructors.sh run-cairo-test-suite.sh \
@@ -1449,14 +1457,15 @@ test_sources = a1-bug.c a1-clip.c a1-fill.c a1-image-sample.c \
 	random-intersections-curves-eo.c \
 	random-intersections-curves-nz.c raster-source.c record.c \
 	record1414x.c record2x.c record90.c recordflip.c \
-	record-extend.c record-mesh.c recording-surface-pattern.c \
-	recording-surface-extend.c rectangle-rounding-error.c \
-	rectilinear-fill.c rectilinear-grid.c \
-	rectilinear-miter-limit.c rectilinear-dash.c \
-	rectilinear-dash-scale.c rectilinear-stroke.c \
-	reflected-stroke.c rel-path.c rgb24-ignore-alpha.c \
-	rotate-image-surface-paint.c rotate-stroke-box.c \
-	rotated-clip.c rounded-rectangle-fill.c \
+	record-extend.c record-neg-extents.c record-mesh.c \
+	record-replay-extend.c recording-ink-extents.c \
+	recording-surface-pattern.c recording-surface-extend.c \
+	rectangle-rounding-error.c rectilinear-fill.c \
+	rectilinear-grid.c rectilinear-miter-limit.c \
+	rectilinear-dash.c rectilinear-dash-scale.c \
+	rectilinear-stroke.c reflected-stroke.c rel-path.c \
+	rgb24-ignore-alpha.c rotate-image-surface-paint.c \
+	rotate-stroke-box.c rotated-clip.c rounded-rectangle-fill.c \
 	rounded-rectangle-stroke.c sample.c \
 	scale-down-source-surface-paint.c scale-offset-image.c \
 	scale-offset-similar.c scale-source-surface-paint.c \
@@ -1468,10 +1477,10 @@ test_sources = a1-bug.c a1-clip.c a1-fill.c a1-image-sample.c \
 	shape-general-convex.c shape-sierpinski.c simple.c \
 	skew-extreme.c smask.c smask-fill.c smask-image-mask.c \
 	smask-mask.c smask-paint.c smask-stroke.c smask-text.c \
-	solid-pattern-cache-stress.c source-clip.c source-clip-scale.c \
-	source-surface-scale-paint.c spline-decomposition.c \
-	stride-12-image.c stroke-pattern.c subsurface.c \
-	subsurface-image-repeat.c subsurface-repeat.c \
+	smp-glyph.c solid-pattern-cache-stress.c source-clip.c \
+	source-clip-scale.c source-surface-scale-paint.c \
+	spline-decomposition.c stride-12-image.c stroke-pattern.c \
+	subsurface.c subsurface-image-repeat.c subsurface-repeat.c \
 	subsurface-reflect.c subsurface-pad.c \
 	subsurface-modify-child.c subsurface-modify-parent.c \
 	subsurface-outside-target.c subsurface-scale.c \
@@ -1481,21 +1490,22 @@ test_sources = a1-bug.c a1-clip.c a1-fill.c a1-image-sample.c \
 	surface-pattern-scale-down-extend.c surface-pattern-scale-up.c \
 	text-antialias.c text-antialias-subpixel.c text-cache-crash.c \
 	text-glyph-range.c text-pattern.c text-rotate.c \
-	text-transform.c text-zero-len.c tighten-bounds.c tiger.c \
-	toy-font-face.c transforms.c translate-show-surface.c \
-	trap-clip.c twin.c twin-antialias-gray.c \
-	twin-antialias-mixed.c twin-antialias-none.c \
-	twin-antialias-subpixel.c unaligned-box.c \
-	unantialiased-shapes.c unbounded-operator.c unclosed-strokes.c \
-	user-data.c user-font.c user-font-mask.c user-font-proxy.c \
-	user-font-rescale.c world-map.c white-in-noop.c \
-	xcb-huge-image-shm.c xcb-huge-subimage.c xcb-stress-cache.c \
-	xcb-snapshot-assert.c xcomposite-projection.c \
-	xlib-expose-event.c zero-alpha.c zero-mask.c $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13) $(test)
+	text-transform.c text-unhinted-metrics.c text-zero-len.c \
+	thin-lines.c tighten-bounds.c tiger.c toy-font-face.c \
+	transforms.c translate-show-surface.c trap-clip.c twin.c \
+	twin-antialias-gray.c twin-antialias-mixed.c \
+	twin-antialias-none.c twin-antialias-subpixel.c \
+	unaligned-box.c unantialiased-shapes.c unbounded-operator.c \
+	unclosed-strokes.c user-data.c user-font.c user-font-mask.c \
+	user-font-proxy.c user-font-rescale.c world-map.c \
+	white-in-noop.c xcb-huge-image-shm.c xcb-huge-subimage.c \
+	xcb-stress-cache.c xcb-snapshot-assert.c \
+	xcomposite-projection.c xlib-expose-event.c zero-alpha.c \
+	zero-mask.c $(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(test)
 pthread_test_sources = \
 	pthread-same-source.c				\
 	pthread-show-text.c				\
@@ -1524,7 +1534,8 @@ quartz_surface_test_sources = quartz-surface-source.c
 pdf_surface_test_sources = \
 	pdf-features.c \
 	pdf-mime-data.c \
-	pdf-surface-source.c
+	pdf-surface-source.c \
+	pdf-tagged-text.c
 
 ps_surface_test_sources = \
 	ps-eps.c \
@@ -2077,6 +2088,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pdf-isolated-group.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pdf-mime-data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pdf-surface-source.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pdf-tagged-text.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pixman-downscale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-pixman-rotate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-png.Po@am__quote@
@@ -2101,11 +2113,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-raster-source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record-extend.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record-mesh.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record-neg-extents.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record-replay-extend.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record1414x.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record2x.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-record90.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-recordflip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-recording-ink-extents.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-recording-surface-extend.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-recording-surface-pattern.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-rectangle-rounding-error.Po@am__quote@
@@ -2149,6 +2164,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-smask-stroke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-smask-text.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-smask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-smp-glyph.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-solid-pattern-cache-stress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-source-clip-scale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-source-clip.Po@am__quote@
@@ -2187,7 +2203,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-text-pattern.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-text-rotate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-text-transform.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-text-unhinted-metrics.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-text-zero-len.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-thin-lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-tiger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-tighten-bounds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-toy-font-face.Po@am__quote@
@@ -6128,6 +6146,20 @@ cairo_test_suite-record-extend.obj: record-extend.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-record-extend.obj `if test -f 'record-extend.c'; then $(CYGPATH_W) 'record-extend.c'; else $(CYGPATH_W) '$(srcdir)/record-extend.c'; fi`
 
+cairo_test_suite-record-neg-extents.o: record-neg-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-record-neg-extents.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-record-neg-extents.Tpo -c -o cairo_test_suite-record-neg-extents.o `test -f 'record-neg-extents.c' || echo '$(srcdir)/'`record-neg-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-record-neg-extents.Tpo $(DEPDIR)/cairo_test_suite-record-neg-extents.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='record-neg-extents.c' object='cairo_test_suite-record-neg-extents.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-record-neg-extents.o `test -f 'record-neg-extents.c' || echo '$(srcdir)/'`record-neg-extents.c
+
+cairo_test_suite-record-neg-extents.obj: record-neg-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-record-neg-extents.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-record-neg-extents.Tpo -c -o cairo_test_suite-record-neg-extents.obj `if test -f 'record-neg-extents.c'; then $(CYGPATH_W) 'record-neg-extents.c'; else $(CYGPATH_W) '$(srcdir)/record-neg-extents.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-record-neg-extents.Tpo $(DEPDIR)/cairo_test_suite-record-neg-extents.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='record-neg-extents.c' object='cairo_test_suite-record-neg-extents.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-record-neg-extents.obj `if test -f 'record-neg-extents.c'; then $(CYGPATH_W) 'record-neg-extents.c'; else $(CYGPATH_W) '$(srcdir)/record-neg-extents.c'; fi`
+
 cairo_test_suite-record-mesh.o: record-mesh.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-record-mesh.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-record-mesh.Tpo -c -o cairo_test_suite-record-mesh.o `test -f 'record-mesh.c' || echo '$(srcdir)/'`record-mesh.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-record-mesh.Tpo $(DEPDIR)/cairo_test_suite-record-mesh.Po
@@ -6141,6 +6173,34 @@ cairo_test_suite-record-mesh.obj: record-mesh.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='record-mesh.c' object='cairo_test_suite-record-mesh.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-record-mesh.obj `if test -f 'record-mesh.c'; then $(CYGPATH_W) 'record-mesh.c'; else $(CYGPATH_W) '$(srcdir)/record-mesh.c'; fi`
+
+cairo_test_suite-record-replay-extend.o: record-replay-extend.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-record-replay-extend.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-record-replay-extend.Tpo -c -o cairo_test_suite-record-replay-extend.o `test -f 'record-replay-extend.c' || echo '$(srcdir)/'`record-replay-extend.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-record-replay-extend.Tpo $(DEPDIR)/cairo_test_suite-record-replay-extend.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='record-replay-extend.c' object='cairo_test_suite-record-replay-extend.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-record-replay-extend.o `test -f 'record-replay-extend.c' || echo '$(srcdir)/'`record-replay-extend.c
+
+cairo_test_suite-record-replay-extend.obj: record-replay-extend.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-record-replay-extend.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-record-replay-extend.Tpo -c -o cairo_test_suite-record-replay-extend.obj `if test -f 'record-replay-extend.c'; then $(CYGPATH_W) 'record-replay-extend.c'; else $(CYGPATH_W) '$(srcdir)/record-replay-extend.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-record-replay-extend.Tpo $(DEPDIR)/cairo_test_suite-record-replay-extend.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='record-replay-extend.c' object='cairo_test_suite-record-replay-extend.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-record-replay-extend.obj `if test -f 'record-replay-extend.c'; then $(CYGPATH_W) 'record-replay-extend.c'; else $(CYGPATH_W) '$(srcdir)/record-replay-extend.c'; fi`
+
+cairo_test_suite-recording-ink-extents.o: recording-ink-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-recording-ink-extents.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-recording-ink-extents.Tpo -c -o cairo_test_suite-recording-ink-extents.o `test -f 'recording-ink-extents.c' || echo '$(srcdir)/'`recording-ink-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-recording-ink-extents.Tpo $(DEPDIR)/cairo_test_suite-recording-ink-extents.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='recording-ink-extents.c' object='cairo_test_suite-recording-ink-extents.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-recording-ink-extents.o `test -f 'recording-ink-extents.c' || echo '$(srcdir)/'`recording-ink-extents.c
+
+cairo_test_suite-recording-ink-extents.obj: recording-ink-extents.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-recording-ink-extents.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-recording-ink-extents.Tpo -c -o cairo_test_suite-recording-ink-extents.obj `if test -f 'recording-ink-extents.c'; then $(CYGPATH_W) 'recording-ink-extents.c'; else $(CYGPATH_W) '$(srcdir)/recording-ink-extents.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-recording-ink-extents.Tpo $(DEPDIR)/cairo_test_suite-recording-ink-extents.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='recording-ink-extents.c' object='cairo_test_suite-recording-ink-extents.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-recording-ink-extents.obj `if test -f 'recording-ink-extents.c'; then $(CYGPATH_W) 'recording-ink-extents.c'; else $(CYGPATH_W) '$(srcdir)/recording-ink-extents.c'; fi`
 
 cairo_test_suite-recording-surface-pattern.o: recording-surface-pattern.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-recording-surface-pattern.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-recording-surface-pattern.Tpo -c -o cairo_test_suite-recording-surface-pattern.o `test -f 'recording-surface-pattern.c' || echo '$(srcdir)/'`recording-surface-pattern.c
@@ -6800,6 +6860,20 @@ cairo_test_suite-smask-text.obj: smask-text.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-smask-text.obj `if test -f 'smask-text.c'; then $(CYGPATH_W) 'smask-text.c'; else $(CYGPATH_W) '$(srcdir)/smask-text.c'; fi`
 
+cairo_test_suite-smp-glyph.o: smp-glyph.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-smp-glyph.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-smp-glyph.Tpo -c -o cairo_test_suite-smp-glyph.o `test -f 'smp-glyph.c' || echo '$(srcdir)/'`smp-glyph.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-smp-glyph.Tpo $(DEPDIR)/cairo_test_suite-smp-glyph.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='smp-glyph.c' object='cairo_test_suite-smp-glyph.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-smp-glyph.o `test -f 'smp-glyph.c' || echo '$(srcdir)/'`smp-glyph.c
+
+cairo_test_suite-smp-glyph.obj: smp-glyph.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-smp-glyph.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-smp-glyph.Tpo -c -o cairo_test_suite-smp-glyph.obj `if test -f 'smp-glyph.c'; then $(CYGPATH_W) 'smp-glyph.c'; else $(CYGPATH_W) '$(srcdir)/smp-glyph.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-smp-glyph.Tpo $(DEPDIR)/cairo_test_suite-smp-glyph.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='smp-glyph.c' object='cairo_test_suite-smp-glyph.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-smp-glyph.obj `if test -f 'smp-glyph.c'; then $(CYGPATH_W) 'smp-glyph.c'; else $(CYGPATH_W) '$(srcdir)/smp-glyph.c'; fi`
+
 cairo_test_suite-solid-pattern-cache-stress.o: solid-pattern-cache-stress.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-solid-pattern-cache-stress.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-solid-pattern-cache-stress.Tpo -c -o cairo_test_suite-solid-pattern-cache-stress.o `test -f 'solid-pattern-cache-stress.c' || echo '$(srcdir)/'`solid-pattern-cache-stress.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-solid-pattern-cache-stress.Tpo $(DEPDIR)/cairo_test_suite-solid-pattern-cache-stress.Po
@@ -7234,6 +7308,20 @@ cairo_test_suite-text-transform.obj: text-transform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-text-transform.obj `if test -f 'text-transform.c'; then $(CYGPATH_W) 'text-transform.c'; else $(CYGPATH_W) '$(srcdir)/text-transform.c'; fi`
 
+cairo_test_suite-text-unhinted-metrics.o: text-unhinted-metrics.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-text-unhinted-metrics.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-text-unhinted-metrics.Tpo -c -o cairo_test_suite-text-unhinted-metrics.o `test -f 'text-unhinted-metrics.c' || echo '$(srcdir)/'`text-unhinted-metrics.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-text-unhinted-metrics.Tpo $(DEPDIR)/cairo_test_suite-text-unhinted-metrics.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='text-unhinted-metrics.c' object='cairo_test_suite-text-unhinted-metrics.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-text-unhinted-metrics.o `test -f 'text-unhinted-metrics.c' || echo '$(srcdir)/'`text-unhinted-metrics.c
+
+cairo_test_suite-text-unhinted-metrics.obj: text-unhinted-metrics.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-text-unhinted-metrics.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-text-unhinted-metrics.Tpo -c -o cairo_test_suite-text-unhinted-metrics.obj `if test -f 'text-unhinted-metrics.c'; then $(CYGPATH_W) 'text-unhinted-metrics.c'; else $(CYGPATH_W) '$(srcdir)/text-unhinted-metrics.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-text-unhinted-metrics.Tpo $(DEPDIR)/cairo_test_suite-text-unhinted-metrics.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='text-unhinted-metrics.c' object='cairo_test_suite-text-unhinted-metrics.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-text-unhinted-metrics.obj `if test -f 'text-unhinted-metrics.c'; then $(CYGPATH_W) 'text-unhinted-metrics.c'; else $(CYGPATH_W) '$(srcdir)/text-unhinted-metrics.c'; fi`
+
 cairo_test_suite-text-zero-len.o: text-zero-len.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-text-zero-len.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-text-zero-len.Tpo -c -o cairo_test_suite-text-zero-len.o `test -f 'text-zero-len.c' || echo '$(srcdir)/'`text-zero-len.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-text-zero-len.Tpo $(DEPDIR)/cairo_test_suite-text-zero-len.Po
@@ -7247,6 +7335,20 @@ cairo_test_suite-text-zero-len.obj: text-zero-len.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='text-zero-len.c' object='cairo_test_suite-text-zero-len.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-text-zero-len.obj `if test -f 'text-zero-len.c'; then $(CYGPATH_W) 'text-zero-len.c'; else $(CYGPATH_W) '$(srcdir)/text-zero-len.c'; fi`
+
+cairo_test_suite-thin-lines.o: thin-lines.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-thin-lines.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-thin-lines.Tpo -c -o cairo_test_suite-thin-lines.o `test -f 'thin-lines.c' || echo '$(srcdir)/'`thin-lines.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-thin-lines.Tpo $(DEPDIR)/cairo_test_suite-thin-lines.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='thin-lines.c' object='cairo_test_suite-thin-lines.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-thin-lines.o `test -f 'thin-lines.c' || echo '$(srcdir)/'`thin-lines.c
+
+cairo_test_suite-thin-lines.obj: thin-lines.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-thin-lines.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-thin-lines.Tpo -c -o cairo_test_suite-thin-lines.obj `if test -f 'thin-lines.c'; then $(CYGPATH_W) 'thin-lines.c'; else $(CYGPATH_W) '$(srcdir)/thin-lines.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-thin-lines.Tpo $(DEPDIR)/cairo_test_suite-thin-lines.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='thin-lines.c' object='cairo_test_suite-thin-lines.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-thin-lines.obj `if test -f 'thin-lines.c'; then $(CYGPATH_W) 'thin-lines.c'; else $(CYGPATH_W) '$(srcdir)/thin-lines.c'; fi`
 
 cairo_test_suite-tighten-bounds.o: tighten-bounds.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-tighten-bounds.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-tighten-bounds.Tpo -c -o cairo_test_suite-tighten-bounds.o `test -f 'tighten-bounds.c' || echo '$(srcdir)/'`tighten-bounds.c
@@ -7933,6 +8035,20 @@ cairo_test_suite-pdf-surface-source.obj: pdf-surface-source.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pdf-surface-source.c' object='cairo_test_suite-pdf-surface-source.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pdf-surface-source.obj `if test -f 'pdf-surface-source.c'; then $(CYGPATH_W) 'pdf-surface-source.c'; else $(CYGPATH_W) '$(srcdir)/pdf-surface-source.c'; fi`
+
+cairo_test_suite-pdf-tagged-text.o: pdf-tagged-text.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pdf-tagged-text.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-pdf-tagged-text.Tpo -c -o cairo_test_suite-pdf-tagged-text.o `test -f 'pdf-tagged-text.c' || echo '$(srcdir)/'`pdf-tagged-text.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-pdf-tagged-text.Tpo $(DEPDIR)/cairo_test_suite-pdf-tagged-text.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pdf-tagged-text.c' object='cairo_test_suite-pdf-tagged-text.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pdf-tagged-text.o `test -f 'pdf-tagged-text.c' || echo '$(srcdir)/'`pdf-tagged-text.c
+
+cairo_test_suite-pdf-tagged-text.obj: pdf-tagged-text.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-pdf-tagged-text.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-pdf-tagged-text.Tpo -c -o cairo_test_suite-pdf-tagged-text.obj `if test -f 'pdf-tagged-text.c'; then $(CYGPATH_W) 'pdf-tagged-text.c'; else $(CYGPATH_W) '$(srcdir)/pdf-tagged-text.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-pdf-tagged-text.Tpo $(DEPDIR)/cairo_test_suite-pdf-tagged-text.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pdf-tagged-text.c' object='cairo_test_suite-pdf-tagged-text.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-pdf-tagged-text.obj `if test -f 'pdf-tagged-text.c'; then $(CYGPATH_W) 'pdf-tagged-text.c'; else $(CYGPATH_W) '$(srcdir)/pdf-tagged-text.c'; fi`
 
 cairo_test_suite-ps-eps.o: ps-eps.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-ps-eps.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-ps-eps.Tpo -c -o cairo_test_suite-ps-eps.o `test -f 'ps-eps.c' || echo '$(srcdir)/'`ps-eps.c

@@ -189,12 +189,6 @@ _cairo_surface_is_xlib (cairo_surface_t *surface);
 
 #define CAIRO_ASSUME_PIXMAP	20
 
-static const XTransform identity = { {
-    { 1 << 16, 0x00000, 0x00000 },
-    { 0x00000, 1 << 16, 0x00000 },
-    { 0x00000, 0x00000, 1 << 16 },
-} };
-
 static Visual *
 _visual_for_xrender_format(Screen *screen,
 			   XRenderPictFormat *xrender_format)
@@ -1800,7 +1794,8 @@ found:
     _cairo_surface_init (&surface->base,
 			 &cairo_xlib_surface_backend,
 			 screen->device,
-			 _xrender_format_to_content (xrender_format));
+			 _xrender_format_to_content (xrender_format),
+			 FALSE); /* is_vector */
 
     surface->screen = screen;
     surface->compositor = display->compositor;

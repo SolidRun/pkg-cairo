@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?> 
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+		"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
 <refentry id="cairo-cairo-device-t">
@@ -138,8 +138,8 @@ cairo_device_reference (<parameter><link linkend="cairo-device-t"><type>cairo_de
 <parameter>device</parameter>
  from being destroyed until a matching call to
 <link linkend="cairo-device-destroy"><function>cairo_device_destroy()</function></link> is made.</para>
-<para>The number of references to a <link linkend="cairo-device-t"><type>cairo_device_t</type></link> can be get using
-<link linkend="cairo-device-get-reference-count"><function>cairo_device_get_reference_count()</function></link>.</para>
+<para>Use <link linkend="cairo-device-get-reference-count"><function>cairo_device_get_reference_count()</function></link> to get the number of references
+to a <link linkend="cairo-device-t"><type>cairo_device_t</type></link>.</para>
 <refsect3 id="cairo-device-reference.parameters" role="parameters">
 <title>Parameters</title>
 <informaltable role="parameters_table" pgwide="1" frame="none">

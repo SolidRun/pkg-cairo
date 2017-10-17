@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?> 
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+		"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
 <refentry id="cairo-PNG-Support">
@@ -95,7 +95,8 @@ surface can be checked for with cairo_surface_status(surface) which
 may return one of the following values:</para>
 <para><link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>
 <link linkend="CAIRO-STATUS-FILE-NOT-FOUND:CAPS"><literal>CAIRO_STATUS_FILE_NOT_FOUND</literal></link>
-<link linkend="CAIRO-STATUS-READ-ERROR:CAPS"><literal>CAIRO_STATUS_READ_ERROR</literal></link></para>
+<link linkend="CAIRO-STATUS-READ-ERROR:CAPS"><literal>CAIRO_STATUS_READ_ERROR</literal></link>
+<link linkend="CAIRO-STATUS-PNG-ERROR:CAPS"><literal>CAIRO_STATUS_PNG_ERROR</literal></link></para>
 <para>Alternatively, you can allow errors to propagate through the drawing
 operations and check the status on the context upon completion
 using <link linkend="cairo-status"><function>cairo_status()</function></link>.</para>
@@ -170,7 +171,8 @@ or memory could not be allocated for the operation.  A nil
 surface can be checked for with cairo_surface_status(surface) which
 may return one of the following values:</para>
 <para><link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link>
-<link linkend="CAIRO-STATUS-READ-ERROR:CAPS"><literal>CAIRO_STATUS_READ_ERROR</literal></link></para>
+<link linkend="CAIRO-STATUS-READ-ERROR:CAPS"><literal>CAIRO_STATUS_READ_ERROR</literal></link>
+<link linkend="CAIRO-STATUS-PNG-ERROR:CAPS"><literal>CAIRO_STATUS_PNG_ERROR</literal></link></para>
 <para>Alternatively, you can allow errors to propagate through the drawing
 operations and check the status on the context upon completion
 using <link linkend="cairo-status"><function>cairo_status()</function></link>.</para>
@@ -207,7 +209,8 @@ successfully. Otherwise, <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CA
 be allocated for the operation or
 <link linkend="CAIRO-STATUS-SURFACE-TYPE-MISMATCH:CAPS"><literal>CAIRO_STATUS_SURFACE_TYPE_MISMATCH</literal></link> if the surface does not have
 pixel contents, or <link linkend="CAIRO-STATUS-WRITE-ERROR:CAPS"><literal>CAIRO_STATUS_WRITE_ERROR</literal></link> if an I/O error occurs
-while attempting to write the file.</para>
+while attempting to write the file, or <link linkend="CAIRO-STATUS-PNG-ERROR:CAPS"><literal>CAIRO_STATUS_PNG_ERROR</literal></link> if libpng
+returned an error.</para>
 </refsect3><para role="since">Since: <link linkend="api-index-1.0">1.0</link></para></refsect2>
 <refsect2 id="cairo-write-func-t" role="function" condition="since:1.0">
 <title>cairo_write_func_t&#160;()</title>
@@ -277,7 +280,8 @@ cairo_surface_write_to_png_stream (<parameter><link linkend="cairo-surface-t"><t
 successfully.  Otherwise, <link linkend="CAIRO-STATUS-NO-MEMORY:CAPS"><literal>CAIRO_STATUS_NO_MEMORY</literal></link> is returned if
 memory could not be allocated for the operation,
 <link linkend="CAIRO-STATUS-SURFACE-TYPE-MISMATCH:CAPS"><literal>CAIRO_STATUS_SURFACE_TYPE_MISMATCH</literal></link> if the surface does not have
-pixel contents.</para>
+pixel contents, or <link linkend="CAIRO-STATUS-PNG-ERROR:CAPS"><literal>CAIRO_STATUS_PNG_ERROR</literal></link> if libpng
+returned an error.</para>
 </refsect3><para role="since">Since: <link linkend="api-index-1.0">1.0</link></para></refsect2>
 
 </refsect1>

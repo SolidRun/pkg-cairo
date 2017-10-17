@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?> 
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+		"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY version SYSTEM "version.xml">
 ]>
 <refentry id="cairo-cairo-pattern-t">
@@ -1411,8 +1411,8 @@ cairo_pattern_reference (<parameter><link linkend="cairo-pattern-t"><type>cairo_
 <parameter>pattern</parameter>
  from being destroyed until a matching call to
 <link linkend="cairo-pattern-destroy"><function>cairo_pattern_destroy()</function></link> is made.</para>
-<para>The number of references to a <link linkend="cairo-pattern-t"><type>cairo_pattern_t</type></link> can be get using
-<link linkend="cairo-pattern-get-reference-count"><function>cairo_pattern_get_reference_count()</function></link>.</para>
+<para>Use <link linkend="cairo-pattern-get-reference-count"><function>cairo_pattern_get_reference_count()</function></link> to get the number of
+references to a <link linkend="cairo-pattern-t"><type>cairo_pattern_t</type></link>.</para>
 <refsect3 id="cairo-pattern-reference.parameters" role="parameters">
 <title>Parameters</title>
 <informaltable role="parameters_table" pgwide="1" frame="none">
@@ -1662,8 +1662,8 @@ cairo_pattern_get_matrix (<parameter><link linkend="cairo-pattern-t"><type>cairo
 <indexterm zone="cairo-pattern-get-type" role="1.2"><primary sortas="pattern_get_type">cairo_pattern_get_type</primary></indexterm>
 <programlisting language="C"><link linkend="cairo-pattern-type-t"><returnvalue>cairo_pattern_type_t</returnvalue></link>
 cairo_pattern_get_type (<parameter><link linkend="cairo-pattern-t"><type>cairo_pattern_t</type></link> *pattern</parameter>);</programlisting>
-<para>This function returns the type a pattern.
-See <link linkend="cairo-pattern-type-t"><type>cairo_pattern_type_t</type></link> for available types.</para>
+<para>Get the pattern's type.  See <link linkend="cairo-pattern-type-t"><type>cairo_pattern_type_t</type></link> for available
+types.</para>
 <refsect3 id="cairo-pattern-get-type.parameters" role="parameters">
 <title>Parameters</title>
 <informaltable role="parameters_table" pgwide="1" frame="none">
