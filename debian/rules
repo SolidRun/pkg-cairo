@@ -5,10 +5,10 @@
 
 #export DEB_BUILD_MAINT_OPTIONS  = hardening=+all
 export DEB_CFLAGS_MAINT_APPEND  = -Wall
-export DEB_LDFLAGS_MAINT_APPEND = -Wl,-z,defs -Wl,-O1 -Wl,--as-needed
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,-z,defs -Wl,--as-needed
 
 %:
-	dh $@ --with autoreconf,gnome
+	dh $@ --with gnome
 
 configure_flags += \
 	--enable-pdf \
@@ -53,10 +53,10 @@ override_dh_auto_install:
 
 override_dh_install:
 	dh_install -plibcairo2-udeb --sourcedir=debian/install/udeb
-	dh_install -Nlibcairo2-udeb --sourcedir=debian/install/deb --list-missing
+	dh_install -Nlibcairo2-udeb --sourcedir=debian/install/deb
 
-override_dh_installdocs:
-	dh_installdocs -A NEWS README AUTHORS
+override_dh_missing:
+	dh_missing --list-missing
 
 override_dh_auto_clean:
 	rm -rf debian/install/ debian/build/

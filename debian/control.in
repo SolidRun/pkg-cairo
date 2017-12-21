@@ -3,9 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
 Uploaders: @GNOME_TEAM@
-Build-Depends: debhelper (>= 9),
-               dpkg-dev (>= 1.14.13),
-               dh-autoreconf,
+Build-Depends: debhelper (>= 11),
                gnome-pkg-tools,
                pkg-config (>= 0.19),
                libfontconfig1-dev (>= 2.2.95),
@@ -28,6 +26,32 @@ Standards-Version: 4.1.1
 Vcs-Git: https://anonscm.debian.org/git/pkg-gnome/cairo.git
 Vcs-Browser: https://anonscm.debian.org/git/pkg-gnome/cairo.git
 Homepage: https://cairographics.org/
+
+Package: libcairo2
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Multi-Arch: same
+Breaks: weston (<< 1.5.0-3~),
+        libwebkitgtk-1.0-0 (<< 2.4.5-2~),
+        libwebkitgtk-3.0-0 (<< 2.4.5-2~),
+        libwebkit2gtk-3.0-25 (<< 2.4.5-2~),
+Description: Cairo 2D vector graphics library
+ Cairo is a multi-platform library providing anti-aliased
+ vector-based rendering for multiple target backends. Paths consist
+ of line segments and cubic splines and can be rendered at any width
+ with various join and cap styles. All colors may be specified with
+ optional translucence (opacity/alpha) and combined using the
+ extended Porter/Duff compositing algebra as found in the X Render
+ Extension.
+ .
+ Cairo exports a stateful rendering API similar in spirit to the path
+ construction, text, and painting operators of PostScript, (with the
+ significant addition of translucence in the imaging model). When
+ complete, the API is intended to support the complete imaging model of
+ PDF 1.4.
+ .
+ This package contains the shared libraries.
 
 Package: libcairo2-dev
 Section: libdevel
@@ -58,34 +82,6 @@ Description: Development files for the Cairo 2D graphics library
  This package contains the development libraries, header files needed by
  programs that want to compile with Cairo.
 
-Package: libcairo2
-Section: libs
-Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends}
-Pre-Depends: ${misc:Pre-Depends}
-Multi-Arch: same
-Breaks: weston (<< 1.5.0-3~),
-        libwebkitgtk-1.0-0 (<< 2.4.5-2~),
-        libwebkitgtk-3.0-0 (<< 2.4.5-2~),
-        libwebkit2gtk-3.0-25 (<< 2.4.5-2~),
-Description: Cairo 2D vector graphics library
- Cairo is a multi-platform library providing anti-aliased
- vector-based rendering for multiple target backends. Paths consist
- of line segments and cubic splines and can be rendered at any width
- with various join and cap styles. All colors may be specified with
- optional translucence (opacity/alpha) and combined using the
- extended Porter/Duff compositing algebra as found in the X Render
- Extension.
- .
- Cairo exports a stateful rendering API similar in spirit to the path
- construction, text, and painting operators of PostScript, (with the
- significant addition of translucence in the imaging model). When
- complete, the API is intended to support the complete imaging model of
- PDF 1.4.
- .
- This package contains the shared libraries.
-
 Package: libcairo2-doc
 Section: doc
 Architecture: all
@@ -99,11 +95,9 @@ Description: Documentation for the Cairo Multi-platform 2D graphics library
  in /usr/share/gtk-doc/html/cairo/.
 
 Package: libcairo-script-interpreter2
-Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Pre-Depends: ${misc:Pre-Depends}
 Multi-Arch: same
 Description: Cairo 2D vector graphics library (script interpreter)
  Cairo is a multi-platform library providing anti-aliased
@@ -113,11 +107,9 @@ Description: Cairo 2D vector graphics library (script interpreter)
  cairo execution traces.
 
 Package: libcairo-gobject2
-Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Pre-Depends: ${misc:Pre-Depends}
 Multi-Arch: same
 Description: Cairo 2D vector graphics library (GObject library)
  Cairo is a multi-platform library providing anti-aliased
