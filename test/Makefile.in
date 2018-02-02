@@ -125,10 +125,9 @@ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
 	$(top_srcdir)/build/aclocal.compare.m4 \
 	$(top_srcdir)/build/aclocal.enable.m4 \
 	$(top_srcdir)/build/aclocal.float.m4 \
-	$(top_srcdir)/build/aclocal.gtk-doc.m4 \
 	$(top_srcdir)/build/aclocal.makefile.m4 \
 	$(top_srcdir)/build/aclocal.pkg.m4 \
-	$(top_srcdir)/build/libtool.m4 \
+	$(top_srcdir)/build/gtk-doc.m4 $(top_srcdir)/build/libtool.m4 \
 	$(top_srcdir)/build/ltoptions.m4 \
 	$(top_srcdir)/build/ltsugar.m4 \
 	$(top_srcdir)/build/ltversion.m4 \
@@ -323,7 +322,8 @@ am__cairo_test_suite_SOURCES_DIST = buffer-diff.c cairo-test.c \
 	ps-surface-source.c svg-surface.c svg-clip.c \
 	svg-surface-source.c xcb-surface-source.c xlib-surface.c \
 	xlib-surface-source.c get-xrender-format.c multi-page.c \
-	fallback-resolution.c cairo-test-constructors.c
+	mime-unique-id.c fallback-resolution.c \
+	cairo-test-constructors.c
 am__objects_1 = cairo_test_suite-buffer-diff.$(OBJEXT) \
 	cairo_test_suite-cairo-test.$(OBJEXT) \
 	cairo_test_suite-cairo-test-runner.$(OBJEXT)
@@ -370,7 +370,8 @@ am__objects_21 = cairo_test_suite-xlib-surface.$(OBJEXT) \
 am__objects_23 = cairo_test_suite-get-xrender-format.$(OBJEXT)
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@am__objects_24 =  \
 @CAIRO_HAS_XLIB_XRENDER_SURFACE_TRUE@	$(am__objects_23)
-am__objects_25 = cairo_test_suite-multi-page.$(OBJEXT)
+am__objects_25 = cairo_test_suite-multi-page.$(OBJEXT) \
+	cairo_test_suite-mime-unique-id.$(OBJEXT)
 @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@am__objects_26 =  \
 @CAIRO_HAS_MULTI_PAGE_SURFACES_TRUE@	$(am__objects_25)
 am__objects_27 = cairo_test_suite-fallback-resolution.$(OBJEXT)
@@ -1190,6 +1191,11 @@ GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GS = @GS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_CHECK_PATH = @GTKDOC_CHECK_PATH@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
+GTKDOC_MKPDF = @GTKDOC_MKPDF@
+GTKDOC_REBASE = @GTKDOC_REBASE@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -1288,6 +1294,8 @@ gl_CFLAGS = @gl_CFLAGS@
 gl_LIBS = @gl_LIBS@
 glesv2_CFLAGS = @glesv2_CFLAGS@
 glesv2_LIBS = @glesv2_LIBS@
+glesv3_CFLAGS = @glesv3_CFLAGS@
+glesv3_LIBS = @glesv3_LIBS@
 glib_CFLAGS = @glib_CFLAGS@
 glib_LIBS = @glib_LIBS@
 gtk_CFLAGS = @gtk_CFLAGS@
@@ -1555,7 +1563,7 @@ xlib_surface_test_sources = \
 	xlib-surface-source.c
 
 xlib_xrender_surface_test_sources = get-xrender-format.c
-multi_page_surface_test_sources = multi-page.c
+multi_page_surface_test_sources = multi-page.c mime-unique-id.c
 fallback_resolution_test_sources = fallback-resolution.c
 cairo_test_suite_headers = \
 	buffer-diff.h \
@@ -2050,6 +2058,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mesh-pattern.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mime-data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mime-surface-api.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-mime-unique-id.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-miter-precision.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-move-to-show-surface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cairo_test_suite-multi-page.Po@am__quote@
@@ -8203,6 +8212,20 @@ cairo_test_suite-multi-page.obj: multi-page.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='multi-page.c' object='cairo_test_suite-multi-page.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-multi-page.obj `if test -f 'multi-page.c'; then $(CYGPATH_W) 'multi-page.c'; else $(CYGPATH_W) '$(srcdir)/multi-page.c'; fi`
+
+cairo_test_suite-mime-unique-id.o: mime-unique-id.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-mime-unique-id.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-mime-unique-id.Tpo -c -o cairo_test_suite-mime-unique-id.o `test -f 'mime-unique-id.c' || echo '$(srcdir)/'`mime-unique-id.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-mime-unique-id.Tpo $(DEPDIR)/cairo_test_suite-mime-unique-id.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mime-unique-id.c' object='cairo_test_suite-mime-unique-id.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-mime-unique-id.o `test -f 'mime-unique-id.c' || echo '$(srcdir)/'`mime-unique-id.c
+
+cairo_test_suite-mime-unique-id.obj: mime-unique-id.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-mime-unique-id.obj -MD -MP -MF $(DEPDIR)/cairo_test_suite-mime-unique-id.Tpo -c -o cairo_test_suite-mime-unique-id.obj `if test -f 'mime-unique-id.c'; then $(CYGPATH_W) 'mime-unique-id.c'; else $(CYGPATH_W) '$(srcdir)/mime-unique-id.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cairo_test_suite-mime-unique-id.Tpo $(DEPDIR)/cairo_test_suite-mime-unique-id.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mime-unique-id.c' object='cairo_test_suite-mime-unique-id.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -c -o cairo_test_suite-mime-unique-id.obj `if test -f 'mime-unique-id.c'; then $(CYGPATH_W) 'mime-unique-id.c'; else $(CYGPATH_W) '$(srcdir)/mime-unique-id.c'; fi`
 
 cairo_test_suite-fallback-resolution.o: fallback-resolution.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cairo_test_suite_CFLAGS) $(CFLAGS) -MT cairo_test_suite-fallback-resolution.o -MD -MP -MF $(DEPDIR)/cairo_test_suite-fallback-resolution.Tpo -c -o cairo_test_suite-fallback-resolution.o `test -f 'fallback-resolution.c' || echo '$(srcdir)/'`fallback-resolution.c

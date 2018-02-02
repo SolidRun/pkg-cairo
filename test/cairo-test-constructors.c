@@ -563,13 +563,22 @@ extern void _register_ft_show_glyphs_table (void);
 extern void _register_ft_text_vertical_layout_type1 (void);
 extern void _register_ft_text_vertical_layout_type3 (void);
 extern void _register_ft_text_antialias_none (void);
+extern void _register_pdf_features (void);
+extern void _register_pdf_mime_data (void);
+extern void _register_pdf_surface_source (void);
+extern void _register_pdf_tagged_text (void);
 extern void _register_ps_eps (void);
 extern void _register_ps_features (void);
 extern void _register_ps_surface_source (void);
 extern void _register_svg_surface (void);
 extern void _register_svg_clip (void);
 extern void _register_svg_surface_source (void);
+extern void _register_xcb_surface_source (void);
+extern void _register_xlib_surface (void);
+extern void _register_xlib_surface_source (void);
+extern void _register_get_xrender_format (void);
 extern void _register_multi_page (void);
+extern void _register_mime_unique_id (void);
 extern void _register_fallback_resolution (void);
 
 void
@@ -1134,12 +1143,21 @@ _cairo_test_runner_register_tests (void)
     _register_ft_text_vertical_layout_type1 ();
     _register_ft_text_vertical_layout_type3 ();
     _register_ft_text_antialias_none ();
+    _register_pdf_features ();
+    _register_pdf_mime_data ();
+    _register_pdf_surface_source ();
+    _register_pdf_tagged_text ();
     _register_ps_eps ();
     _register_ps_features ();
     _register_ps_surface_source ();
     _register_svg_surface ();
     _register_svg_clip ();
     _register_svg_surface_source ();
+    _register_xcb_surface_source ();
+    _register_xlib_surface ();
+    _register_xlib_surface_source ();
+    _register_get_xrender_format ();
     _register_multi_page ();
+    _register_mime_unique_id ();
     _register_fallback_resolution ();
 }
