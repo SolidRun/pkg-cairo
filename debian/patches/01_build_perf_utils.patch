@@ -1,12 +1,31 @@
-Description: Build cairo-perf-utils as part of then normal build process.
-Author: Alexandros Frantzis <alexandros.frantzis@linaro.org>
+From: Alexandros Frantzis <alexandros.frantzis@linaro.org>
+Date: Tue, 7 Sep 2010 10:09:10 +0200
+Subject: Build cairo-perf-utils as part of then normal build process.
+
 Bug: https://bugs.freedesktop.org/show_bug.cgi?id=28865
-Last-Update: 2010-08-03
-Index: cairo/configure.ac
-===================================================================
---- cairo.orig/configure.ac	2014-10-21 22:34:06.167497938 +0200
-+++ cairo/configure.ac	2014-10-21 22:34:06.163497880 +0200
-@@ -851,6 +851,11 @@
+---
+ build/configure.ac.features |  1 +
+ configure.ac                |  5 +++++
+ perf/Makefile.am            | 14 ++++++++++++++
+ 3 files changed, 20 insertions(+)
+
+diff --git a/build/configure.ac.features b/build/configure.ac.features
+index aa48652..3ae569b 100644
+--- a/build/configure.ac.features
++++ b/build/configure.ac.features
+@@ -409,6 +409,7 @@ AC_DEFUN([CAIRO_REPORT],
+ 	echo "The following features and utilities:"
+ 	echo "  cairo-trace:                $use_trace"
+ 	echo "  cairo-script-interpreter:   $use_interpreter"
++	echo "  cairo-perf-utils:           $use_perf_utils"
+ 	echo ""
+ 	echo "And the following internal features:"
+ 	echo "  pthread:       $use_pthread"
+diff --git a/configure.ac b/configure.ac
+index d82db45..a8df3b8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -878,6 +878,11 @@ dnl ===========================================================================
  PKG_CHECK_MODULES(gtk, "gtk+-2.0",have_gtk=yes, have_gtk=no)
  AM_CONDITIONAL(HAVE_GTK, test "x$have_gtk" = "xyes")
  
@@ -18,11 +37,11 @@ Index: cairo/configure.ac
  AC_CONFIG_FILES([
  Makefile
  boilerplate/Makefile
-Index: cairo/perf/Makefile.am
-===================================================================
---- cairo.orig/perf/Makefile.am	2014-10-21 22:34:06.167497938 +0200
-+++ cairo/perf/Makefile.am	2014-10-21 22:34:06.163497880 +0200
-@@ -15,11 +15,25 @@
+diff --git a/perf/Makefile.am b/perf/Makefile.am
+index 40b35bc..70ed619 100644
+--- a/perf/Makefile.am
++++ b/perf/Makefile.am
+@@ -15,11 +15,25 @@ AM_LDFLAGS = $(CAIRO_LDFLAGS)
  
  SUBDIRS = micro
  
@@ -48,15 +67,3 @@ Index: cairo/perf/Makefile.am
  
  EXTRA_PROGRAMS += \
  	cairo-analyse-trace \
-Index: cairo/build/configure.ac.features
-===================================================================
---- cairo.orig/build/configure.ac.features	2014-10-21 22:34:06.167497938 +0200
-+++ cairo/build/configure.ac.features	2014-10-21 22:34:06.163497880 +0200
-@@ -408,6 +408,7 @@
- 	echo "The following features and utilities:"
- 	echo "  cairo-trace:                $use_trace"
- 	echo "  cairo-script-interpreter:   $use_interpreter"
-+	echo "  cairo-perf-utils:           $use_perf_utils"
- 	echo ""
- 	echo "And the following internal features:"
- 	echo "  pthread:       $use_pthread"

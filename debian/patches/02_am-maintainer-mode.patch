@@ -1,9 +1,18 @@
-Index: cairo/configure.ac
-===================================================================
---- cairo.orig/configure.ac	2014-10-21 22:34:11.207571294 +0200
-+++ cairo/configure.ac	2014-10-21 22:34:11.203571237 +0200
-@@ -14,6 +14,7 @@
- AC_CHECK_HEADERS([unistd.h sys/ioctl.h])
+From: =?utf-8?q?Sebastian_Dr=C3=B6ge?= <slomo@debian.org>
+Date: Tue, 7 Sep 2010 10:09:10 +0200
+Subject: Add AM_MAINTAINER_MODE again to configure.ac
+
+to prevent build problems
+---
+ configure.ac | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configure.ac b/configure.ac
+index a8df3b8..90e74ec 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -15,6 +15,7 @@ AC_CHECK_HEADERS([unistd.h sys/ioctl.h])
+ AC_C_TYPEOF
  
  AM_INIT_AUTOMAKE([1.11 foreign -Wall no-define no-dist-gzip dist-xz])
 +AM_MAINTAINER_MODE

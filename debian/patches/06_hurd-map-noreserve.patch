@@ -1,8 +1,17 @@
-Index: cairo/test/cairo-test-trace.c
-===================================================================
---- cairo.orig/test/cairo-test-trace.c	2015-10-30 09:09:01.835024635 +0100
-+++ cairo/test/cairo-test-trace.c	2015-10-30 09:09:01.831024583 +0100
-@@ -545,7 +545,11 @@
+From: =?utf-8?q?Sebastian_Dr=C3=B6ge?= <slomo@debian.org>
+Date: Fri, 30 Mar 2012 09:49:05 +0200
+Subject: Hurd has no MAP_NORESERVE so don't use it there
+
+---
+ test/cairo-test-trace.c    | 4 ++++
+ util/cairo-sphinx/sphinx.c | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/test/cairo-test-trace.c b/test/cairo-test-trace.c
+index 5badc43..5c059b4 100644
+--- a/test/cairo-test-trace.c
++++ b/test/cairo-test-trace.c
+@@ -545,7 +545,11 @@ spawn_shm (const char *shm_path)
  
      base = mmap (NULL, DATA_SIZE,
  		 PROT_READ | PROT_WRITE,
@@ -14,11 +23,11 @@ Index: cairo/test/cairo-test-trace.c
  		 fd, 0);
      close (fd);
  
-Index: cairo/util/cairo-sphinx/sphinx.c
-===================================================================
---- cairo.orig/util/cairo-sphinx/sphinx.c	2015-10-30 09:09:01.835024635 +0100
-+++ cairo/util/cairo-sphinx/sphinx.c	2015-10-30 09:09:01.831024583 +0100
-@@ -1337,7 +1337,11 @@
+diff --git a/util/cairo-sphinx/sphinx.c b/util/cairo-sphinx/sphinx.c
+index 238d400..9384edd 100644
+--- a/util/cairo-sphinx/sphinx.c
++++ b/util/cairo-sphinx/sphinx.c
+@@ -1337,7 +1337,11 @@ client_shm (const char *shm_path)
  
      base = mmap (NULL, DATA_SIZE,
  		 PROT_READ | PROT_WRITE,

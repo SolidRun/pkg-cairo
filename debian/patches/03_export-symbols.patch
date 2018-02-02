@@ -1,8 +1,18 @@
-Index: cairo/src/Makefile.am
-===================================================================
---- cairo.orig/src/Makefile.am	2013-01-18 11:05:30.064627087 +0100
-+++ cairo/src/Makefile.am	2013-01-18 11:05:30.060627087 +0100
-@@ -44,7 +44,7 @@
+From: Emilio Pozuelo Monfort <pochu@debian.org>
+Date: Sat, 26 Mar 2011 10:11:21 +0000
+Subject: Only export public symbols
+
+---
+ src/Makefile.am                | 2 +-
+ util/cairo-gobject/Makefile.am | 2 +-
+ util/cairo-script/Makefile.am  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index acf0a82..64fa521 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -44,7 +44,7 @@ libcairo_la_SOURCES = \
  	$(enabled_cairo_private) \
  	$(enabled_cairo_sources) \
  	$(NULL)
@@ -11,11 +21,11 @@ Index: cairo/src/Makefile.am
  libcairo_la_LIBADD = $(CAIRO_LIBS) \
  	$(cairo_cxx_lib)
  libcairo_la_DEPENDENCIES = $(cairo_def_dependency) $(cairo_cxx_lib)
-Index: cairo/util/cairo-gobject/Makefile.am
-===================================================================
---- cairo.orig/util/cairo-gobject/Makefile.am	2013-01-18 11:05:30.064627087 +0100
-+++ cairo/util/cairo-gobject/Makefile.am	2013-01-18 11:05:30.060627087 +0100
-@@ -10,6 +10,6 @@
+diff --git a/util/cairo-gobject/Makefile.am b/util/cairo-gobject/Makefile.am
+index 22c1a27..5a15950 100644
+--- a/util/cairo-gobject/Makefile.am
++++ b/util/cairo-gobject/Makefile.am
+@@ -10,6 +10,6 @@ libcairo_gobject_la_SOURCES = \
  	$(NULL)
  
  libcairo_gobject_la_CFLAGS = $(CAIRO_CFLAGS) $(GOBJECT_CFLAGS)
@@ -23,11 +33,11 @@ Index: cairo/util/cairo-gobject/Makefile.am
 +libcairo_gobject_la_LDFLAGS = -version-info $(CAIRO_LIBTOOL_VERSION_INFO) -no-undefined $(export_symbols) -export-symbols-regex \^cairo_.*
  libcairo_gobject_la_LIBADD = $(top_builddir)/src/libcairo.la $(CAIRO_LIBS) $(GOBJECT_LIBS)
  
-Index: cairo/util/cairo-script/Makefile.am
-===================================================================
---- cairo.orig/util/cairo-script/Makefile.am	2013-01-18 11:05:30.064627087 +0100
-+++ cairo/util/cairo-script/Makefile.am	2013-01-18 11:05:54.468627453 +0100
-@@ -14,7 +14,7 @@
+diff --git a/util/cairo-script/Makefile.am b/util/cairo-script/Makefile.am
+index d5c2998..7efa25f 100644
+--- a/util/cairo-script/Makefile.am
++++ b/util/cairo-script/Makefile.am
+@@ -14,7 +14,7 @@ libcairo_script_interpreter_la_SOURCES = \
  	$(libcairo_script_interpreter_headers)	\
  	$(NULL)
  libcairo_script_interpreter_la_CFLAGS = $(CAIRO_CFLAGS)
