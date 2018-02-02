@@ -72,18 +72,54 @@ PDF files and is a multi-page vector surface backend.</para>
 <para>The following mime types are supported: <link linkend="CAIRO-MIME-TYPE-JPEG:CAPS"><literal>CAIRO_MIME_TYPE_JPEG</literal></link>,
 <link linkend="CAIRO-MIME-TYPE-JP2:CAPS"><literal>CAIRO_MIME_TYPE_JP2</literal></link>, <link linkend="CAIRO-MIME-TYPE-UNIQUE-ID:CAPS"><literal>CAIRO_MIME_TYPE_UNIQUE_ID</literal></link>,
 <link linkend="CAIRO-MIME-TYPE-JBIG2:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2</literal></link>, <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link>,
-<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link>.</para>
-<para>JBIG2 data in PDF must be in the embedded format as described in
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link>,
+<link linkend="CAIRO-MIME-TYPE-CCITT-FAX:CAPS"><literal>CAIRO_MIME_TYPE_CCITT_FAX</literal></link>, <link linkend="CAIRO-MIME-TYPE-CCITT-FAX-PARAMS:CAPS"><literal>CAIRO_MIME_TYPE_CCITT_FAX_PARAMS</literal></link>.</para>
+<refsect2><title>JBIG2 Images</title><para>JBIG2 data in PDF must be in the embedded format as described in
 ISO/IEC 11544. Image specific JBIG2 data must be in
 <link linkend="CAIRO-MIME-TYPE-JBIG2:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2</literal></link>.  Any global segments in the JBIG2 data
 (segments with page association field set to 0) must be in
 <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link>. The global data may be shared by
 multiple images. All images sharing the same global data must set
-<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link> to a unique identifer. At least
+<link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link> to a unique identifier. At least
 one of the images must provide the global data using
 <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL</literal></link>. The global data will only be
-embedded once but shared by all JBIG2 images with the same
+embedded once and shared by all JBIG2 images with the same
 <link linkend="CAIRO-MIME-TYPE-JBIG2-GLOBAL-ID:CAPS"><literal>CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID</literal></link>.</para>
+</refsect2>
+<refsect2 id="ccitt"><title>CCITT Fax Images</title><para>The <link linkend="CAIRO-MIME-TYPE-CCITT-FAX:CAPS"><literal>CAIRO_MIME_TYPE_CCITT_FAX</literal></link> mime data requires a number of decoding
+parameters These parameters are specified using <link linkend="CAIRO-MIME-TYPE-CCITT-FAX-PARAMS:CAPS"><literal>CAIRO_MIME_TYPE_CCITT_FAX_PARAMS</literal></link>.</para>
+<para><link linkend="CAIRO-MIME-TYPE-CCITT-FAX-PARAMS:CAPS"><literal>CAIRO_MIME_TYPE_CCITT_FAX_PARAMS</literal></link> mime data must contain a string of the form
+"param1=value1 param2=value2 ...".</para>
+<para><parameter>Columns</parameter>
+: [required] An integer specifying the width of the image in pixels.</para>
+<para><parameter>Rows</parameter>
+: [required] An integer specifying the height of the image in scan lines.</para>
+<para><parameter>K</parameter>
+: [optional] An integer identifying the encoding scheme used. &lt; 0
+is 2 dimensional Group 4, = 0 is Group3 1 dimensional, &gt; 0 is mixed 1
+and 2 dimensional encoding. Default is 0.</para>
+<para><parameter>EndOfLine</parameter>
+: [optional] If true end-of-line bit patterns are present. Default is false.</para>
+<para><parameter>EncodedByteAlign</parameter>
+: [optional] If true the end of line is padded
+with 0 bits so the next line begins on a byte boundary. Default is false.</para>
+<para><parameter>EndOfBlock</parameter>
+: [optional] If true the data contains an end-of-block pattern. Default is true.</para>
+<para><parameter>BlackIs1</parameter>
+: [optional] If true 1 bits are black pixels. Default is false.</para>
+<para><parameter>DamagedRowsBeforeError</parameter>
+: [optional] An integer specifying the
+number of damages rows tolerated before an error occurs. Default is 0.</para>
+<para>Boolean values may be "true" or "false", or 1 or 0.</para>
+<para>These parameters are the same as the CCITTFaxDecode parameters in the
+<ulink url="https://www.adobe.com/products/postscript/pdfs/PLRM.pdf">PostScript Language Reference</ulink>
+and <ulink url="https://www.adobe.com/content/dam/Adobe/en/devnet/pdf/pdfs/PDF32000_2008.pdf">Portable Document Format (PDF)</ulink>.
+Refer to these documents for further details.</para>
+<para>An example <link linkend="CAIRO-MIME-TYPE-CCITT-FAX-PARAMS:CAPS"><literal>CAIRO_MIME_TYPE_CCITT_FAX_PARAMS</literal></link> string is:</para>
+<programlisting>
+"Columns=10230 Rows=40000 K=1 EndOfLine=true EncodedByteAlign=1 BlackIs1=false"
+</programlisting>
+</refsect2>
 
 </refsect1>
 <refsect1 id="cairo-PDF-Surfaces.functions_details" role="details">

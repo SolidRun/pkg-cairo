@@ -1025,14 +1025,14 @@ _cairo_surface_finish (cairo_surface_t *surface)
 {
     cairo_status_t status;
 
-    surface->finished = TRUE;
-
     /* call finish even if in error mode */
     if (surface->backend->finish) {
 	status = surface->backend->finish (surface);
 	if (unlikely (status))
 	    _cairo_surface_set_error (surface, status);
     }
+
+    surface->finished = TRUE;
 
     assert (surface->snapshot_of == NULL);
     assert (!_cairo_surface_has_snapshots (surface));
@@ -1224,6 +1224,80 @@ _cairo_mime_data_destroy (void *ptr)
     free (mime_data);
 }
 
+
+static const char *_cairo_surface_image_mime_types[] = {
+    CAIRO_MIME_TYPE_JPEG,
+    CAIRO_MIME_TYPE_PNG,
+    CAIRO_MIME_TYPE_JP2,
+    CAIRO_MIME_TYPE_JBIG2,
+    CAIRO_MIME_TYPE_CCITT_FAX,
+};
+
+cairo_bool_t
+_cairo_surface_has_mime_image (cairo_surface_t *surface)
+{
+    cairo_user_data_slot_t *slots;
+    int i, j, num_slots;
+
+    /* Prevent reads of the array during teardown */
+    if (! CAIRO_REFERENCE_COUNT_HAS_REFERENCE (&surface->ref_count))
+	return FALSE;
+
+    /* The number of mime-types attached to a surface is usually small,
+     * typically zero. Therefore it is quicker to do a strcmp() against
+     * each key than it is to intern the string (i.e. compute a hash,
+     * search the hash table, and do a final strcmp).
+     */
+    num_slots = surface->mime_data.num_elements;
+    slots = _cairo_array_index (&surface->mime_data, 0);
+    for (i = 0; i < num_slots; i++) {
+	if (slots[i].key != NULL) {
+	    for (j = 0; j < ARRAY_LENGTH (_cairo_surface_image_mime_types); j++) {
+		if (strcmp ((char *) slots[i].key, _cairo_surface_image_mime_types[j]) == 0)
+		    return TRUE;
+	    }
+	}
+    }
+
+    return FALSE;
+}
+
+/**
+ * CAIRO_MIME_TYPE_CCITT_FAX:
+ *
+ * Group 3 or Group 4 CCITT facsimile encoding (International
+ * Telecommunication Union, Recommendations T.4 and T.6.)
+ *
+ * Since: 1.16
+ **/
+
+/**
+ * CAIRO_MIME_TYPE_CCITT_FAX_PARAMS:
+ *
+ * Decode parameters for Group 3 or Group 4 CCITT facsimile encoding.
+ * See [CCITT Fax Images][ccitt].
+ *
+ * Since: 1.16
+ **/
+
+/**
+ * CAIRO_MIME_TYPE_EPS:
+ *
+ * Encapsulated PostScript file.
+ * [Encapsulated PostScript File Format Specification](http://wwwimages.adobe.com/content/dam/Adobe/endevnet/postscript/pdfs/5002.EPSF_Spec.pdf)
+ *
+ * Since: 1.16
+ **/
+
+/**
+ * CAIRO_MIME_TYPE_EPS_PARAMS:
+ *
+ * Embedding parameters Encapsulated PostScript data.
+ * See [Embedding EPS files][eps].
+ *
+ * Since: 1.16
+ **/
+
 /**
  * CAIRO_MIME_TYPE_JBIG2:
  *
@@ -1314,7 +1388,8 @@ _cairo_mime_data_destroy (void *ptr)
  * The recognized MIME types are the following: %CAIRO_MIME_TYPE_JPEG,
  * %CAIRO_MIME_TYPE_PNG, %CAIRO_MIME_TYPE_JP2, %CAIRO_MIME_TYPE_URI,
  * %CAIRO_MIME_TYPE_UNIQUE_ID, %CAIRO_MIME_TYPE_JBIG2,
- * %CAIRO_MIME_TYPE_JBIG2_GLOBAL, %CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID.
+ * %CAIRO_MIME_TYPE_JBIG2_GLOBAL, %CAIRO_MIME_TYPE_JBIG2_GLOBAL_ID,
+ * %CAIRO_MIME_TYPE_CCITT_FAX, %CAIRO_MIME_TYPE_CCITT_FAX_PARAMS.
  *
  * See corresponding backend surface docs for details about which MIME
  * types it can handle. Caution: the associated MIME data will be
@@ -1385,6 +1460,8 @@ cairo_surface_set_mime_data (cairo_surface_t		*surface,
 
 	return _cairo_surface_set_error (surface, status);
     }
+
+    surface->is_clear = FALSE;
 
     return CAIRO_STATUS_SUCCESS;
 }
@@ -1459,6 +1536,8 @@ _cairo_surface_copy_mime_data (cairo_surface_t *dst,
     _cairo_user_data_array_foreach (&dst->mime_data,
 				    _cairo_mime_data_reference,
 				    NULL);
+
+    dst->is_clear = FALSE;
 
     return CAIRO_STATUS_SUCCESS;
 }
@@ -2571,7 +2650,10 @@ composite_one_color_glyph (cairo_surface_t       *surface,
         pattern = cairo_pattern_create_for_surface ((cairo_surface_t *)glyph_surface);
         cairo_matrix_init_translate (&matrix, - x, - y);
         cairo_pattern_set_matrix (pattern, &matrix);
-        status = surface->backend->paint (surface, op, pattern, clip);
+	if (op == CAIRO_OPERATOR_SOURCE || op == CAIRO_OPERATOR_CLEAR)
+	  status = surface->backend->mask (surface, op, pattern, pattern, clip);
+	else
+	  status = surface->backend->paint (surface, op, pattern, clip);
     }
 
     return status;
