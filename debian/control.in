@@ -56,6 +56,7 @@ Description: Cairo 2D vector graphics library
 Package: libcairo2-dev
 Section: libdevel
 Architecture: any
+Multi-Arch: same
 Depends: libcairo2 (= ${binary:Version}),
          libcairo-gobject2 (= ${binary:Version}),
          libcairo-script-interpreter2 (= ${binary:Version}),
@@ -85,6 +86,7 @@ Description: Development files for the Cairo 2D graphics library
 Package: libcairo2-doc
 Section: doc
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}
 Recommends: lynx | www-browser
 Description: Documentation for the Cairo Multi-platform 2D graphics library
