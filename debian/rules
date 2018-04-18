@@ -61,8 +61,13 @@ override_dh_missing:
 override_dh_auto_clean:
 	rm -rf debian/install/ debian/build/
 
-override_dh_auto_test:
-	-dh_auto_test --builddirectory=debian/build/deb
+# The test suite is quite broken atm, so running it is not very useful.
+# Furthermore there's just one automake test that runs a ton of sub-tests,
+# that causes the single test to run for a long time without automake
+# printing any output, which causes the build to fail due to inactivity
+# on slow arches with no FPU, see https://bugs.debian.org/891547
+#override_dh_auto_test:
+#	-dh_auto_test --builddirectory=debian/build/deb
 
 override_dh_strip:
 	dh_strip -plibcairo2-udeb -pcairo-perf-utils

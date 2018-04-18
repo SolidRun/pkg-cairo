@@ -1,3 +1,15 @@
+cairo (1.15.10-3) UNRELEASED; urgency=medium
+
+  * Disable the test suite (enabled in 1.15.10-2). The test results were
+    ignored anyway, and the test suite is quite broken at the moment so
+    we won't be able to make the results fatal anytime soon. Furthermore,
+    there's only one mega-test that runs all the smaller tests, and this
+    causes automake to emit no output until the one test is done, making
+    the build fail on builders with no FPU due to inactivity.
+    Closes: #891547.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 18 Apr 2018 18:06:40 +0200
+
 cairo (1.15.10-2) unstable; urgency=medium
 
   * Cherry-pick 0005-Revert-fix-warning-variable-X.patch:
