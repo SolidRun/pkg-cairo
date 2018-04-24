@@ -10,7 +10,7 @@ Bug: https://bugs.freedesktop.org/show_bug.cgi?id=28865
  3 files changed, 20 insertions(+)
 
 diff --git a/build/configure.ac.features b/build/configure.ac.features
-index aa48652..3ae569b 100644
+index e0a4606..522b3f3 100644
 --- a/build/configure.ac.features
 +++ b/build/configure.ac.features
 @@ -409,6 +409,7 @@ AC_DEFUN([CAIRO_REPORT],
@@ -22,10 +22,10 @@ index aa48652..3ae569b 100644
  	echo "And the following internal features:"
  	echo "  pthread:       $use_pthread"
 diff --git a/configure.ac b/configure.ac
-index d82db45..a8df3b8 100644
+index 59d87eb..efdb1f4 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -878,6 +878,11 @@ dnl ===========================================================================
+@@ -896,6 +896,11 @@ dnl ===========================================================================
  PKG_CHECK_MODULES(gtk, "gtk+-2.0",have_gtk=yes, have_gtk=no)
  AM_CONDITIONAL(HAVE_GTK, test "x$have_gtk" = "xyes")
  
