@@ -3,6 +3,7 @@ cairo (1.15.12-1) UNRELEASED; urgency=medium
   * New upstream snapshot release
   * Drop 0005-Revert-fix-warning-variable-X.patch: Applied in new release
   * Cherry-pick 0005-Fix-assertion-failure-in-the-freetype-backend.patch
+  * Bump Standards-Version to 4.1.4
 
  -- Jeremy Bicha <jbicha@debian.org>  Tue, 24 Apr 2018 06:49:57 -0400
 
@@ -650,7 +651,7 @@ cairo (1.9.6-3) experimental; urgency=low
   * debian/control:
     + Depend on libxcb-shm0-dev as required by the pkg-config
       file (Closes: #572119).
-    + Update dependency versions as requested by the pkg-config files.      
+    + Update dependency versions as requested by the pkg-config files.
 
  -- Sebastian Dröge <slomo@debian.org>  Mon, 01 Mar 2010 18:55:01 +0100
 
@@ -778,12 +779,12 @@ cairo (1.8.2-2) experimental; urgency=low
 cairo (1.6.4-6.1) unstable; urgency=low
 
   * Non-maintainer upload.
-  * Remove the rpath stuff in /usr/lib/libcairo-directdb and only keep 
+  * Remove the rpath stuff in /usr/lib/libcairo-directdb and only keep
     it around for compatibility. Closes: #499662.
     + Remove the rpath hack in the .pc file.
-    + Make the libcairo-directfb2{,dev} packages dummy, only keeping 
+    + Make the libcairo-directfb2{,dev} packages dummy, only keeping
       symbolic links from the former locations.
-    + libcairo-directfb2-dev.postinst: do the symbolic link dance upon 
+    + libcairo-directfb2-dev.postinst: do the symbolic link dance upon
       upgrade.
     + Update package descriptions accordingly.
     + libcairo2.symbols: add cairo_directfb_surface_create.
@@ -888,7 +889,7 @@ cairo (1.6.4-2) unstable; urgency=low
 
   * debian/patches/01_directfb-no-accel.dpatch:
     + Disable rendering acceleration for the DirectFB backend as it
-      causes broken screen repainting with the Debian installer 
+      causes broken screen repainting with the Debian installer
       and other GTK/DirectFB applications (Closes: #477331).
 
  -- Sebastian Dröge <slomo@debian.org>  Tue, 13 May 2008 10:34:26 +0200
@@ -1085,7 +1086,7 @@ libcairo (1.2.4-3.1) unstable; urgency=low
     by a broken loop condition (c >= 0 works like, eh, always after
     doing "unsigned int c"...). (Closes: #388116)
 
- -- Marc 'HE' Brockschmidt <he@debian.org>  Sun, 15 Oct 2006 16:25:06 +0200 
+ -- Marc 'HE' Brockschmidt <he@debian.org>  Sun, 15 Oct 2006 16:25:06 +0200
 
 libcairo (1.2.4-3) experimental; urgency=low
 
@@ -1203,7 +1204,7 @@ libcairo (1.1.6-1) experimental; urgency=low
   * Added Cairo DirectFB udeb packages libcairo2-directfb-udeb and
     libcairo2-directfb-dev (add Build-Depend: on libdirectfb-dev)
   * libcairo2-dev and libcairo2-directfb-dev can both be installed together
-  * Stop using CDBS since it cannot handle the double configure and build 
+  * Stop using CDBS since it cannot handle the double configure and build
     setup.
   * Use dpatch for patching and Build-Depend: on it.
 
