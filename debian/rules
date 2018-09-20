@@ -19,6 +19,11 @@ configure_flags += \
 	--disable-silent-rules \
 	--disable-maintainer-mode
 
+# enable EGL and OpenGL-ES 2
+configure_flags += \
+        --enable-egl=yes \
+        --enable-glesv2
+
 deb_configure_flags += \
 	$(configure_flags) \
 	--enable-xlib \
