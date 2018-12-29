@@ -22,7 +22,8 @@ configure_flags += \
 # enable EGL and OpenGL-ES 2
 configure_flags += \
         --enable-egl=yes \
-        --enable-glesv2
+        --enable-glesv2 \
+        LDFLAGS=-L/usr/lib/galcore
 
 deb_configure_flags += \
 	$(configure_flags) \

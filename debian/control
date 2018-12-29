@@ -26,8 +26,8 @@ Build-Depends: debhelper (>= 9),
                libglib2.0-dev,
                zlib1g-dev,
                liblzo2-dev,
-               libegl1-mesa-dev,
-               libgles2-mesa-dev
+               libegl1-mesa-dev | imx-gpu-viv-dev,
+               libgles2-mesa-dev | imx-gpu-viv-dev
 Standards-Version: 3.9.6
 Vcs-Git: https://anonscm.debian.org/git/collab-maint/cairo.git
 Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/cairo.git
@@ -51,7 +51,7 @@ Depends: libcairo2 (= ${binary:Version}),
          libxcb-render0-dev (>= 1.6),
          libxcb-shm0-dev,
          libglib2.0-dev,
-         libgles2-mesa-dev,
+         libgles2-mesa-dev | imx-gpu-viv-dev,
          ${shlibs:Depends},
          ${misc:Depends}
 Provides: libcairo-dev
